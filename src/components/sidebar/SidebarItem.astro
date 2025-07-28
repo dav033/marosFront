@@ -1,0 +1,24 @@
+---
+import { Icon } from "astro-icon/components";
+import "../../styles/global.css";
+
+// Declaramos icon como opcional
+interface Props {
+  title: string;
+  to: string;
+  icon?: string;
+}
+
+const { title, to, icon } = Astro.props as Props;
+
+// Calculamos la clase de gap según haya o no icono
+const gapClass = icon ? "gap-2" : "";
+---
+
+<a
+  href={to}
+  class={`w-full h-[30px] text-center hover:bg-gray-800 transition-colors duration-200 flex items-center justify-start ${gapClass} text-gray-300 hover:text-white py-5 px-2`}
+>
+  {icon && <Icon name={icon} class="p-0 m-0" />}
+  {title}
+</a>

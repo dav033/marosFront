@@ -1,0 +1,73 @@
+---
+import "../../styles/global.css";
+import SidebarItem from "./SidebarItem.astro";
+import SidebarDropdown from "./SidebarDropdown.jsx";
+---
+
+<div
+  class="fixed min-h-screen flex-col justify-start w-80 py-4 mr-64 bg-dark border-r border-gray-800"
+>
+
+  <div class="w-full">
+    <SidebarDropdown
+      client:only="react"
+      trigger={{
+        title: "Leads",
+        icon: "material-symbols:leaderboard-outline",
+        className: "w-full h-[30px] py-5 px-2 hover:bg-gray-800 text-left",
+      }}
+      indentLevel={0}
+    >
+      <SidebarItem
+        title="Construction"
+        to="/leads/construction"
+        icon="material-symbols:construction"
+      />
+      <SidebarItem
+        title="Plumbing"
+        to="/leads/plumbing"
+        icon="material-symbols:plumbing"
+      />
+      <SidebarItem
+        title="Roofing"
+        to="/leads/roofing"
+        icon="material-symbols:roofing"
+      />
+    </SidebarDropdown>
+
+    <SidebarDropdown
+      client:only="react"
+      trigger={{
+        title: "Reports",
+        icon: "material-symbols:partner-reports",
+        className: "w-full h-[30px] py-5 px-2 hover:bg-gray-800 text-left",
+      }}
+      indentLevel={0}
+    >
+      <SidebarDropdown
+        client:only="react"
+        trigger={{
+          title: "Remodelation",
+          icon: "material-symbols:house-siding-rounded",
+          className: "w-full h-[30px] py-5 px-2 hover:bg-gray-800 text-left",
+        }}
+        indentLevel={16}
+      >
+        <SidebarItem 
+          title="Follow-up Report" 
+          to="/reports/all" 
+s        />
+        <SidebarItem 
+          title="Final Report" 
+          to="/reports/monthly" 
+        />
+      </SidebarDropdown>
+      
+    
+    </SidebarDropdown>
+  </div>
+  
+  <div class="flex-1">
+    <slot />
+  </div>
+</div>
