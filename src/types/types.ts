@@ -1,10 +1,14 @@
 // types.ts
 // Tipos generados a partir de los DTOs y enums de Java
 
-import type { LeadStatus, LeadType, ProjectStatus, InvoiceStatus } from "./enums";
+import type {
+  LeadStatus,
+  LeadType,
+  ProjectStatus,
+  InvoiceStatus,
+} from "./enums";
 
 // Enums
-
 
 // Interfaces de datos
 export interface Contacts {
@@ -22,9 +26,10 @@ export interface Contacts {
 export interface ProjectType {
   id: number;
   name: string;
+  color: string;
 }
 
-export interface Leads {
+export interface Lead {
   id: number;
   leadNumber: string;
   name: string;
@@ -45,8 +50,8 @@ export interface Project {
   invoiceStatus: InvoiceStatus;
   quickbooks?: boolean;
   startDate?: string; // Fecha en formato ISO 8601
-  endDate?: string;   // Fecha en formato ISO 8601
-  lead: Leads;
+  endDate?: string; // Fecha en formato ISO 8601
+  lead: Lead;
 }
 
 // Objetos de petición
@@ -69,12 +74,9 @@ export interface ErrorResponse {
 export type SortDirection = "asc" | "desc";
 
 export interface Column<T> {
-  /** Identificador único de la columna */
   id: string;
-  /** Texto a mostrar en el encabezado */
   header: string;
-  /** Función para extraer el valor de la fila */
   accessor: (row: T) => string | number;
-  /** Define el tipo de dato para escoger comparador */
   type: "string" | "number";
+  cellRenderer?: (value: string | number, row: T) => React.ReactNode;
 }
