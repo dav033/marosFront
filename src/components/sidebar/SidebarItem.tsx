@@ -1,0 +1,29 @@
+import React, { memo } from "react";
+import { Icon } from "@iconify/react";
+import type { SidebarItemProps } from "../../types/types";
+
+const SidebarItem = memo(function SidebarItem({ 
+  title, 
+  to, 
+  icon, 
+  currentPath 
+}: SidebarItemProps) {
+  const isActive = currentPath === to;
+  
+  // Clases calculadas una sola vez
+  const className = [
+    "w-full h-[30px] text-center hover:bg-gray-800 transition-colors duration-200",
+    "flex items-center justify-start py-5 pl-4 pr-2",
+    icon ? "gap-2" : "",
+    isActive ? "bg-gray-800 text-white" : "text-gray-300 hover:text-white"
+  ].filter(Boolean).join(" ");
+
+  return (
+    <a href={to} className={className}>
+      {icon && <Icon icon={icon} className="p-0 m-0" />}
+      {title}
+    </a>
+  );
+});
+
+export default SidebarItem;

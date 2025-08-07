@@ -1,0 +1,91 @@
+---
+import "../../styles/global.css";
+import SidebarDropdownWithContext from "./SidebarDropdownWithContext.jsx";
+import SidebarItemWithContext from "./SidebarItemWithContext.tsx";
+---
+
+<div
+  class="fixed min-h-screen flex-col justify-start w-80 py-4 mr-64 bg-dark border-r border-gray-800"
+>
+
+  <div class="w-full">
+    <SidebarDropdownWithContext
+      client:only="react"
+      transition:persist
+      id="leads"
+      trigger={{
+        title: "Lead",
+        icon: "material-symbols:leaderboard-outline",
+        className: "w-full h-[30px] py-5 hover:bg-gray-800 text-left",
+      }}
+      indentLevel={0}
+    >
+      <SidebarItemWithContext
+        client:only="react"
+        title="Construction"
+        to="/leads/construction"
+        icon="material-symbols:construction"
+      />
+      <SidebarItemWithContext
+        client:only="react"
+        title="Plumbing"
+        to="/leads/plumbing"
+        icon="material-symbols:plumbing"
+      />
+      <SidebarItemWithContext
+        client:only="react"
+        title="Roofing"
+        to="/leads/roofing"
+        icon="material-symbols:roofing"
+      />
+    </SidebarDropdownWithContext>
+
+    <SidebarItemWithContext
+      client:only="react"
+      title="Contacts"
+      to="/contacts"
+      icon="material-symbols:contacts"
+    />
+
+    <SidebarDropdownWithContext
+      client:only="react"
+      transition:persist
+      id="reports"
+      trigger={{
+        title: "Reports",
+        icon: "material-symbols:partner-reports",
+        className: "w-full h-[30px] py-5 hover:bg-gray-800 text-left",
+      }}
+      indentLevel={0}
+    >
+      <SidebarDropdownWithContext
+        client:only="react"
+        transition:persist
+        id="reports-remodelation"
+        trigger={{
+          title: "Remodelation",
+          icon: "material-symbols:house-siding-rounded",
+          className: "w-full h-[30px] py-5 hover:bg-gray-800 text-left",
+        }}
+        indentLevel={16}
+      >
+        <SidebarItemWithContext
+          client:only="react"
+          title="Follow-up Report" 
+          to="/reports/all" 
+        />
+        <SidebarItemWithContext
+          client:only="react"
+          title="Final Report" 
+          to="/reports/monthly" 
+        />
+      </SidebarDropdownWithContext>
+      
+    
+    </SidebarDropdownWithContext>
+  </div>
+  
+  <div class="flex-1">
+    <slot />
+  </div>
+</div>

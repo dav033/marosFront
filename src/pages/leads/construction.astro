@@ -1,0 +1,14 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import InteractiveTable from "../../components/leads/InteractiveTable";
+import { LeadType } from "../../types/enums";
+---
+
+<Layout>
+  <InteractiveTable 
+    client:load 
+    leadType={LeadType.CONSTRUCTION}
+    title="Construction Leads"
+    createButtonText="Create Construction Lead"
+  />
+</Layout>
