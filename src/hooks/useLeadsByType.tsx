@@ -25,6 +25,7 @@ export function useLeadsByType(type: LeadType) {
   const sections: Section[] = useMemo(() => {
     const safe = leads ?? [];
     return [
+      { title: "New",         data: safe.filter(l => l.status === LeadStatus.NEW) },
       { title: "Undetermined", data: safe.filter(l => !l.status || l.status === null || l.status === undefined) },
       { title: "To Do",       data: safe.filter(l => l.status === LeadStatus.TO_DO) },
       { title: "In Progress", data: safe.filter(l => l.status === LeadStatus.IN_PROGRESS) },

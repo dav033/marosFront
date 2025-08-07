@@ -5,6 +5,7 @@ export enum InvoiceStatus {
 }
 
 export enum LeadStatus {
+  NEW = "NEW",
   UNDETERMINED = "UNDETERMINED",
   TO_DO = "TO_DO",
   IN_PROGRESS = "IN_PROGRESS",

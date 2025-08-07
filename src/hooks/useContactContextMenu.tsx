@@ -1,15 +1,14 @@
 import { useContextMenu, type ContextMenuOption } from "@components/common/ContextMenu";
-import { useContacts } from "../contexts/ContactsContext";
 import { ContactsService } from "../services/ContactsService";
 import type { Contacts } from "../types/types";
 
 interface UseContactContextMenuProps {
   onEdit?: (contact: Contacts) => void;
+  onDelete?: (contactId: number) => void;
 }
 
-export const useContactContextMenu = ({ onEdit }: UseContactContextMenuProps = {}) => {
+export const useContactContextMenu = ({ onEdit, onDelete }: UseContactContextMenuProps = {}) => {
   const { contextMenu, showContextMenu, hideContextMenu } = useContextMenu();
-  const { removeContact } = useContacts();
 
   const handleDeleteContact = async (contact: Contacts) => {
     const confirmed = window.confirm(
@@ -19,13 +18,14 @@ export const useContactContextMenu = ({ onEdit }: UseContactContextMenuProps = {
     if (!confirmed) return;
 
     try {
-      removeContact(contact.id);
-      
       const result = await ContactsService.deleteContact(contact.id);
       
       if (!result) {
         alert(`Error deleting contact`);
         window.location.reload();
+      } else {
+        // Llamar el callback si se proporciona
+        onDelete?.(contact.id);
       }
     } catch (error) {
       console.error('Error deleting contact:', error);

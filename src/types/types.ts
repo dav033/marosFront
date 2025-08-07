@@ -23,6 +23,31 @@ export interface SidebarItemProps {
   icon?: string;
   currentPath: string;
 }
+// Ajuste si ya tiene este tipo en otro archivo:
+export interface UseFetchResult<T> {
+  data: T | null;
+  loading: boolean;
+  error: Error | null;
+  refetch: () => Promise<void>;
+}
+
+export type StorageLayer = "memory" | "session" | "local";
+
+export interface OptimizedFetchConfig {
+  cacheKey: string;
+  ttl?: number; // ms
+  storage?: StorageLayer;
+  showSkeletonOnlyOnFirstLoad?: boolean;
+  refetchInterval?: number; // ms
+  /** Umbral para refrescar en background cuando el cache supera X% del TTL (por defecto 0.5 = 50%) */
+  backgroundRefreshThreshold?: number; // 0..1
+}
+
+export type UseOptimizedFetchReturn<T> = UseFetchResult<T> & {
+  fromCache: boolean;
+  cacheAge: number;
+  forceRefresh: () => Promise<void>;
+};
 
 export interface SidebarDropdownProps {
   trigger: {

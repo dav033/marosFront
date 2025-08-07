@@ -10,7 +10,7 @@ import React, {
   useCallback,
   useContext,
 } from "react";
-import { HeightUpdateContext } from "./HeightContext";
+const HeightContext = HeightUpdateContext;
 
 export default function SidebarDropdown({
   trigger,
@@ -19,7 +19,7 @@ export default function SidebarDropdown({
   duration = 300,
   indentLevel = 0,
 }) {
-  const notifyParent = useContext(HeightUpdateContext);
+  const notifyParent = useContext(HeightContext);
   const [isOpen, setIsOpen] = useState(false);
   const [height, setHeight] = useState(0);
   const dropdownRef = useRef(null);

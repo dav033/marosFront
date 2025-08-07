@@ -5,14 +5,13 @@ import ModalBody from "@components/common/modal/ModalBody";
 import ModalFooter from "@components/common/modal/ModalFooter";
 import ModalHeader from "@components/common/modal/ModalHeader";
 import { ContactsService } from "../../services/ContactsService";
-import { useContacts } from "../../contexts/ContactsContext";
 import type { Contacts } from "../../types/types";
 import ContactForm from "./ContactForm";
 import type { ContactFormData } from "./ContactForm";
 
 interface EditContactModalProps {
   isOpen: boolean;
-  onClose: () => void;
+  onClose: (shouldRefetch?: boolean) => void;
   contact: Contacts | null;
 }
 
@@ -21,7 +20,6 @@ export default function EditContactModal({
   onClose,
   contact,
 }: EditContactModalProps) {
-  const { updateContact } = useContacts();
   const [form, setForm] = useState<ContactFormData>({
     companyName: "",
     name: "",
@@ -84,9 +82,8 @@ export default function EditContactModal({
         address: form.address || undefined,
       });
 
-      updateContact(updatedContact);
       console.log("✅ Contact updated successfully:", updatedContact);
-      onClose();
+      onClose(true); // shouldRefetch = true
     } catch (error) {
       console.error("❌ Error updating contact:", error);
       setError(

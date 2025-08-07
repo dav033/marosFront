@@ -5,20 +5,18 @@ import ModalBody from "@components/common/modal/ModalBody";
 import ModalFooter from "@components/common/modal/ModalFooter";
 import ModalHeader from "@components/common/modal/ModalHeader";
 import { ContactsService } from "../../services/ContactsService";
-import { useContacts } from "../../contexts/ContactsContext";
 import ContactForm from "./ContactForm";
 import type { ContactFormData } from "./ContactForm";
 
 interface CreateContactModalProps {
   isOpen: boolean;
-  onClose: () => void;
+  onClose: (shouldRefetch?: boolean) => void;
 }
 
 export default function CreateContactModal({
   isOpen,
   onClose,
 }: CreateContactModalProps) {
-  const { addContact } = useContacts();
   const [form, setForm] = useState<ContactFormData>({
     companyName: "",
     name: "",
@@ -65,9 +63,8 @@ export default function CreateContactModal({
         address: form.address || undefined,
       });
 
-      addContact(newContact);
       console.log("✅ Contact created successfully:", newContact);
-      onClose();
+      onClose(true); // shouldRefetch = true
     } catch (error) {
       console.error("❌ Error creating contact:", error);
       setError(

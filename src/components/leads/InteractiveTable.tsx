@@ -7,13 +7,13 @@ import React, {
   lazy,
 } from "react";
 import { LeadType, LeadStatus } from "src/types/enums";
-import { LeadsService } from "src/services/LeadsService";
-import { ContactsService } from "src/services/ContactsService";
+import { OptimizedLeadsService } from "src/services/OptimizedLeadsService";
+import { OptimizedContactsService } from "src/services/OptimizedContactsService";
 import { leadTableColumns } from "./LeadTableColumns";
 import LeadSection from "./LeadSection";
 import { GenericButton } from "@components/common/GenerictButton";
 import { TableSkeleton } from "@components/common/TableSkeleton";
-import { useFetch } from "src/hooks/UseFetchResult";
+import { useInstantList } from "src/hooks/useInstantData";
 import { ProjectTypeService } from "src/services/ProjectTypeService";
 import type { Lead } from "src/types/types";
 import { deleteLead } from "../../utils/leadHelpers";
@@ -49,52 +49,33 @@ export default function InteractiveTable({
   title,
   createButtonText,
 }: InteractiveTableProps) {
-  // Estado para controlar la primera carga y transiciones
-  const [isTransitioning, setIsTransitioning] = useState(true);
-
-  // 1. USAR CUSTOM HOOK PARA LEADS
+  // 1. USAR HOOK OPTIMIZADO PARA LEADS CON CACHE INSTANTÁNEO
   const {
-    data: leads = [],
+    items: leads = [],
     loading: isLoading,
+    showSkeleton,
+    refresh: refetchLeads,
     error,
-    refetch: refetchLeads,
-  } = useFetch(
-    LeadsService.getLeadsByType,
-    [leadType],
-    [leadType] // deps específicas
+  } = useInstantList(
+    `leads_${leadType}`,
+    () => OptimizedLeadsService.getLeadsByType(leadType),
+    { 
+      ttl: 300000, // 5 minutos
+      showSkeletonOnlyOnFirstLoad: true 
+    }
   );
 
-  // Efecto para controlar las transiciones entre páginas
-  useEffect(() => {
-    setIsTransitioning(true);
-    const timer = setTimeout(() => {
-      if (!isLoading) {
-        setIsTransitioning(false);
-      }
-    }, 100); // Mínimo 100ms de skeleton para transiciones suaves
-
-    return () => clearTimeout(timer);
-  }, [leadType, isLoading]);
-
-  // Efecto para finalizar la transición cuando termina la carga
-  useEffect(() => {
-    if (!isLoading) {
-      const timer = setTimeout(() => {
-        setIsTransitioning(false);
-      }, 50);
-      return () => clearTimeout(timer);
-    }
-  }, [isLoading]);
-
-  // 2. USAR CUSTOM HOOK PARA PROJECT TYPES Y CONTACTS
-  const { data: projectTypes = [] } = useFetch(
+  // 2. USAR HOOKS OPTIMIZADOS PARA PROJECT TYPES Y CONTACTS
+  const { items: projectTypes = [] } = useInstantList(
+    'project_types',
     ProjectTypeService.getProjectTypes,
-    []
+    { ttl: 600000 } // 10 minutos
   );
   
-  const { data: contacts = [] } = useFetch(
-    ContactsService.getAllContacts,
-    []
+  const { items: contacts = [] } = useInstantList(
+    'contacts',
+    OptimizedContactsService.getAllContacts,
+    { ttl: 300000 } // 5 minutos
   );
 
   // 3. ESTADO LOCAL OPTIMIZADO
@@ -177,8 +158,8 @@ export default function InteractiveTable({
   // 7. COLUMNAS MEMOIZADAS
   const memoizedColumns = useMemo(() => leadTableColumns, []);
 
-  // 8. EARLY RETURNS MEJORADOS
-  if (isLoading || isTransitioning) {
+  // 8. EARLY RETURNS MEJORADOS - USA SKELETON INTELIGENTE
+  if (showSkeleton) {
     return <TableSkeleton showSections={true} rows={8} />;
   }
 

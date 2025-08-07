@@ -1,7 +1,21 @@
 ---
 import Sidebar from "../components/sidebar/Sidebar.tsx";
+import CacheInitializer from "../components/common/CacheInitializer.tsx";
+import CacheInspectorInit from "../components/common/CacheInspectorInit.tsx";
 import "../styles/global.css";
 import { ViewTransitions } from 'astro:transitions';
+
+export interface Props {
+  title?: string;
+  enableCache?: boolean;
+  enableDiagnostics?: boolean;
+}
+
+const { 
+  title = "Maros Construction", 
+  enableCache = true,
+  enableDiagnostics = true
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -13,12 +27,79 @@ import { ViewTransitions } from 'astro:transitions';
     <meta name="generator" content={Astro.generator} />
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
     <script is:inline src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    
+    <!-- Cache System Initialization -->
+    {enableCache && (
+      <script is:inline define:vars={{ isDev: import.meta.env.DEV }}>
+        // Initialize cache system
+        window.CACHE_CONFIG = {
+          enabled: true,
+          debug: isDev,
+          maxSize: 100,
+          defaultTTL: 900000, // 15 minutos
+        };
+
+        // Simple prefetch for critical routes
+        document.addEventListener('DOMContentLoaded', () => {
+          const criticalRoutes = ['/contacts', '/leads/construction', '/leads/plumbing', '/leads/roofing'];
+          
+          criticalRoutes.forEach(route => {
+            const link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.href = route;
+            document.head.appendChild(link);
+          });
+
+          console.log('🚀 Critical routes prefetched');
+        });
+
+        // Navigation performance tracking
+        document.addEventListener('astro:before-preparation', (event) => {
+          console.log('🚀 Navigating to:', event.to?.pathname || 'unknown');
+        });
+
+        document.addEventListener('astro:after-swap', () => {
+          console.log('✅ Navigation completed');
+        });
+      </script>
+    )}
+
+    <!-- Performance Monitoring -->
+    {enableDiagnostics && import.meta.env.DEV && (
+      <script is:inline>
+        // Performance monitoring
+        window.addEventListener('load', () => {
+          console.log('🚀 Cache System Ready');
+          console.log('📋 Comandos disponibles:');
+          console.log('  - cacheInspector.inspectGlobalCache() - Ver contenido del cache');
+          console.log('  - cacheInspector.getCacheSize() - Ver tamaño del cache');
+          console.log('  - cacheInspector.clearAllCache() - Limpiar todo el cache');
+          console.log('  - cacheInspector.watchCache() - Monitorear cambios');
+        });
+      </script>
+    )}
+
     <ViewTransitions />
-    <title>Astro Basics</title>
+    <title>{title}</title>
   </head>
   <body
     class="relative flex flex-row h-screen bg-theme-dark text-theme-light"
   >
+    <!-- Cache System Initializer -->
+    {enableCache && (
+      <CacheInitializer 
+        client:only="react"
+        enabled={enableCache}
+        debug={enableDiagnostics && import.meta.env.DEV}
+        autoPreload={true}
+      />
+    )}
+
+    <!-- Cache Inspector for Development -->
+    {enableDiagnostics && import.meta.env.DEV && (
+      <CacheInspectorInit client:only="react" enabled={true} />
+    )}
+
     <Sidebar client:only="react" transition:persist />
     <main class="w-full ml-80 p-4"><slot /></main>
   </body>

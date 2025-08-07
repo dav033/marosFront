@@ -9,6 +9,7 @@ interface ContactSectionProps {
   data: Contacts[];
   columns: Column<Contacts>[];
   onEditContact?: (contact: Contacts) => void;
+  onDeleteContact?: (contactId: number) => void;
 }
 
 export default function ContactSection({
@@ -16,8 +17,12 @@ export default function ContactSection({
   data,
   columns,
   onEditContact,
+  onDeleteContact,
 }: ContactSectionProps) {
-  const { getContactContextOptions } = useContactContextMenu({ onEdit: onEditContact });
+  const { getContactContextOptions } = useContactContextMenu({ 
+    onEdit: onEditContact,
+    onDelete: onDeleteContact 
+  });
 
   // Define column widths specifically for contacts table (8 columns)
   const contactColumnWidths = [

@@ -19,7 +19,11 @@ const SidebarItem = memo(function SidebarItem({
   ].filter(Boolean).join(" ");
 
   return (
-    <a href={to} className={className}>
+    <a 
+      href={to} 
+      className={className}
+      data-astro-prefetch="hover"
+    >
       {icon && <Icon icon={icon} className="p-0 m-0" />}
       {title}
     </a>
