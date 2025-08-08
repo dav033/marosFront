@@ -1,5 +1,5 @@
 import React from 'react';
-import { GenericButton } from '@components/common/GenerictButton';
+import { GenericButton } from '@components/common/GenericButton';
 import Modal from '@components/common/modal/Modal';
 import ModalBody from '@components/common/modal/ModalBody';
 import ModalFooter from '@components/common/modal/ModalFooter';

@@ -2,13 +2,28 @@
  * Wrapper optimizado para contactos con sistema de cache y skeleton
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useInstantContacts } from 'src/hooks/useInstantContacts';
-import { ContactsTableSkeleton } from './ContactsTableSkeleton';
 import ContactsTable from './ContactsTable';
+import { LoadingProvider, useLoading } from 'src/contexts/LoadingContext';
+import { SkeletonRenderer } from '@components/common/SkeletonRenderer';
 
-const OptimizedContactsWrapper: React.FC = () => {
+const ContactsInner: React.FC = () => {
   const { contacts, showSkeleton, error, refetch } = useInstantContacts();
+  const { showLoading, hideLoading, setSkeleton } = useLoading();
+
+  useEffect(() => {
+    setSkeleton('contactsTable', { rows: 15 });
+  }, [setSkeleton]);
+
+  useEffect(() => {
+    if (showSkeleton) {
+      showLoading('contactsTable', { rows: 15 });
+    } else {
+      hideLoading();
+    }
+    return () => hideLoading();
+  }, [showSkeleton, showLoading, hideLoading]);
 
   if (error) {
     return (
@@ -32,11 +47,16 @@ const OptimizedContactsWrapper: React.FC = () => {
     );
   }
 
-  if (showSkeleton) {
-    return <ContactsTableSkeleton />;
-  }
-
   return <ContactsTable contacts={contacts} onRefetch={refetch} />;
+};
+
+const OptimizedContactsWrapper: React.FC = () => {
+  return (
+    <LoadingProvider>
+      <SkeletonRenderer />
+      <ContactsInner />
+    </LoadingProvider>
+  );
 };
 
 export default OptimizedContactsWrapper;

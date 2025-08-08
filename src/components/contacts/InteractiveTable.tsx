@@ -10,17 +10,19 @@ import { useContacts } from "src/contexts/ContactsContext";
 import { ContactsService } from "src/services/ContactsService";
 import { contactTableColumns } from "./ContactTableColumns";
 import ContactSection from "./ContactSection";
-import { GenericButton } from "@components/common/GenerictButton";
+import { GenericButton } from "@components/common/GenericButton";
 import { SearchBoxWithDropdown } from "@components/common/SearchBoxWithDropdown";
 import { useSearch } from "src/hooks/useSearch";
 import { contactsSearchConfig, contactsSearchPlaceholder } from "./contactsSearchConfig";
 import type { Contacts } from "src/types/types";
+import { LoadingProvider, useLoading } from "src/contexts/LoadingContext";
+import { SkeletonRenderer } from "@components/common/SkeletonRenderer";
 
 // Try absolute imports for the modals
 const CreateContactModal = lazy(() => import("src/components/contacts/CreateContactModal"));
 const EditContactModal = lazy(() => import("src/components/contacts/EditContactModal"));
 
-export default function InteractiveTable() {
+function ContactsInnerTable() {
   const {
     contacts,
     isLoading,
@@ -29,6 +31,22 @@ export default function InteractiveTable() {
     setLoading,
     setError,
   } = useContacts();
+
+  const { showLoading, hideLoading, setSkeleton } = useLoading();
+
+  useEffect(() => {
+    // Configurar skeleton por defecto
+    setSkeleton('contactsTable', { rows: 15 });
+  }, [setSkeleton]);
+
+  useEffect(() => {
+    if (isLoading) {
+      showLoading('contactsTable', { rows: 15 });
+    } else {
+      hideLoading();
+    }
+    return () => hideLoading();
+  }, [isLoading, showLoading, hideLoading]);
 
   useEffect(() => {
     const loadContacts = async () => {
@@ -80,7 +98,6 @@ export default function InteractiveTable() {
 
   const memoColumns = useMemo(() => contactTableColumns, []);
 
-  if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
@@ -133,5 +150,14 @@ export default function InteractiveTable() {
         onEditContact={handleEditOpen}
       />
     </div>
+  );
+}
+
+export default function InteractiveTable() {
+  return (
+    <LoadingProvider>
+      <SkeletonRenderer />
+      <ContactsInnerTable />
+    </LoadingProvider>
   );
 }

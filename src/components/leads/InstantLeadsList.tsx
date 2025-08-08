@@ -3,17 +3,19 @@
  * Solo muestra skeleton en la primera carga
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useInstantList } from '../../hooks/useInstantData';
 import { OptimizedLeadsService } from '../../services/OptimizedLeadsService';
 import { LeadType } from '../../types/enums';
 import type { Lead } from '../../types/types';
+import { LoadingProvider, useLoading } from 'src/contexts/LoadingContext';
+import { SkeletonRenderer } from '@components/common/SkeletonRenderer';
 
 interface InstantLeadsListProps {
   leadType: LeadType;
 }
 
-const InstantLeadsList: React.FC<InstantLeadsListProps> = ({ leadType }) => {
+const InnerInstantLeadsList: React.FC<InstantLeadsListProps> = ({ leadType }) => {
   const {
     items: leads,
     loading,
@@ -32,6 +34,21 @@ const InstantLeadsList: React.FC<InstantLeadsListProps> = ({ leadType }) => {
     }
   );
 
+  const { setSkeleton, showLoading, hideLoading } = useLoading();
+
+  useEffect(() => {
+    setSkeleton('list', { rows: 6 });
+  }, [setSkeleton]);
+
+  useEffect(() => {
+    if (showSkeleton) {
+      showLoading('list', { rows: 6 });
+    } else {
+      hideLoading();
+    }
+    return () => hideLoading();
+  }, [showSkeleton, showLoading, hideLoading]);
+
   // Mostrar error si existe
   if (error) {
     return (
@@ -46,11 +63,6 @@ const InstantLeadsList: React.FC<InstantLeadsListProps> = ({ leadType }) => {
         </button>
       </div>
     );
-  }
-
-  // Solo mostrar skeleton en primera carga (sin cache)
-  if (showSkeleton) {
-    return <LeadsSkeleton />;
   }
 
   // Si no hay datos pero no está cargando (cache vacío)
@@ -106,23 +118,6 @@ const InstantLeadsList: React.FC<InstantLeadsListProps> = ({ leadType }) => {
   );
 };
 
-// Componente de skeleton (solo se muestra en primera carga)
-const LeadsSkeleton: React.FC = () => (
-  <div className="space-y-4">
-    <div className="flex justify-between items-center">
-      <div className="h-6 bg-gray-200 rounded w-32 animate-pulse"></div>
-      <div className="h-8 bg-gray-200 rounded w-24 animate-pulse"></div>
-    </div>
-    {[...Array(3)].map((_, i) => (
-      <div key={i} className="bg-white rounded-lg p-4 border animate-pulse">
-        <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-        <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
-        <div className="h-3 bg-gray-200 rounded w-1/4"></div>
-      </div>
-    ))}
-  </div>
-);
-
 // Componente de tarjeta de lead con indicador de cache
 const LeadCard: React.FC<{ lead: Lead; isFromCache: boolean }> = ({ lead, isFromCache }) => (
   <div className="bg-white rounded-lg p-4 border hover:shadow-md transition-shadow">
@@ -148,6 +143,13 @@ const LeadCard: React.FC<{ lead: Lead; isFromCache: boolean }> = ({ lead, isFrom
       </div>
     </div>
   </div>
+);
+
+const InstantLeadsList: React.FC<InstantLeadsListProps> = (props) => (
+  <LoadingProvider>
+    <SkeletonRenderer />
+    <InnerInstantLeadsList {...props} />
+  </LoadingProvider>
 );
 
 export default InstantLeadsList;

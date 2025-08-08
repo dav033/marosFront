@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { contactTableColumns } from "./ContactTableColumns";
 import ContactSection from "./ContactSection";
-import { GenericButton } from "@components/common/GenerictButton";
+import { GenericButton } from "@components/common/GenericButton";
 import { SearchBoxWithDropdown } from "@components/common/SearchBoxWithDropdown";
 import { useSearch } from "src/hooks/useSearch";
 import { contactsSearchConfig, contactsSearchPlaceholder } from "./contactsSearchConfig";

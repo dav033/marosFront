@@ -11,12 +11,13 @@ import { OptimizedLeadsService } from "src/services/OptimizedLeadsService";
 import { OptimizedContactsService } from "src/services/OptimizedContactsService";
 import { leadTableColumns } from "./LeadTableColumns";
 import LeadSection from "./LeadSection";
-import { GenericButton } from "@components/common/GenerictButton";
-import { TableSkeleton } from "@components/common/TableSkeleton";
+import { GenericButton } from "@components/common/GenericButton";
 import { useInstantList } from "src/hooks/useInstantData";
 import { ProjectTypeService } from "src/services/ProjectTypeService";
 import type { Lead } from "src/types/types";
 import { deleteLead } from "../../utils/leadHelpers";
+import { LoadingProvider, useLoading } from "src/contexts/LoadingContext";
+import { SkeletonRenderer } from "@components/common/SkeletonRenderer";
 
 // Lazy load modals
 const CreateLeadModal = lazy(() => import("./CreateLeadModal"));
@@ -44,7 +45,7 @@ const LEAD_SECTIONS: Array<{ title: string; status: LeadStatus | null }> = [
   { title: "Lost", status: LeadStatus.LOST },
 ];
 
-export default function InteractiveTable({
+function InnerInteractiveTable({
   leadType,
   title,
   createButtonText,
@@ -64,6 +65,25 @@ export default function InteractiveTable({
       showSkeletonOnlyOnFirstLoad: true 
     }
   );
+
+  // Integración con Loading Manager centralizado
+  const { showLoading, hideLoading, setSkeleton } = useLoading();
+
+  useEffect(() => {
+    // Configuramos el tipo de skeleton una vez
+    setSkeleton("leadsTable", { rows: 8, showSections: true });
+  }, [setSkeleton]);
+
+  useEffect(() => {
+    if (showSkeleton || isLoading) {
+      showLoading("leadsTable", { rows: 8, showSections: true });
+    } else {
+      hideLoading();
+    }
+    return () => {
+      hideLoading();
+    };
+  }, [showSkeleton, isLoading, showLoading, hideLoading]);
 
   // 2. USAR HOOKS OPTIMIZADOS PARA PROJECT TYPES Y CONTACTS
   const { items: projectTypes = [] } = useInstantList(
@@ -158,11 +178,7 @@ export default function InteractiveTable({
   // 7. COLUMNAS MEMOIZADAS
   const memoizedColumns = useMemo(() => leadTableColumns, []);
 
-  // 8. EARLY RETURNS MEJORADOS - USA SKELETON INTELIGENTE
-  if (showSkeleton) {
-    return <TableSkeleton showSections={true} rows={8} />;
-  }
-
+  // 8. EARLY RETURNS MEJORADOS - Ahora dependemos del sistema centralizado
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center min-h-64 space-y-4">
@@ -265,5 +281,16 @@ export default function InteractiveTable({
         </div>
       )}
     </div>
+  );
+}
+
+export default function InteractiveTable(props: InteractiveTableProps) {
+  return (
+    <LoadingProvider>
+      {/* Renderer centralizado de skeletons */}
+      <SkeletonRenderer />
+      {/* Contenido real */}
+      <InnerInteractiveTable {...props} />
+    </LoadingProvider>
   );
 }
