@@ -13,7 +13,7 @@ const ContactsInner: React.FC = () => {
   const { showLoading, hideLoading, setSkeleton } = useLoading();
 
   useEffect(() => {
-    setSkeleton('contactsTable', { rows: 15, overlay: true });
+    setSkeleton('contactsTable', { rows: 15, overlay: false });
   }, [setSkeleton]);
 
   useEffect(() => {
@@ -24,6 +24,9 @@ const ContactsInner: React.FC = () => {
     }
     return () => hideLoading();
   }, [showSkeleton, showLoading, hideLoading]);
+
+  // Bloquear la tabla mientras el skeleton está activo
+  if (showSkeleton) return null;
 
   if (error) {
     return (
@@ -47,8 +50,6 @@ const ContactsInner: React.FC = () => {
     );
   }
 
-  // No mostrar la tabla mientras el skeleton esté activo
-  if (showSkeleton) return null;
   return <ContactsTable contacts={contacts} onRefetch={refetch} />;
 };
 
