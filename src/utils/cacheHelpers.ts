@@ -1,5 +1,7 @@
 import { apiCache } from "../lib/cacheManager";
 import type { StorageLayer } from "../types/types";
+import { useCallback, useState } from "react";
+import { useFetch } from "../hooks/UseFetchResult";
 
 type CachedResult<T> = { data: T | null; age: number };
 
@@ -74,4 +76,41 @@ export function stableKey(input: unknown): string {
   } catch {
     return String(input);
   }
+}
+
+// =========================
+// Helpers para ejemplos de migración (stubs livianos)
+// =========================
+
+/** Indicador mínimo para el ejemplo de migración. */
+export function CacheIndicator(props: { fromCache?: boolean; loading?: boolean; cacheAge?: number }) {
+  // Componente de no-op para no romper el build; UI opcional puede implementarse luego
+  return null as any;
+}
+
+/** Skeleton inteligente básico: muestra fallback solo cuando show=true y no viene de cache. */
+export function SmartSkeleton(props: { show: boolean; fromCache?: boolean; fallback?: any; children?: any }) {
+  const { show, fromCache, fallback, children } = props;
+  return (show && !fromCache) ? (fallback ?? null) : (children ?? null);
+}
+
+/** Hook de migración simplificado: usa el hook "useFetch" existente y expone banderas mínimas. */
+export function useMigratedFetch<T, P extends unknown[]>(
+  requestFn: (...args: P) => Promise<T>,
+  params: P
+) {
+  const { data, loading, error, refetch } = useFetch<T, P>(requestFn, params);
+  const [fromCache] = useState(false); // Stub: lógica real de cache fuera de alcance
+  const migrateToCache = useCallback((_key: string) => {
+    // No-op por ahora; el ejemplo compila y funciona sin cache real aquí
+  }, []);
+
+  return {
+    data,
+    loading,
+    error,
+    fromCache,
+    migrateToCache,
+    refetch,
+  };
 }

@@ -192,7 +192,7 @@ export const OptimizedLeadsService = {
   },
 
   // Configurar prefetch automático para navegación
-  setupAutoPrefetech(): void {
+  setupAutoPrefetch(): void {
     // Solo ejecutar en el cliente
     if (typeof window === 'undefined') return;
     
@@ -211,5 +211,5 @@ export const OptimizedLeadsService = {
 
 // Configurar prefetch automático al cargar
 if (typeof window !== 'undefined') {
-  OptimizedLeadsService.setupAutoPrefetech();
+  OptimizedLeadsService.setupAutoPrefetch();
 }

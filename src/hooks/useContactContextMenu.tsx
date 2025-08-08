@@ -1,5 +1,5 @@
 import { useContextMenu, type ContextMenuOption } from "@components/common/ContextMenu";
-import { ContactsService } from "../services/ContactsService";
+import { OptimizedContactsService } from "src/services/OptimizedContactsService";
 import type { Contacts } from "../types/types";
 
 interface UseContactContextMenuProps {
@@ -18,7 +18,7 @@ export const useContactContextMenu = ({ onEdit, onDelete }: UseContactContextMen
     if (!confirmed) return;
 
     try {
-      const result = await ContactsService.deleteContact(contact.id);
+      const result = await OptimizedContactsService.deleteContact(contact.id);
       
       if (!result) {
         alert(`Error deleting contact`);

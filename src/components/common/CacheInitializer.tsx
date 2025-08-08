@@ -7,7 +7,6 @@ import React, { useEffect, useState } from 'react';
 import CacheDiagnostics from './CacheDiagnostics';
 import { useCacheDiagnostics, usePerformanceMonitor, useCacheLogging } from '../../hooks/useCacheDiagnostics';
 import { OptimizedLeadsService } from '../../services/OptimizedLeadsService';
-import { OptimizedContactsService } from '../../services/OptimizedContactsService';
 import { optimizedApiClient } from '../../lib/optimizedApiClient';
 import { globalCache, apiCache } from '../../lib/cacheManager';
 import { prefetchManager } from '../../lib/prefetchManager';
@@ -51,7 +50,7 @@ export const CacheInitializer: React.FC<CacheInitializerProps> = ({
         console.log('🚀 Inicializando sistema de cache...');
 
         // 1. Configurar prefetch automático
-        OptimizedLeadsService.setupAutoPrefetech();
+        OptimizedLeadsService.setupAutoPrefetch();
 
         // 2. Precargar datos críticos si está habilitado
         if (autoPreload) {
@@ -65,8 +64,7 @@ export const CacheInitializer: React.FC<CacheInitializerProps> = ({
                 optimizedApiClient.get('/contacts/all', {
                   cache: { enabled: true, strategy: 'cache-first', ttl: 300000 }
                 }),
-                // Cambiar a /project-type/all (singular) que es el endpoint correcto
-                optimizedApiClient.get('/project-type/all', {
+                optimizedApiClient.get('/project-types/all', {
                   cache: { enabled: true, strategy: 'cache-first', ttl: 600000 }
                 }).catch(() => {
                   console.log('ℹ️ Project types endpoint not available, skipping...');

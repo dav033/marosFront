@@ -7,7 +7,6 @@ import React, {
   useEffect,
 } from "react";
 import { useContacts } from "src/contexts/ContactsContext";
-import { ContactsService } from "src/services/ContactsService";
 import { contactTableColumns } from "./ContactTableColumns";
 import ContactSection from "./ContactSection";
 import { GenericButton } from "@components/common/GenericButton";
@@ -17,6 +16,7 @@ import { contactsSearchConfig, contactsSearchPlaceholder } from "./contactsSearc
 import type { Contacts } from "src/types/types";
 import { LoadingProvider, useLoading } from "src/contexts/LoadingContext";
 import { SkeletonRenderer } from "@components/common/SkeletonRenderer";
+import { OptimizedContactsService } from "src/services/OptimizedContactsService";
 
 // Try absolute imports for the modals
 const CreateContactModal = lazy(() => import("src/components/contacts/CreateContactModal"));
@@ -53,7 +53,7 @@ function ContactsInnerTable() {
       try {
         setLoading(true);
         setError(null);
-        const contactsData = await ContactsService.getAllContacts();
+        const contactsData = await OptimizedContactsService.getAllContacts();
         console.log("✅ Contacts loaded:", contactsData);
         setContacts(contactsData);
       } catch (err) {

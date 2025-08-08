@@ -4,10 +4,10 @@ import Modal from "@components/common/modal/Modal";
 import ModalBody from "@components/common/modal/ModalBody";
 import ModalFooter from "@components/common/modal/ModalFooter";
 import ModalHeader from "@components/common/modal/ModalHeader";
-import { ContactsService } from "../../services/ContactsService";
 import type { Contacts } from "../../types/types";
 import ContactForm from "./ContactForm";
 import type { ContactFormData } from "./ContactForm";
+import { OptimizedContactsService } from "src/services/OptimizedContactsService";
 
 interface EditContactModalProps {
   isOpen: boolean;
@@ -72,7 +72,7 @@ export default function EditContactModal({
     setError(null);
 
     try {
-      const updatedContact = await ContactsService.updateContact(contact.id, {
+      const updatedContact = await OptimizedContactsService.updateContact(contact.id, {
         companyName: form.companyName,
         name: form.name,
         occupation: form.occupation || undefined,

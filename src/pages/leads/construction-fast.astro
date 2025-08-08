@@ -1,0 +1,16 @@
+---
+const target = '/leads/construction';
+---
+<html>
+  <head>
+    <meta http-equiv="refresh" content={`0; url=${target}`}> 
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Redirecting…</title>
+  </head>
+  <body>
+    <script>
+      if (typeof window !== 'undefined') window.location.replace(target);
+    </script>
+    <p>Redirecting to <a href={target}>Construction Leads</a>…</p>
+  </body>
+</html>

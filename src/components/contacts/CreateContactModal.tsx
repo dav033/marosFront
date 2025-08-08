@@ -4,9 +4,9 @@ import Modal from "@components/common/modal/Modal";
 import ModalBody from "@components/common/modal/ModalBody";
 import ModalFooter from "@components/common/modal/ModalFooter";
 import ModalHeader from "@components/common/modal/ModalHeader";
-import { ContactsService } from "../../services/ContactsService";
 import ContactForm from "./ContactForm";
 import type { ContactFormData } from "./ContactForm";
+import { OptimizedContactsService } from "src/services/OptimizedContactsService";
 
 interface CreateContactModalProps {
   isOpen: boolean;
@@ -53,7 +53,7 @@ export default function CreateContactModal({
     setError(null);
 
     try {
-      const newContact = await ContactsService.createContact({
+      const newContact = await OptimizedContactsService.createContact({
         companyName: form.companyName,
         name: form.name,
         occupation: form.occupation || undefined,
