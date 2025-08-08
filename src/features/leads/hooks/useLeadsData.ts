@@ -41,5 +41,5 @@ export function useLeadsData(leadType: LeadType) {
     return () => { hideLoading(); };
   }, [showSkeleton, isLoading, showLoading, hideLoading]);
 
-  return { leads, projectTypes, contacts, isLoading, error, refetchLeads };
+  return { leads, projectTypes, contacts, isLoading, error, refetchLeads, showSkeleton };
 }

@@ -13,7 +13,7 @@ const ContactsInner: React.FC = () => {
   const { showLoading, hideLoading, setSkeleton } = useLoading();
 
   useEffect(() => {
-    setSkeleton('contactsTable', { rows: 15 });
+    setSkeleton('contactsTable', { rows: 15, overlay: true });
   }, [setSkeleton]);
 
   useEffect(() => {
@@ -47,6 +47,8 @@ const ContactsInner: React.FC = () => {
     );
   }
 
+  // No mostrar la tabla mientras el skeleton esté activo
+  if (showSkeleton) return null;
   return <ContactsTable contacts={contacts} onRefetch={refetch} />;
 };
 

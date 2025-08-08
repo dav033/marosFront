@@ -9,7 +9,6 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/preact": "^4.1.0",
     "@astrojs/react": "^4.3.0",
     "@tailwindcss/vite": "^4.1.11",
     "@types/react": "^19.1.8",
@@ -18,7 +17,6 @@
     "astro-icon": "^1.1.5",
     "axios": "^1.11.0",
     "classnames": "^2.5.1",
-    "preact": "^10.26.9",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "tailwindcss": "^4.1.11"

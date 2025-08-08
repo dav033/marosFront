@@ -42,10 +42,12 @@ export function useInstantData<T = any>(config: UseInstantDataConfig<T>): UseIns
     onCacheMiss
   } = config;
 
-  const [data, setData] = useState<T>(initialValue as T);
-  const [loading, setLoading] = useState(false);
+  // Detectar caché sincrónicamente para el primer render
+  const initialCached = enableCache ? (apiCache.get(cacheKey) || globalCache.get(cacheKey)) : null;
+  const [data, setData] = useState<T>((initialCached ?? (initialValue as T)));
+  const [fromCache, setFromCache] = useState(Boolean(initialCached));
+  const [loading, setLoading] = useState(!initialCached);
   const [error, setError] = useState<Error | null>(null);
-  const [fromCache, setFromCache] = useState(false);
 
   // Verificar cache inmediatamente al cargar
   const checkCache = useCallback((): T | null => {

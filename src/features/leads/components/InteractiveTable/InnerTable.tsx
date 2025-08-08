@@ -12,7 +12,7 @@ const EditLeadModal   = lazy(() => import("../EditLeadModal"));
 import LeadSection from "../LeadSection";
 
 export default function InnerTable({ leadType, title, createButtonText }: InteractiveTableProps) {
-  const { leads = [], projectTypes = [], contacts = [], isLoading, error, refetchLeads } = useLeadsData(leadType);
+  const { leads = [], projectTypes = [], contacts = [], isLoading, error, refetchLeads, showSkeleton } = useLeadsData(leadType);
   const { modals, openCreate, closeCreate, openEdit, closeEdit } = useLeadModals();
   const sections = useLeadSections(leads);
   const { handleLeadCreated, handleLeadUpdated, handleLeadDeleted } = useLeadHandlers(refetchLeads);
@@ -28,6 +28,9 @@ export default function InnerTable({ leadType, title, createButtonText }: Intera
       </div>
     );
   }
+
+  // No mostrar la tabla mientras el skeleton esté activo o loading
+  if (showSkeleton || isLoading) return null;
 
   return (
     <div className="space-y-8">
