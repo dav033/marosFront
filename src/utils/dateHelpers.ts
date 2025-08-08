@@ -1,13 +1,3 @@
-/**
- * Utility functions for date formatting and manipulation
- */
-
-/**
- * Formats a date string or Date object to a human-readable format
- * @param dateValue - The date value to format (string, Date, or null/undefined)
- * @param options - Formatting options
- * @returns Formatted date string or "—" if no date provided
- */
 export function formatDate(
   dateValue: string | Date | null | undefined,
   options: {
@@ -26,7 +16,6 @@ export function formatDate(
   try {
     date = typeof dateValue === "string" ? new Date(dateValue) : dateValue;
 
-    // Check if date is valid
     if (isNaN(date.getTime())) {
       return "—";
     }
@@ -65,12 +54,6 @@ export function formatDate(
       return date.toLocaleDateString(locale);
   }
 }
-
-/**
- * Formats a date relative to now (e.g., "2 days ago", "yesterday", "just now")
- * @param date - The date to format
- * @returns Relative date string
- */
 export function formatRelativeDate(date: Date): string {
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
@@ -99,13 +82,6 @@ export function formatRelativeDate(date: Date): string {
     return `${years} year${years > 1 ? "s" : ""} ago`;
   }
 }
-
-/**
- * Formats a datetime string to show both date and time
- * @param dateValue - The datetime value to format
- * @param options - Formatting options
- * @returns Formatted datetime string
- */
 export function formatDateTime(
   dateValue: string | Date | null | undefined,
   options: {
@@ -153,25 +129,12 @@ export function formatDateTime(
 
   return date.toLocaleDateString(locale, dateOptions);
 }
-
-/**
- * Checks if a date is today
- * @param date - The date to check
- * @returns True if the date is today
- */
 export function isToday(date: Date | string): boolean {
   const inputDate = typeof date === "string" ? new Date(date) : date;
   const today = new Date();
 
   return inputDate.toDateString() === today.toDateString();
 }
-
-/**
- * Checks if a date is within the last N days
- * @param date - The date to check
- * @param days - Number of days to check against
- * @returns True if the date is within the last N days
- */
 export function isWithinLastDays(date: Date | string, days: number): boolean {
   const inputDate = typeof date === "string" ? new Date(date) : date;
   const now = new Date();

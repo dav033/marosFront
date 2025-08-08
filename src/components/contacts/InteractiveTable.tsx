@@ -125,7 +125,7 @@ function ContactsInnerTable() {
       </div>
 
       {isCreateOpen && (
-        <Suspense fallback={<div>Loading form…</div>}>
+        <Suspense fallback={null}>
           <CreateContactModal
             isOpen={isCreateOpen}
             onClose={handleCreateClose}
@@ -134,7 +134,7 @@ function ContactsInnerTable() {
       )}
 
       {isEditOpen && (
-        <Suspense fallback={<div>Loading edit form…</div>}>
+        <Suspense fallback={null}>
           <EditContactModal
             isOpen={isEditOpen}
             onClose={handleEditClose}

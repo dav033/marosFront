@@ -1,19 +1,28 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type {
-  OptimizedFetchConfig,
-  UseOptimizedFetchReturn,
-} from "../types/types";
+import type { StorageLayer } from "../types/storageLayer";
+type OptimizedFetchConfig = {
+  cacheKey: string;
+  ttl?: number;
+  storage?: StorageLayer;
+  showSkeletonOnlyOnFirstLoad?: boolean;
+  refetchInterval?: number;
+  backgroundRefreshThreshold?: number;
+};
+
+type UseOptimizedFetchReturn<T> = {
+  data: T | null;
+  loading: boolean;
+  error: Error | null;
+  refetch: () => Promise<void>;
+  fromCache: boolean;
+  cacheAge: number;
+  forceRefresh: () => Promise<void>;
+};
 import {
   getCachedData,
   setCachedData,
   stableKey,
 } from "../utils/cacheHelpers.ts";
-
-/**
- * Hook que prioriza cache (SWR): muestra cache al instante y refresca en background.
- * - Skeleton solo en la primera carga si no hay cache.
- * - Evita carreras de peticiones con AbortController.
- */
 export function useOptimizedFetch<T, P extends unknown[]>(
   requestFn: (...args: P) => Promise<T>,
   params: P,
@@ -22,8 +31,8 @@ export function useOptimizedFetch<T, P extends unknown[]>(
 ): UseOptimizedFetchReturn<T> {
   const {
     cacheKey,
-    ttl = 300_000, // 5 min
-    storage = "memory",
+    ttl = 300_000,
+  storage = "memory",
     showSkeletonOnlyOnFirstLoad = true,
     refetchInterval,
     backgroundRefreshThreshold = 0.5,
@@ -36,7 +45,6 @@ export function useOptimizedFetch<T, P extends unknown[]>(
   const [cacheAge, setCacheAge] = useState(0);
   const [initialized, setInitialized] = useState(false);
 
-  // Control de concurrencia/cancelación
   const abortRef = useRef<AbortController | null>(null);
   const inFlightRef = useRef<Promise<T> | null>(null);
   const mountedRef = useRef(true);
@@ -48,16 +56,11 @@ export function useOptimizedFetch<T, P extends unknown[]>(
     };
   }, []);
 
-  // Dependencias "estables": si no proveen deps, derivamos de params
-  const depsKey = useMemo(
-    () => (deps ? stableKey(deps) : stableKey(params)),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [deps ? stableKey(deps) : stableKey(params)]
-  );
+  const depsKeyInput = deps ? deps : params;
+  const depsKey = useMemo(() => stableKey(depsKeyInput), [depsKeyInput]);
 
   const doRequest = useCallback(
     async (force = false): Promise<T> => {
-      // Cache first (si no es force)
       if (!force) {
         const { data: cached, age } = getCachedData<T>(cacheKey, storage, ttl);
         if (cached != null) {
@@ -67,7 +70,6 @@ export function useOptimizedFetch<T, P extends unknown[]>(
             setCacheAge(age);
             setError(null);
             if (showSkeletonOnlyOnFirstLoad) {
-              // SWR opcional si el cache está "viejo"
               if (age > ttl * backgroundRefreshThreshold) {
                 void doRequest(true);
               }
@@ -77,12 +79,10 @@ export function useOptimizedFetch<T, P extends unknown[]>(
         }
       }
 
-      // Evitar múltiples peticiones paralelas
       if (inFlightRef.current && !force) {
         return inFlightRef.current;
       }
 
-      // Lanzar petición
       abortRef.current?.abort();
       const ac = new AbortController();
       abortRef.current = ac;
@@ -130,11 +130,11 @@ export function useOptimizedFetch<T, P extends unknown[]>(
     ]
   );
 
+
   const forceRefresh = useCallback(async () => {
     await doRequest(true);
   }, [doRequest]);
 
-  // Carga inicial
   useEffect(() => {
     if (initialized) return;
     const { data: cached, age } = getCachedData<T>(cacheKey, storage, ttl);
@@ -147,23 +147,19 @@ export function useOptimizedFetch<T, P extends unknown[]>(
       setInitialized(true);
 
       if (age > ttl * backgroundRefreshThreshold) {
-        // Refresco en background
         setTimeout(() => void forceRefresh(), 0);
       }
     } else {
       setLoading(true);
       void doRequest();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialized, cacheKey, storage, ttl]);
+  }, [initialized, cacheKey, storage, ttl, showSkeletonOnlyOnFirstLoad, backgroundRefreshThreshold, forceRefresh, doRequest]);
 
-  // Re-fetch por cambios en dependencias
   useEffect(() => {
     if (!initialized) return;
     void doRequest();
   }, [depsKey, initialized, doRequest]);
 
-  // Intervalo de refresco (pausado si la pestaña está oculta)
   useEffect(() => {
     if (!refetchInterval || !initialized) return;
 
@@ -203,7 +199,6 @@ export function useOptimizedFetch<T, P extends unknown[]>(
   };
 }
 
-/** Hooks específicos (puede dejarlos aquí o en archivos aparte). */
 export function useCachedList<T>(
   fetchFn: () => Promise<T[]>,
   cacheKey: string,
@@ -216,6 +211,7 @@ export function useCachedList<T>(
   return useOptimizedFetch(fetchFn, [] as const, {
     cacheKey,
     ttl,
+    storage: "memory",
     showSkeletonOnlyOnFirstLoad: true,
     refetchInterval,
     backgroundRefreshThreshold: 0.5,
@@ -231,6 +227,7 @@ export function useLiveData<T>(
   return useOptimizedFetch(fetchFn, [] as const, {
     cacheKey,
     ttl,
+    storage: "memory",
     showSkeletonOnlyOnFirstLoad: true,
     refetchInterval,
     backgroundRefreshThreshold: 0.5,

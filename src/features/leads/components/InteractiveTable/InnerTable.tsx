@@ -7,8 +7,12 @@ import { useLeadHandlers } from "src/features/leads/hooks/useLeadHandlers";
 import { GenericButton } from "@components/common/GenericButton";
 import { leadTableColumns } from "src/features/leads/components/LeadTableColumns";
 
-const CreateLeadModal = lazy(() => import("../CreateLeadModal"));
-const EditLeadModal = lazy(() => import("../EditLeadModal"));
+const loadCreateLeadModal = () => import("../CreateLeadModal");
+const loadEditLeadModal = () => import("../EditLeadModal");
+const CreateLeadModal = lazy(loadCreateLeadModal);
+const EditLeadModal = lazy(loadEditLeadModal);
+
+import { useEffect } from "react";
 import LeadSection from "../LeadSection";
 
 export default function InnerTable({
@@ -16,6 +20,10 @@ export default function InnerTable({
   title,
   createButtonText,
 }: InteractiveTableProps) {
+  useEffect(() => {
+    loadCreateLeadModal();
+    loadEditLeadModal();
+  }, []);
   const {
     leads = [],
     projectTypes = [],
@@ -36,14 +44,13 @@ export default function InnerTable({
     return (
       <div className="flex flex-col items-center justify-center min-h-64 space-y-4">
         <div className="text-red-600 dark:text-red-400">
-          Error loading leads: {String((error as any)?.message ?? error)}
+          Error loading leads: {typeof error === 'object' && error !== null && 'message' in error ? (error as { message?: string }).message : String(error)}
         </div>
         <GenericButton onClick={refetchLeads}>Try Again</GenericButton>
       </div>
     );
   }
 
-  // No mostrar la tabla mientras el skeleton esté activo o loading
   if (showSkeleton || isLoading) return null;
 
   return (
@@ -66,26 +73,7 @@ export default function InnerTable({
         </GenericButton>
       </header>
 
-      <Suspense
-        fallback={
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
-              <div className="animate-pulse space-y-4">
-                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
-                <div className="space-y-3">
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/6"></div>
-                </div>
-                <div className="flex justify-end space-x-2 mt-6">
-                  <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
-                  <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        }
-      >
+  <Suspense fallback={null}>
         {modals.isCreateOpen && (
           <CreateLeadModal
             isOpen={modals.isCreateOpen}

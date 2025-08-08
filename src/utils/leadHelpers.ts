@@ -30,17 +30,11 @@ export interface UpdateLeadData {
   startDate?: string;
 }
 
-/**
- * Validates email format
- */
 export const validateEmail = (email: string): boolean => {
-  if (!email) return true; // Empty email is valid
+  if (!email) return true;
   return /\S+@\S+\.\S+/.test(email);
 };
 
-/**
- * Validates required fields for creating a new lead with new contact
- */
 export const validateNewContactLead = (data: {
   leadName: string;
   customerName: string;
@@ -63,9 +57,6 @@ export const validateNewContactLead = (data: {
   return null;
 };
 
-/**
- * Validates required fields for creating a new lead with existing contact
- */
 export const validateExistingContactLead = (data: {
   leadName: string;
   contactId: string;
@@ -82,9 +73,6 @@ export const validateExistingContactLead = (data: {
   return null;
 };
 
-/**
- * Validates required fields for editing a lead
- */
 export const validateEditLead = (data: {
   projectTypeId: string;
   contactId: string;
@@ -100,27 +88,18 @@ export const validateEditLead = (data: {
   return null;
 };
 
-/**
- * Creates a new lead with a new contact
- */
 export const createLeadWithNewContact = async (
   data: CreateLeadByNewContactData
 ): Promise<Lead> => {
   return await LeadsService.createLeadByNewContact(data);
 };
 
-/**
- * Creates a new lead with an existing contact
- */
 export const createLeadWithExistingContact = async (
   data: CreateLeadByExistingContactData
 ): Promise<Lead> => {
   return await LeadsService.createLeadByExistingContact(data);
 };
 
-/**
- * Updates an existing lead
- */
 export const updateLead = async (
   leadId: number,
   data: UpdateLeadData
@@ -128,18 +107,12 @@ export const updateLead = async (
   return await LeadsService.updateLead(leadId, data);
 };
 
-/**
- * Deletes a lead by ID
- */
 export const deleteLead = async (
   leadId: number
 ): Promise<{ success: boolean; message: string }> => {
   return await LeadsService.deleteLead(leadId);
 };
 
-/**
- * Formats lead initial data for editing
- */
 export const formatLeadForEdit = (lead: Lead | null) => {
   if (!lead) return {};
 
@@ -153,9 +126,6 @@ export const formatLeadForEdit = (lead: Lead | null) => {
   };
 };
 
-/**
- * Status options for dropdowns
- */
 export const getStatusOptions = () => [
   { value: "TO_DO", label: "To Do" },
   { value: "IN_PROGRESS", label: "In Progress" },
@@ -163,9 +133,6 @@ export const getStatusOptions = () => [
   { value: "LOST", label: "Lost" },
 ];
 
-/**
- * Formats contact options for dropdowns
- */
 export const formatContactOptions = (contacts: any[]) => {
   return contacts.map((contact) => ({
     value: contact.id.toString(),
@@ -175,9 +142,6 @@ export const formatContactOptions = (contacts: any[]) => {
   }));
 };
 
-/**
- * Formats project type options for dropdowns
- */
 export const formatProjectTypeOptions = (projectTypes: any[]) => {
   return projectTypes.map((pt) => ({
     value: pt.id.toString(),

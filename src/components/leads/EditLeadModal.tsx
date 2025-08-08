@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import type { Lead, ProjectType, Contacts } from "../../types/types";
+import type { Lead, ProjectType, Contacts } from "../../types/domain";
+import type { LeadFormData } from "../../hooks/useLeadForm";
 import { FormMode } from "../../types/enums";
 import { useLeadForm } from "../../hooks/useLeadForm";
 import BaseLeadModal from "./BaseLeadModal";
@@ -27,7 +28,7 @@ export default function EditLeadModal({
   contacts,
   onLeadUpdated,
 }: EditLeadModalProps) {
-  const handleSubmit = async (formData: any) => {
+  const handleSubmit = async (formData: LeadFormData) => {
     if (!lead) return;
 
     const validationError = validateEditLead({
@@ -66,11 +67,10 @@ export default function EditLeadModal({
     onSuccess: onClose,
   });
 
-  // Reset form when lead changes and populate with lead data
   useEffect(() => {
     if (lead) {
       const leadData = formatLeadForEdit(lead);
-      setForm((prev: any) => ({ ...prev, ...leadData }));
+      setForm((prev: LeadFormData) => ({ ...prev, ...leadData }));
     }
   }, [lead, setForm]);
 

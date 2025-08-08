@@ -14,14 +14,16 @@ import LeadSection from "./LeadSection";
 import { GenericButton } from "@components/common/GenericButton";
 import { useInstantList } from "src/hooks/useInstantData";
 import { ProjectTypeService } from "src/services/ProjectTypeService";
-import type { Lead } from "src/types/types";
+import type { Lead } from "../../types/domain";
 import { deleteLead } from "../../utils/leadHelpers";
 import { LoadingProvider, useLoading } from "src/contexts/LoadingContext";
 import { SkeletonRenderer } from "@components/common/SkeletonRenderer";
 
-// Lazy load modals
-const CreateLeadModal = lazy(() => import("./CreateLeadModal"));
-const EditLeadModal = lazy(() => import("./EditLeadModal"));
+// Lazy load modals con precarga
+const loadCreateLeadModal = () => import("./CreateLeadModal");
+const loadEditLeadModal = () => import("./EditLeadModal");
+const CreateLeadModal = lazy(loadCreateLeadModal);
+const EditLeadModal = lazy(loadEditLeadModal);
 
 // Tipos mejorados
 interface InteractiveTableProps {
@@ -50,6 +52,10 @@ function InnerInteractiveTable({
   title,
   createButtonText,
 }: InteractiveTableProps) {
+  useEffect(() => {
+    loadCreateLeadModal();
+    loadEditLeadModal();
+  }, []);
   // 1. USAR HOOK OPTIMIZADO PARA LEADS CON CACHE INSTANTÁNEO
   const {
     items: leads = [],
@@ -212,26 +218,7 @@ function InnerInteractiveTable({
       </header>
 
       {/* 10. MODALES CON SUSPENSE MEJORADO */}
-      <Suspense
-        fallback={
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
-              <div className="animate-pulse space-y-4">
-                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
-                <div className="space-y-3">
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/6"></div>
-                </div>
-                <div className="flex justify-end space-x-2 mt-6">
-                  <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
-                  <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        }
-      >
+  <Suspense fallback={null}>
         {modals.isCreateOpen && (
           <CreateLeadModal
             isOpen={modals.isCreateOpen}

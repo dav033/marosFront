@@ -1,7 +1,7 @@
 import { apiCache } from "src/lib/cacheManager";
 import { useCallback, useState } from "react";
 import { useFetch } from "src/hooks/UseFetchResult";
-import type { StorageLayer } from "src/types/types";
+import type { StorageLayer } from "src/types/storageLayer";
 
 type CachedResult<T> = { data: T | null; age: number };
 
@@ -17,10 +17,8 @@ export function getCachedData<T>(
     if (storage === "memory") {
       const cached = apiCache.get(cacheKey) as T | undefined;
       if (cached !== undefined && cached !== null) {
-        // Intento obtener age si la implementación expone metadata interna (defensivo)
         try {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const entry = (apiCache as any).cache?.get?.(cacheKey);
+          const entry = (apiCache as { cache?: Map<string, { timestamp?: number; _timestamp?: number }> }).cache?.get?.(cacheKey);
           const ts: number | undefined = entry?.timestamp ?? entry?._timestamp;
           const age = ts ? Date.now() - ts : 0;
           return { data: cached as T, age };
@@ -35,7 +33,6 @@ export function getCachedData<T>(
         const parsed = JSON.parse(raw) as { data: T; timestamp: number };
         const age = Date.now() - parsed.timestamp;
         if (age < ttl) return { data: parsed.data, age };
-        // Expirado
         box.removeItem(WEB_KEY(cacheKey));
       }
     }
@@ -88,16 +85,15 @@ export function CacheIndicator(props: {
   loading?: boolean;
   cacheAge?: number;
 }) {
-  // Componente de no-op para no romper el build; UI opcional puede implementarse luego
-  return null as any;
+  return null;
 }
 
 /** Skeleton inteligente básico: muestra fallback solo cuando show=true y no viene de cache. */
 export function SmartSkeleton(props: {
   show: boolean;
   fromCache?: boolean;
-  fallback?: any;
-  children?: any;
+  fallback?: React.ReactNode;
+  children?: React.ReactNode;
 }) {
   const { show, fromCache, fallback, children } = props;
   return show && !fromCache ? (fallback ?? null) : (children ?? null);
@@ -111,7 +107,6 @@ export function useMigratedFetch<T, P extends unknown[]>(
   const { data, loading, error, refetch } = useFetch<T, P>(requestFn, params);
   const [fromCache] = useState(false); // Stub: lógica real de cache fuera de alcance
   const migrateToCache = useCallback((_key: string) => {
-    // No-op por ahora; el ejemplo compila y funciona sin cache real aquí
   }, []);
 
   return {

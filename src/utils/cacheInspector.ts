@@ -1,13 +1,8 @@
-/**
- * Utilidades para inspeccionar el cache en tiempo real
- */
+
 
 import { globalCache, apiCache } from "src/lib/cacheManager";
 
 export const CacheInspector = {
-  /**
-   * Ver todo el contenido del cache global
-   */
   inspectGlobalCache() {
     console.log("🔍 GLOBAL CACHE INSPECTION");
     console.log("=========================");
@@ -17,11 +12,9 @@ export const CacheInspector = {
       return;
     }
 
-    // Ver stats del cache
     const stats = globalCache.getStats();
     console.log("📊 Estadísticas:", stats);
 
-    // Ver contenido de sessionStorage
     const cacheKeys = Object.keys(sessionStorage).filter((key) =>
       key.startsWith("cache_")
     );
@@ -49,9 +42,6 @@ export const CacheInspector = {
     });
   },
 
-  /**
-   * Ver el cache de API (memoria)
-   */
   inspectApiCache() {
     console.log("\n🔍 API CACHE INSPECTION");
     console.log("======================");
@@ -60,9 +50,6 @@ export const CacheInspector = {
     console.log("📊 Estadísticas:", stats);
   },
 
-  /**
-   * Limpiar todo el cache
-   */
   clearAllCache() {
     console.log("🧹 Limpiando todo el cache...");
     globalCache.clear();
@@ -70,9 +57,6 @@ export const CacheInspector = {
     console.log("✅ Cache limpiado");
   },
 
-  /**
-   * Mostrar tamaño del cache en bytes
-   */
   getCacheSize() {
     if (typeof window === "undefined") return 0;
 
@@ -92,9 +76,6 @@ export const CacheInspector = {
     return totalSize;
   },
 
-  /**
-   * Monitorear cambios en el cache
-   */
   watchCache() {
     console.log("👀 Iniciando monitoreo del cache...");
 
@@ -117,7 +98,6 @@ export const CacheInspector = {
   },
 };
 
-// Hacer disponible globalmente en desarrollo
 if (typeof window !== "undefined" && import.meta.env.DEV) {
   (window as any).cacheInspector = CacheInspector;
   console.log("🔧 Cache Inspector disponible como window.cacheInspector");
