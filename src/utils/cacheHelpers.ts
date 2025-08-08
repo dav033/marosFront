@@ -1,7 +1,7 @@
-import { apiCache } from "../lib/cacheManager";
-import type { StorageLayer } from "../types/types";
+import { apiCache } from "src/lib/cacheManager";
 import { useCallback, useState } from "react";
-import { useFetch } from "../hooks/UseFetchResult";
+import { useFetch } from "src/hooks/UseFetchResult";
+import type { StorageLayer } from "src/types/types";
 
 type CachedResult<T> = { data: T | null; age: number };
 
@@ -83,15 +83,24 @@ export function stableKey(input: unknown): string {
 // =========================
 
 /** Indicador mínimo para el ejemplo de migración. */
-export function CacheIndicator(props: { fromCache?: boolean; loading?: boolean; cacheAge?: number }) {
+export function CacheIndicator(props: {
+  fromCache?: boolean;
+  loading?: boolean;
+  cacheAge?: number;
+}) {
   // Componente de no-op para no romper el build; UI opcional puede implementarse luego
   return null as any;
 }
 
 /** Skeleton inteligente básico: muestra fallback solo cuando show=true y no viene de cache. */
-export function SmartSkeleton(props: { show: boolean; fromCache?: boolean; fallback?: any; children?: any }) {
+export function SmartSkeleton(props: {
+  show: boolean;
+  fromCache?: boolean;
+  fallback?: any;
+  children?: any;
+}) {
   const { show, fromCache, fallback, children } = props;
-  return (show && !fromCache) ? (fallback ?? null) : (children ?? null);
+  return show && !fromCache ? (fallback ?? null) : (children ?? null);
 }
 
 /** Hook de migración simplificado: usa el hook "useFetch" existente y expone banderas mínimas. */

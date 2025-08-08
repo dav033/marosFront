@@ -25,7 +25,8 @@ export class LeadAgent {
 
   async update(input: Lead): Promise<Lead> {
     // Only send updatable fields
-    const { id, name, location, status, contact, projectType, startDate } = input;
+    const { id, name, location, status, contact, projectType, startDate } =
+      input;
     const updated = await OptimizedLeadsService.updateLead(id, {
       name,
       location,

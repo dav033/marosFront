@@ -106,7 +106,10 @@ export default function SidebarDropdown({
         <div className="py-1" style={{ paddingLeft }}>
           {/* Si el hijo también es SidebarDropdown, se incrementa indentLevel automáticamente */}
           {Children.map(children, (child) => {
-            if (isValidElement(child) && child.type?.name === "SidebarDropdown") {
+            if (
+              isValidElement(child) &&
+              child.type?.name === "SidebarDropdown"
+            ) {
               return cloneElement(child, {
                 ...child.props,
                 indentLevel: indentLevel + 16,

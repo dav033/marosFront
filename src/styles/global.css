@@ -4,13 +4,13 @@
 /* Variables CSS del tema personalizado */
 :root {
   --color-dark: #000000;
-  --color-gray: #273F4F;
-  --color-gray-alt: #1F313D;
+  --color-gray: #273f4f;
+  --color-gray-alt: #1f313d;
   --color-gray-darker: #101010;
-  --color-gray-subtle: #2A2A2A;
-  --color-primary: #041FC4;
-  --color-primary-alt: #C44A04;
-  --color-light: #EFEEEA;
+  --color-gray-subtle: #2a2a2a;
+  --color-primary: #041fc4;
+  --color-primary-alt: #c44a04;
+  --color-light: #efeeea;
 }
 
 /* Tema oscuro global */

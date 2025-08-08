@@ -17,23 +17,25 @@ export default function Modal({
 }: ModalProps) {
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [isOpen]);
 
   // Handle ESC key press
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isOpen) {
+      if (event.key === "Escape" && isOpen) {
         onClose();
       }
     };
 
     if (isOpen) {
-      document.addEventListener('keydown', handleEscKey);
+      document.addEventListener("keydown", handleEscKey);
     }
 
     return () => {
-      document.removeEventListener('keydown', handleEscKey);
+      document.removeEventListener("keydown", handleEscKey);
     };
   }, [isOpen, onClose]);
 
@@ -54,9 +56,7 @@ export default function Modal({
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <div className="fixed inset-0 bg-black/50" onClick={onClose} />
 
-      <div className={`${panelBase} ${className}`}>
-        {children}
-      </div>
+      <div className={`${panelBase} ${className}`}>{children}</div>
     </div>,
     document.body
   );

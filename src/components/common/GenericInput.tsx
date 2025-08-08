@@ -17,14 +17,24 @@ export const GenericInput: React.FC<GenericInputProps> = ({
   const paddingLeft = hasIcon ? "pl-10" : "pl-3";
 
   // Extract margin and display/visibility classes from className to apply to container
-  const containerClasses = className.match(/(^|\s)(m[trblxy]?-\w+|hidden|block|inline|inline-block|flex|grid|table|display-none)/g)?.join(' ') || '';
-  const inputClasses = className.replace(/(^|\s)(m[trblxy]?-\w+|hidden|block|inline|inline-block|flex|grid|table|display-none)/g, '').trim();
+  const containerClasses =
+    className
+      .match(
+        /(^|\s)(m[trblxy]?-\w+|hidden|block|inline|inline-block|flex|grid|table|display-none)/g
+      )
+      ?.join(" ") || "";
+  const inputClasses = className
+    .replace(
+      /(^|\s)(m[trblxy]?-\w+|hidden|block|inline|inline-block|flex|grid|table|display-none)/g,
+      ""
+    )
+    .trim();
 
   // Base classes for the input
   const baseClasses = [
     "flex",
     "h-10",
-    "w-full", 
+    "w-full",
     "rounded-xl",
     "bg-black",
     "border-[0.75px]",
@@ -41,8 +51,8 @@ export const GenericInput: React.FC<GenericInputProps> = ({
     "focus:ring-0",
     "disabled:cursor-not-allowed",
     "disabled:opacity-50",
-    "mb-1"
-  ].join(' ');
+    "mb-1",
+  ].join(" ");
 
   return (
     <div className={`relative w-full mb-0.5 ${containerClasses}`}>

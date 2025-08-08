@@ -13,15 +13,27 @@ const SIDEBAR_CONFIG = {
       className: "w-full h-[30px] py-5 hover:bg-gray-800 text-left",
     },
     items: [
-      { title: "Construction", to: "/leads/construction", icon: "material-symbols:construction" },
-      { title: "Plumbing", to: "/leads/plumbing", icon: "material-symbols:plumbing" },
-      { title: "Roofing", to: "/leads/roofing", icon: "material-symbols:roofing" }
-    ]
+      {
+        title: "Construction",
+        to: "/leads/construction",
+        icon: "material-symbols:construction",
+      },
+      {
+        title: "Plumbing",
+        to: "/leads/plumbing",
+        icon: "material-symbols:plumbing",
+      },
+      {
+        title: "Roofing",
+        to: "/leads/roofing",
+        icon: "material-symbols:roofing",
+      },
+    ],
   },
   contacts: {
     title: "Contacts",
     to: "/contacts",
-    icon: "material-symbols:contacts"
+    icon: "material-symbols:contacts",
   },
   reports: {
     id: "reports",
@@ -39,14 +51,15 @@ const SIDEBAR_CONFIG = {
       },
       items: [
         { title: "Follow-up Report", to: "/reports/all" },
-        { title: "Final Report", to: "/reports/monthly" }
-      ]
-    }
-  }
+        { title: "Final Report", to: "/reports/monthly" },
+      ],
+    },
+  },
 } as const;
 
 export default function Sidebar() {
-  const { currentPath, toggleDropdown, isDropdownOpen } = useSidebarNavigation();
+  const { currentPath, toggleDropdown, isDropdownOpen } =
+    useSidebarNavigation();
 
   return (
     <aside className="fixed min-h-screen flex-col justify-start w-80 py-4 mr-64 bg-dark border-r border-gray-800">
@@ -60,7 +73,7 @@ export default function Sidebar() {
           onToggle={toggleDropdown}
           currentPath={currentPath}
         >
-          {SIDEBAR_CONFIG.leads.items.map(item => (
+          {SIDEBAR_CONFIG.leads.items.map((item) => (
             <SidebarItem
               key={item.to}
               title={item.title}
@@ -96,7 +109,7 @@ export default function Sidebar() {
             onToggle={toggleDropdown}
             currentPath={currentPath}
           >
-            {SIDEBAR_CONFIG.reports.nested.items.map(item => (
+            {SIDEBAR_CONFIG.reports.nested.items.map((item) => (
               <SidebarItem
                 key={item.to}
                 title={item.title}

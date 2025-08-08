@@ -27,14 +27,14 @@ export default function SidebarDropdown({
 
   const readHeight = useCallback(
     () => dropdownRef.current?.scrollHeight ?? 0,
-    [],
+    []
   );
   const writeHeight = useCallback(
     (h) => {
       setHeight(h);
       notifyParent(); // avisamos al padre
     },
-    [notifyParent],
+    [notifyParent]
   );
 
   const scheduleHeightUpdate = useCallback(() => {

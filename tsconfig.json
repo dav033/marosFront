@@ -1,13 +1,7 @@
 {
   "extends": "astro/tsconfigs/strict",
-  "include": [
-    ".astro/types.d.ts",
-    "src/**/*",
-    "**/*"
-  ],
-  "exclude": [
-    "dist"
-  ],
+  "include": [".astro/types.d.ts", "src/**/*", "**/*"],
+  "exclude": ["dist"],
   "compilerOptions": {
     "jsx": "react-jsx",
     "jsxImportSource": "react",
@@ -24,9 +18,7 @@
       "@contexts/*": ["src/contexts/*"],
       "@utils/*": ["src/utils/*"]
     },
-    "plugins": [
-      { "name": "@astrojs/ts-plugin" }
-    ],
+    "plugins": [{ "name": "@astrojs/ts-plugin" }],
     "types": ["astro/client"]
   }
 }

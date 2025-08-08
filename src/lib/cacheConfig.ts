@@ -1,7 +1,7 @@
 // Lightweight global cache configuration module used by the debug panel
 // Provides get/set helpers and simple persistence in localStorage.
 
-export type CacheResourceKey = 'contacts' | 'leads' | 'projectTypes';
+export type CacheResourceKey = "contacts" | "leads" | "projectTypes";
 
 export interface CacheResourceConfig {
   enabled: boolean;
@@ -32,16 +32,16 @@ const DEFAULT_CONFIG: CacheConfigShape = {
   },
 };
 
-const STORAGE_KEY = 'app.cache.config';
+const STORAGE_KEY = "app.cache.config";
 
 function readPersisted(): CacheConfigShape | null {
-  if (typeof window === 'undefined') return null;
+  if (typeof window === "undefined") return null;
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     // Shallow validation to avoid corrupt states
-    if (typeof parsed?.enabled === 'boolean' && parsed.resources) {
+    if (typeof parsed?.enabled === "boolean" && parsed.resources) {
       return {
         ...DEFAULT_CONFIG,
         ...parsed,
@@ -56,7 +56,7 @@ function readPersisted(): CacheConfigShape | null {
 }
 
 function persist(config: CacheConfigShape) {
-  if (typeof window === 'undefined') return;
+  if (typeof window === "undefined") return;
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
   } catch {
@@ -77,13 +77,14 @@ export const cacheConfig = {
       resources: partial.resources
         ? { ...state.resources, ...partial.resources }
         : state.resources,
-      debug: partial.debug
-        ? { ...state.debug, ...partial.debug }
-        : state.debug,
+      debug: partial.debug ? { ...state.debug, ...partial.debug } : state.debug,
     };
     persist(state);
   },
-  setResource(resource: CacheResourceKey, partial: Partial<CacheResourceConfig>) {
+  setResource(
+    resource: CacheResourceKey,
+    partial: Partial<CacheResourceConfig>
+  ) {
     state = {
       ...state,
       resources: {

@@ -1,1 +1,1 @@
-export { default } from "@components/leads/ContactModeSelector";
+export { default } from "@components/ui/leads/ContactModeSelector";

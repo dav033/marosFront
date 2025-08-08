@@ -12,36 +12,37 @@ import ContactSection from "./ContactSection";
 import { GenericButton } from "@components/common/GenericButton";
 import { SearchBoxWithDropdown } from "@components/common/SearchBoxWithDropdown";
 import { useSearch } from "src/hooks/useSearch";
-import { contactsSearchConfig, contactsSearchPlaceholder } from "./contactsSearchConfig";
+import {
+  contactsSearchConfig,
+  contactsSearchPlaceholder,
+} from "./contactsSearchConfig";
 import type { Contacts } from "src/types/types";
 import { LoadingProvider, useLoading } from "src/contexts/LoadingContext";
 import { SkeletonRenderer } from "@components/common/SkeletonRenderer";
 import { OptimizedContactsService } from "src/services/OptimizedContactsService";
 
 // Try absolute imports for the modals
-const CreateContactModal = lazy(() => import("src/components/contacts/CreateContactModal"));
-const EditContactModal = lazy(() => import("src/components/contacts/EditContactModal"));
+const CreateContactModal = lazy(
+  () => import("src/components/contacts/CreateContactModal")
+);
+const EditContactModal = lazy(
+  () => import("src/components/contacts/EditContactModal")
+);
 
 function ContactsInnerTable() {
-  const {
-    contacts,
-    isLoading,
-    error,
-    setContacts,
-    setLoading,
-    setError,
-  } = useContacts();
+  const { contacts, isLoading, error, setContacts, setLoading, setError } =
+    useContacts();
 
   const { showLoading, hideLoading, setSkeleton } = useLoading();
 
   useEffect(() => {
     // Configurar skeleton por defecto
-    setSkeleton('contactsTable', { rows: 15 });
+    setSkeleton("contactsTable", { rows: 15 });
   }, [setSkeleton]);
 
   useEffect(() => {
     if (isLoading) {
-      showLoading('contactsTable', { rows: 15 });
+      showLoading("contactsTable", { rows: 15 });
     } else {
       hideLoading();
     }
@@ -85,12 +86,12 @@ function ContactsInnerTable() {
 
   const handleCreateOpen = useCallback(() => setIsCreateOpen(true), []);
   const handleCreateClose = useCallback(() => setIsCreateOpen(false), []);
-  
+
   const handleEditOpen = useCallback((contact: Contacts) => {
     setEditingContact(contact);
     setIsEditOpen(true);
   }, []);
-  
+
   const handleEditClose = useCallback(() => {
     setIsEditOpen(false);
     setEditingContact(null);
@@ -106,7 +107,7 @@ function ContactsInnerTable() {
         <GenericButton className="text-sm" onClick={handleCreateOpen}>
           Create Contact
         </GenericButton>
-        
+
         <div className="flex-1 max-w-md">
           <SearchBoxWithDropdown
             searchTerm={searchTerm}
@@ -144,7 +145,11 @@ function ContactsInnerTable() {
 
       {/* Contacts Table */}
       <ContactSection
-        title={hasActiveSearch ? `Search Results (${filteredContacts.length})` : "All Contacts"}
+        title={
+          hasActiveSearch
+            ? `Search Results (${filteredContacts.length})`
+            : "All Contacts"
+        }
         data={filteredContacts}
         columns={memoColumns}
         onEditContact={handleEditOpen}

@@ -7,7 +7,7 @@ export interface ContextMenuOption {
   label: string;
   icon: string;
   onClick: () => void;
-  variant?: 'default' | 'danger' | 'warning';
+  variant?: "default" | "danger" | "warning";
   disabled?: boolean;
 }
 
@@ -34,32 +34,32 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
     };
 
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         onClose();
       }
     };
 
     if (isVisible) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('keydown', handleEscape);
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleEscape);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
     };
   }, [isVisible, onClose]);
 
   if (!isVisible) return null;
 
-  const getVariantClasses = (variant: string = 'default') => {
+  const getVariantClasses = (variant: string = "default") => {
     switch (variant) {
-      case 'danger':
-        return 'text-red-400 hover:bg-red-500/20 hover:text-red-300';
-      case 'warning':
-        return 'text-yellow-400 hover:bg-yellow-500/20 hover:text-yellow-300';
+      case "danger":
+        return "text-red-400 hover:bg-red-500/20 hover:text-red-300";
+      case "warning":
+        return "text-yellow-400 hover:bg-yellow-500/20 hover:text-yellow-300";
       default:
-        return 'text-theme-light hover:bg-theme-gray hover:text-theme-light';
+        return "text-theme-light hover:bg-theme-gray hover:text-theme-light";
     }
   };
 
@@ -73,10 +73,10 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
       }}
     >
       {options.map((option, index) => {
-        if (option.label.includes('─')) {
+        if (option.label.includes("─")) {
           return (
-            <div 
-              key={option.id} 
+            <div
+              key={option.id}
               className="mx-2 my-1 border-t border-theme-gray-subtle"
             />
           );
@@ -95,15 +95,16 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
             className={`
               w-full flex items-center px-3 py-2 text-sm text-left
               transition-all duration-150
-              ${option.disabled 
-                ? 'text-gray-500 cursor-not-allowed' 
-                : `cursor-pointer ${getVariantClasses(option.variant)}`
+              ${
+                option.disabled
+                  ? "text-gray-500 cursor-not-allowed"
+                  : `cursor-pointer ${getVariantClasses(option.variant)}`
               }
             `}
           >
-            <Icon 
-              icon={option.icon} 
-              className={`w-4 h-4 mr-3 ${option.disabled ? 'text-gray-500' : ''}`} 
+            <Icon
+              icon={option.icon}
+              className={`w-4 h-4 mr-3 ${option.disabled ? "text-gray-500" : ""}`}
             />
             {option.label}
           </button>
@@ -125,17 +126,17 @@ export const useContextMenu = () => {
   const showContextMenu = (event: React.MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
-    
+
     const { clientX, clientY } = event;
-    
+
     const menuWidth = 160;
     const menuHeight = 100;
-    const adjustedX = clientX + menuWidth > window.innerWidth 
-      ? clientX - menuWidth 
-      : clientX;
-    const adjustedY = clientY + menuHeight > window.innerHeight 
-      ? clientY - menuHeight 
-      : clientY;
+    const adjustedX =
+      clientX + menuWidth > window.innerWidth ? clientX - menuWidth : clientX;
+    const adjustedY =
+      clientY + menuHeight > window.innerHeight
+        ? clientY - menuHeight
+        : clientY;
 
     setContextMenu({
       isVisible: true,
@@ -144,7 +145,7 @@ export const useContextMenu = () => {
   };
 
   const hideContextMenu = () => {
-    setContextMenu(prev => ({ ...prev, isVisible: false }));
+    setContextMenu((prev) => ({ ...prev, isVisible: false }));
   };
 
   return {

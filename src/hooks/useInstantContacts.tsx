@@ -2,10 +2,10 @@
  * Hook para lista instantánea de contactos usando el sistema de cache
  */
 
-import { useState, useEffect } from 'react';
-import type { Contacts } from 'src/types/types';
-import { OptimizedContactsService } from 'src/services/OptimizedContactsService';
-import { apiCache } from 'src/lib/cacheManager';
+import { useState, useEffect } from "react";
+import type { Contacts } from "src/types";
+import { OptimizedContactsService } from "src/services/OptimizedContactsService";
+import { apiCache } from "src/lib/cacheManager";
 
 interface UseInstantContactsResult {
   contacts: Contacts[];
@@ -17,7 +17,7 @@ interface UseInstantContactsResult {
 }
 
 export function useInstantContacts(): UseInstantContactsResult {
-  const ENDPOINT = '/contacts/all';
+  const ENDPOINT = "/contacts/all";
   const API_CACHE_KEY = `api_GET_${ENDPOINT}`;
   const cached = (apiCache.get(API_CACHE_KEY) as Contacts[] | null) || null;
 
@@ -40,7 +40,7 @@ export function useInstantContacts(): UseInstantContactsResult {
       if (!cached) setFromCache(false);
       setIsLoading(false);
     } catch (err) {
-      console.error('Error fetching contacts:', err);
+      console.error("Error fetching contacts:", err);
       setError(err as Error);
       setIsLoading(false);
     }
@@ -48,7 +48,9 @@ export function useInstantContacts(): UseInstantContactsResult {
 
   const refetch = async () => fetchContacts(true);
 
-  useEffect(() => { fetchContacts(false); }, []);
+  useEffect(() => {
+    fetchContacts(false);
+  }, []);
 
   return { contacts, isLoading, showSkeleton, error, fromCache, refetch };
 }

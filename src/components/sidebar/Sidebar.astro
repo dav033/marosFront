@@ -7,7 +7,6 @@ import SidebarItemWithContext from "./SidebarItemWithContext.tsx";
 <div
   class="fixed min-h-screen flex-col justify-start w-80 py-4 mr-64 bg-dark border-r border-gray-800"
 >
-
   <div class="w-full">
     <SidebarDropdownWithContext
       client:only="react"
@@ -71,20 +70,18 @@ import SidebarItemWithContext from "./SidebarItemWithContext.tsx";
       >
         <SidebarItemWithContext
           client:only="react"
-          title="Follow-up Report" 
-          to="/reports/all" 
+          title="Follow-up Report"
+          to="/reports/all"
         />
         <SidebarItemWithContext
           client:only="react"
-          title="Final Report" 
-          to="/reports/monthly" 
+          title="Final Report"
+          to="/reports/monthly"
         />
       </SidebarDropdownWithContext>
-      
-    
     </SidebarDropdownWithContext>
   </div>
-  
+
   <div class="flex-1">
     <slot />
   </div>

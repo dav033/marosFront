@@ -1,5 +1,5 @@
-import React from 'react';
-import type { SearchFieldOption } from '../../hooks/useSearch';
+import React from "react";
+import type { SearchFieldOption } from "../../hooks/useSearch";
 
 export interface SearchBoxWithDropdownProps {
   searchTerm: string;
@@ -28,7 +28,9 @@ export const SearchBoxWithDropdown: React.FC<SearchBoxWithDropdownProps> = ({
   resultCount,
   totalCount,
 }) => {
-  const selectedFieldLabel = searchFields.find(field => field.value === selectedField)?.label || 'Select Field';
+  const selectedFieldLabel =
+    searchFields.find((field) => field.value === selectedField)?.label ||
+    "Select Field";
 
   return (
     <div className={`space-y-2 ${className}`}>
@@ -41,7 +43,11 @@ export const SearchBoxWithDropdown: React.FC<SearchBoxWithDropdownProps> = ({
             className="appearance-none bg-theme-gray-subtle border border-theme-gray-subtle border-r-0 rounded-l-md px-3 py-2 text-sm text-theme-light focus:outline-none focus:ring-1 focus:ring-theme-primary focus:border-theme-primary cursor-pointer min-w-[140px]"
           >
             {searchFields.map((field) => (
-              <option key={field.value} value={field.value} className="bg-theme-gray-subtle text-theme-light">
+              <option
+                key={field.value}
+                value={field.value}
+                className="bg-theme-gray-subtle text-theme-light"
+              >
                 {field.label}
               </option>
             ))}
@@ -111,23 +117,23 @@ export const SearchBoxWithDropdown: React.FC<SearchBoxWithDropdownProps> = ({
           )}
         </div>
       </div>
-      
+
       {/* Search results summary */}
-      {hasActiveSearch && resultCount !== undefined && totalCount !== undefined && (
-        <div className="text-sm text-gray-400">
-          Showing {resultCount} of {totalCount} results
-          {searchTerm && (
-            <span className="text-gray-500 ml-2">
-              for "{searchTerm}" in {selectedFieldLabel}
-            </span>
-          )}
-          {resultCount === 0 && (
-            <span className="text-gray-500 ml-2">
-              - No results found
-            </span>
-          )}
-        </div>
-      )}
+      {hasActiveSearch &&
+        resultCount !== undefined &&
+        totalCount !== undefined && (
+          <div className="text-sm text-gray-400">
+            Showing {resultCount} of {totalCount} results
+            {searchTerm && (
+              <span className="text-gray-500 ml-2">
+                for "{searchTerm}" in {selectedFieldLabel}
+              </span>
+            )}
+            {resultCount === 0 && (
+              <span className="text-gray-500 ml-2">- No results found</span>
+            )}
+          </div>
+        )}
     </div>
   );
 };

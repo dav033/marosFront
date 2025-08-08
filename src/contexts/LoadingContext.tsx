@@ -1,4 +1,11 @@
-import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 export type SkeletonType =
   | "contactsTable"
@@ -22,28 +29,42 @@ interface LoadingContextValue {
   setSkeleton: (type: SkeletonType, options?: SkeletonOptions) => void;
 }
 
-const LoadingContext = createContext<LoadingContextValue | undefined>(undefined);
+const LoadingContext = createContext<LoadingContextValue | undefined>(
+  undefined
+);
 
-export const LoadingProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
+export const LoadingProvider: React.FC<React.PropsWithChildren<{}>> = ({
+  children,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [skeletonType, setSkeletonType] = useState<SkeletonType | null>(null);
-  const [options, setOptions] = useState<SkeletonOptions>({ rows: 8, showSections: false, overlay: false });
+  const [options, setOptions] = useState<SkeletonOptions>({
+    rows: 8,
+    showSections: false,
+    overlay: false,
+  });
 
   // Refcount to support nested/concurrent loading states
   const loadingCountRef = useRef(0);
 
-  const setSkeleton = useCallback((type: SkeletonType, opts?: SkeletonOptions) => {
-    setSkeletonType(type);
-    setOptions(prev => ({ ...prev, ...(opts || {}) }));
-  }, []);
+  const setSkeleton = useCallback(
+    (type: SkeletonType, opts?: SkeletonOptions) => {
+      setSkeletonType(type);
+      setOptions((prev) => ({ ...prev, ...(opts || {}) }));
+    },
+    []
+  );
 
-  const showLoading = useCallback((type?: SkeletonType, opts?: SkeletonOptions) => {
-    loadingCountRef.current += 1;
-    if (type) {
-      setSkeleton(type, opts);
-    }
-    setIsLoading(true);
-  }, [setSkeleton]);
+  const showLoading = useCallback(
+    (type?: SkeletonType, opts?: SkeletonOptions) => {
+      loadingCountRef.current += 1;
+      if (type) {
+        setSkeleton(type, opts);
+      }
+      setIsLoading(true);
+    },
+    [setSkeleton]
+  );
 
   const hideLoading = useCallback(() => {
     loadingCountRef.current = Math.max(0, loadingCountRef.current - 1);
@@ -52,19 +73,20 @@ export const LoadingProvider: React.FC<React.PropsWithChildren<{}>> = ({ childre
     }
   }, []);
 
-  const value = useMemo<LoadingContextValue>(() => ({
-    isLoading,
-    skeletonType,
-    options,
-    showLoading,
-    hideLoading,
-    setSkeleton,
-  }), [isLoading, skeletonType, options, showLoading, hideLoading, setSkeleton]);
+  const value = useMemo<LoadingContextValue>(
+    () => ({
+      isLoading,
+      skeletonType,
+      options,
+      showLoading,
+      hideLoading,
+      setSkeleton,
+    }),
+    [isLoading, skeletonType, options, showLoading, hideLoading, setSkeleton]
+  );
 
   return (
-    <LoadingContext.Provider value={value}>
-      {children}
-    </LoadingContext.Provider>
+    <LoadingContext.Provider value={value}>{children}</LoadingContext.Provider>
   );
 };
 

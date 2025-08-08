@@ -10,7 +10,7 @@ export interface UseFetchResult<T> {
 export function useFetch<T, P extends unknown[]>(
   requestFn: (...args: P) => Promise<T>,
   params: P,
-  deps?: unknown[],
+  deps?: unknown[]
 ): UseFetchResult<T> {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true); // Iniciamos en true para mostrar skeleton inmediatamente

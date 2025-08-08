@@ -97,11 +97,7 @@ export default function CreateContactModal({
         <ModalHeader title="Create New Contact" onClose={handleClose} />
 
         <ModalBody>
-          <ContactForm
-            form={form}
-            onChange={handleChange}
-            error={error}
-          />
+          <ContactForm form={form} onChange={handleChange} error={error} />
         </ModalBody>
 
         <ModalFooter>

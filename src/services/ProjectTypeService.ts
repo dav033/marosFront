@@ -1,5 +1,5 @@
 import apiClient from "src/lib/apiClient";
-import type { ProjectType } from "src/types/types";
+import type { ProjectType } from "src/types";
 
 export const ProjectTypeService = {
   async getProjectTypes(): Promise<ProjectType[]> {

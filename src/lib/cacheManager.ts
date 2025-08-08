@@ -13,7 +13,7 @@ export interface CacheEntry<T> {
 export interface CacheConfig {
   maxSize: number;
   defaultTTL: number; // 5 minutos por defecto
-  storage: 'memory' | 'sessionStorage' | 'localStorage';
+  storage: "memory" | "sessionStorage" | "localStorage";
 }
 
 export class CacheManager {
@@ -25,15 +25,15 @@ export class CacheManager {
     this.config = {
       maxSize: 100,
       defaultTTL: 15 * 60 * 1000, // 15 minutos
-      storage: 'memory',
-      ...config
+      storage: "memory",
+      ...config,
     };
 
     // Iniciar limpieza automática cada minuto
     this.startCleanup();
-    
+
     // Cargar cache persistente si está configurado
-    if (this.config.storage !== 'memory') {
+    if (this.config.storage !== "memory") {
       this.loadFromStorage();
     }
   }
@@ -59,12 +59,12 @@ export class CacheManager {
    */
   set<T>(key: string, data: T, ttl?: number): void {
     const actualTTL = ttl || this.config.defaultTTL;
-    
+
     const entry: CacheEntry<T> = {
       data,
       timestamp: Date.now(),
       ttl: actualTTL,
-      key
+      key,
     };
 
     // Si estamos en el límite, eliminar el más antiguo
@@ -100,15 +100,21 @@ export class CacheManager {
    */
   getStats() {
     const entries = Array.from(this.cache.values());
-    const expired = entries.filter(entry => this.isExpired(entry)).length;
-    
+    const expired = entries.filter((entry) => this.isExpired(entry)).length;
+
     return {
       size: this.cache.size,
       maxSize: this.config.maxSize,
       expired,
       valid: this.cache.size - expired,
-      oldestEntry: entries.length > 0 ? Math.min(...entries.map(e => e.timestamp)) : null,
-      newestEntry: entries.length > 0 ? Math.max(...entries.map(e => e.timestamp)) : null
+      oldestEntry:
+        entries.length > 0
+          ? Math.min(...entries.map((e) => e.timestamp))
+          : null,
+      newestEntry:
+        entries.length > 0
+          ? Math.max(...entries.map((e) => e.timestamp))
+          : null,
     };
   }
 
@@ -117,20 +123,20 @@ export class CacheManager {
    */
   invalidatePattern(pattern: string | RegExp): number {
     let deleted = 0;
-    const regex = typeof pattern === 'string' ? new RegExp(pattern) : pattern;
-    
+    const regex = typeof pattern === "string" ? new RegExp(pattern) : pattern;
+
     for (const key of this.cache.keys()) {
       if (regex.test(key)) {
         this.delete(key);
         deleted++;
       }
     }
-    
+
     return deleted;
   }
 
   private getEntry<T>(key: string): CacheEntry<T> | null {
-    if (this.config.storage === 'memory') {
+    if (this.config.storage === "memory") {
       return this.cache.get(key) || null;
     }
 
@@ -147,7 +153,7 @@ export class CacheManager {
         return entry;
       }
     } catch (error) {
-      console.warn('Error loading from storage:', error);
+      console.warn("Error loading from storage:", error);
     }
 
     return this.cache.get(key) || null;
@@ -174,23 +180,23 @@ export class CacheManager {
   }
 
   private startCleanup(): void {
-    if (this.cleanupInterval || typeof window === 'undefined') return;
+    if (this.cleanupInterval || typeof window === "undefined") return;
 
     this.cleanupInterval = window.setInterval(() => {
       const keysToDelete: string[] = [];
-      
+
       for (const [key, entry] of this.cache.entries()) {
         if (this.isExpired(entry)) {
           keysToDelete.push(key);
         }
       }
 
-      keysToDelete.forEach(key => this.delete(key));
+      keysToDelete.forEach((key) => this.delete(key));
     }, 60000); // Limpiar cada minuto
   }
 
   private saveToStorage(): void {
-    if (this.config.storage === 'memory') return;
+    if (this.config.storage === "memory") return;
 
     const storage = this.getStorage();
     if (!storage) return;
@@ -203,7 +209,7 @@ export class CacheManager {
         }
       }
     } catch (error) {
-      console.warn('Error saving to storage:', error);
+      console.warn("Error saving to storage:", error);
     }
   }
 
@@ -214,8 +220,8 @@ export class CacheManager {
     try {
       for (let i = 0; i < storage.length; i++) {
         const key = storage.key(i);
-        if (key?.startsWith('cache_')) {
-          const actualKey = key.replace('cache_', '');
+        if (key?.startsWith("cache_")) {
+          const actualKey = key.replace("cache_", "");
           const stored = storage.getItem(key);
           if (stored) {
             const entry = JSON.parse(stored);
@@ -228,7 +234,7 @@ export class CacheManager {
         }
       }
     } catch (error) {
-      console.warn('Error loading from storage:', error);
+      console.warn("Error loading from storage:", error);
     }
   }
 
@@ -239,19 +245,21 @@ export class CacheManager {
     const keysToRemove: string[] = [];
     for (let i = 0; i < storage.length; i++) {
       const key = storage.key(i);
-      if (key?.startsWith('cache_')) {
+      if (key?.startsWith("cache_")) {
         keysToRemove.push(key);
       }
     }
 
-    keysToRemove.forEach(key => storage.removeItem(key));
+    keysToRemove.forEach((key) => storage.removeItem(key));
   }
 
   private getStorage(): Storage | null {
-    if (typeof window === 'undefined') return null;
-    
+    if (typeof window === "undefined") return null;
+
     try {
-      return this.config.storage === 'localStorage' ? localStorage : sessionStorage;
+      return this.config.storage === "localStorage"
+        ? localStorage
+        : sessionStorage;
     } catch {
       return null;
     }
@@ -270,7 +278,7 @@ export class CacheManager {
 
 // Función para crear instancias de cache que solo se ejecuta en el cliente
 function createGlobalCache() {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     // Retornar un mock para el servidor
     return {
       get: () => null,
@@ -280,19 +288,19 @@ function createGlobalCache() {
       has: () => false,
       getStats: () => ({ size: 0, hits: 0, misses: 0, expired: 0 }),
       cleanup: () => {},
-      destroy: () => {}
+      destroy: () => {},
     } as any;
   }
-  
+
   return new CacheManager({
     maxSize: 200,
     defaultTTL: 15 * 60 * 1000, // 15 minutos
-    storage: 'sessionStorage'
+    storage: "sessionStorage",
   });
 }
 
 function createApiCache() {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     // Retornar un mock para el servidor
     return {
       get: () => null,
@@ -302,14 +310,14 @@ function createApiCache() {
       has: () => false,
       getStats: () => ({ size: 0, hits: 0, misses: 0, expired: 0 }),
       cleanup: () => {},
-      destroy: () => {}
+      destroy: () => {},
     } as any;
   }
-  
+
   return new CacheManager({
     maxSize: 50,
     defaultTTL: 2 * 60 * 1000, // 2 minutos
-    storage: 'memory'
+    storage: "memory",
   });
 }
 

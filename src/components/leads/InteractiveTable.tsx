@@ -60,9 +60,9 @@ function InnerInteractiveTable({
   } = useInstantList(
     `leads_${leadType}`,
     () => OptimizedLeadsService.getLeadsByType(leadType),
-    { 
+    {
       ttl: 300000, // 5 minutos
-      showSkeletonOnlyOnFirstLoad: true 
+      showSkeletonOnlyOnFirstLoad: true,
     }
   );
 
@@ -87,13 +87,13 @@ function InnerInteractiveTable({
 
   // 2. USAR HOOKS OPTIMIZADOS PARA PROJECT TYPES Y CONTACTS
   const { items: projectTypes = [] } = useInstantList(
-    'project_types',
+    "project_types",
     ProjectTypeService.getProjectTypes,
     { ttl: 600000 } // 10 minutos
   );
-  
+
   const { items: contacts = [] } = useInstantList(
-    'contacts',
+    "contacts",
     OptimizedContactsService.getAllContacts,
     { ttl: 300000 } // 5 minutos
   );
@@ -138,21 +138,20 @@ function InnerInteractiveTable({
   // 5. HANDLERS DE MODALES OPTIMIZADOS
   const modalHandlers = useMemo(
     () => ({
-      openCreate: () =>
-        setModals(prev => ({ ...prev, isCreateOpen: true })),
-      
+      openCreate: () => setModals((prev) => ({ ...prev, isCreateOpen: true })),
+
       closeCreate: () =>
-        setModals(prev => ({ ...prev, isCreateOpen: false })),
-      
+        setModals((prev) => ({ ...prev, isCreateOpen: false })),
+
       openEdit: (lead: Lead) =>
-        setModals(prev => ({
+        setModals((prev) => ({
           ...prev,
           isEditOpen: true,
           editingLead: lead,
         })),
-      
+
       closeEdit: () =>
-        setModals(prev => ({
+        setModals((prev) => ({
           ...prev,
           isEditOpen: false,
           editingLead: null,
@@ -166,7 +165,7 @@ function InnerInteractiveTable({
     return LEAD_SECTIONS.map(({ title, status }) => ({
       title,
       status,
-      data: (leads ?? []).filter(lead => {
+      data: (leads ?? []).filter((lead) => {
         if (status === null) {
           return !lead.status || lead.status === null;
         }
@@ -185,9 +184,7 @@ function InnerInteractiveTable({
         <div className="text-red-600 dark:text-red-400">
           Error loading leads: {error.message}
         </div>
-        <GenericButton onClick={refetchLeads}>
-          Try Again
-        </GenericButton>
+        <GenericButton onClick={refetchLeads}>Try Again</GenericButton>
       </div>
     );
   }
@@ -201,11 +198,12 @@ function InnerInteractiveTable({
             {title}
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            {(leads ?? []).length} lead{(leads ?? []).length !== 1 ? 's' : ''} total
+            {(leads ?? []).length} lead{(leads ?? []).length !== 1 ? "s" : ""}{" "}
+            total
           </p>
         </div>
-        <GenericButton 
-          className="text-sm" 
+        <GenericButton
+          className="text-sm"
           onClick={modalHandlers.openCreate}
           disabled={isLoading}
         >
@@ -214,24 +212,26 @@ function InnerInteractiveTable({
       </header>
 
       {/* 10. MODALES CON SUSPENSE MEJORADO */}
-      <Suspense fallback={
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
-            <div className="animate-pulse space-y-4">
-              <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
-              <div className="space-y-3">
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/6"></div>
-              </div>
-              <div className="flex justify-end space-x-2 mt-6">
-                <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
-                <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
+      <Suspense
+        fallback={
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
+              <div className="animate-pulse space-y-4">
+                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                <div className="space-y-3">
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/6"></div>
+                </div>
+                <div className="flex justify-end space-x-2 mt-6">
+                  <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
+                  <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      }>
+        }
+      >
         {modals.isCreateOpen && (
           <CreateLeadModal
             isOpen={modals.isCreateOpen}

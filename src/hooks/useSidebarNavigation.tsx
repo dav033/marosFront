@@ -1,53 +1,56 @@
 import { useState, useEffect, useCallback } from "react";
 
 const NAVIGATION_EVENTS = [
-  'astro:page-load',
-  'astro:after-swap',
-  'popstate',
-  'hashchange'
+  "astro:page-load",
+  "astro:after-swap",
+  "popstate",
+  "hashchange",
 ] as const;
 
 export function useSidebarNavigation() {
   const [openDropdowns, setOpenDropdowns] = useState<Set<string>>(new Set());
-  const [currentPath, setCurrentPath] = useState(() => window.location.pathname);
+  const [currentPath, setCurrentPath] = useState(
+    () => window.location.pathname
+  );
 
   const updateCurrentPath = useCallback(() => {
     const path = window.location.pathname;
-    
-    setCurrentPath(prevPath => {
+
+    setCurrentPath((prevPath) => {
       if (prevPath === path) return prevPath;
-      
+
       // Auto-abrir dropdowns relevantes
-      setOpenDropdowns(prevOpen => {
+      setOpenDropdowns((prevOpen) => {
         const newOpenDropdowns = new Set(prevOpen);
-        
-        if (path.startsWith('/leads/')) {
-          newOpenDropdowns.add('leads');
+
+        if (path.startsWith("/leads/")) {
+          newOpenDropdowns.add("leads");
         }
-        
-        if (path.startsWith('/reports/')) {
-          newOpenDropdowns.add('reports');
-          newOpenDropdowns.add('reports-remodelation');
+
+        if (path.startsWith("/reports/")) {
+          newOpenDropdowns.add("reports");
+          newOpenDropdowns.add("reports-remodelation");
         }
-        
+
         return newOpenDropdowns;
       });
-      
+
       return path;
     });
   }, []);
 
   useEffect(() => {
     updateCurrentPath();
-    
+
     // MutationObserver más eficiente
     const observer = new MutationObserver((mutations) => {
       // Solo verificar si hay cambios relevantes
-      const hasRelevantChanges = mutations.some(mutation => 
-        mutation.type === 'attributes' && 
-        mutation.attributeName === 'data-astro-transition-scope'
+      const hasRelevantChanges = mutations.some(
+        (mutation) =>
+          mutation.type === "attributes" &&
+          mutation.attributeName === "data-astro-transition-scope"
       );
-      
+
       if (hasRelevantChanges) {
         const newPath = window.location.pathname;
         if (newPath !== currentPath) {
@@ -55,28 +58,34 @@ export function useSidebarNavigation() {
         }
       }
     });
-    
-    observer.observe(document.body, { 
+
+    observer.observe(document.body, {
       attributes: true,
-      attributeFilter: ['data-astro-transition-scope'],
-      subtree: false // Reducir el scope
+      attributeFilter: ["data-astro-transition-scope"],
+      subtree: false, // Reducir el scope
     });
-    
+
     // Agregar event listeners
-    NAVIGATION_EVENTS.forEach(event => {
-      document.addEventListener(event as keyof DocumentEventMap, updateCurrentPath);
+    NAVIGATION_EVENTS.forEach((event) => {
+      document.addEventListener(
+        event as keyof DocumentEventMap,
+        updateCurrentPath
+      );
     });
 
     return () => {
       observer.disconnect();
-      NAVIGATION_EVENTS.forEach(event => {
-        document.removeEventListener(event as keyof DocumentEventMap, updateCurrentPath);
+      NAVIGATION_EVENTS.forEach((event) => {
+        document.removeEventListener(
+          event as keyof DocumentEventMap,
+          updateCurrentPath
+        );
       });
     };
   }, [updateCurrentPath, currentPath]);
 
   const toggleDropdown = useCallback((id: string) => {
-    setOpenDropdowns(prev => {
+    setOpenDropdowns((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(id)) {
         newSet.delete(id);
@@ -87,14 +96,17 @@ export function useSidebarNavigation() {
     });
   }, []);
 
-  const isDropdownOpen = useCallback((id: string) => {
-    return openDropdowns.has(id);
-  }, [openDropdowns]);
+  const isDropdownOpen = useCallback(
+    (id: string) => {
+      return openDropdowns.has(id);
+    },
+    [openDropdowns]
+  );
 
   return {
     currentPath,
     openDropdowns,
     toggleDropdown,
-    isDropdownOpen
+    isDropdownOpen,
   };
 }

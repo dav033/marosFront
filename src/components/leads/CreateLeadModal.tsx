@@ -30,7 +30,9 @@ export default function CreateLeadModal({
   leadType,
   onLeadCreated,
 }: CreateLeadModalProps) {
-  const [contactMode, setContactMode] = useState<ContactMode>(ContactMode.NEW_CONTACT);
+  const [contactMode, setContactMode] = useState<ContactMode>(
+    ContactMode.NEW_CONTACT
+  );
 
   const handleSubmit = async (formData: any) => {
     let validationError: string | null = null;

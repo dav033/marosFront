@@ -17,7 +17,11 @@ interface ContactFormProps {
   error?: string | null;
 }
 
-export default function ContactForm({ form, onChange, error }: ContactFormProps) {
+export default function ContactForm({
+  form,
+  onChange,
+  error,
+}: ContactFormProps) {
   return (
     <div className="space-y-2">
       {error && (

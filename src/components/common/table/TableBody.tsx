@@ -1,8 +1,8 @@
 // src/components/table/TableBody.tsx
-import React, { memo } from 'react';
-import type { Column } from '../../../types/types.ts';
-import type { ContextMenuOption } from '@components/common/ContextMenu';
-import TableRow from './TableRow.tsx';
+import React, { memo } from "react";
+import type { Column } from "../../../types/types.ts";
+import type { ContextMenuOption } from "@components/common/ContextMenu";
+import TableRow from "./TableRow.tsx";
 
 interface Props<T> {
   columns: Column<T>[];
@@ -12,14 +12,20 @@ interface Props<T> {
   columnWidths?: string[];
 }
 
-function TableBodyInner<T>({ columns, data, contextMenuOptions, showRowSeparators = false, columnWidths }: Props<T>) {
+function TableBodyInner<T>({
+  columns,
+  data,
+  contextMenuOptions,
+  showRowSeparators = false,
+  columnWidths,
+}: Props<T>) {
   return (
     <tbody className="bg-theme-dark">
       {data.map((row, idx) => (
         <React.Fragment key={idx}>
-          <TableRow 
-            row={row} 
-            columns={columns} 
+          <TableRow
+            row={row}
+            columns={columns}
             contextMenuOptions={contextMenuOptions}
             columnWidths={columnWidths}
           />

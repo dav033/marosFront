@@ -15,7 +15,7 @@ interface ContactsContextType {
 }
 
 const ContactsContext = createContext<ContactsContextType | undefined>(
-  undefined,
+  undefined
 );
 
 export const ContactsProvider: React.FC<{ children: ReactNode }> = ({
@@ -32,15 +32,13 @@ export const ContactsProvider: React.FC<{ children: ReactNode }> = ({
   const updateContact = (updatedContact: Contacts) => {
     setContacts((prev) =>
       prev.map((contact) =>
-        contact.id === updatedContact.id ? updatedContact : contact,
-      ),
+        contact.id === updatedContact.id ? updatedContact : contact
+      )
     );
   };
 
   const removeContact = (contactId: number) => {
-    setContacts((prev) =>
-      prev.filter((contact) => contact.id !== contactId),
-    );
+    setContacts((prev) => prev.filter((contact) => contact.id !== contactId));
   };
 
   const value: ContactsContextType = {

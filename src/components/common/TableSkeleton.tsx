@@ -35,7 +35,7 @@ const SkeletonSection = ({ title }: { title: string }) => (
         <div className="h-4 bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 rounded w-16"></div>
       </div>
     </div>
-    
+
     {/* Section Content */}
     <div className="space-y-3 pl-2">
       {[...Array(2)].map((_, index) => (
@@ -45,17 +45,17 @@ const SkeletonSection = ({ title }: { title: string }) => (
   </div>
 );
 
-export const TableSkeleton: React.FC<TableSkeletonProps> = ({ 
-  rows = 6, 
-  showSections = true 
+export const TableSkeleton: React.FC<TableSkeletonProps> = ({
+  rows = 6,
+  showSections = true,
 }) => {
   if (showSections) {
     const sections = [
       "Pending",
-      "In Progress", 
+      "In Progress",
       "Completed",
       "Undetermined",
-      "Lost"
+      "Lost",
     ];
 
     return (

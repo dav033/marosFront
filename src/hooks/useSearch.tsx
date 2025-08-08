@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback } from "react";
 
 export interface SearchFieldOption {
   value: string;
@@ -8,7 +8,7 @@ export interface SearchFieldOption {
 export interface SearchConfig<T> {
   searchableFields: SearchFieldOption[];
   caseSensitive?: boolean;
-  searchType?: 'includes' | 'startsWith' | 'exact';
+  searchType?: "includes" | "startsWith" | "exact";
   defaultField?: string;
 }
 
@@ -25,16 +25,16 @@ export interface UseSearchResult<T> {
 
 // Helper function to get nested property value
 function getNestedValue(obj: any, path: string): any {
-  return path.split('.').reduce((current, key) => current?.[key], obj);
+  return path.split(".").reduce((current, key) => current?.[key], obj);
 }
 
 export function useSearch<T extends Record<string, any>>(
   data: T[],
   config: SearchConfig<T>
 ): UseSearchResult<T> {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedField, setSelectedField] = useState(
-    config.defaultField || config.searchableFields[0]?.value || ''
+    config.defaultField || config.searchableFields[0]?.value || ""
   );
 
   const filteredData = useMemo(() => {
@@ -42,27 +42,27 @@ export function useSearch<T extends Record<string, any>>(
       return data;
     }
 
-    const searchValue = config.caseSensitive 
-      ? searchTerm.trim() 
+    const searchValue = config.caseSensitive
+      ? searchTerm.trim()
       : searchTerm.trim().toLowerCase();
 
     return data.filter((item) => {
-      const fieldValue = selectedField.includes('.') 
+      const fieldValue = selectedField.includes(".")
         ? getNestedValue(item, selectedField)
         : item[selectedField as keyof T];
-      
+
       if (fieldValue == null) return false;
-      
-      const stringValue = config.caseSensitive 
-        ? String(fieldValue) 
+
+      const stringValue = config.caseSensitive
+        ? String(fieldValue)
         : String(fieldValue).toLowerCase();
 
       switch (config.searchType) {
-        case 'startsWith':
+        case "startsWith":
           return stringValue.startsWith(searchValue);
-        case 'exact':
+        case "exact":
           return stringValue === searchValue;
-        case 'includes':
+        case "includes":
         default:
           return stringValue.includes(searchValue);
       }
@@ -70,7 +70,7 @@ export function useSearch<T extends Record<string, any>>(
   }, [data, searchTerm, selectedField, config]);
 
   const clearSearch = useCallback(() => {
-    setSearchTerm('');
+    setSearchTerm("");
   }, []);
 
   const hasActiveSearch = searchTerm.trim().length > 0;

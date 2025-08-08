@@ -3,13 +3,13 @@
  * Mantiene el estado de componentes y formularios durante la sesión
  */
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { globalCache } from '../lib/cacheManager';
+import { useState, useEffect, useCallback, useRef } from "react";
+import { globalCache } from "../lib/cacheManager";
 
 export interface StateCacheConfig {
   key: string;
   ttl?: number; // Time to live en milliseconds
-  storage?: 'memory' | 'session' | 'local';
+  storage?: "memory" | "session" | "local";
   initialValue?: any;
   serialize?: (value: any) => string;
   deserialize?: (value: string) => any;
@@ -28,15 +28,17 @@ export interface StateCacheResult<T> {
 /**
  * Hook para cachear estado entre navegaciones
  */
-export function useStateCache<T = any>(config: StateCacheConfig): StateCacheResult<T> {
+export function useStateCache<T = any>(
+  config: StateCacheConfig
+): StateCacheResult<T> {
   const {
     key,
     ttl = 30 * 60 * 1000, // 30 minutos por defecto
-    storage = 'session',
+    storage = "session",
     initialValue,
     serialize = JSON.stringify,
     deserialize = JSON.parse,
-    deps = []
+    deps = [],
   } = config;
 
   const [loading, setLoading] = useState(true);
@@ -46,7 +48,9 @@ export function useStateCache<T = any>(config: StateCacheConfig): StateCacheResu
 
   // Verificar si las dependencias han cambiado
   const depsChanged = useCallback(() => {
-    return depsRef.current.some((dep, index) => dep !== prevDepsRef.current[index]);
+    return depsRef.current.some(
+      (dep, index) => dep !== prevDepsRef.current[index]
+    );
   }, []);
 
   // Obtener valor inicial del cache
@@ -58,16 +62,16 @@ export function useStateCache<T = any>(config: StateCacheConfig): StateCacheResu
         return initialValue;
       }
 
-      if (storage === 'memory') {
+      if (storage === "memory") {
         const cached = globalCache.get(key);
         if (cached !== null) {
           setCached(true);
           return cached as T;
         }
       } else {
-        const storageObj = storage === 'local' ? localStorage : sessionStorage;
+        const storageObj = storage === "local" ? localStorage : sessionStorage;
         const cachedRaw = storageObj.getItem(`state_${key}`);
-        
+
         if (cachedRaw) {
           const cached = deserialize(cachedRaw);
           setCached(true);
@@ -79,7 +83,7 @@ export function useStateCache<T = any>(config: StateCacheConfig): StateCacheResu
     } catch (error) {
       console.warn(`Error loading cached state for ${key}:`, error);
     }
-    
+
     setCached(false);
     return initialValue;
   }, [key, storage, initialValue, ttl, deserialize, depsChanged]);
@@ -101,41 +105,46 @@ export function useStateCache<T = any>(config: StateCacheConfig): StateCacheResu
   }, [getInitialValue]);
 
   // Función para actualizar el valor
-  const setValue = useCallback((newValue: T | ((prev: T) => T)) => {
-    setValueState(prevValue => {
-      const finalValue = typeof newValue === 'function' 
-        ? (newValue as (prev: T) => T)(prevValue)
-        : newValue;
+  const setValue = useCallback(
+    (newValue: T | ((prev: T) => T)) => {
+      setValueState((prevValue) => {
+        const finalValue =
+          typeof newValue === "function"
+            ? (newValue as (prev: T) => T)(prevValue)
+            : newValue;
 
-      // Guardar en cache
-      try {
-        // Memory cache
-        globalCache.set(key, finalValue, ttl);
+        // Guardar en cache
+        try {
+          // Memory cache
+          globalCache.set(key, finalValue, ttl);
 
-        // Storage persistente
-        if (storage !== 'memory') {
-          const storageObj = storage === 'local' ? localStorage : sessionStorage;
-          storageObj.setItem(`state_${key}`, serialize(finalValue));
+          // Storage persistente
+          if (storage !== "memory") {
+            const storageObj =
+              storage === "local" ? localStorage : sessionStorage;
+            storageObj.setItem(`state_${key}`, serialize(finalValue));
+          }
+
+          setCached(true);
+        } catch (error) {
+          console.warn(`Error saving state cache for ${key}:`, error);
         }
 
-        setCached(true);
-      } catch (error) {
-        console.warn(`Error saving state cache for ${key}:`, error);
-      }
-
-      return finalValue;
-    });
-  }, [key, storage, ttl, serialize]);
+        return finalValue;
+      });
+    },
+    [key, storage, ttl, serialize]
+  );
 
   // Limpiar cache
   const clear = useCallback(() => {
     globalCache.delete(key);
-    
-    if (storage !== 'memory') {
-      const storageObj = storage === 'local' ? localStorage : sessionStorage;
+
+    if (storage !== "memory") {
+      const storageObj = storage === "local" ? localStorage : sessionStorage;
       storageObj.removeItem(`state_${key}`);
     }
-    
+
     setValueState(initialValue);
     setCached(false);
   }, [key, storage, initialValue]);
@@ -152,7 +161,7 @@ export function useStateCache<T = any>(config: StateCacheConfig): StateCacheResu
     cached,
     clear,
     refresh,
-    loading
+    loading,
   };
 }
 
@@ -172,7 +181,7 @@ export function useFormCache<T extends Record<string, any>>(
     key: `form_${formKey}`,
     initialValue: initialValues,
     ttl: 60 * 60 * 1000, // 1 hora para formularios
-    ...options
+    ...options,
   });
 
   const [isDirty, setIsDirty] = useState(false);
@@ -180,17 +189,20 @@ export function useFormCache<T extends Record<string, any>>(
   // Verificar si el formulario está sucio
   useEffect(() => {
     const isFormDirty = Object.keys(initialValues).some(
-      key => cacheResult.value[key] !== initialValues[key]
+      (key) => cacheResult.value[key] !== initialValues[key]
     );
     setIsDirty(isFormDirty);
   }, [cacheResult.value, initialValues]);
 
-  const updateField = useCallback((field: keyof T, value: any) => {
-    cacheResult.setValue(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  }, [cacheResult.setValue]);
+  const updateField = useCallback(
+    (field: keyof T, value: any) => {
+      cacheResult.setValue((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+    },
+    [cacheResult.setValue]
+  );
 
   const resetForm = useCallback(() => {
     cacheResult.setValue(initialValues);
@@ -201,7 +213,7 @@ export function useFormCache<T extends Record<string, any>>(
     ...cacheResult,
     updateField,
     resetForm,
-    isDirty
+    isDirty,
   };
 }
 
@@ -210,14 +222,17 @@ export function useFormCache<T extends Record<string, any>>(
  */
 export function useListCache<T = any>(
   listKey: string,
-  fetchFn: (page: number, size: number) => Promise<{ data: T[]; total: number }>,
+  fetchFn: (
+    page: number,
+    size: number
+  ) => Promise<{ data: T[]; total: number }>,
   options: Partial<StateCacheConfig> & {
     pageSize?: number;
     prefetchPages?: number;
   } = {}
 ) {
   const { pageSize = 20, prefetchPages = 2, ...cacheOptions } = options;
-  
+
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
@@ -228,65 +243,77 @@ export function useListCache<T = any>(
     key: `list_${listKey}`,
     initialValue: { pages: {}, total: 0 },
     ttl: 15 * 60 * 1000, // 15 minutos para listas
-    ...cacheOptions
+    ...cacheOptions,
   });
 
-  const loadPage = useCallback(async (page: number, force = false) => {
-    const existingPage = cacheResult.value.pages[page];
-    const isStale = existingPage && (Date.now() - existingPage.timestamp > (cacheOptions.ttl || 15 * 60 * 1000));
-    
-    if (!force && existingPage && !isStale) {
-      return existingPage.data;
-    }
+  const loadPage = useCallback(
+    async (page: number, force = false) => {
+      const existingPage = cacheResult.value.pages[page];
+      const isStale =
+        existingPage &&
+        Date.now() - existingPage.timestamp >
+          (cacheOptions.ttl || 15 * 60 * 1000);
 
-    setLoading(true);
-    try {
-      const result = await fetchFn(page, pageSize);
-      
-      cacheResult.setValue(prev => ({
-        ...prev,
-        pages: {
-          ...prev.pages,
-          [page]: {
-            data: result.data,
-            timestamp: Date.now()
-          }
-        },
-        total: result.total
-      }));
-
-      // Prefetch páginas adyacentes
-      for (let i = 1; i <= prefetchPages; i++) {
-        const nextPage = page + i;
-        const prevPage = page - i;
-        
-        if (nextPage <= Math.ceil(result.total / pageSize) && !cacheResult.value.pages[nextPage]) {
-          setTimeout(() => loadPage(nextPage), i * 100);
-        }
-        
-        if (prevPage > 0 && !cacheResult.value.pages[prevPage]) {
-          setTimeout(() => loadPage(prevPage), i * 100);
-        }
+      if (!force && existingPage && !isStale) {
+        return existingPage.data;
       }
 
-      return result.data;
-    } catch (error) {
-      console.error(`Error loading page ${page} for ${listKey}:`, error);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  }, [cacheResult, fetchFn, pageSize, prefetchPages, listKey, cacheOptions.ttl]);
+      setLoading(true);
+      try {
+        const result = await fetchFn(page, pageSize);
+
+        cacheResult.setValue((prev) => ({
+          ...prev,
+          pages: {
+            ...prev.pages,
+            [page]: {
+              data: result.data,
+              timestamp: Date.now(),
+            },
+          },
+          total: result.total,
+        }));
+
+        // Prefetch páginas adyacentes
+        for (let i = 1; i <= prefetchPages; i++) {
+          const nextPage = page + i;
+          const prevPage = page - i;
+
+          if (
+            nextPage <= Math.ceil(result.total / pageSize) &&
+            !cacheResult.value.pages[nextPage]
+          ) {
+            setTimeout(() => loadPage(nextPage), i * 100);
+          }
+
+          if (prevPage > 0 && !cacheResult.value.pages[prevPage]) {
+            setTimeout(() => loadPage(prevPage), i * 100);
+          }
+        }
+
+        return result.data;
+      } catch (error) {
+        console.error(`Error loading page ${page} for ${listKey}:`, error);
+        throw error;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [cacheResult, fetchFn, pageSize, prefetchPages, listKey, cacheOptions.ttl]
+  );
 
   const getCurrentPageData = useCallback(() => {
     const pageData = cacheResult.value.pages[currentPage];
     return pageData ? pageData.data : [];
   }, [cacheResult.value.pages, currentPage]);
 
-  const goToPage = useCallback((page: number) => {
-    setCurrentPage(page);
-    loadPage(page);
-  }, [loadPage]);
+  const goToPage = useCallback(
+    (page: number) => {
+      setCurrentPage(page);
+      loadPage(page);
+    },
+    [loadPage]
+  );
 
   const refresh = useCallback(() => {
     loadPage(currentPage, true);
@@ -313,6 +340,6 @@ export function useListCache<T = any>(
     refresh,
     clearCache,
     hasNextPage: currentPage < Math.ceil(cacheResult.value.total / pageSize),
-    hasPrevPage: currentPage > 1
+    hasPrevPage: currentPage > 1,
   };
 }

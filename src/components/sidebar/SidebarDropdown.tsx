@@ -7,12 +7,12 @@ import React, {
   useCallback,
   useMemo,
   useState,
-  memo
+  memo,
 } from "react";
 import { Icon } from "@iconify/react";
 import type { SidebarDropdownProps } from "../../types/types";
 
-const SIDEBAR_DROPDOWN_SYMBOL = Symbol('SidebarDropdown');
+const SIDEBAR_DROPDOWN_SYMBOL = Symbol("SidebarDropdown");
 
 const SidebarDropdown = memo(function SidebarDropdown({
   trigger,
@@ -27,10 +27,12 @@ const SidebarDropdown = memo(function SidebarDropdown({
 }: SidebarDropdownProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [inlineHeight, setInlineHeight] = useState("0px");
-  
+
   // Función optimizada para leer altura
-  const readHeight = useCallback(() => 
-    containerRef.current?.scrollHeight ?? 0, []);
+  const readHeight = useCallback(
+    () => containerRef.current?.scrollHeight ?? 0,
+    []
+  );
 
   // Funciones de animación optimizadas
   const open = useCallback(() => {
@@ -51,62 +53,84 @@ const SidebarDropdown = memo(function SidebarDropdown({
   }, [isOpen, open, close]);
 
   // Event handlers optimizados
-  const handleTransitionEnd = useCallback((e: React.TransitionEvent) => {
-    if (e.propertyName === "height" && isOpen) {
-      setInlineHeight("auto");
-    }
-  }, [isOpen]);
+  const handleTransitionEnd = useCallback(
+    (e: React.TransitionEvent) => {
+      if (e.propertyName === "height" && isOpen) {
+        setInlineHeight("auto");
+      }
+    },
+    [isOpen]
+  );
 
-  const handleToggle = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    onToggle(id);
-  }, [onToggle, id]);
+  const handleToggle = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      onToggle(id);
+    },
+    [onToggle, id]
+  );
 
   // Valores memoizados
-  const styles = useMemo(() => ({
-    button: { paddingLeft: indentLevel ? `${indentLevel}px` : "16px" },
-    container: {
-      height: inlineHeight,
-      transition: `height ${duration}ms ease-out`,
-    },
-    content: { paddingLeft: indentLevel ? `${indentLevel}px` : "16px" }
-  }), [indentLevel, inlineHeight, duration]);
+  const styles = useMemo(
+    () => ({
+      button: { paddingLeft: indentLevel ? `${indentLevel}px` : "16px" },
+      container: {
+        height: inlineHeight,
+        transition: `height ${duration}ms ease-out`,
+      },
+      content: { paddingLeft: indentLevel ? `${indentLevel}px` : "16px" },
+    }),
+    [indentLevel, inlineHeight, duration]
+  );
 
-  const classes = useMemo(() => ({
-    button: [
-      "flex items-center cursor-pointer justify-between gap-2",
-      "text-gray-300 hover:text-white transition-colors duration-200",
-      trigger.className
-    ].filter(Boolean).join(" "),
-    
-    arrow: [
-      "h-4 w-4 flex-shrink-0 transition-transform duration-200",
-      isOpen && "rotate-180"
-    ].filter(Boolean).join(" "),
-    
-    container: ["overflow-hidden", width].join(" ")
-  }), [trigger.className, isOpen, width]);
+  const classes = useMemo(
+    () => ({
+      button: [
+        "flex items-center cursor-pointer justify-between gap-2",
+        "text-gray-300 hover:text-white transition-colors duration-200",
+        trigger.className,
+      ]
+        .filter(Boolean)
+        .join(" "),
+
+      arrow: [
+        "h-4 w-4 flex-shrink-0 transition-transform duration-200",
+        isOpen && "rotate-180",
+      ]
+        .filter(Boolean)
+        .join(" "),
+
+      container: ["overflow-hidden", width].join(" "),
+    }),
+    [trigger.className, isOpen, width]
+  );
 
   // Children con props optimizadas - Solución más robusta
-  const enhancedChildren = useMemo(() => 
-    Children.map(children, (child) => {
-      if (!isValidElement(child)) return child;
-      
-      const childProps = child.props as any;
-      
-      // Verificar si es un dropdown anidado checkeando las props específicas
-      const isNestedDropdown = childProps.hasOwnProperty('id') && 
-                               childProps.hasOwnProperty('isOpen') && 
-                               childProps.hasOwnProperty('onToggle') &&
-                               typeof childProps.onToggle === 'function';
-      
-      return cloneElement(child, {
-        ...childProps,
-        indentLevel: isNestedDropdown ? indentLevel + 16 : childProps.indentLevel,
-        currentPath,
-        onToggle,
-      });
-    }), [children, indentLevel, currentPath, onToggle]);
+  const enhancedChildren = useMemo(
+    () =>
+      Children.map(children, (child) => {
+        if (!isValidElement(child)) return child;
+
+        const childProps = child.props as any;
+
+        // Verificar si es un dropdown anidado checkeando las props específicas
+        const isNestedDropdown =
+          childProps.hasOwnProperty("id") &&
+          childProps.hasOwnProperty("isOpen") &&
+          childProps.hasOwnProperty("onToggle") &&
+          typeof childProps.onToggle === "function";
+
+        return cloneElement(child, {
+          ...childProps,
+          indentLevel: isNestedDropdown
+            ? indentLevel + 16
+            : childProps.indentLevel,
+          currentPath,
+          onToggle,
+        });
+      }),
+    [children, indentLevel, currentPath, onToggle]
+  );
 
   return (
     <div className={`relative ${width}`}>
@@ -125,7 +149,7 @@ const SidebarDropdown = memo(function SidebarDropdown({
           className={classes.arrow}
         />
       </button>
-      
+
       <div
         ref={containerRef}
         onTransitionEnd={handleTransitionEnd}

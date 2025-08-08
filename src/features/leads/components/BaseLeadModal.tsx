@@ -1,1 +1,1 @@
-export { default } from "@components/leads/BaseLeadModal";
+export { default } from "@components/ui/leads/BaseLeadModal";

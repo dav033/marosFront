@@ -2,28 +2,36 @@
  * Servicio de Leads optimizado con cache y prefetch
  */
 
-import type { Lead, CreateLeadByNewContactRequest, CreateLeadRequest, CreateContactRequest } from "../types/types";
+import type {
+  Lead,
+  CreateLeadByNewContactRequest,
+  CreateLeadRequest,
+  CreateContactRequest,
+} from "src/types/types";
 import { LeadType, LeadStatus } from "src/types/enums";
 import { optimizedApiClient } from "src/lib/optimizedApiClient";
 
 export const OptimizedLeadsService = {
   async getLeadsByType(type: LeadType): Promise<Lead[]> {
     try {
-      const response = await optimizedApiClient.get(`/leads/type?type=${type}`, {
-        cache: {
-          enabled: true,
-          ttl: 15 * 60 * 1000, // 15 minutos
-          strategy: 'cache-first'
-        },
-        prefetch: {
-          enabled: true,
-          priority: 'medium',
-          dependencies: ['/contacts/all'] // Prefetch contacts relacionados
+      const response = await optimizedApiClient.get(
+        `/leads/type?type=${type}`,
+        {
+          cache: {
+            enabled: true,
+            ttl: 15 * 60 * 1000, // 15 minutos
+            strategy: "cache-first",
+          },
+          prefetch: {
+            enabled: true,
+            priority: "medium",
+            dependencies: ["/contacts/all"], // Prefetch contacts relacionados
+          },
         }
-      });
+      );
       return response.data;
     } catch (error) {
-      console.error('Error in API getLeadsByType:', error);
+      console.error("Error in API getLeadsByType:", error);
       throw error;
     }
   },
@@ -48,7 +56,7 @@ export const OptimizedLeadsService = {
     const leadRequest: CreateLeadRequest = {
       leadNumber: "",
       name: leadData.leadName,
-      startDate: new Date().toISOString().split('T')[0],
+      startDate: new Date().toISOString().split("T")[0],
       location: leadData.location,
       status: null,
       contact: contactRequest,
@@ -65,14 +73,18 @@ export const OptimizedLeadsService = {
       contact: contactRequest,
     };
 
-    const response = await optimizedApiClient.post(`/leads/new-contact`, request, {
-      prefetch: {
-        enabled: true,
-        priority: 'high',
-        dependencies: [`/leads/type`] // Refrescar lista de leads
+    const response = await optimizedApiClient.post(
+      `/leads/new-contact`,
+      request,
+      {
+        prefetch: {
+          enabled: true,
+          priority: "high",
+          dependencies: [`/leads/type`], // Refrescar lista de leads
+        },
       }
-    });
-    
+    );
+
     return response.data;
   },
 
@@ -86,7 +98,7 @@ export const OptimizedLeadsService = {
     const leadRequest: CreateLeadRequest = {
       leadNumber: "",
       name: leadData.leadName,
-      startDate: new Date().toISOString().split('T')[0],
+      startDate: new Date().toISOString().split("T")[0],
       location: leadData.location,
       status: null,
       contact: undefined,
@@ -103,32 +115,42 @@ export const OptimizedLeadsService = {
       contactId: leadData.contactId,
     };
 
-    const response = await optimizedApiClient.post(`/leads/existing-contact`, request, {
-      prefetch: {
-        enabled: true,
-        priority: 'high',
-        dependencies: [`/leads/type`] // Refrescar lista de leads
+    const response = await optimizedApiClient.post(
+      `/leads/existing-contact`,
+      request,
+      {
+        prefetch: {
+          enabled: true,
+          priority: "high",
+          dependencies: [`/leads/type`], // Refrescar lista de leads
+        },
       }
-    });
-    
+    );
+
     return response.data;
   },
 
-  async updateLead(leadId: number, leadData: {
-    name?: string;
-    location?: string;
-    status?: string;
-    contactId?: number;
-    projectTypeId?: number;
-    startDate?: string;
-  }): Promise<Lead> {
+  async updateLead(
+    leadId: number,
+    leadData: {
+      name?: string;
+      location?: string;
+      status?: string;
+      contactId?: number;
+      projectTypeId?: number;
+      startDate?: string;
+    }
+  ): Promise<Lead> {
     try {
       const updatedLead: Partial<CreateLeadRequest> = {};
 
       if (leadData.name !== undefined) updatedLead.name = leadData.name;
-      if (leadData.location !== undefined) updatedLead.location = leadData.location;
-      if (leadData.status !== undefined) updatedLead.status = leadData.status as LeadStatus;
-      if (leadData.startDate !== undefined) updatedLead.startDate = leadData.startDate;
+      if (leadData.location !== undefined)
+        updatedLead.location = leadData.location;
+      if (leadData.status !== undefined)
+        updatedLead.status = leadData.status as LeadStatus;
+      if (leadData.startDate !== undefined)
+        updatedLead.startDate = leadData.startDate;
 
       if (leadData.projectTypeId !== undefined) {
         updatedLead.projectType = {
@@ -142,17 +164,21 @@ export const OptimizedLeadsService = {
         lead: updatedLead,
       };
 
-      const response = await optimizedApiClient.put(`/leads/${leadId}`, request, {
-        prefetch: {
-          enabled: true,
-          priority: 'high',
-          dependencies: [`/leads/type`] // Refrescar lista de leads
+      const response = await optimizedApiClient.put(
+        `/leads/${leadId}`,
+        request,
+        {
+          prefetch: {
+            enabled: true,
+            priority: "high",
+            dependencies: [`/leads/type`], // Refrescar lista de leads
+          },
         }
-      });
-      
+      );
+
       return response.data;
     } catch (error) {
-      console.error('Error updating lead:', error);
+      console.error("Error updating lead:", error);
       throw error;
     }
   },
@@ -162,14 +188,14 @@ export const OptimizedLeadsService = {
       const response = await optimizedApiClient.delete(`/leads/${leadId}`, {
         prefetch: {
           enabled: true,
-          priority: 'high',
-          dependencies: [`/leads/type`] // Refrescar lista de leads
-        }
+          priority: "high",
+          dependencies: [`/leads/type`], // Refrescar lista de leads
+        },
       });
-      
+
       return response.data;
     } catch (error) {
-      console.error('Error deleting lead:', error);
+      console.error("Error deleting lead:", error);
       throw error;
     }
   },
@@ -177,15 +203,15 @@ export const OptimizedLeadsService = {
   // Métodos de prefetch específicos
   async prefetchLeadsByType(type: LeadType): Promise<void> {
     await optimizedApiClient.prefetch(`/leads/type?type=${type}`, {
-      cache: { enabled: true, ttl: 15 * 60 * 1000 }
+      cache: { enabled: true, ttl: 15 * 60 * 1000 },
     });
   },
 
   async prefetchRelatedData(): Promise<void> {
     // Prefetch datos comunes que se usan junto con leads
     const prefetchPromises = [
-      optimizedApiClient.prefetch('/contacts/all'),
-      optimizedApiClient.prefetch('/project-types/all'),
+      optimizedApiClient.prefetch("/contacts/all"),
+      optimizedApiClient.prefetch("/project-types/all"),
     ];
 
     await Promise.allSettled(prefetchPromises);
@@ -194,22 +220,22 @@ export const OptimizedLeadsService = {
   // Configurar prefetch automático para navegación
   setupAutoPrefetch(): void {
     // Solo ejecutar en el cliente
-    if (typeof window === 'undefined') return;
-    
+    if (typeof window === "undefined") return;
+
     // Prefetch leads de construcción cuando se está en leads de plomería y viceversa
     const currentPath = window.location.pathname;
-    
-    if (currentPath.includes('plumbing')) {
+
+    if (currentPath.includes("plumbing")) {
       this.prefetchLeadsByType(LeadType.CONSTRUCTION);
-    } else if (currentPath.includes('construction')) {
+    } else if (currentPath.includes("construction")) {
       this.prefetchLeadsByType(LeadType.PLUMBING);
-    } else if (currentPath.includes('roofing')) {
+    } else if (currentPath.includes("roofing")) {
       this.prefetchLeadsByType(LeadType.CONSTRUCTION);
     }
-  }
+  },
 };
 
 // Configurar prefetch automático al cargar
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   OptimizedLeadsService.setupAutoPrefetch();
 }

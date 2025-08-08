@@ -72,15 +72,18 @@ export default function EditContactModal({
     setError(null);
 
     try {
-      const updatedContact = await OptimizedContactsService.updateContact(contact.id, {
-        companyName: form.companyName,
-        name: form.name,
-        occupation: form.occupation || undefined,
-        product: form.product || undefined,
-        phone: form.phone || undefined,
-        email: form.email || undefined,
-        address: form.address || undefined,
-      });
+      const updatedContact = await OptimizedContactsService.updateContact(
+        contact.id,
+        {
+          companyName: form.companyName,
+          name: form.name,
+          occupation: form.occupation || undefined,
+          product: form.product || undefined,
+          phone: form.phone || undefined,
+          email: form.email || undefined,
+          address: form.address || undefined,
+        }
+      );
 
       console.log("✅ Contact updated successfully:", updatedContact);
       onClose(true); // shouldRefetch = true

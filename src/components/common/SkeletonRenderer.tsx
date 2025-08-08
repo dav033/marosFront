@@ -15,12 +15,20 @@ export const SkeletonRenderer: React.FC = () => {
         return <ContactsTableSkeleton rows={options.rows ?? 15} />;
       case "genericTable":
       case "leadsTable":
-        return <TableSkeleton rows={options.rows ?? 8} showSections={options.showSections ?? true} />;
+        return (
+          <TableSkeleton
+            rows={options.rows ?? 8}
+            showSections={options.showSections ?? true}
+          />
+        );
       case "list":
         return (
           <div className="space-y-3 animate-pulse">
             {Array.from({ length: options.rows ?? 8 }).map((_, i) => (
-              <div key={i} className="h-6 bg-gray-200 dark:bg-gray-700 rounded" />
+              <div
+                key={i}
+                className="h-6 bg-gray-200 dark:bg-gray-700 rounded"
+              />
             ))}
           </div>
         );
@@ -28,12 +36,20 @@ export const SkeletonRenderer: React.FC = () => {
         return (
           <div className="space-y-4 animate-pulse">
             {Array.from({ length: options.rows ?? 6 }).map((_, i) => (
-              <div key={i} className="h-10 bg-gray-200 dark:bg-gray-700 rounded" />
+              <div
+                key={i}
+                className="h-10 bg-gray-200 dark:bg-gray-700 rounded"
+              />
             ))}
           </div>
         );
       default:
-        return <TableSkeleton rows={options.rows ?? 8} showSections={options.showSections ?? false} />;
+        return (
+          <TableSkeleton
+            rows={options.rows ?? 8}
+            showSections={options.showSections ?? false}
+          />
+        );
     }
   })();
 

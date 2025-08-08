@@ -1,4 +1,4 @@
-import type { Contacts, CreateContactRequest } from "../types/types";
+import type { Contacts, CreateContactRequest } from "src/types";
 import apiClient from "src/lib/apiClient";
 
 export const ContactsService = {
@@ -17,7 +17,10 @@ export const ContactsService = {
     return response.data;
   },
 
-  async updateContact(id: number, contact: Partial<Contacts>): Promise<Contacts> {
+  async updateContact(
+    id: number,
+    contact: Partial<Contacts>
+  ): Promise<Contacts> {
     const response = await apiClient.put(`/contacts/${id}`, contact);
     return response.data;
   },

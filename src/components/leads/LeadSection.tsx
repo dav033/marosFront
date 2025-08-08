@@ -19,9 +19,9 @@ export default function LeadSection({
   onEditLead,
   onDeleteLead,
 }: LeadSectionProps) {
-  const { getLeadContextOptions } = useLeadContextMenu({ 
+  const { getLeadContextOptions } = useLeadContextMenu({
     onEdit: onEditLead,
-    onDelete: onDeleteLead 
+    onDelete: onDeleteLead,
   });
 
   return (
@@ -29,9 +29,9 @@ export default function LeadSection({
       <h2 className="text-xl font-semibold">
         {title} ({data.length})
       </h2>
-      <Table 
-        columns={columns} 
-        data={data} 
+      <Table
+        columns={columns}
+        data={data}
         contextMenuOptions={getLeadContextOptions}
       />
     </div>

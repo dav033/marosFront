@@ -16,7 +16,10 @@ export default function ModalHeader({ title, onClose }: ModalHeaderProps) {
         className="p-1 hover:bg-gray-700 rounded"
         aria-label="Close modal"
       >
-        <Icon icon="material-symbols:close" className="h-5 w-5 text-light-text" />
+        <Icon
+          icon="material-symbols:close"
+          className="h-5 w-5 text-light-text"
+        />
       </button>
     </div>
   );

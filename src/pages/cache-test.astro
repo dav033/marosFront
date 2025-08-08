@@ -6,24 +6,24 @@ import Layout from "../layouts/Layout.astro";
   <div id="cache-test-page" client:load>
     <div class="container mx-auto px-4 py-8">
       <h1 class="text-3xl font-bold mb-8">Cache System Test</h1>
-      
+
       <!-- Panel de configuración de cache -->
       <div class="mb-8">
         <div id="cache-config-panel"></div>
       </div>
-      
+
       <!-- Tabs para diferentes vistas -->
       <div class="mb-6">
         <div class="border-b border-gray-200">
           <nav class="-mb-px flex space-x-8">
-            <button 
+            <button
               id="contacts-tab"
               class="tab-button border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm"
               onclick="showTab('contacts')"
             >
               Contacts
             </button>
-            <button 
+            <button
               id="leads-tab"
               class="tab-button border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm"
               onclick="showTab('leads')"
@@ -33,13 +33,15 @@ import Layout from "../layouts/Layout.astro";
           </nav>
         </div>
       </div>
-      
+
       <!-- Content Areas -->
       <div id="contacts-content" class="tab-content hidden">
-        <h2 class="text-xl font-semibold mb-4">Contacts (useInstantContacts)</h2>
+        <h2 class="text-xl font-semibold mb-4">
+          Contacts (useInstantContacts)
+        </h2>
         <div id="contacts-wrapper"></div>
       </div>
-      
+
       <div id="leads-content" class="tab-content hidden">
         <h2 class="text-xl font-semibold mb-4">Leads (useInstantList)</h2>
         <div id="leads-wrapper"></div>
@@ -49,59 +51,62 @@ import Layout from "../layouts/Layout.astro";
 
   <script>
     // Tab functionality
-    window.showTab = function(tabName) {
+    window.showTab = function (tabName) {
       // Hide all content
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      
+      document
+        .querySelectorAll(".tab-content")
+        .forEach((el) => el.classList.add("hidden"));
+
       // Remove active class from all tabs
-      document.querySelectorAll('.tab-button').forEach(el => {
-        el.classList.remove('border-blue-500', 'text-blue-600');
-        el.classList.add('border-transparent', 'text-gray-500');
+      document.querySelectorAll(".tab-button").forEach((el) => {
+        el.classList.remove("border-blue-500", "text-blue-600");
+        el.classList.add("border-transparent", "text-gray-500");
       });
-      
+
       // Show selected content
-      document.getElementById(tabName + '-content').classList.remove('hidden');
-      
+      document.getElementById(tabName + "-content").classList.remove("hidden");
+
       // Activate selected tab
-      const activeTab = document.getElementById(tabName + '-tab');
-      activeTab.classList.remove('border-transparent', 'text-gray-500');
-      activeTab.classList.add('border-blue-500', 'text-blue-600');
+      const activeTab = document.getElementById(tabName + "-tab");
+      activeTab.classList.remove("border-transparent", "text-gray-500");
+      activeTab.classList.add("border-blue-500", "text-blue-600");
     };
-    
+
     // Show contacts tab by default
-    document.addEventListener('DOMContentLoaded', () => {
-      showTab('contacts');
+    document.addEventListener("DOMContentLoaded", () => {
+      showTab("contacts");
     });
   </script>
 </Layout>
 
 <script>
-  import React from 'react';
-  import { createRoot } from 'react-dom/client';
-  import CacheConfigPanel from '../components/common/CacheConfigPanel';
-  import OptimizedContactsWrapper from '../components/contacts/OptimizedContactsWrapper';
-  import InstantLeadsList from '../components/leads/InstantLeadsList';
-  import { LeadType } from '../types/enums';
+  import React from "react";
+  import { createRoot } from "react-dom/client";
+  import CacheConfigPanel from "../components/common/CacheConfigPanel";
+  import OptimizedContactsWrapper from "../components/contacts/OptimizedContactsWrapper";
+  import InstantLeadsList from "../components/leads/InstantLeadsList";
+  import { LeadType } from "../types/enums";
 
   // Mount Cache Config Panel
-  const configPanelContainer = document.getElementById('cache-config-panel');
+  const configPanelContainer = document.getElementById("cache-config-panel");
   if (configPanelContainer) {
     const configRoot = createRoot(configPanelContainer);
     configRoot.render(React.createElement(CacheConfigPanel));
   }
 
   // Mount Contacts Wrapper
-  const contactsContainer = document.getElementById('contacts-wrapper');
+  const contactsContainer = document.getElementById("contacts-wrapper");
   if (contactsContainer) {
     const contactsRoot = createRoot(contactsContainer);
     contactsRoot.render(React.createElement(OptimizedContactsWrapper));
   }
 
   // Mount Leads List
-  const leadsContainer = document.getElementById('leads-wrapper');
+  const leadsContainer = document.getElementById("leads-wrapper");
   if (leadsContainer) {
     const leadsRoot = createRoot(leadsContainer);
-    leadsRoot.render(React.createElement(InstantLeadsList, { leadType: LeadType.COMMERCIAL }));
+    leadsRoot.render(
+      React.createElement(InstantLeadsList, { leadType: LeadType.COMMERCIAL })
+    );
   }
 </script>
-</Layout>

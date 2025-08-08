@@ -29,12 +29,12 @@ export default function EditLeadModal({
 }: EditLeadModalProps) {
   const handleSubmit = async (formData: any) => {
     if (!lead) return;
-    
+
     const validationError = validateEditLead({
       projectTypeId: formData.projectTypeId,
       contactId: formData.contactId,
     });
-    
+
     if (validationError) {
       throw new Error(validationError);
     }
@@ -52,7 +52,15 @@ export default function EditLeadModal({
     onLeadUpdated(updatedLead);
   };
 
-  const { form, isLoading, error, handleChange, handleSubmit: onSubmit, resetForm, setForm } = useLeadForm({
+  const {
+    form,
+    isLoading,
+    error,
+    handleChange,
+    handleSubmit: onSubmit,
+    resetForm,
+    setForm,
+  } = useLeadForm({
     initialData: {},
     onSubmit: handleSubmit,
     onSuccess: onClose,

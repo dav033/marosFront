@@ -3,7 +3,11 @@ import type {
   OptimizedFetchConfig,
   UseOptimizedFetchReturn,
 } from "../types/types";
-import { getCachedData, setCachedData, stableKey } from "../utils/cacheHelpers.ts";
+import {
+  getCachedData,
+  setCachedData,
+  stableKey,
+} from "../utils/cacheHelpers.ts";
 
 /**
  * Hook que prioriza cache (SWR): muestra cache al instante y refresca en background.

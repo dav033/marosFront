@@ -1,1 +1,1 @@
-export { default } from "@components/leads/LeadFormFields";
+export { default } from "@components/ui/leads/LeadFormFields";

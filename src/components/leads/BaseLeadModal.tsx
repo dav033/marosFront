@@ -1,9 +1,9 @@
-import React from 'react';
-import { GenericButton } from '@components/common/GenericButton';
-import Modal from '@components/common/modal/Modal';
-import ModalBody from '@components/common/modal/ModalBody';
-import ModalFooter from '@components/common/modal/ModalFooter';
-import ModalHeader from '@components/common/modal/ModalHeader';
+import React from "react";
+import { GenericButton } from "@components/common/GenericButton";
+import Modal from "@components/common/modal/Modal";
+import ModalBody from "@components/common/modal/ModalBody";
+import ModalFooter from "@components/common/modal/ModalFooter";
+import ModalHeader from "@components/common/modal/ModalHeader";
 
 interface BaseLeadModalProps {
   isOpen: boolean;
@@ -52,11 +52,7 @@ export default function BaseLeadModal({
         >
           Cancel
         </GenericButton>
-        <GenericButton
-          type="submit"
-          onClick={onSubmit}
-          disabled={isLoading}
-        >
+        <GenericButton type="submit" onClick={onSubmit} disabled={isLoading}>
           {isLoading ? `${submitText}...` : submitText}
         </GenericButton>
       </ModalFooter>

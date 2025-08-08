@@ -30,7 +30,11 @@ export const GenericSelect: React.FC<GenericSelectProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [position, setPosition] = useState<{ top: number; left: number; width: number }>({ top: 0, left: 0, width: 0 });
+  const [position, setPosition] = useState<{
+    top: number;
+    left: number;
+    width: number;
+  }>({ top: 0, left: 0, width: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -54,13 +58,19 @@ export const GenericSelect: React.FC<GenericSelectProps> = ({
   useEffect(() => {
     if (isOpen && containerRef.current) {
       const rect = containerRef.current.getBoundingClientRect();
-      setPosition({ top: rect.bottom + window.scrollY, left: rect.left + window.scrollX, width: rect.width });
+      setPosition({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+        width: rect.width,
+      });
     }
   }, [isOpen]);
 
   const selectedOption = options.find((o) => o.value === value);
   const filteredOptions = searchable
-    ? options.filter((o) => (o.label || '').toLowerCase().includes(searchTerm.toLowerCase()))
+    ? options.filter((o) =>
+        (o.label || "").toLowerCase().includes(searchTerm.toLowerCase())
+      )
     : options;
 
   const baseControl = `
@@ -76,7 +86,13 @@ export const GenericSelect: React.FC<GenericSelectProps> = ({
   const dropdown = (
     <div
       ref={dropdownRef}
-      style={{ position: "absolute", top: position.top, left: position.left, width: position.width, zIndex: 9999 }}
+      style={{
+        position: "absolute",
+        top: position.top,
+        left: position.left,
+        width: position.width,
+        zIndex: 9999,
+      }}
       className="bg-theme-dark border-[0.75px] border-theme-gray rounded-xl max-h-60 overflow-auto shadow-lg"
     >
       {searchable && (
@@ -101,7 +117,7 @@ export const GenericSelect: React.FC<GenericSelectProps> = ({
             setSearchTerm("");
           }}
         >
-          {opt.label || 'Sin etiqueta'}
+          {opt.label || "Sin etiqueta"}
         </div>
       ))}
       {searchable && filteredOptions.length === 0 && (
@@ -111,7 +127,10 @@ export const GenericSelect: React.FC<GenericSelectProps> = ({
   );
 
   return (
-    <div ref={containerRef} className={`relative w-full mb-2 overflow-visible ${className}`}>
+    <div
+      ref={containerRef}
+      className={`relative w-full mb-2 overflow-visible ${className}`}
+    >
       {icon && (
         <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
           <Icon icon={icon} className="text-gray-400 w-5 h-5" />
@@ -128,7 +147,7 @@ export const GenericSelect: React.FC<GenericSelectProps> = ({
           <option value="">{placeholder}</option>
           {options.map((opt) => (
             <option key={opt.value} value={opt.value}>
-              {opt.label || 'Sin etiqueta'}
+              {opt.label || "Sin etiqueta"}
             </option>
           ))}
         </select>
@@ -140,9 +159,15 @@ export const GenericSelect: React.FC<GenericSelectProps> = ({
             onClick={() => setIsOpen((o) => !o)}
             className={`${baseControl} ${plClass} justify-between`}
           >
-            <span className="truncate">{selectedOption?.label || placeholder}</span>
+            <span className="truncate">
+              {selectedOption?.label || placeholder}
+            </span>
             <Icon
-              icon={isOpen ? "material-symbols:arrow-drop-up" : "material-symbols:arrow-drop-down"}
+              icon={
+                isOpen
+                  ? "material-symbols:arrow-drop-up"
+                  : "material-symbols:arrow-drop-down"
+              }
               className="w-6 h-6 text-gray-400"
             />
           </button>

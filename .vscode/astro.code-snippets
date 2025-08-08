@@ -14,9 +14,9 @@
       "",
       "<div>",
       "  $0",
-      "</div>"
+      "</div>",
     ],
-    "description": "Create a new Astro component"
+    "description": "Create a new Astro component",
   },
   "Astro Layout": {
     "prefix": "layout",
@@ -42,8 +42,8 @@
       "    <slot />",
       "    $0",
       "  </body>",
-      "</html>"
+      "</html>",
     ],
-    "description": "Create a new Astro layout"
-  }
+    "description": "Create a new Astro layout",
+  },
 }

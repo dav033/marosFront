@@ -1,21 +1,35 @@
 import React, { Suspense, lazy, useMemo } from "react";
-import type { InteractiveTableProps } from "../../types";
-import { useLeadsData } from "../../hooks/useLeadsData";
-import { useLeadModals } from "../../hooks/useLeadModals";
-import { useLeadSections } from "../../hooks/useLeadSections";
-import { useLeadHandlers } from "../../hooks/useLeadHandlers";
+import type { InteractiveTableProps } from "src/features/leads/types";
+import { useLeadsData } from "src/features/leads/hooks/useLeadsData";
+import { useLeadModals } from "src/features/leads/hooks/useLeadModals";
+import { useLeadSections } from "src/features/leads/hooks/useLeadSections";
+import { useLeadHandlers } from "src/features/leads/hooks/useLeadHandlers";
 import { GenericButton } from "@components/common/GenericButton";
-import { leadTableColumns } from "../LeadTableColumns";
+import { leadTableColumns } from "src/features/leads/components/LeadTableColumns";
 
 const CreateLeadModal = lazy(() => import("../CreateLeadModal"));
-const EditLeadModal   = lazy(() => import("../EditLeadModal"));
+const EditLeadModal = lazy(() => import("../EditLeadModal"));
 import LeadSection from "../LeadSection";
 
-export default function InnerTable({ leadType, title, createButtonText }: InteractiveTableProps) {
-  const { leads = [], projectTypes = [], contacts = [], isLoading, error, refetchLeads, showSkeleton } = useLeadsData(leadType);
-  const { modals, openCreate, closeCreate, openEdit, closeEdit } = useLeadModals();
+export default function InnerTable({
+  leadType,
+  title,
+  createButtonText,
+}: InteractiveTableProps) {
+  const {
+    leads = [],
+    projectTypes = [],
+    contacts = [],
+    isLoading,
+    error,
+    refetchLeads,
+    showSkeleton,
+  } = useLeadsData(leadType);
+  const { modals, openCreate, closeCreate, openEdit, closeEdit } =
+    useLeadModals();
   const sections = useLeadSections(leads);
-  const { handleLeadCreated, handleLeadUpdated, handleLeadDeleted } = useLeadHandlers(refetchLeads);
+  const { handleLeadCreated, handleLeadUpdated, handleLeadDeleted } =
+    useLeadHandlers(refetchLeads);
   const columns = useMemo(() => leadTableColumns, []);
 
   if (error) {
@@ -36,34 +50,42 @@ export default function InnerTable({ leadType, title, createButtonText }: Intera
     <div className="space-y-8">
       <header className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{title}</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            {title}
+          </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             {leads.length} lead{leads.length !== 1 ? "s" : ""} total
           </p>
         </div>
-        <GenericButton className="text-sm" onClick={openCreate} disabled={isLoading}>
+        <GenericButton
+          className="text-sm"
+          onClick={openCreate}
+          disabled={isLoading}
+        >
           {createButtonText}
         </GenericButton>
       </header>
 
-      <Suspense fallback={
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
-            <div className="animate-pulse space-y-4">
-              <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
-              <div className="space-y-3">
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/6"></div>
-              </div>
-              <div className="flex justify-end space-x-2 mt-6">
-                <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
-                <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
+      <Suspense
+        fallback={
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
+              <div className="animate-pulse space-y-4">
+                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                <div className="space-y-3">
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/6"></div>
+                </div>
+                <div className="flex justify-end space-x-2 mt-6">
+                  <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
+                  <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      }>
+        }
+      >
         {modals.isCreateOpen && (
           <CreateLeadModal
             isOpen={modals.isCreateOpen}

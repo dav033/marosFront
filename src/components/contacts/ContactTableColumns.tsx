@@ -49,7 +49,8 @@ export const contactTableColumns: Column<Contacts>[] = [
   {
     id: "lastContact",
     header: "Last Contact",
-    accessor: (contact) => formatDate(contact.lastContact, { format: 'medium' }),
+    accessor: (contact) =>
+      formatDate(contact.lastContact, { format: "medium" }),
     type: "string",
   },
 ];

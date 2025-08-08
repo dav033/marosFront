@@ -33,13 +33,27 @@ export function useLeadsData(leadType: LeadType) {
 
   // Loading skeleton centralizado
   const { showLoading, hideLoading, setSkeleton } = useLoading();
-  useEffect(() => { setSkeleton("leadsTable", { rows: 8, showSections: true }); }, [setSkeleton]);
+  useEffect(() => {
+    setSkeleton("leadsTable", { rows: 8, showSections: true });
+  }, [setSkeleton]);
   useEffect(() => {
     if (showSkeleton || isLoading) {
       showLoading("leadsTable", { rows: 8, showSections: true });
-    } else { hideLoading(); }
-    return () => { hideLoading(); };
+    } else {
+      hideLoading();
+    }
+    return () => {
+      hideLoading();
+    };
   }, [showSkeleton, isLoading, showLoading, hideLoading]);
 
-  return { leads, projectTypes, contacts, isLoading, error, refetchLeads, showSkeleton };
+  return {
+    leads,
+    projectTypes,
+    contacts,
+    isLoading,
+    error,
+    refetchLeads,
+    showSkeleton,
+  };
 }

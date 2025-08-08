@@ -1,4 +1,4 @@
-import type { Lead } from "src/types/types";
+import type { Lead } from "src/types";
 
 export type LeadEvent =
   | { type: "LEAD_CREATED"; payload: Lead }
@@ -10,6 +10,11 @@ export type LeadEventListener = (event: LeadEvent) => void;
 
 export class LeadEventBus {
   private listeners = new Set<LeadEventListener>();
-  on(l: LeadEventListener) { this.listeners.add(l); return () => this.listeners.delete(l); }
-  emit(e: LeadEvent) { this.listeners.forEach(l => l(e)); }
+  on(l: LeadEventListener) {
+    this.listeners.add(l);
+    return () => this.listeners.delete(l);
+  }
+  emit(e: LeadEvent) {
+    this.listeners.forEach((l) => l(e));
+  }
 }

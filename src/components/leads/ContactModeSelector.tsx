@@ -25,7 +25,8 @@ export default function ContactModeSelector({
   isLoading,
 }: ContactModeSelectorProps) {
   const handleModeChange = (value: "left" | "right") => {
-    const mode = value === "left" ? ContactMode.NEW_CONTACT : ContactMode.EXISTING_CONTACT;
+    const mode =
+      value === "left" ? ContactMode.NEW_CONTACT : ContactMode.EXISTING_CONTACT;
     onContactModeChange(mode);
   };
 

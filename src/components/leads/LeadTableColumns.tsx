@@ -1,9 +1,9 @@
 import React from "react";
 import type { Column } from "src/types/types";
 import type { Lead } from "src/types/types";
-import StatusBadge from "./StatusBadge.tsx";
-import ProjectTypeBadge from "./ProjectTypeBadge.tsx";
-import { formatDate } from "src/utils/dateHelpers";
+import StatusBadge from "@components/ui/StatusBadge";
+import ProjectTypeBadge from "@components/ui/ProjectTypeBadge";
+import { formatDate } from "@utils/dateHelpers";
 
 export const leadTableColumns: Column<Lead>[] = [
   {
@@ -21,7 +21,7 @@ export const leadTableColumns: Column<Lead>[] = [
   {
     id: "startDate",
     header: "Start Date",
-    accessor: (lead) => formatDate(lead.startDate, { format: 'medium' }),
+    accessor: (lead) => formatDate(lead.startDate, { format: "medium" }),
     type: "string",
   },
   {

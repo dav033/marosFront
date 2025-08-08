@@ -19,21 +19,21 @@ export default function ContactSection({
   onEditContact,
   onDeleteContact,
 }: ContactSectionProps) {
-  const { getContactContextOptions } = useContactContextMenu({ 
+  const { getContactContextOptions } = useContactContextMenu({
     onEdit: onEditContact,
-    onDelete: onDeleteContact 
+    onDelete: onDeleteContact,
   });
 
   // Define column widths specifically for contacts table (8 columns)
   const contactColumnWidths = [
-    'w-[18%]',  // Company (18%)
-    'w-[18%]',  // Contact Name (18%)
-    'w-[12%]',  // Occupation (12%)
-    'w-[12%]',  // Product (12%)
-    'w-[12%]',  // Phone (12%)
-    'w-[18%]',  // Email (18%)
-    'w-[15%]',  // Address (15%)
-    'w-[12%]'   // Last Contact (12%)
+    "w-[18%]", // Company (18%)
+    "w-[18%]", // Contact Name (18%)
+    "w-[12%]", // Occupation (12%)
+    "w-[12%]", // Product (12%)
+    "w-[12%]", // Phone (12%)
+    "w-[18%]", // Email (18%)
+    "w-[15%]", // Address (15%)
+    "w-[12%]", // Last Contact (12%)
   ];
 
   return (
@@ -41,9 +41,9 @@ export default function ContactSection({
       <h2 className="text-xl font-semibold">
         {title} ({data.length})
       </h2>
-      <Table 
-        columns={columns} 
-        data={data} 
+      <Table
+        columns={columns}
+        data={data}
         contextMenuOptions={getContactContextOptions}
         showRowSeparators={true}
         columnWidths={contactColumnWidths}

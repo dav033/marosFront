@@ -1,4 +1,4 @@
-import type { Lead } from "src/types/types";
+import type { Lead } from "src/types";
 import type { LeadStatus } from "src/types/enums";
 
 export interface InteractiveTableProps {
