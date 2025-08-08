@@ -9,7 +9,6 @@ interface BaseLeadModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	title: string;
-	isLoading: boolean;
 	error: string | null;
 	onSubmit: (e: React.FormEvent) => void;
 	submitText: string;
@@ -20,7 +19,6 @@ const BaseLeadModal = ({
 	isOpen,
 	onClose,
 	title,
-	isLoading,
 	error,
 	onSubmit,
 	submitText,
@@ -48,13 +46,10 @@ const BaseLeadModal = ({
 					type="button"
 					onClick={onClose}
 					className="bg-theme-primary-alt hover:bg-theme-primary-alt/80"
-					disabled={isLoading}
 				>
 					Cancel
 				</GenericButton>
-				<GenericButton type="submit" onClick={onSubmit} disabled={isLoading}>
-					{isLoading ? `${submitText}...` : submitText}
-				</GenericButton>
+				<GenericButton type="submit">{submitText}</GenericButton>
 			</ModalFooter>
 		</Modal>
 	);

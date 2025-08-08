@@ -81,7 +81,6 @@ export default function EditLeadModal({
       isOpen={isOpen}
       onClose={onClose}
       title="Edit Lead"
-      isLoading={isLoading}
       error={error}
       onSubmit={onSubmit}
       submitText="Updating"

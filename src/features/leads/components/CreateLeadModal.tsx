@@ -91,7 +91,6 @@ export default function CreateLeadModal({
       isOpen={isOpen}
       onClose={onClose}
       title="Crear Lead"
-      isLoading={isLoading}
       error={error}
       onSubmit={onSubmit}
       submitText="Crear"
