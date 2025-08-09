@@ -129,7 +129,19 @@ export function useInstantData<T = unknown>(
     if (!cached || strategy === "network-first") {
       loadData();
     }
-  }, [cacheKey]); // Solo depender de cacheKey
+  }, [cacheKey, checkCache, loadData, strategy]);
+
+  // Permite mutar el estado local y el cache sin refetch
+  const mutate = useCallback((updater: (prev: T) => T) => {
+    setData((prev) => {
+      const next = updater(prev);
+      if (enableCache) {
+        apiCache.set(cacheKey, next, ttl);
+      }
+      return next;
+    });
+    // No tocar loading/fromCache: mutación local sin red
+  }, [cacheKey, ttl, enableCache]);
 
   return {
     data,
@@ -138,6 +150,7 @@ export function useInstantData<T = unknown>(
     fromCache,
     refresh,
     clearCache,
+    mutate, // ← nuevo
   };
 }
 
@@ -187,6 +200,7 @@ export function useInstantList<T = any>(
     hasData: result.data.length > 0,
     showSkeleton: shouldShowSkeleton,
     items: result.data,
+    mutateItems: result.mutate, // ← nuevo
   };
 }
 

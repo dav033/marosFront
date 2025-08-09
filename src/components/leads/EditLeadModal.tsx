@@ -48,8 +48,30 @@ export default function EditLeadModal({
       startDate: formData.startDate || undefined,
     };
 
-    const updatedLead = await updateLead(lead.id, updateData);
-    onLeadUpdated(updatedLead);
+    // 1) snapshot original (para rollback si falla)
+    const original = lead;
+    // 2) versión optimista para UI inmediata
+    const updatedLocal: Lead = {
+      ...lead,
+      name: updateData.name ?? lead.name,
+      location: updateData.location ?? lead.location,
+      status: (updateData.status as any) ?? lead.status,
+      startDate: updateData.startDate ?? lead.startDate,
+      // si necesita reflejar contact/projectType por id, puede mapearlos aquí
+    };
+    onLeadUpdated(updatedLocal); // UI instantánea
+
+    // 3) PUT en segundo plano; reconciliar o hacer rollback
+    void (async () => {
+      try {
+        const saved = await updateLead(lead.id, updateData);
+        onLeadUpdated(saved); // reconciliar con servidor
+      } catch (err) {
+        console.error("Update failed, rolling back", err);
+        onLeadUpdated(original); // rollback
+        // TODO: mostrar toast no intrusivo
+      }
+    })();
   };
 
   const {

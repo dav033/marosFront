@@ -30,14 +30,19 @@ export default function InnerTable({
     contacts = [],
     isLoading,
     error,
-    refetchLeads,
     showSkeleton,
+    addLead,
+    updateLead,
+    removeLead,
   } = useLeadsData(leadType);
   const { modals, openCreate, closeCreate, openEdit, closeEdit } =
     useLeadModals();
   const sections = useLeadSections(leads);
-  const { handleLeadCreated, handleLeadUpdated, handleLeadDeleted } =
-    useLeadHandlers(refetchLeads);
+  const { handleLeadDeleted } = useLeadHandlers({
+    onDeleted: removeLead,
+    onUpdated: updateLead,
+    onCreated: addLead, // optional, can be omitted if not needed
+  });
   const columns = useMemo(() => leadTableColumns, []);
 
   if (error) {
@@ -46,7 +51,6 @@ export default function InnerTable({
         <div className="text-red-600 dark:text-red-400">
           Error loading leads: {typeof error === 'object' && error !== null && 'message' in error ? (error as { message?: string }).message : String(error)}
         </div>
-        <GenericButton onClick={refetchLeads}>Try Again</GenericButton>
       </div>
     );
   }
@@ -74,28 +78,28 @@ export default function InnerTable({
       </header>
 
   <Suspense fallback={null}>
-        {modals.isCreateOpen && (
-          <CreateLeadModal
-            isOpen={modals.isCreateOpen}
-            onClose={closeCreate}
-            projectTypes={projectTypes}
-            contacts={contacts}
-            leadType={leadType}
-            onLeadCreated={handleLeadCreated}
-          />
-        )}
+    {modals.isCreateOpen && (
+      <CreateLeadModal
+        isOpen={modals.isCreateOpen}
+        onClose={closeCreate}
+        projectTypes={projectTypes}
+        contacts={contacts}
+        leadType={leadType}
+        onLeadCreated={addLead} // Mutación local tras respuesta del API
+      />
+    )}
 
-        {modals.isEditOpen && modals.editingLead && (
-          <EditLeadModal
-            isOpen={modals.isEditOpen}
-            onClose={closeEdit}
-            lead={modals.editingLead}
-            projectTypes={projectTypes}
-            contacts={contacts}
-            onLeadUpdated={handleLeadUpdated}
-          />
-        )}
-      </Suspense>
+    {modals.isEditOpen && modals.editingLead && (
+      <EditLeadModal
+        isOpen={modals.isEditOpen}
+        onClose={closeEdit}
+        lead={modals.editingLead}
+        projectTypes={projectTypes}
+        contacts={contacts}
+        onLeadUpdated={updateLead}
+      />
+    )}
+  </Suspense>
 
       <div className="space-y-6">
         {sections.map(({ title: secTitle, data, status }) => (

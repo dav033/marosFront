@@ -2,7 +2,7 @@ import React from "react";
 import { GenericInput } from "@components/common/GenericInput";
 import { GenericSelect } from "@components/common/GenericSelect";
 
-import { FormMode } from "src/types/enums";
+import { FormMode, ContactMode } from "src/types/enums";
 import {
 	getStatusOptions,
 	formatContactOptions,
@@ -16,6 +16,7 @@ interface LeadFormFieldsProps {
 	projectTypes: ProjectType[];
 	contacts?: Contacts[];
 	mode?: FormMode;
+	contactMode?: ContactMode;
 }
 
 const LeadFormFields = ({
@@ -24,14 +25,17 @@ const LeadFormFields = ({
 	projectTypes,
 	contacts = [],
 	mode = FormMode.CREATE,
+	contactMode,
 }: LeadFormFieldsProps) => {
 	const statusOptions = getStatusOptions();
 	const contactOptions = formatContactOptions(contacts);
 	const projectTypeOptions = formatProjectTypeOptions(projectTypes);
 
-	const showLeadName = mode === FormMode.EDIT;
+	const showLeadName = true;
 	const showStatus = mode === FormMode.EDIT;
 	const showStartDate = mode === FormMode.EDIT;
+
+	const showContactSelect = mode === FormMode.EDIT || contactMode === ContactMode.EXISTING_CONTACT;
 
 	return (
 		<>
@@ -54,15 +58,17 @@ const LeadFormFields = ({
 				className="w-full"
 			/>
 
-			<GenericSelect
-				searchable
-				options={contactOptions}
-				value={form.contactId}
-				onChange={(val) => onChange("contactId", val)}
-				placeholder="Select Contact *"
-				icon="material-symbols:person"
-				className="w-full"
-			/>
+			{showContactSelect && (
+				<GenericSelect
+					searchable
+					options={contactOptions}
+					value={form.contactId}
+					onChange={(val) => onChange("contactId", val)}
+					placeholder="Select Contact *"
+					icon="material-symbols:person"
+					className="w-full"
+				/>
+			)}
 
 			<GenericInput
 				value={form.location}

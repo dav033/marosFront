@@ -1,7 +1,7 @@
-import type { Lead } from "src/types/types";
 import { OptimizedLeadsService } from "src/services/OptimizedLeadsService";
 import { deleteLead } from "src/utils/leadHelpers";
 import { LeadEventBus } from "./LeadEvents";
+import type { Lead } from "@/types";
 
 export class LeadAgent {
   private bus: LeadEventBus;
@@ -35,14 +35,12 @@ export class LeadAgent {
       projectTypeId: projectType?.id,
       startDate,
     });
-    this.bus.emit({ type: "LEAD_UPDATED", payload: updated });
-    this.bus.emit({ type: "REFETCH_REQUESTED" });
+  this.bus.emit({ type: "LEAD_UPDATED", payload: updated });
     return updated;
   }
 
   async remove(id: number): Promise<void> {
-    await OptimizedLeadsService.deleteLead(id);
-    this.bus.emit({ type: "LEAD_DELETED", payload: { id } });
-    this.bus.emit({ type: "REFETCH_REQUESTED" });
+  await OptimizedLeadsService.deleteLead(id);
+  this.bus.emit({ type: "LEAD_DELETED", payload: { id } });
   }
 }

@@ -32,6 +32,19 @@ export default function CreateLeadModal({
 }: CreateLeadModalProps) {
   const [contactMode, setContactMode] = useState<ContactMode>(ContactMode.NEW_CONTACT);
 
+  // Limpia campos irrelevantes al alternar el switch
+  const handleContactModeChange = (mode: ContactMode) => {
+    setContactMode(mode);
+    if (mode === ContactMode.NEW_CONTACT) {
+      handleChange("contactId", "");
+    } else {
+      handleChange("customerName", "");
+      handleChange("contactName", "");
+      handleChange("phone", "");
+      handleChange("email", "");
+    }
+  };
+
   // Usar el hook de formulario para manejar el estado y validación
   const {
     form,
@@ -97,7 +110,7 @@ export default function CreateLeadModal({
     >
       <ContactModeSelector
         contactMode={contactMode}
-        onContactModeChange={setContactMode}
+        onContactModeChange={handleContactModeChange}
         form={form}
         onChange={handleChange}
         isLoading={isLoading}
@@ -108,6 +121,7 @@ export default function CreateLeadModal({
         projectTypes={projectTypes}
         contacts={contacts}
         mode={FormMode.CREATE}
+        contactMode={contactMode}
       />
     </BaseLeadModal>
   );

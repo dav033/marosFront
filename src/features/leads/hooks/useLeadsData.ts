@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useInstantList } from "../../../hooks/useInstantData.tsx";
+import type { Lead } from "src/types/domain";
 import { OptimizedContactsService } from "src/services/OptimizedContactsService";
 import { ProjectTypeService } from "src/services/ProjectTypeService";
 import { useLoading } from "src/contexts/LoadingContext";
@@ -13,11 +14,49 @@ export function useLeadsData(leadType: LeadType) {
     showSkeleton,
     refresh: refetchLeads,
     error,
-  } = useInstantList(
+    mutateItems,
+  } = useInstantList<Lead>(
     `leads_${leadType}`,
     () => OptimizedLeadsService.getLeadsByType(leadType),
     { ttl: 300000, showSkeletonOnlyOnFirstLoad: true }
   );
+  // Ajuste esta condición a su segmentación real (por leadType, status, etc.)
+  const matchesCurrentList = (lead: Lead) => {
+    return lead.leadType === leadType;
+  };
+
+  // fallback para mutateItems si es undefined
+  const safeMutate = mutateItems ?? (() => {});
+
+  const addLead = (created: Lead) => {
+    safeMutate((prev: Lead[]) => {
+      const list = Array.isArray(prev) ? prev : [];
+      if (!created) return list;
+      if (!matchesCurrentList(created)) return list;
+      if (list.some((l) => l.id === created.id)) return list;
+      return [created, ...list];
+    });
+  };
+
+  const updateLead = useCallback((updated: Lead) => {
+    safeMutate((prev: Lead[]) => {
+      const list = Array.isArray(prev) ? prev : [];
+      const exists = list.some((l) => l.id === updated.id);
+      // si ya no pertenece a esta vista, sáquelo
+      if (!matchesCurrentList(updated)) {
+        return exists ? list.filter((l) => l.id !== updated.id) : list;
+      }
+      // si existe, reemplazar; si no, insertarlo (por si el update lo trae a esta vista)
+      return exists ? list.map((l) => (l.id === updated.id ? updated : l)) : [updated, ...list];
+    });
+  }, [safeMutate, matchesCurrentList]);
+
+  const removeLead = (id: number) => {
+    safeMutate((prev: Lead[]) => {
+      const list = Array.isArray(prev) ? prev : [];
+      return list.filter((l) => l.id !== id);
+    });
+  };
 
   const { items: projectTypes = [] } = useInstantList(
     "project_types",
@@ -55,5 +94,8 @@ export function useLeadsData(leadType: LeadType) {
     error,
     refetchLeads,
     showSkeleton,
+    addLead,
+    updateLead,
+    removeLead,
   };
 }

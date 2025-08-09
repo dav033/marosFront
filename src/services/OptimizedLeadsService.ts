@@ -184,7 +184,10 @@ export const OptimizedLeadsService = {
         },
       });
 
-      return Boolean(response.data);
+      // Si no lanza excepción, considérelo éxito (muchos deletes devuelven 204 sin body)
+      return typeof response?.status === "number"
+        ? response.status >= 200 && response.status < 300
+        : true;
     } catch (error) {
       console.error("Error deleting lead:", error);
       throw error;

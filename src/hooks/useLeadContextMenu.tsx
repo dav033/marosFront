@@ -2,7 +2,7 @@ import {
   useContextMenu,
   type ContextMenuOption,
 } from "@components/common/ContextMenu";
-import { OptimizedLeadsService as LeadsService } from "../services/OptimizedLeadsService";
+// ❌ ya no se usa el servicio aquí
 import type { Lead, UseLeadContextMenuProps } from "src/types";
 
 export const useLeadContextMenu = ({
@@ -19,21 +19,11 @@ export const useLeadContextMenu = ({
     if (!confirmed) return;
 
     try {
-      // Call the delete callback first
-      if (onDelete) {
-        onDelete(lead.id);
-      }
-
-      const result = await LeadsService.deleteLead(lead.id);
-
-      if (!result) {
-        alert(`Error deleting lead.`);
-        window.location.reload();
-      }
+      await onDelete?.(lead.id);
+      hideContextMenu();
     } catch (error) {
       console.error("Error deleting lead:", error);
-      alert("Unexpected error deleting lead. Page will reload.");
-      window.location.reload();
+      // (Opcional) mostrar toast, pero NO recargar la página
     }
   };
 

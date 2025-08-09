@@ -3,45 +3,39 @@ import type { Lead } from "src/types";
 import { LeadAgent } from "src/features/leads/agent/LeadAgent";
 import { LeadEventBus } from "src/features/leads/agent/LeadEvents";
 
-export function useLeadHandlers(refetchLeads: () => void) {
+export function useLeadHandlers({
+  onCreated,
+  onUpdated,
+  onDeleted,
+}: {
+  onCreated?: (lead: Lead) => void;
+  onUpdated: (lead: Lead) => void;
+  onDeleted: (id: number) => void;
+}) {
   const bus = useMemo(() => new LeadEventBus(), []);
   const agent = useMemo(() => new LeadAgent(bus), [bus]);
 
-  // Suscripción simple: ante cualquier evento relevante, forzar refetch.
-  // Si luego desea manejar cache optimista real, puede extender aquí.
-  useMemo(
-    () =>
-      bus.on((e) => {
-        if (e.type === "REFETCH_REQUESTED") refetchLeads();
-      }),
-    [bus, refetchLeads]
-  );
+  // UPDATE
+  const handleLeadUpdated = useCallback(async (payload: Lead) => {
+    const result = await agent.update(payload);
+    const updatedLead = result ?? payload; // si API devuelve 204, use merge local con payload
+    onUpdated(updatedLead);
+    bus.emit({ type: "LEAD_UPDATED", payload: updatedLead });
+  }, [agent, onUpdated, bus]);
 
-  const handleLeadCreated = useCallback(
-    async (newLead: Omit<Lead, "id">) => {
-      await agent.create(newLead);
-    },
-    [agent]
-  );
+  // DELETE
+  const handleLeadDeleted = useCallback(async (leadId: number) => {
+    await agent.remove(leadId);
+    onDeleted(leadId);
+    bus.emit({ type: "LEAD_DELETED", payload: { id: leadId } });
+  }, [agent, onDeleted, bus]);
 
-  const handleLeadUpdated = useCallback(
-    async (lead: Lead) => {
-      await agent.update(lead);
-    },
-    [agent]
-  );
-
-  const handleLeadDeleted = useCallback(
-    async (leadId: number) => {
-      try {
-        await agent.remove(leadId);
-      } catch (err) {
-        // TODO: Integrar toast/notification centralizado
-        console.error("Error deleting lead:", err);
-      }
-    },
-    [agent]
-  );
+  // Opcional: CREATE centralizado
+  const handleLeadCreated = useCallback(async (creationPayload: any) => {
+    const created = await agent.create(creationPayload);
+    onCreated?.(created);
+    bus.emit({ type: "LEAD_CREATED", payload: created });
+  }, [agent, onCreated, bus]);
 
   return { handleLeadCreated, handleLeadUpdated, handleLeadDeleted };
 }

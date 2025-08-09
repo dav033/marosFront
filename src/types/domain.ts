@@ -180,6 +180,7 @@ export interface UseInstantDataResult<T> {
   fromCache: boolean;
   refresh: () => Promise<void>;
   clearCache: () => void;
+  mutate?: (updater: (prev: T) => T) => void;
 }
 
 export interface UseLeadContextMenuProps {
