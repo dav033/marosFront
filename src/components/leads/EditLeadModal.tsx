@@ -3,7 +3,7 @@ import type { Lead, ProjectType, Contacts, LeadFormData } from "../../types/doma
 import { FormMode } from "../../types/enums";
 import { useLeadForm } from "../../hooks/useLeadForm";
 import BaseLeadModal from "./BaseLeadModal";
-import LeadFormFields from "./LeadFormFields";
+import LeadFormFields from "../ui/leads/LeadFormFields.tsx";
 import {
   validateEditLead,
   updateLead,

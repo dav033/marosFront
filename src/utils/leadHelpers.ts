@@ -1,4 +1,4 @@
-import { LeadsService } from "@services/LeadsService";
+import { OptimizedLeadsService as LeadsService } from "../services/OptimizedLeadsService";
 import type { Lead } from "src/types";
 import { LeadType } from "src/types/enums";
 
@@ -110,7 +110,11 @@ export const updateLead = async (
 export const deleteLead = async (
   leadId: number
 ): Promise<{ success: boolean; message: string }> => {
-  return await LeadsService.deleteLead(leadId);
+  const result = await LeadsService.deleteLead(leadId);
+  return {
+    success: result,
+    message: result ? "Lead deleted successfully" : "Failed to delete lead",
+  };
 };
 
 export const formatLeadForEdit = (lead: Lead | null) => {

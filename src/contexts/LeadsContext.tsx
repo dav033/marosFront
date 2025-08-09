@@ -6,8 +6,8 @@ import React, {
   useMemo,
 } from "react";
 import type { ReactNode } from "react";
-import type { Lead } from "../types/types";
 import { LeadType, LeadStatus } from "../types/enums";
+import type { Lead } from "@/types";
 
 interface LeadsState {
   leads: Lead[];

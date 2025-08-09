@@ -2,10 +2,8 @@ import {
   useContextMenu,
   type ContextMenuOption,
 } from "@components/common/ContextMenu";
-import { LeadsService } from "@services/LeadsService";
+import { OptimizedLeadsService as LeadsService } from "../services/OptimizedLeadsService";
 import type { Lead, UseLeadContextMenuProps } from "src/types";
-
-
 
 export const useLeadContextMenu = ({
   onEdit,
@@ -28,8 +26,8 @@ export const useLeadContextMenu = ({
 
       const result = await LeadsService.deleteLead(lead.id);
 
-      if (!result.success) {
-        alert(`Error deleting lead: ${result.message}`);
+      if (!result) {
+        alert(`Error deleting lead.`);
         window.location.reload();
       }
     } catch (error) {

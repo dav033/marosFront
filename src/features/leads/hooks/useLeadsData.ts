@@ -4,7 +4,7 @@ import { OptimizedContactsService } from "src/services/OptimizedContactsService"
 import { ProjectTypeService } from "src/services/ProjectTypeService";
 import { useLoading } from "src/contexts/LoadingContext";
 import type { LeadType } from "src/types/enums";
-import { OptimizedLeadsService } from "src/services/OptimizedLeadsService";
+import { OptimizedLeadsService } from "../../../services/OptimizedLeadsService";
 
 export function useLeadsData(leadType: LeadType) {
   const {

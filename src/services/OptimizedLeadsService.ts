@@ -1,15 +1,6 @@
-/**
- * Servicio de Leads optimizado con cache y prefetch
- */
-
-import type {
-  Lead,
-  CreateLeadByNewContactRequest,
-  CreateLeadRequest,
-  CreateContactRequest,
-} from "src/types/types";
 import { LeadType, LeadStatus } from "src/types/enums";
 import { optimizedApiClient } from "src/lib/optimizedApiClient";
+import type { Lead, CreateContactRequest, CreateLeadRequest } from "@/types";
 
 export const OptimizedLeadsService = {
   async getLeadsByType(type: LeadType): Promise<Lead[]> {
@@ -29,7 +20,7 @@ export const OptimizedLeadsService = {
           },
         }
       );
-      return response.data;
+      return response.data as Lead[];
     } catch (error) {
       console.error("Error in API getLeadsByType:", error);
       throw error;
@@ -68,7 +59,7 @@ export const OptimizedLeadsService = {
       leadType: leadData.leadType,
     };
 
-    const request: CreateLeadByNewContactRequest = {
+    const request = {
       lead: leadRequest,
       contact: contactRequest,
     };
@@ -85,7 +76,7 @@ export const OptimizedLeadsService = {
       }
     );
 
-    return response.data;
+    return response.data as Lead;
   },
 
   async createLeadByExistingContact(leadData: {
@@ -127,7 +118,7 @@ export const OptimizedLeadsService = {
       }
     );
 
-    return response.data;
+    return response.data as Lead;
   },
 
   async updateLead(
@@ -176,7 +167,7 @@ export const OptimizedLeadsService = {
         }
       );
 
-      return response.data;
+      return response.data as Lead;
     } catch (error) {
       console.error("Error updating lead:", error);
       throw error;
@@ -193,7 +184,7 @@ export const OptimizedLeadsService = {
         },
       });
 
-      return response.data;
+      return Boolean(response.data);
     } catch (error) {
       console.error("Error deleting lead:", error);
       throw error;
