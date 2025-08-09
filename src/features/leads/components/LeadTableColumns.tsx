@@ -1,9 +1,9 @@
 import React from "react";
 import type { Column } from "src/types/types";
-import type { Lead } from "src/types/types";
 import StatusBadge from "@components/ui/StatusBadge";
 import ProjectTypeBadge from "@components/ui/ProjectTypeBadge";
 import { formatDate } from "@utils/dateHelpers";
+import type { Lead } from "@/types";
 
 export const leadTableColumns: Column<Lead>[] = [
   {

@@ -3,9 +3,9 @@ import { GenericInput } from "@components/common/GenericInput";
 import type { ProjectType, Contacts, Lead } from "src/types";
 import { LeadType, FormMode, ContactMode } from "src/types/enums";
 import { useLeadForm } from "src/hooks/useLeadForm";
-import BaseLeadModal from "./BaseLeadModal";
+import BaseLeadModal from "../../../components/leads/BaseLeadModal.tsx";
 import LeadFormFields from "./LeadFormFields";
-import ContactModeSelector from "./ContactModeSelector";
+import ContactModeSelector from "../../../components/ui/leads/ContactModeSelector.tsx";
 import {
   validateNewContactLead,
   validateExistingContactLead,

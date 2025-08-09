@@ -4,10 +4,10 @@ import Modal from "@components/common/modal/Modal";
 import ModalBody from "@components/common/modal/ModalBody";
 import ModalFooter from "@components/common/modal/ModalFooter";
 import ModalHeader from "@components/common/modal/ModalHeader";
-import type { Contacts } from "../../types/types";
 import ContactForm from "./ContactForm";
 import type { ContactFormData } from "./ContactForm";
 import { OptimizedContactsService } from "src/services/OptimizedContactsService";
+import type { Contacts } from "@/types";
 
 interface EditContactModalProps {
   isOpen: boolean;

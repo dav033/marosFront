@@ -1,5 +1,4 @@
 import React, { Suspense, lazy, useMemo } from "react";
-import type { InteractiveTableProps } from "src/features/leads/types";
 import { useLeadsData } from "src/features/leads/hooks/useLeadsData";
 import { useLeadModals } from "src/features/leads/hooks/useLeadModals";
 import { useLeadSections } from "src/features/leads/hooks/useLeadSections";
@@ -8,12 +7,13 @@ import { GenericButton } from "@components/common/GenericButton";
 import { leadTableColumns } from "src/features/leads/components/LeadTableColumns";
 
 const loadCreateLeadModal = () => import("../CreateLeadModal");
-const loadEditLeadModal = () => import("../EditLeadModal");
+const loadEditLeadModal = () => import("../../../../components/leads/EditLeadModal.tsx");
 const CreateLeadModal = lazy(loadCreateLeadModal);
 const EditLeadModal = lazy(loadEditLeadModal);
 
 import { useEffect } from "react";
 import LeadSection from "../LeadSection";
+import type { InteractiveTableProps } from "@/types/domain.ts";
 
 export default function InnerTable({
   leadType,

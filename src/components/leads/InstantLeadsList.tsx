@@ -7,9 +7,9 @@ import React, { useEffect } from "react";
 import { useInstantList } from "../../hooks/useInstantData";
 import { OptimizedLeadsService } from "../../services/OptimizedLeadsService";
 import { LeadType } from "../../types/enums";
-import type { Lead } from "../../types/types";
 import { LoadingProvider, useLoading } from "src/contexts/LoadingContext";
 import { SkeletonRenderer } from "@components/common/SkeletonRenderer";
+import type { Lead } from "@/types";
 
 interface InstantLeadsListProps {
   leadType: LeadType;

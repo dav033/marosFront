@@ -1,6 +1,5 @@
 import { useEffect } from "react";
-import type { Lead, ProjectType, Contacts } from "../../types/domain";
-import type { LeadFormData } from "../../hooks/useLeadForm";
+import type { Lead, ProjectType, Contacts, LeadFormData } from "../../types/domain";
 import { FormMode } from "../../types/enums";
 import { useLeadForm } from "../../hooks/useLeadForm";
 import BaseLeadModal from "./BaseLeadModal";

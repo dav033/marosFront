@@ -1,5 +1,5 @@
+import type { ProjectType } from "@/types";
 import React from "react";
-import type { ProjectType } from "src/types/types";
 
 interface Props {
   projectType: ProjectType | null;

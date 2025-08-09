@@ -2,7 +2,7 @@ import React from "react";
 import Table from "@components/common/table/Table";
 import { useLeadContextMenu } from "src/hooks/useLeadContextMenu";
 import type { Column } from "src/types/types";
-import type { Lead } from "src/types/types";
+import type { Lead } from "@/types";
 
 interface LeadSectionProps {
   title: string;
