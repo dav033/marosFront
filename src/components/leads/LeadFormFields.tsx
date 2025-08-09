@@ -1,18 +1,18 @@
 import React from "react";
 import { GenericInput } from "@components/common/GenericInput";
 import { GenericSelect } from "@components/common/GenericSelect";
-import type { ProjectType, Contacts } from "../../types/types";
-import type { LeadFormData } from "../../hooks/useLeadForm";
+
 import { FormMode } from "../../types/enums";
 import {
   getStatusOptions,
   formatContactOptions,
   formatProjectTypeOptions,
 } from "../../utils/leadHelpers";
-
+import type { LeadFormData, ProjectType, Contacts } from "@/types";
+type Field = Extract<keyof LeadFormData, string>;
 interface LeadFormFieldsProps {
   form: LeadFormData;
-  onChange: (field: keyof LeadFormData, value: string) => void;
+  onChange: (field: Field, value: string) => void; // ← clave
   projectTypes: ProjectType[];
   contacts?: Contacts[];
   mode?: FormMode;

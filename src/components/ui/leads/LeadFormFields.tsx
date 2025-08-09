@@ -1,14 +1,14 @@
 import React from "react";
 import { GenericInput } from "@components/common/GenericInput";
 import { GenericSelect } from "@components/common/GenericSelect";
-import type { ProjectType, Contacts } from "src/types/types";
-import type { LeadFormData } from "@hooks/useLeadForm";
+
 import { FormMode } from "src/types/enums";
 import {
 	getStatusOptions,
 	formatContactOptions,
 	formatProjectTypeOptions,
 } from "@utils/leadHelpers";
+import type { LeadFormData, ProjectType, Contacts } from "@/types";
 
 interface LeadFormFieldsProps {
 	form: LeadFormData;

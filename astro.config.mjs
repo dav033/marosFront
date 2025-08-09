@@ -23,6 +23,7 @@ export default defineConfig({
         "@contexts": "/src/contexts",
         "@utils": "/src/utils",
       },
+      dedupe: ["react", "react-dom"],
     },
   },
   integrations: [icon(), react()],
