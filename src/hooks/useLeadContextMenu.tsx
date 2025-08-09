@@ -3,12 +3,9 @@ import {
   type ContextMenuOption,
 } from "@components/common/ContextMenu";
 import { LeadsService } from "@services/LeadsService";
-import type { Lead } from "src/types";
+import type { Lead, UseLeadContextMenuProps } from "src/types";
 
-interface UseLeadContextMenuProps {
-  onEdit?: (lead: Lead) => void;
-  onDelete?: (leadId: number) => void;
-}
+
 
 export const useLeadContextMenu = ({
   onEdit,

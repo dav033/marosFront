@@ -4,11 +4,7 @@ import {
 } from "@components/common/ContextMenu";
 import { OptimizedContactsService } from "src/services/OptimizedContactsService";
 import type { Contacts } from "../types/types";
-
-interface UseContactContextMenuProps {
-  onEdit?: (contact: Contacts) => void;
-  onDelete?: (contactId: number) => void;
-}
+import type { UseContactContextMenuProps } from "@/types";
 
 export const useContactContextMenu = ({
   onEdit,

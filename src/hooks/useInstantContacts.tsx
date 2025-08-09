@@ -3,18 +3,11 @@
  */
 
 import { useState, useEffect } from "react";
-import type { Contacts } from "src/types";
+import type { Contacts, UseInstantContactsResult } from "src/types";
 import { OptimizedContactsService } from "src/services/OptimizedContactsService";
 import { apiCache } from "src/lib/cacheManager";
 
-interface UseInstantContactsResult {
-  contacts: Contacts[];
-  isLoading: boolean;
-  showSkeleton: boolean;
-  error: Error | null;
-  fromCache: boolean;
-  refetch: () => Promise<void>;
-}
+
 
 export function useInstantContacts(): UseInstantContactsResult {
   const ENDPOINT = "/contacts/all";

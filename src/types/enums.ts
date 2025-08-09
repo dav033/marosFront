@@ -36,3 +36,4 @@ export enum ContactMode {
   NEW_CONTACT = "left",
   EXISTING_CONTACT = "right",
 }
+

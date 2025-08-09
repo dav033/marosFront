@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useInstantList } from "src/hooks/useInstantData";
+import { useInstantList } from "../../../hooks/useInstantData.tsx";
 import { OptimizedContactsService } from "src/services/OptimizedContactsService";
 import { ProjectTypeService } from "src/services/ProjectTypeService";
 import { useLoading } from "src/contexts/LoadingContext";

@@ -1,6 +1,5 @@
-import type { Lead } from "../../types/types";
 import type { SearchConfig } from "../../hooks/useSearch";
-
+import type { Lead } from "@/types";
 export const leadsSearchConfig: SearchConfig<Lead> = {
   searchableFields: [
     { value: "leadNumber", label: "Lead Number" },

@@ -24,11 +24,16 @@ export interface UseSearchResult<T> {
 }
 
 // Helper function to get nested property value
-function getNestedValue(obj: any, path: string): any {
-  return path.split(".").reduce((current, key) => current?.[key], obj);
+function getNestedValue(obj: unknown, path: string): unknown {
+  return path.split(".").reduce((current, key) => {
+    if (current && typeof current === "object" && key in current) {
+      return (current as Record<string, unknown>)[key];
+    }
+    return undefined;
+  }, obj);
 }
 
-export function useSearch<T extends Record<string, any>>(
+export function useSearch<T extends Record<string, unknown>>(
   data: T[],
   config: SearchConfig<T>
 ): UseSearchResult<T> {

@@ -1,11 +1,5 @@
+import type { UseFetchResult } from "@/types/domain";
 import { useState, useEffect, useCallback } from "react";
-
-export interface UseFetchResult<T> {
-  data: T | null;
-  loading: boolean;
-  error: Error | null;
-  refetch: () => Promise<void>;
-}
 
 export function useFetch<T, P extends unknown[]>(
   requestFn: (...args: P) => Promise<T>,

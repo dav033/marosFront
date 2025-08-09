@@ -1,18 +1,11 @@
 import { useCallback } from "react";
-import type { Lead } from "src/types";
-import { LeadType } from "src/types/enums";
+import type { LeadFormData, UseCreateLeadOptions } from "src/types";
 import {
   validateNewContactLead,
   validateExistingContactLead,
   createLeadWithNewContact,
   createLeadWithExistingContact,
 } from "../utils/leadHelpers";
-import type { LeadFormData } from "./useLeadForm";
-
-interface UseCreateLeadOptions {
-  leadType: LeadType;
-  onLeadCreated: (lead: Lead) => void;
-}
 
 export const useCreateLead = ({
   leadType,

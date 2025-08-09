@@ -1,25 +1,6 @@
 import { useState, useCallback } from "react";
-import type { Lead } from "src/types";
+import type { Lead, LeadFormData, UseLeadFormOptions } from "src/types";
 import { validateEmail } from "@utils/leadHelpers";
-
-export interface LeadFormData {
-  leadName: string;
-  customerName: string;
-  contactName: string;
-  phone: string;
-  email: string;
-  contactId: string;
-  projectTypeId: string;
-  location: string;
-  status?: string;
-  startDate?: string;
-}
-
-interface UseLeadFormOptions {
-  initialData?: Partial<LeadFormData>;
-  onSubmit: (data: LeadFormData) => Promise<void>;
-  onSuccess?: () => void;
-}
 
 export const useLeadForm = ({
   initialData = {},

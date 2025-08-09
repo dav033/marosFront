@@ -1,17 +1,13 @@
-import type {
-  Lead,
-  CreateLeadByNewContactRequest,
-  CreateLeadRequest,
-  CreateContactRequest,
-} from "src/types/types";
 import { LeadType, LeadStatus } from "src/types/enums";
-import apiClient from "src/lib/apiClient";
+import type { Lead, CreateContactRequest, CreateLeadRequest } from "@/types";
+import { optimizedApiClient as apiClient } from "@/lib/optimizedApiClient";
+
 
 export const LeadsService = {
   async getLeadsByType(type: LeadType): Promise<Lead[]> {
     try {
       const response = await apiClient.post(`/leads/type`, { type });
-      return response.data;
+      return response.data as Lead[];
     } catch (error) {
       console.error("Error in API getLeadsByType:", error);
       throw error;
@@ -54,13 +50,13 @@ export const LeadsService = {
       leadType: leadData.leadType,
     };
 
-    const request: CreateLeadByNewContactRequest = {
+    const request = {
       lead: leadRequest,
       contact: contactRequest,
     };
 
     const response = await apiClient.post(`/leads/new-contact`, request);
-    return response.data;
+    return response.data as Lead;
   },
 
   async createLeadByExistingContact(leadData: {
@@ -91,7 +87,7 @@ export const LeadsService = {
     };
 
     const response = await apiClient.post(`/leads/existing-contact`, request);
-    return response.data;
+    return response.data as Lead;
   },
 
   async deleteLead(
@@ -101,7 +97,7 @@ export const LeadsService = {
       const response = await apiClient.delete(`/leads/${leadId}`);
       return {
         success: true,
-        message: response.data || "Lead deleted successfully",
+        message: typeof response.data === "string" ? response.data : "Lead deleted successfully",
       };
     } catch (error) {
       console.error("Error deleting lead:", error);
@@ -152,7 +148,7 @@ export const LeadsService = {
       };
 
       const response = await apiClient.put(`/leads/${leadId}`, request);
-      return response.data;
+      return response.data as Lead;
     } catch (error) {
       console.error("Error updating lead:", error);
       throw error;

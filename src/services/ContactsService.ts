@@ -1,32 +1,32 @@
 import type { Contacts, CreateContactRequest } from "src/types";
-import apiClient from "src/lib/apiClient";
+import { optimizedApiClient } from "src/lib/optimizedApiClient";
 
 export const ContactsService = {
   async getAllContacts(): Promise<Contacts[]> {
-    const response = await apiClient.get(`/contacts/all`);
-    return response.data;
+  const response = await optimizedApiClient.get<Contacts[]>(`/contacts/all`);
+  return response.data;
   },
 
   async getContactById(id: number): Promise<Contacts> {
-    const response = await apiClient.get(`/contacts/${id}`);
-    return response.data;
+  const response = await optimizedApiClient.get<Contacts>(`/contacts/${id}`);
+  return response.data;
   },
 
   async createContact(contact: CreateContactRequest): Promise<Contacts> {
-    const response = await apiClient.post(`/contacts`, contact);
-    return response.data;
+  const response = await optimizedApiClient.post<Contacts>(`/contacts`, contact);
+  return response.data;
   },
 
   async updateContact(
     id: number,
     contact: Partial<Contacts>
   ): Promise<Contacts> {
-    const response = await apiClient.put(`/contacts/${id}`, contact);
-    return response.data;
+  const response = await optimizedApiClient.put<Contacts>(`/contacts/${id}`, contact);
+  return response.data;
   },
 
   async deleteContact(id: number): Promise<boolean> {
-    const response = await apiClient.delete(`/contacts/${id}`);
-    return response.data;
+  const response = await optimizedApiClient.delete<boolean>(`/contacts/${id}`);
+  return response.data;
   },
 };

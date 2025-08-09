@@ -18,7 +18,7 @@ export const OptimizedContactsService = {
         priority: "medium",
       },
     });
-    return response.data;
+    return response.data as Contacts[];
   },
 
   async getContactById(id: number): Promise<Contacts> {
@@ -29,7 +29,7 @@ export const OptimizedContactsService = {
         strategy: "cache-first",
       },
     });
-    return response.data;
+    return response.data as Contacts;
   },
 
   async createContact(contact: CreateContactRequest): Promise<Contacts> {
@@ -40,7 +40,7 @@ export const OptimizedContactsService = {
         dependencies: ["/contacts/all"], // Refrescar lista de contactos
       },
     });
-    return response.data;
+    return response.data as Contacts;
   },
 
   async updateContact(
@@ -54,7 +54,7 @@ export const OptimizedContactsService = {
         dependencies: ["/contacts/all"], // Refrescar lista de contactos
       },
     });
-    return response.data;
+    return response.data as Contacts;
   },
 
   async deleteContact(id: number): Promise<boolean> {
@@ -65,7 +65,7 @@ export const OptimizedContactsService = {
         dependencies: ["/contacts/all"], // Refrescar lista de contactos
       },
     });
-    return response.data;
+    return Boolean(response.data);
   },
 
   // Métodos de prefetch específicos

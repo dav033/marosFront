@@ -1,36 +1,8 @@
-/**
- * Hook optimizado para datos instantáneos
- * Elimina skeletons cuando hay datos en cache
- */
-
+import type { UseInstantDataConfig, UseInstantDataResult } from "@/types";
 import { useState, useEffect, useCallback } from "react";
 import { globalCache, apiCache } from "src/lib/cacheManager";
-import { optimizedApiClient } from "src/lib/optimizedApiClient";
 
-export interface UseInstantDataConfig<T> {
-  cacheKey: string;
-  fetchFn: () => Promise<T>;
-  initialValue?: T;
-  ttl?: number;
-  enableCache?: boolean;
-  strategy?: "cache-first" | "network-first" | "cache-only";
-  onCacheHit?: (data: T) => void;
-  onCacheMiss?: () => void;
-}
-
-export interface UseInstantDataResult<T> {
-  data: T;
-  loading: boolean;
-  error: Error | null;
-  fromCache: boolean;
-  refresh: () => Promise<void>;
-  clearCache: () => void;
-}
-
-/**
- * Hook para datos instantáneos - no muestra skeleton si hay cache
- */
-export function useInstantData<T = any>(
+export function useInstantData<T = unknown>(
   config: UseInstantDataConfig<T>
 ): UseInstantDataResult<T> {
   const {

@@ -22,7 +22,7 @@ export function useCacheDiagnostics(config: Partial<CacheDebugConfig> = {}) {
 
   const [isOpen, setIsOpen] = useState(false);
   const [isEnabled, setIsEnabled] = useState(() => {
-    const isDev = process.env.NODE_ENV === "development";
+  const isDev = import.meta.env.MODE === "development";
     return enabled && (isDev || showInProduction);
   });
 
@@ -86,7 +86,7 @@ export function useCacheDiagnostics(config: Partial<CacheDebugConfig> = {}) {
 
   // Auto-show en development
   useEffect(() => {
-    if (autoShow && isEnabled && process.env.NODE_ENV === "development") {
+  if (autoShow && isEnabled && import.meta.env.MODE === "development") {
       const timer = setTimeout(() => {
         setIsOpen(true);
       }, 2000); // Mostrar después de 2 segundos
@@ -123,7 +123,7 @@ export function useCacheDiagnostics(config: Partial<CacheDebugConfig> = {}) {
  * Hook para performance monitoring en desarrollo
  */
 export function usePerformanceMonitor(
-  enabled = process.env.NODE_ENV === "development"
+  enabled = import.meta.env.MODE === "development"
 ) {
   useEffect(() => {
     if (!enabled || typeof window === "undefined") return;
@@ -195,7 +195,7 @@ export function usePerformanceMonitor(
  * Hook para logging de cache events
  */
 export function useCacheLogging(
-  enabled = process.env.NODE_ENV === "development"
+  enabled = import.meta.env.MODE === "development"
 ) {
   useEffect(() => {
     if (!enabled) return;

@@ -305,7 +305,6 @@ export class OptimizedApiClient {
       prefetch: {
         prefetches: prefetchManager.getStats().total ?? 0,
         successful: prefetchManager.getStats().completed ?? 0,
-        failed: prefetchManager.getStats().failed ?? 0,
         ...prefetchManager.getStats(),
       },
     };
@@ -533,4 +532,3 @@ export const optimizedApiClient = new OptimizedApiClient(
 );
 
 // Re-exportar el cliente original para compatibilidad
-export { default as apiClient } from "./apiClient";
