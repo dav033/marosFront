@@ -1,6 +1,6 @@
-import { LeadType, LeadStatus } from "src/types/enums";
+import type { CreateContactRequest, CreateLeadRequest, Lead } from "@/types";
 import { optimizedApiClient } from "src/lib/optimizedApiClient";
-import type { Lead, CreateContactRequest, CreateLeadRequest } from "@/types";
+import { LeadStatus, LeadType } from "src/types/enums";
 
 export const OptimizedLeadsService = {
   async getLeadsByType(type: LeadType): Promise<Lead[]> {
@@ -150,10 +150,29 @@ export const OptimizedLeadsService = {
           color: "",
         };
       }
+      if (leadData.contactId !== undefined) {
+        updatedLead.contact = {
+          id: leadData.contactId,
+          companyName: "",
+          name: "",
+          phone: "",
+          email: "",
+        } as CreateContactRequest;
+      }
 
-      const request = {
-        lead: updatedLead,
-      };
+      const request = { lead: updatedLead };
+
+      // Dependencia específica de tipo para invalidar/prefetch correctamente
+      const dependencies = [];
+      if (leadData.status) {
+        // Si status cambia, puede cambiar de tipo de lista
+        dependencies.push(`/leads/type?type=${leadData.status}`);
+      }
+      if (leadData.projectTypeId) {
+        dependencies.push(`/leads/type?type=${leadData.projectTypeId}`);
+      }
+      // Fallback: invalidar lista general si no hay info
+      if (dependencies.length === 0) dependencies.push(`/leads/type`);
 
       const response = await optimizedApiClient.put(
         `/leads/${leadId}`,
@@ -162,7 +181,7 @@ export const OptimizedLeadsService = {
           prefetch: {
             enabled: true,
             priority: "high",
-            dependencies: [`/leads/type`], // Refrescar lista de leads
+            dependencies,
           },
         }
       );

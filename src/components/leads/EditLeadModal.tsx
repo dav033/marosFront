@@ -1,14 +1,19 @@
 import { useEffect } from "react";
-import type { Lead, ProjectType, Contacts, LeadFormData } from "../../types/domain";
-import { FormMode } from "../../types/enums";
 import { useLeadForm } from "../../hooks/useLeadForm";
-import BaseLeadModal from "./BaseLeadModal";
-import LeadFormFields from "../ui/leads/LeadFormFields.tsx";
+import type {
+  Contacts,
+  Lead,
+  LeadFormData,
+  ProjectType,
+} from "../../types/domain";
+import { FormMode } from "../../types/enums";
 import {
-  validateEditLead,
-  updateLead,
   formatLeadForEdit,
+  updateLead,
+  validateEditLead,
 } from "../../utils/leadHelpers";
+import LeadFormFields from "../ui/leads/LeadFormFields.tsx";
+import BaseLeadModal from "./BaseLeadModal";
 
 interface EditLeadModalProps {
   isOpen: boolean;
@@ -55,9 +60,17 @@ export default function EditLeadModal({
       ...lead,
       name: updateData.name ?? lead.name,
       location: updateData.location ?? lead.location,
-      status: (updateData.status as any) ?? lead.status,
+      status:
+        (updateData.status as import("../../types/enums").LeadStatus) ??
+        lead.status,
       startDate: updateData.startDate ?? lead.startDate,
-      // si necesita reflejar contact/projectType por id, puede mapearlos aquí
+      contact: updateData.contactId
+        ? (contacts.find((c) => c.id === updateData.contactId) ?? lead.contact)
+        : lead.contact,
+      projectType: updateData.projectTypeId
+        ? (projectTypes.find((p) => p.id === updateData.projectTypeId) ??
+          lead.projectType)
+        : lead.projectType,
     };
     onLeadUpdated(updatedLocal); // UI instantánea
 
