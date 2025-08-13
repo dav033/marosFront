@@ -53,6 +53,7 @@ export default function CreateLeadModal({
     handleChange,
     handleSubmit: onSubmit,
     resetForm,
+    setError,
   } = useLeadForm({
     initialData: {},
     onSubmit: async (formData) => {
@@ -99,25 +100,39 @@ export default function CreateLeadModal({
     onSuccess: onClose,
   });
 
+  // Limpiar error al modificar campos
+  const handleSafeChange = (field: keyof typeof form, value: string) => {
+    if (error) setError(null);
+    handleChange(field, value);
+  };
+
+  // Submit seguro: espera a que termine la petición antes de cerrar
+  const handleModalSubmit = async (e: React.FormEvent) => {
+    await onSubmit(e);
+    // El hook maneja onSuccess/onClose sólo si no hay error
+  };
+
   return (
     <BaseLeadModal
       isOpen={isOpen}
       onClose={onClose}
       title="Crear Lead"
       error={error}
-      onSubmit={onSubmit}
+      onSubmit={handleModalSubmit}
       submitText="Crear"
+      loadingText="Creando..."
+      isLoading={isLoading}
     >
       <ContactModeSelector
         contactMode={contactMode}
         onContactModeChange={handleContactModeChange}
         form={form}
-        onChange={handleChange}
+        onChange={handleSafeChange}
         isLoading={isLoading}
       />
       <LeadFormFields
         form={form}
-        onChange={handleChange}
+        onChange={handleSafeChange}
         projectTypes={projectTypes}
         contacts={contacts}
         mode={FormMode.CREATE}

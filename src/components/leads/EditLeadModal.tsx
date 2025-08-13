@@ -95,11 +95,18 @@ export default function EditLeadModal({
     handleSubmit: onSubmit,
     resetForm,
     setForm,
+    setError,
   } = useLeadForm({
     initialData: {},
     onSubmit: handleSubmit,
     onSuccess: onClose,
   });
+
+  // Limpiar error al modificar campos
+  const handleSafeChange = (field: keyof typeof form, value: string) => {
+    if (error) setError(null);
+    handleChange(field, value);
+  };
 
   useEffect(() => {
     if (lead) {
@@ -110,18 +117,26 @@ export default function EditLeadModal({
 
   if (!lead) return null;
 
+  // Submit seguro: espera a que termine la petición antes de cerrar
+  const handleModalSubmit = async (e: React.FormEvent) => {
+    await onSubmit(e);
+    // El hook maneja onSuccess/onClose sólo si no hay error
+  };
+
   return (
     <BaseLeadModal
       isOpen={isOpen}
       onClose={onClose}
       title="Edit Lead"
       error={error}
-      onSubmit={onSubmit}
-      submitText="Updating"
+      onSubmit={handleModalSubmit}
+      submitText="Update"
+      loadingText="Updating..."
+      isLoading={isLoading}
     >
       <LeadFormFields
         form={form}
-        onChange={handleChange}
+        onChange={handleSafeChange}
         projectTypes={projectTypes}
         contacts={contacts}
         mode={FormMode.EDIT}

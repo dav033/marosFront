@@ -11,7 +11,6 @@ interface TableProps<T> {
   data: T[];
   contextMenuOptions?: (row: T) => ContextMenuOption[];
   showRowSeparators?: boolean;
-  columnWidths?: string[];
 }
 
 export default function Table<T extends object>({
@@ -19,7 +18,6 @@ export default function Table<T extends object>({
   data,
   contextMenuOptions,
   showRowSeparators = false,
-  columnWidths,
 }: TableProps<T>) {
   const { sortedData, sortColumn, sortDirection, onSort } = useSort(
     data,
@@ -34,14 +32,12 @@ export default function Table<T extends object>({
           sortColumn={sortColumn}
           sortDirection={sortDirection}
           onSort={onSort}
-          columnWidths={columnWidths}
         />
         <TableBody
           columns={columns}
           data={sortedData}
           contextMenuOptions={contextMenuOptions}
           showRowSeparators={showRowSeparators}
-          columnWidths={columnWidths}
         />
       </table>
     </div>

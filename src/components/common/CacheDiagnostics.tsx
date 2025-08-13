@@ -9,6 +9,7 @@ import { optimizedApiClient } from "../../lib/optimizedApiClient";
 import { globalCache, apiCache } from "../../lib/cacheManager";
 import { prefetchManager } from "../../lib/prefetchManager";
 import type { CacheMetrics } from "../../types/cache";
+import { normalizeMetrics } from "../../utils/normalizeMetrics";
 
 interface CacheDiagnosticsProps {
   isOpen: boolean;
@@ -27,8 +28,8 @@ export const CacheDiagnostics: React.FC<CacheDiagnosticsProps> = ({
 
 
     const updateMetrics = () => {
-      // Usar el tipado correcto directamente
-      setMetrics(optimizedApiClient.getMetrics());
+      // Normalizar métricas antes de mostrar
+      setMetrics(normalizeMetrics(optimizedApiClient.getMetrics()));
     };
 
     updateMetrics();
@@ -55,18 +56,15 @@ export const CacheDiagnostics: React.FC<CacheDiagnosticsProps> = ({
 
   if (!isOpen || !metrics) return null;
 
+
   const {
     client,
     globalCache: globalStats,
     apiCache: apiStats,
     prefetch,
-  } = metrics;
+    hitRate,
+  } = metrics as any;
   const timestamp = new Date().toLocaleTimeString();
-
-  const hitRate =
-    client.totalRequests > 0
-      ? Math.round((client.cacheHits / client.totalRequests) * 100)
-      : 0;
 
   const errorRate =
     client.totalRequests > 0

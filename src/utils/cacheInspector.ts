@@ -1,24 +1,25 @@
 
 
 import { globalCache, apiCache } from "src/lib/cacheManager";
+import { logger } from "./logger";
 
 export const CacheInspector = {
   inspectGlobalCache() {
-    console.log("🔍 GLOBAL CACHE INSPECTION");
-    console.log("=========================");
+  logger.info("🔍 GLOBAL CACHE INSPECTION");
+  logger.info("=========================");
 
     if (typeof window === "undefined") {
-      console.log("❌ No disponible en servidor");
+  logger.warn("❌ No disponible en servidor");
       return;
     }
 
     const stats = globalCache.getStats();
-    console.log("📊 Estadísticas:", stats);
+  logger.info("📊 Estadísticas:", stats);
 
     const cacheKeys = Object.keys(sessionStorage).filter((key) =>
       key.startsWith("cache_")
     );
-    console.log(`📦 Elementos en sessionStorage: ${cacheKeys.length}`);
+  logger.info(`📦 Elementos en sessionStorage: ${cacheKeys.length}`);
 
     cacheKeys.forEach((key) => {
       try {
@@ -26,35 +27,30 @@ export const CacheInspector = {
         const data = JSON.parse(sessionStorage.getItem(key) || "{}");
         const isExpired = Date.now() - data.timestamp > data.ttl;
 
-        console.log(`\n🔑 Key: ${actualKey}`);
-        console.log(
-          `⏰ Timestamp: ${new Date(data.timestamp).toLocaleString()}`
-        );
-        console.log(`⏳ TTL: ${data.ttl / 1000}s`);
-        console.log(`${isExpired ? "❌ EXPIRED" : "✅ VALID"}`);
-        console.log(
-          `📄 Data preview:`,
-          data.data?.length ? `${data.data.length} items` : data.data
-        );
+  logger.debug(`\n🔑 Key: ${actualKey}`);
+  logger.debug(`⏰ Timestamp: ${new Date(data.timestamp).toLocaleString()}`);
+  logger.debug(`⏳ TTL: ${data.ttl / 1000}s`);
+  logger.debug(`${isExpired ? "❌ EXPIRED" : "✅ VALID"}`);
+  logger.debug(`📄 Data preview:`, data.data?.length ? `${data.data.length} items` : data.data);
       } catch (error) {
-        console.warn(`⚠️ Error parsing ${key}:`, error);
+  logger.warn(`⚠️ Error parsing ${key}:`, error);
       }
     });
   },
 
   inspectApiCache() {
-    console.log("\n🔍 API CACHE INSPECTION");
-    console.log("======================");
+  logger.info("\n🔍 API CACHE INSPECTION");
+  logger.info("======================");
 
     const stats = apiCache.getStats();
-    console.log("📊 Estadísticas:", stats);
+  logger.info("📊 Estadísticas:", stats);
   },
 
   clearAllCache() {
-    console.log("🧹 Limpiando todo el cache...");
+  logger.info("🧹 Limpiando todo el cache...");
     globalCache.clear();
     apiCache.clear();
-    console.log("✅ Cache limpiado");
+  logger.info("✅ Cache limpiado");
   },
 
   getCacheSize() {
@@ -70,20 +66,18 @@ export const CacheInspector = {
       totalSize += new Blob([value]).size;
     });
 
-    console.log(
-      `💾 Tamaño total del cache: ${(totalSize / 1024).toFixed(2)} KB`
-    );
+  logger.info(`💾 Tamaño total del cache: ${(totalSize / 1024).toFixed(2)} KB`);
     return totalSize;
   },
 
   watchCache() {
-    console.log("👀 Iniciando monitoreo del cache...");
+  logger.info("👀 Iniciando monitoreo del cache...");
 
     const originalSet = globalCache.set.bind(globalCache);
     const originalGet = globalCache.get.bind(globalCache);
 
     globalCache.set = function (key: string, data: any, ttl?: number) {
-      console.log(`📝 Cache SET: ${key}`, {
+      logger.debug(`📝 Cache SET: ${key}`, {
         dataLength: data?.length || "N/A",
         ttl,
       });
@@ -92,7 +86,7 @@ export const CacheInspector = {
 
     globalCache.get = function (key: string) {
       const result = originalGet(key);
-      console.log(`📖 Cache GET: ${key}`, result ? "✅ HIT" : "❌ MISS");
+  logger.debug(`📖 Cache GET: ${key}`, result ? "✅ HIT" : "❌ MISS");
       return result;
     };
   },
@@ -100,5 +94,5 @@ export const CacheInspector = {
 
 if (typeof window !== "undefined" && import.meta.env.DEV) {
   (window as any).cacheInspector = CacheInspector;
-  console.log("🔧 Cache Inspector disponible como window.cacheInspector");
+  logger.info("🔧 Cache Inspector disponible como window.cacheInspector");
 }
