@@ -22,7 +22,7 @@ interface Props<T> {
 
 function TableHeaderInner<T>(props: Props<T>) {
   const { columns, sortColumn, sortDirection, onSort } = props;
-  // CSS Grid: set gridTemplateColumns from columns[].width only
+  // CSS Grid: set gridTemplateColumns from columns
   const gridTemplateColumns = columns
     .map(col => col.width ? col.width : 'minmax(120px,1fr)')
     .join(' ');

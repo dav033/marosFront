@@ -1,9 +1,3 @@
-export interface SidebarItemProps {
-  title: string;
-  to: string;
-  icon?: string;
-  currentPath?: string;
-}
 import type {
   LeadStatus,
   LeadType,

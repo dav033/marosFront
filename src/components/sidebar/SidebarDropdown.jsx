@@ -67,26 +67,12 @@ export default function SidebarDropdown({
   const paddingLeft = indentLevel ? `${indentLevel}px` : "16px";
 
   /* ---------- render ---------- */
-  // Generar un id único para aria-controls
-  const dropdownId = `dropdown-panel-${trigger.title.replace(/\s+/g, "-").toLowerCase()}`;
-
-  // Manejo de teclado: Enter/Espacio para abrir/cerrar
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      handleToggle(e);
-    }
-  };
-
   return (
     <div className={classNames("relative", width)}>
       {/* ----- disparador ----- */}
       <button
         onClick={handleToggle}
-        onKeyDown={handleKeyDown}
         aria-expanded={isOpen}
-        aria-controls={dropdownId}
-        tabIndex={0}
         className={classNames(
           "flex items-center cursor-pointer justify-between gap-2 text-gray-300 hover:text-white transition-colors duration-200",
           trigger.className
@@ -109,7 +95,6 @@ export default function SidebarDropdown({
 
       {/* ----- contenedor animado ----- */}
       <div
-        id={dropdownId}
         ref={containerRef}
         onTransitionEnd={handleTransitionEnd}
         className={classNames("overflow-hidden", width)}

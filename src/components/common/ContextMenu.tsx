@@ -1,6 +1,7 @@
 // src/components/common/ContextMenu.tsx
-import React, { useState, useEffect, useRef } from "react";
 import { Icon } from "@iconify/react";
+import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom"; // ← NUEVO
 
 export interface ContextMenuOption {
   id: string;
@@ -63,7 +64,9 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
     }
   };
 
-  return (
+  if (!isVisible) return null;
+
+  const menu = (
     <div
       ref={menuRef}
       className="fixed z-50 bg-theme-gray-darker border border-theme-gray rounded-lg shadow-xl py-1 min-w-[180px] backdrop-blur-sm"
@@ -112,6 +115,11 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
       })}
     </div>
   );
+
+  // SSR safe + portal fuera del <tbody>
+  return typeof document !== "undefined"
+    ? createPortal(menu, document.body)
+    : null;
 };
 
 export const useContextMenu = () => {
