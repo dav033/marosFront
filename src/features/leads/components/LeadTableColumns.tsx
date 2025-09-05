@@ -35,7 +35,11 @@ export const leadTableColumns: Column<Lead>[] = [
     header: "Status",
     accessor: (lead) => lead.status ?? "",
     type: "string",
-    cellRenderer: (value) => <StatusBadge status={String(value)} />,
+    cellRenderer: (value, lead) => {
+      // For Undetermined items (status is null/undefined), render nothing
+      if (!lead.status) return null;
+      return <StatusBadge status={String(value)} />;
+    },
   },
   {
     id: "projectType",

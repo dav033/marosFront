@@ -526,9 +526,48 @@ export class OptimizedApiClient {
   }
 }
 
-// Crear instancia optimizada
-export const optimizedApiClient = new OptimizedApiClient(
-  "http://localhost:8080"
-);
+// Crear instancia optimizada usando una única .env
+// Variables soportadas:
+// - PUBLIC_API_BASE_URL (override directo)
+// - VITE_API_BASE_URL (compatibilidad)
+// - PUBLIC_APP_ENV = development | production (selección de entorno)
+// - PUBLIC_API_BASE_URL_DEV, PUBLIC_API_BASE_URL_PROD (urls por entorno)
+type EnvLike = { [key: string]: string | boolean | number | undefined };
+const envFromImportMeta =
+  (typeof import.meta !== "undefined" &&
+    (import.meta as unknown as { env?: EnvLike }).env) ||
+  undefined;
+const envFromProcess =
+  (typeof process !== "undefined" &&
+    (process as unknown as { env?: EnvLike }).env) ||
+  undefined;
+
+const explicitUrl =
+  (envFromImportMeta?.PUBLIC_API_BASE_URL as string | undefined) ||
+  (envFromImportMeta?.VITE_API_BASE_URL as string | undefined) ||
+  (envFromProcess?.PUBLIC_API_BASE_URL as string | undefined) ||
+  (envFromProcess?.VITE_API_BASE_URL as string | undefined);
+
+const appEnv =
+  (envFromImportMeta?.PUBLIC_APP_ENV as string | undefined) ||
+  (envFromImportMeta?.MODE as string | undefined) ||
+  (envFromProcess?.PUBLIC_APP_ENV as string | undefined) ||
+  (envFromProcess?.NODE_ENV as string | undefined) ||
+  "development";
+
+const baseDev =
+  (envFromImportMeta?.PUBLIC_API_BASE_URL_DEV as string | undefined) ||
+  (envFromProcess?.PUBLIC_API_BASE_URL_DEV as string | undefined);
+const baseProd =
+  (envFromImportMeta?.PUBLIC_API_BASE_URL_PROD as string | undefined) ||
+  (envFromProcess?.PUBLIC_API_BASE_URL_PROD as string | undefined);
+
+const derivedUrl = /prod/i.test(appEnv)
+  ? baseProd || baseDev
+  : baseDev || baseProd;
+
+const API_BASE_URL = explicitUrl || derivedUrl || "http://localhost:8080";
+
+export const optimizedApiClient = new OptimizedApiClient(API_BASE_URL);
 
 // Re-exportar el cliente original para compatibilidad

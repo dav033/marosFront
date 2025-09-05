@@ -28,6 +28,7 @@ export const OptimizedLeadsService = {
   },
 
   async createLeadByNewContact(leadData: {
+    leadNumber?: string;
     leadName: string;
     customerName: string;
     contactName: string;
@@ -45,7 +46,7 @@ export const OptimizedLeadsService = {
     };
 
     const leadRequest: CreateLeadRequest = {
-      leadNumber: "",
+      leadNumber: leadData.leadNumber ?? "",
       name: leadData.leadName,
       startDate: new Date().toISOString().split("T")[0],
       location: leadData.location,
@@ -80,6 +81,7 @@ export const OptimizedLeadsService = {
   },
 
   async createLeadByExistingContact(leadData: {
+    leadNumber?: string;
     leadName: string;
     contactId: number;
     projectTypeId: number;
@@ -87,7 +89,7 @@ export const OptimizedLeadsService = {
     leadType: LeadType;
   }): Promise<Lead> {
     const leadRequest: CreateLeadRequest = {
-      leadNumber: "",
+      leadNumber: leadData.leadNumber ?? "",
       name: leadData.leadName,
       startDate: new Date().toISOString().split("T")[0],
       location: leadData.location,
@@ -228,6 +230,95 @@ export const OptimizedLeadsService = {
     ];
 
     await Promise.allSettled(prefetchPromises);
+  },
+
+  // Local-only creations (skip ClickUp sync)
+  async createLeadLocalByNewContact(leadData: {
+    leadNumber: string;
+    leadName: string;
+    customerName: string;
+    contactName: string;
+    phone: string;
+    email: string;
+    projectTypeId: number;
+    location: string;
+    leadType: LeadType;
+  }): Promise<Lead> {
+    const contactRequest: CreateContactRequest = {
+      companyName: leadData.customerName,
+      name: leadData.contactName,
+      phone: leadData.phone,
+      email: leadData.email,
+    };
+    const leadRequest: CreateLeadRequest = {
+      leadNumber: leadData.leadNumber,
+      name: leadData.leadName,
+      startDate: new Date().toISOString().split("T")[0],
+      location: leadData.location,
+      status: null,
+      contact: contactRequest,
+      projectType: {
+        id: leadData.projectTypeId,
+        name: "",
+        color: "",
+      },
+      leadType: leadData.leadType,
+    };
+    const request = { lead: leadRequest, contact: contactRequest };
+    const response = await optimizedApiClient.post(
+      `/leads/new-contact?skipClickUpSync=true`,
+      request,
+      {
+        prefetch: {
+          enabled: true,
+          priority: "high",
+          dependencies: [`/leads/type`],
+        },
+      }
+    );
+    return response.data as Lead;
+  },
+
+  async createLeadLocalByExistingContact(leadData: {
+    leadNumber: string;
+    leadName: string;
+    contactId: number;
+    projectTypeId: number;
+    location: string;
+    leadType: LeadType;
+  }): Promise<Lead> {
+    const leadRequest: CreateLeadRequest = {
+      leadNumber: leadData.leadNumber,
+      name: leadData.leadName,
+      startDate: new Date().toISOString().split("T")[0],
+      location: leadData.location,
+      status: null,
+      contact: undefined,
+      projectType: {
+        id: leadData.projectTypeId,
+        name: "",
+        color: "",
+      },
+      leadType: leadData.leadType,
+    };
+    const request = { lead: leadRequest, contactId: leadData.contactId };
+    const response = await optimizedApiClient.post(
+      `/leads/existing-contact?skipClickUpSync=true`,
+      request,
+      {
+        prefetch: {
+          enabled: true,
+          priority: "high",
+          dependencies: [`/leads/type`],
+        },
+      }
+    );
+    return response.data as Lead;
+  },
+
+  async validateLeadNumber(leadNumber: string): Promise<{ valid: boolean; reason: string }>{
+    const res = await optimizedApiClient.get(`/leads/validate/lead-number?leadNumber=${encodeURIComponent(leadNumber)}`);
+    return res.data as { valid: boolean; reason: string };
   },
 
   // Configurar prefetch automático para navegación

@@ -1,10 +1,10 @@
+import type { UseContactContextMenuProps } from "@/types";
 import {
   useContextMenu,
   type ContextMenuOption,
 } from "@components/common/ContextMenu";
 import { OptimizedContactsService } from "src/services/OptimizedContactsService";
 import type { Contacts } from "../types/types";
-import type { UseContactContextMenuProps } from "@/types";
 
 export const useContactContextMenu = ({
   onEdit,
@@ -22,17 +22,15 @@ export const useContactContextMenu = ({
     try {
       const result = await OptimizedContactsService.deleteContact(contact.id);
 
-      if (!result) {
-        alert(`Error deleting contact`);
-        window.location.reload();
-      } else {
-        // Llamar el callback si se proporciona
+      // Si no hubo excepción y result indica éxito, refrescar via callback
+      if (result) {
         onDelete?.(contact.id);
+      } else {
+        alert("Could not delete contact.");
       }
     } catch (error) {
       console.error("Error deleting contact:", error);
-      alert("Unexpected error deleting contact. Page will reload.");
-      window.location.reload();
+      alert("Unexpected error deleting contact.");
     }
   };
 

@@ -17,6 +17,8 @@ interface LeadFormFieldsProps {
 	contacts?: Contacts[];
 	mode?: FormMode;
 	contactMode?: ContactMode;
+	// Optional override to explicitly show/hide the Lead Number field
+	showLeadNumber?: boolean;
 }
 
 const LeadFormFields = ({
@@ -26,12 +28,15 @@ const LeadFormFields = ({
 	contacts = [],
 	mode = FormMode.CREATE,
 	contactMode,
+    showLeadNumber,
 }: LeadFormFieldsProps) => {
 	const statusOptions = getStatusOptions();
 	const contactOptions = formatContactOptions(contacts);
 	const projectTypeOptions = formatProjectTypeOptions(projectTypes);
 
 	const showLeadName = true;
+	const effectiveShowLeadNumber =
+		showLeadNumber !== undefined ? showLeadNumber : mode === FormMode.CREATE; // manual when creating (no ClickUp)
 	const showStatus = mode === FormMode.EDIT;
 	const showStartDate = mode === FormMode.EDIT;
 
@@ -39,6 +44,14 @@ const LeadFormFields = ({
 
 	return (
 		<>
+			{effectiveShowLeadNumber && (
+				<GenericInput
+					value={form.leadNumber}
+					onChange={(e) => onChange("leadNumber", e.target.value)}
+					placeholder="Lead Number (manual if no ClickUp)"
+					icon="material-symbols:pin"
+				/>
+			)}
 			{showLeadName && (
 				<GenericInput
 					value={form.leadName}

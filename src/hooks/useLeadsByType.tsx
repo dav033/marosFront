@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { LeadsService } from "src/services/LeadsService";
+import { LeadsService } from "../services/OptimizedLeadsService";
 import { LeadType, LeadStatus } from "src/types/enums";
 import type { Lead } from "src/types";
 import { useOptimizedFetch } from "./useOptimizedFetch";

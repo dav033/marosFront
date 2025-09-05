@@ -14,9 +14,9 @@ export class LeadAgent {
     // Decide if it's new or existing contact based on input
     let created: Lead;
     if (input.contactId) {
-      created = await OptimizedLeadsService.createLeadByExistingContact(input);
+  created = await OptimizedLeadsService.createLeadByExistingContact(input);
     } else {
-      created = await OptimizedLeadsService.createLeadByNewContact(input);
+  created = await OptimizedLeadsService.createLeadByNewContact(input);
     }
     this.bus.emit({ type: "LEAD_CREATED", payload: created });
     this.bus.emit({ type: "REFETCH_REQUESTED" });

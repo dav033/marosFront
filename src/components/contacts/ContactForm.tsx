@@ -1,4 +1,3 @@
-import React from "react";
 import { GenericInput } from "@components/common/GenericInput";
 
 export interface ContactFormData {
@@ -37,7 +36,6 @@ export default function ContactForm({
           placeholder="Company Name *"
           value={form.companyName}
           onChange={(e) => onChange("companyName", e.target.value)}
-          required
           icon="material-symbols:business-center"
         />
 
@@ -47,7 +45,6 @@ export default function ContactForm({
           placeholder="Contact Name *"
           value={form.name}
           onChange={(e) => onChange("name", e.target.value)}
-          required
           icon="material-symbols:person"
         />
 

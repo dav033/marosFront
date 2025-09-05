@@ -1,20 +1,14 @@
 import { useState } from "react";
-import { GenericInput } from "@components/common/GenericInput";
-import type { ProjectType, Contacts, Lead } from "src/types";
-import { LeadType, FormMode, ContactMode } from "src/types/enums";
-import { useLeadForm } from "src/hooks/useLeadForm";
 import BaseLeadModal from "../../../components/leads/BaseLeadModal.tsx";
 import LeadFormFields from "../../../components/ui/leads/LeadFormFields.tsx";
 import ContactModeSelector from "../../../components/ui/leads/ContactModeSelector.tsx";
-import {
-  validateNewContactLead,
-  validateExistingContactLead,
-  createLeadWithNewContact,
-  createLeadWithExistingContact,
-} from "src/utils/leadHelpers";
+import type { ProjectType, Contacts, Lead } from "src/types";
+import { LeadType, FormMode, ContactMode } from "src/types/enums";
+import { useLeadForm } from "src/hooks/useLeadForm";
 import { OptimizedLeadsService } from "@/services/OptimizedLeadsService";
+import { validateNewContactLead, validateExistingContactLead } from "src/utils/leadHelpers";
 
-interface CreateLeadModalProps {
+interface CreateLocalLeadModalProps {
   isOpen: boolean;
   onClose: () => void;
   projectTypes: ProjectType[];
@@ -23,17 +17,16 @@ interface CreateLeadModalProps {
   onLeadCreated: (lead: Lead) => void;
 }
 
-export default function CreateLeadModal({
+export default function CreateLocalLeadModal({
   isOpen,
   onClose,
   projectTypes,
   contacts,
   leadType,
   onLeadCreated,
-}: CreateLeadModalProps) {
+}: CreateLocalLeadModalProps) {
   const [contactMode, setContactMode] = useState<ContactMode>(ContactMode.NEW_CONTACT);
 
-  // Limpia campos irrelevantes al alternar el switch
   const handleContactModeChange = (mode: ContactMode) => {
     setContactMode(mode);
     if (mode === ContactMode.NEW_CONTACT) {
@@ -46,7 +39,6 @@ export default function CreateLeadModal({
     }
   };
 
-  // Usar el hook de formulario para manejar el estado y validación
   const {
     form,
     isLoading,
@@ -58,17 +50,17 @@ export default function CreateLeadModal({
   } = useLeadForm({
     initialData: {},
     onSubmit: async (formData) => {
-      let validationError: string | null = null;
-      // Optional server-side leadNumber validation when user typed one
-      if (formData.leadNumber) {
-        const { valid, reason } = await OptimizedLeadsService.validateLeadNumber(
-          formData.leadNumber
-        );
-        if (!valid) throw new Error(reason || "Lead number is already in use");
+      if (!formData.leadNumber) {
+        throw new Error("Lead Number is required for local-only creation");
       }
+      // server-side validation
+      const { valid, reason } = await OptimizedLeadsService.validateLeadNumber(formData.leadNumber);
+      if (!valid) throw new Error(reason || "Lead number already in use");
 
+      let validationError: string | null = null;
       if (contactMode === ContactMode.NEW_CONTACT) {
         validationError = validateNewContactLead({
+          leadNumber: formData.leadNumber,
           leadName: formData.leadName,
           customerName: formData.customerName,
           contactName: formData.contactName,
@@ -76,34 +68,33 @@ export default function CreateLeadModal({
           email: formData.email,
         });
         if (validationError) throw new Error(validationError);
-        const newLead = await createLeadWithNewContact({
-          // If manual number provided, include it; service will send in request
-          // and backend will validate or auto-generate if blank.
+        const newLead = await OptimizedLeadsService.createLeadLocalByNewContact({
+          leadNumber: formData.leadNumber,
           leadName: formData.leadName,
           customerName: formData.customerName,
           contactName: formData.contactName,
           phone: formData.phone,
           email: formData.email,
-          leadNumber: formData.leadNumber || undefined,
           projectTypeId: Number(formData.projectTypeId),
           location: formData.location,
-          leadType: leadType,
+          leadType,
         });
         onLeadCreated(newLead);
       } else {
         validationError = validateExistingContactLead({
+          leadNumber: formData.leadNumber,
           leadName: formData.leadName,
           contactId: formData.contactId,
           projectTypeId: formData.projectTypeId,
         });
         if (validationError) throw new Error(validationError);
-        const newLead = await createLeadWithExistingContact({
+        const newLead = await OptimizedLeadsService.createLeadLocalByExistingContact({
+          leadNumber: formData.leadNumber,
           leadName: formData.leadName,
           contactId: Number(formData.contactId),
           projectTypeId: Number(formData.projectTypeId),
           location: formData.location,
-          leadType: leadType,
-          leadNumber: formData.leadNumber || undefined,
+          leadType,
         });
         onLeadCreated(newLead);
       }
@@ -113,23 +104,20 @@ export default function CreateLeadModal({
     onSuccess: onClose,
   });
 
-  // Limpiar error al modificar campos
   const handleSafeChange = (field: keyof typeof form, value: string) => {
     if (error) setError(null);
     handleChange(field, value);
   };
 
-  // Submit seguro: espera a que termine la petición antes de cerrar
   const handleModalSubmit = async (e: React.FormEvent) => {
     await onSubmit(e);
-    // El hook maneja onSuccess/onClose sólo si no hay error
   };
 
   return (
     <BaseLeadModal
       isOpen={isOpen}
       onClose={onClose}
-      title="Crear Lead"
+      title="Crear Lead (solo sistema)"
       error={error}
       onSubmit={handleModalSubmit}
       submitText="Crear"
@@ -149,8 +137,8 @@ export default function CreateLeadModal({
         projectTypes={projectTypes}
         contacts={contacts}
         mode={FormMode.CREATE}
-        contactMode={contactMode}
-  showLeadNumber={false}
+  contactMode={contactMode}
+  showLeadNumber={true}
       />
     </BaseLeadModal>
   );

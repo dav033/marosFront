@@ -8,6 +8,7 @@ export const useLeadForm = ({
   onSuccess,
 }: UseLeadFormOptions) => {
   const [form, setForm] = useState<LeadFormData>({
+  leadNumber: "",
     leadName: "",
     customerName: "",
     contactName: "",
@@ -33,6 +34,7 @@ export const useLeadForm = ({
 
   const resetForm = useCallback(() => {
     setForm({
+  leadNumber: "",
       leadName: "",
       customerName: "",
       contactName: "",

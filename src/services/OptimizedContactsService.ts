@@ -2,8 +2,9 @@
  * Servicio de Contactos optimizado con cache y prefetch
  */
 
-import type { Contacts, CreateContactRequest } from "src/types";
 import { optimizedApiClient } from "src/lib/optimizedApiClient";
+import type { Contacts, CreateContactRequest, ContactValidationResponse } from "src/types";
+import type { DeleteContactResponse } from "src/types/deleteContactResponse";
 
 export const OptimizedContactsService = {
   async getAllContacts(): Promise<Contacts[]> {
@@ -57,6 +58,19 @@ export const OptimizedContactsService = {
     return response.data as Contacts;
   },
 
+  async validateContact(params: {
+    name?: string;
+    email?: string;
+    phone?: string;
+    excludeId?: number;
+  }): Promise<ContactValidationResponse> {
+    const response = await optimizedApiClient.get(`/contacts/validate`, {
+      params,
+      cache: { enabled: false },
+    });
+    return response.data as ContactValidationResponse;
+  },
+
   async deleteContact(id: number): Promise<boolean> {
     const response = await optimizedApiClient.delete(`/contacts/${id}`, {
       prefetch: {
@@ -65,7 +79,23 @@ export const OptimizedContactsService = {
         dependencies: ["/contacts/all"], // Refrescar lista de contactos
       },
     });
-    return Boolean(response.data);
+    const data = response?.data as DeleteContactResponse;
+    const okByStatus =
+      typeof response?.status === "number" &&
+      response.status >= 200 &&
+      response.status < 300;
+    const okByBody =
+      typeof data === "object"
+        ? !!(
+            data &&
+            ("deleted" in data
+              ? data.deleted
+              : "success" in data
+                ? data.success
+                : false)
+          )
+        : data === true;
+    return okByStatus || okByBody;
   },
 
   // Métodos de prefetch específicos

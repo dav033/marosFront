@@ -8,8 +8,10 @@ import { leadTableColumns } from "src/features/leads/components/LeadTableColumns
 
 const loadCreateLeadModal = () => import("../CreateLeadModal");
 const loadEditLeadModal = () => import("../../../../components/leads/EditLeadModal.tsx");
+const loadCreateLocalLeadModal = () => import("../CreateLocalLeadModal");
 const CreateLeadModal = lazy(loadCreateLeadModal);
 const EditLeadModal = lazy(loadEditLeadModal);
+const CreateLocalLeadModal = lazy(loadCreateLocalLeadModal);
 
 import { useEffect } from "react";
 import LeadSection from "../LeadSection";
@@ -35,7 +37,7 @@ export default function InnerTable({
     updateLead,
     removeLead,
   } = useLeadsData(leadType);
-  const { modals, openCreate, closeCreate, openEdit, closeEdit } =
+  const { modals, openCreate, closeCreate, openCreateLocal, closeCreateLocal, openEdit, closeEdit } =
     useLeadModals();
   const sections = useLeadSections(leads);
   const { handleLeadDeleted } = useLeadHandlers({
@@ -68,13 +70,22 @@ export default function InnerTable({
             {leads.length} lead{leads.length !== 1 ? "s" : ""} total
           </p>
         </div>
-        <GenericButton
-          className="text-sm"
-          onClick={openCreate}
-          disabled={isLoading}
-        >
-          {createButtonText}
-        </GenericButton>
+        <div className="flex items-center gap-2">
+          <GenericButton
+            className="text-sm"
+            onClick={openCreate}
+            disabled={isLoading}
+          >
+            {createButtonText}
+          </GenericButton>
+          <GenericButton
+            className="text-sm"
+            onClick={openCreateLocal}
+            disabled={isLoading}
+          >
+            Create lead locally (don’t sync to ClickUp)
+          </GenericButton>
+        </div>
       </header>
 
   <Suspense fallback={null}>
@@ -86,6 +97,17 @@ export default function InnerTable({
         contacts={contacts}
         leadType={leadType}
         onLeadCreated={addLead} // Mutación local tras respuesta del API
+      />
+    )}
+
+    {modals.isCreateLocalOpen && (
+      <CreateLocalLeadModal
+        isOpen={modals.isCreateLocalOpen}
+        onClose={closeCreateLocal}
+        projectTypes={projectTypes}
+        contacts={contacts}
+        leadType={leadType}
+        onLeadCreated={addLead}
       />
     )}
 
@@ -122,6 +144,11 @@ export default function InnerTable({
           <GenericButton onClick={openCreate}>
             Create your first {title.toLowerCase().slice(0, -1)}
           </GenericButton>
+          <div className="mt-2">
+            <GenericButton onClick={openCreateLocal}>
+              Create lead locally (don’t sync to ClickUp)
+            </GenericButton>
+          </div>
         </div>
       )}
     </div>

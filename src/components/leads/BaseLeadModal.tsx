@@ -4,7 +4,6 @@ import ModalBody from "@components/common/modal/ModalBody";
 import ModalFooter from "@components/common/modal/ModalFooter";
 import ModalHeader from "@components/common/modal/ModalHeader";
 
-
 interface BaseLeadModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -40,7 +39,7 @@ export default function BaseLeadModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby={modalTitleId}
-        {...(modalDescId ? { 'aria-describedby': modalDescId } : {})}
+        {...(modalDescId ? { "aria-describedby": modalDescId } : {})}
       >
         <ModalHeader title={title} onClose={onClose} id={modalTitleId} />
         <ModalBody>
@@ -65,11 +64,7 @@ export default function BaseLeadModal({
           >
             Cancel
           </GenericButton>
-          <GenericButton
-            type="submit"
-            onClick={onSubmit}
-            disabled={isLoading}
-          >
+          <GenericButton type="submit" onClick={onSubmit} disabled={isLoading}>
             {isLoading ? loadingText : submitText}
           </GenericButton>
         </ModalFooter>

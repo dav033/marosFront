@@ -195,6 +195,7 @@ export interface LeadSectionData {
 }
 
 export interface LeadFormData {
+  leadNumber: string;
   leadName: string;
   customerName: string;
   contactName: string;
@@ -211,4 +212,13 @@ export interface UseLeadFormOptions {
   initialData?: Partial<LeadFormData>;
   onSubmit: (data: LeadFormData) => Promise<void>;
   onSuccess?: () => void;
+}
+
+export interface ContactValidationResponse {
+  nameAvailable: boolean;
+  emailAvailable: boolean;
+  phoneAvailable: boolean;
+  nameReason?: string;
+  emailReason?: string;
+  phoneReason?: string;
 }

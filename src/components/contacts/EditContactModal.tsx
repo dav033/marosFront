@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
+import type { Contacts } from "@/types";
 import { GenericButton } from "@components/common/GenericButton";
 import Modal from "@components/common/modal/Modal";
 import ModalBody from "@components/common/modal/ModalBody";
 import ModalFooter from "@components/common/modal/ModalFooter";
 import ModalHeader from "@components/common/modal/ModalHeader";
-import ContactForm from "./ContactForm";
-import type { ContactFormData } from "./ContactForm";
+import { useEffect, useState } from "react";
 import { OptimizedContactsService } from "src/services/OptimizedContactsService";
-import type { Contacts } from "@/types";
+import type { ContactFormData } from "./ContactForm";
+import ContactForm from "./ContactForm";
 
 interface EditContactModalProps {
   isOpen: boolean;
@@ -32,6 +32,11 @@ export default function EditContactModal({
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<{
+    name?: string;
+    email?: string;
+    phone?: string;
+  }>({});
 
   useEffect(() => {
     if (contact) {
@@ -56,13 +61,6 @@ export default function EditContactModal({
 
     if (!contact) return;
 
-    if (!form.companyName || !form.name) {
-      setError(
-        "Please complete the required fields: Company Name and Contact Name"
-      );
-      return;
-    }
-
     if (form.email && !/\S+@\S+\.\S+/.test(form.email)) {
       setError("Please enter a valid email");
       return;
@@ -70,8 +68,26 @@ export default function EditContactModal({
 
     setIsLoading(true);
     setError(null);
+    setFieldErrors({});
 
     try {
+      // Pre-validate uniqueness with excludeId
+      const validation = await OptimizedContactsService.validateContact({
+        name: form.name,
+        email: form.email || undefined,
+        phone: form.phone || undefined,
+        excludeId: contact.id,
+      });
+      if (!validation.nameAvailable || !validation.emailAvailable || !validation.phoneAvailable) {
+        const fe: { name?: string; email?: string; phone?: string } = {};
+        if (!validation.nameAvailable) fe.name = validation.nameReason || "Name already exists";
+        if (!validation.emailAvailable) fe.email = validation.emailReason || "Email already exists";
+        if (!validation.phoneAvailable) fe.phone = validation.phoneReason || "Phone already exists";
+        setFieldErrors(fe);
+        setIsLoading(false);
+        return;
+      }
+
       const updatedContact = await OptimizedContactsService.updateContact(
         contact.id,
         {
@@ -101,6 +117,7 @@ export default function EditContactModal({
 
   const handleClose = () => {
     setError(null);
+  setFieldErrors({});
     onClose();
   };
 
@@ -113,6 +130,19 @@ export default function EditContactModal({
 
         <ModalBody>
           <ContactForm form={form} onChange={handleChange} error={error} />
+          {Object.keys(fieldErrors).length > 0 && (
+            <div className="mt-2 space-y-1">
+              {fieldErrors.name && (
+                <div className="text-red-600 text-sm">{fieldErrors.name}</div>
+              )}
+              {fieldErrors.email && (
+                <div className="text-red-600 text-sm">{fieldErrors.email}</div>
+              )}
+              {fieldErrors.phone && (
+                <div className="text-red-600 text-sm">{fieldErrors.phone}</div>
+              )}
+            </div>
+          )}
         </ModalBody>
 
         <ModalFooter>

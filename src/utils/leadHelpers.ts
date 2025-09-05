@@ -3,6 +3,7 @@ import type { Lead } from "src/types";
 import { LeadType } from "src/types/enums";
 
 export interface CreateLeadByNewContactData {
+  leadNumber?: string;
   leadName: string;
   customerName: string;
   contactName: string;
@@ -14,6 +15,7 @@ export interface CreateLeadByNewContactData {
 }
 
 export interface CreateLeadByExistingContactData {
+  leadNumber?: string;
   leadName: string;
   contactId: number;
   projectTypeId: number;
@@ -36,12 +38,16 @@ export const validateEmail = (email: string): boolean => {
 };
 
 export const validateNewContactLead = (data: {
+  leadNumber?: string;
   leadName: string;
   customerName: string;
   contactName: string;
   projectTypeId: string;
   email?: string;
 }): string | null => {
+  if (data.leadNumber && data.leadNumber.trim().length < 3) {
+    return "Lead Number is too short";
+  }
   if (!data.leadName || !data.projectTypeId) {
     return "Please complete the required fields: Lead Name and Project Type";
   }
@@ -58,10 +64,14 @@ export const validateNewContactLead = (data: {
 };
 
 export const validateExistingContactLead = (data: {
+  leadNumber?: string;
   leadName: string;
   contactId: string;
   projectTypeId: string;
 }): string | null => {
+  if (data.leadNumber && data.leadNumber.trim().length < 3) {
+    return "Lead Number is too short";
+  }
   if (!data.leadName || !data.projectTypeId) {
     return "Please complete the required fields: Lead Name and Project Type";
   }
@@ -137,7 +147,9 @@ export const getStatusOptions = () => [
   { value: "LOST", label: "Lost" },
 ];
 
-export const formatContactOptions = (contacts: any[]) => {
+import type { Contacts, ProjectType } from "src/types";
+
+export const formatContactOptions = (contacts: Contacts[]) => {
   return contacts.map((contact) => ({
     value: contact.id.toString(),
     label: contact.companyName
@@ -146,7 +158,7 @@ export const formatContactOptions = (contacts: any[]) => {
   }));
 };
 
-export const formatProjectTypeOptions = (projectTypes: any[]) => {
+export const formatProjectTypeOptions = (projectTypes: ProjectType[]) => {
   return projectTypes.map((pt) => ({
     value: pt.id.toString(),
     label: pt.name,
