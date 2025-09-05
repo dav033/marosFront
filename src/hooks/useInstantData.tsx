@@ -16,18 +16,16 @@ export function useInstantData<T = unknown>(
     onCacheMiss,
   } = config;
 
-  // Detectar caché sincrónicamente para el primer render
-  const initialCached = enableCache
-    ? apiCache.get(cacheKey) || globalCache.get(cacheKey)
-    : null;
-  const [data, setData] = useState<T>(initialCached ?? (initialValue as T));
-  const [fromCache, setFromCache] = useState(Boolean(initialCached));
-  const [loading, setLoading] = useState(!initialCached);
+  // Estado inicial conservador para evitar problemas de hidratación
+  const [data, setData] = useState<T>(initialValue as T);
+  const [fromCache, setFromCache] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const [isHydrated, setIsHydrated] = useState(false);
 
-  // Verificar cache inmediatamente al cargar
+  // Verificar cache solo después de la hidratación
   const checkCache = useCallback((): T | null => {
-    if (!enableCache) return null;
+    if (!enableCache || !isHydrated) return null;
 
     const cached = apiCache.get(cacheKey) || globalCache.get(cacheKey);
     if (cached) {
@@ -39,7 +37,7 @@ export function useInstantData<T = unknown>(
     setFromCache(false);
     onCacheMiss?.();
     return null;
-  }, [cacheKey, enableCache, onCacheHit, onCacheMiss]);
+  }, [cacheKey, enableCache, onCacheHit, onCacheMiss, isHydrated]);
 
   // Fetch de datos desde la red
   const fetchData = useCallback(
@@ -111,9 +109,16 @@ export function useInstantData<T = unknown>(
     setFromCache(false);
   }, [cacheKey]);
 
-  // Efecto inicial
+  // Efecto para detectar hidratación
   useEffect(() => {
-    // Verificar cache inmediatamente (síncrono)
+    setIsHydrated(true);
+  }, []);
+
+  // Efecto principal de carga después de la hidratación
+  useEffect(() => {
+    if (!isHydrated) return;
+
+    // Verificar cache después de la hidratación
     const cached = checkCache();
 
     if (cached) {
@@ -129,7 +134,7 @@ export function useInstantData<T = unknown>(
     if (!cached || strategy === "network-first") {
       loadData();
     }
-  }, [cacheKey, checkCache, loadData, strategy]);
+  }, [isHydrated, cacheKey, checkCache, loadData, strategy]);
 
   // Permite mutar el estado local y el cache sin refetch
   const mutate = useCallback((updater: (prev: T) => T) => {
@@ -157,7 +162,7 @@ export function useInstantData<T = unknown>(
 /**
  * Hook específico para listas que elimina skeleton en navegaciones repetidas
  */
-export function useInstantList<T = any>(
+export function useInstantList<T = unknown>(
   listKey: string,
   fetchFn: () => Promise<T[]>,
   options: {
@@ -207,7 +212,7 @@ export function useInstantList<T = any>(
 /**
  * Hook para formularios que persisten instantáneamente
  */
-export function useInstantForm<T extends Record<string, any>>(
+export function useInstantForm<T extends Record<string, unknown>>(
   formKey: string,
   initialValues: T,
   options: {
@@ -216,7 +221,7 @@ export function useInstantForm<T extends Record<string, any>>(
   } = {}
 ): {
   values: T;
-  setValue: (field: keyof T, value: any) => void;
+  setValue: (field: keyof T, value: unknown) => void;
   setValues: (values: Partial<T>) => void;
   reset: () => void;
   isDirty: boolean;
@@ -243,7 +248,7 @@ export function useInstantForm<T extends Record<string, any>>(
   }, [result.data, initialValues]);
 
   const setValue = useCallback(
-    (field: keyof T, value: any) => {
+    (field: keyof T, value: unknown) => {
       const newValues = { ...result.data, [field]: value };
 
       // Actualizar inmediatamente en cache

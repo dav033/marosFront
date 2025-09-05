@@ -9,13 +9,29 @@ import React, {
 import { Icon } from "@iconify/react";
 import classNames from "classnames";
 
+interface TriggerProps {
+  title: string;
+  icon?: string;
+  className?: string;
+}
+
+interface SidebarDropdownProps {
+  trigger: TriggerProps;
+  width?: string;
+  children: React.ReactNode;
+  duration?: number;
+  indentLevel?: number;
+  defaultOpen?: boolean;
+}
+
 /**
  * SidebarDropdown
  *  – trigger: { title: string, icon?: string | IconifyIcon, className?: string }
- *  – width:   Tailwind w-* class (ej. "w-full", "w-60")
+ *  – width:   Tailwind w-* class (ej. "w-full", "w-60")
  *  – children: elementos React; se permite anidar SidebarDropdown dentro de otro
  *  – duration: duración de la transición en milisegundos
  *  – indentLevel: desplazamiento horizontal en px (se incrementa automáticamente en los anidados)
+ *  – defaultOpen: si el dropdown debe estar abierto por defecto
  */
 export default function SidebarDropdown({
   trigger,
@@ -23,11 +39,12 @@ export default function SidebarDropdown({
   children,
   duration = 300,
   indentLevel = 0,
-}) {
+  defaultOpen = false,
+}: SidebarDropdownProps) {
   /* ---------- estado y refs ---------- */
-  const [isOpen, setIsOpen] = useState(false);
-  const [inlineHeight, setInlineHeight] = useState("0px"); // '0px' | '<n>px' | 'auto'
-  const containerRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+  const [inlineHeight, setInlineHeight] = useState(defaultOpen ? "auto" : "0px"); // '0px' | '<n>px' | 'auto'
+  const containerRef = useRef<HTMLDivElement>(null);
 
   /* ---------- utilidades ---------- */
   const readHeight = () => containerRef.current?.scrollHeight ?? 0;
@@ -52,13 +69,13 @@ export default function SidebarDropdown({
   }, [isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /* ---------- al finalizar la transición ---------- */
-  const handleTransitionEnd = (e) => {
+  const handleTransitionEnd = (e: React.TransitionEvent<HTMLDivElement>) => {
     if (e.propertyName !== "height") return;
     if (isOpen) setInlineHeight("auto"); // permite crecimiento libre mientras está abierto
   };
 
   /* ---------- interacción ---------- */
-  const handleToggle = (e) => {
+  const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     setIsOpen((prev) => !prev);
   };
@@ -104,19 +121,7 @@ export default function SidebarDropdown({
         }}
       >
         <div className="py-1" style={{ paddingLeft }}>
-          {/* Si el hijo también es SidebarDropdown, se incrementa indentLevel automáticamente */}
-          {Children.map(children, (child) => {
-            if (
-              isValidElement(child) &&
-              child.type?.name === "SidebarDropdown"
-            ) {
-              return cloneElement(child, {
-                ...child.props,
-                indentLevel: indentLevel + 16,
-              });
-            }
-            return child;
-          })}
+          {children}
         </div>
       </div>
     </div>

@@ -11,6 +11,7 @@ export interface Contacts {
   name: string;
   occupation?: string;
   product?: string;
+  [key: string]: unknown;
 }
 
 export type SortDirection = "asc" | "desc";
@@ -25,4 +26,11 @@ export interface Column<T> {
    * Optional width for this column (e.g. '120px', '20%', 'minmax(120px,1fr)')
    */
   width?: string;
+}
+
+export interface SidebarItemProps {
+  title: string;
+  to: string;
+  icon?: string;
+  currentPath: string;
 }

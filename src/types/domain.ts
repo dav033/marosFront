@@ -17,6 +17,7 @@ export interface Contacts {
   email?: string;
   address?: string;
   lastContact?: string;
+  [key: string]: unknown;
 }
 
 export interface PrefetchConfig {

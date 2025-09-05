@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useMemo } from "react";
+import React, { Suspense, lazy, useMemo, useEffect, useState } from "react";
 import { useLeadsData } from "src/features/leads/hooks/useLeadsData";
 import { useLeadModals } from "src/features/leads/hooks/useLeadModals";
 import { useLeadSections } from "src/features/leads/hooks/useLeadSections";
@@ -13,7 +13,6 @@ const CreateLeadModal = lazy(loadCreateLeadModal);
 const EditLeadModal = lazy(loadEditLeadModal);
 const CreateLocalLeadModal = lazy(loadCreateLocalLeadModal);
 
-import { useEffect } from "react";
 import LeadSection from "../LeadSection";
 import type { InteractiveTableProps } from "@/types/domain.ts";
 
@@ -22,7 +21,11 @@ export default function InnerTable({
   title,
   createButtonText,
 }: InteractiveTableProps) {
+  // Estado para manejar hidratación
+  const [isClient, setIsClient] = useState(false);
+
   useEffect(() => {
+    setIsClient(true);
     loadCreateLeadModal();
     loadEditLeadModal();
   }, []);
@@ -57,7 +60,8 @@ export default function InnerTable({
     );
   }
 
-  if (showSkeleton || isLoading) return null;
+  // Mostrar skeleton o loading mientras no esté hidratado o cargando
+  if (!isClient || showSkeleton || isLoading) return null;
 
   return (
     <div className="space-y-8">
