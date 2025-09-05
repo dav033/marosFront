@@ -7,7 +7,6 @@ import {
   type ContextMenuOption,
 } from "@components/common/ContextMenu";
 import { useContextMenu } from "@components/common/ContextMenu";
-import TableCell from "./TableCell";
 
 interface Props<T> {
   row: T;
