@@ -8,21 +8,7 @@ import React, {
 } from "react";
 import { Icon } from "@iconify/react";
 import classNames from "classnames";
-
-interface TriggerProps {
-  title: string;
-  icon?: string;
-  className?: string;
-}
-
-interface SidebarDropdownProps {
-  trigger: TriggerProps;
-  width?: string;
-  children: React.ReactNode;
-  duration?: number;
-  indentLevel?: number;
-  defaultOpen?: boolean;
-}
+import type { TriggerProps, SidebarDropdownProps } from "@/types";
 
 /**
  * SidebarDropdown

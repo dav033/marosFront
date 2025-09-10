@@ -1,30 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { StorageLayer } from "../types/storageLayer";
+import type { StorageLayer, OptimizedFetchConfig, UseOptimizedFetchReturn } from "@/types";
 import { getCachedData, setCachedData } from "../utils/cacheHelpers";
 import { useIsMounted } from "./useIsMounted";
 import { useAbortControllerRef } from "./useAbortControllerRef";
 import { useVisibilityInterval } from "./useVisibilityInterval";
 import { useStableDepsKey } from "./useStableDepsKey";
 import { primeCache } from "../utils/primeCache";
-
-type OptimizedFetchConfig = {
-  cacheKey: string;
-  ttl?: number;
-  storage?: StorageLayer;
-  showSkeletonOnlyOnFirstLoad?: boolean;
-  refetchInterval?: number;
-  backgroundRefreshThreshold?: number;
-};
-
-type UseOptimizedFetchReturn<T> = {
-  data: T | null;
-  loading: boolean;
-  error: Error | null;
-  refetch: () => Promise<void>;
-  fromCache: boolean;
-  cacheAge: number;
-  forceRefresh: () => Promise<void>;
-};
 
 export function useOptimizedFetch<T, P extends unknown[]>(
   requestFn: (...args: P) => Promise<T>,

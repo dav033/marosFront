@@ -4,10 +4,7 @@
 
 import { useEffect } from "react";
 import { CacheInspector } from "src/utils/cacheInspector";
-
-interface CacheInspectorInitProps {
-  enabled?: boolean;
-}
+import type { CacheInspectorInitProps } from "../../types/components/common";
 
 export default function CacheInspectorInit({
   enabled = true,

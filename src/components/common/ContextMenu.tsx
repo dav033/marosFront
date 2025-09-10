@@ -1,23 +1,8 @@
 // src/components/common/ContextMenu.tsx
 import { Icon } from "@iconify/react";
 import React, { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom"; // ← NUEVO
-
-export interface ContextMenuOption {
-  id: string;
-  label: string;
-  icon: string;
-  onClick: () => void;
-  variant?: "default" | "danger" | "warning";
-  disabled?: boolean;
-}
-
-interface ContextMenuProps {
-  options: ContextMenuOption[];
-  isVisible: boolean;
-  position: { x: number; y: number };
-  onClose: () => void;
-}
+import { createPortal } from "react-dom";
+import type { ContextMenuProps } from "../../types/components/common";
 
 export const ContextMenu: React.FC<ContextMenuProps> = ({
   options,
@@ -53,15 +38,11 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 
   if (!isVisible) return null;
 
-  const getVariantClasses = (variant: string = "default") => {
-    switch (variant) {
-      case "danger":
-        return "text-red-400 hover:bg-red-500/20 hover:text-red-300";
-      case "warning":
-        return "text-yellow-400 hover:bg-yellow-500/20 hover:text-yellow-300";
-      default:
-        return "text-theme-light hover:bg-theme-gray hover:text-theme-light";
+  const getVariantClasses = (isDanger: boolean = false) => {
+    if (isDanger) {
+      return "text-red-400 hover:bg-red-500/20 hover:text-red-300";
     }
+    return "text-theme-light hover:bg-theme-gray hover:text-theme-light";
   };
 
   if (!isVisible) return null;
@@ -75,11 +56,11 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
         top: position.y,
       }}
     >
-      {options.map((option, index) => {
-        if (option.label.includes("─")) {
+      {options.map((option: ContextMenuOption, index: number) => {
+        if (option.separator) {
           return (
             <div
-              key={option.id}
+              key={`${option.id}-${index}`}
               className="mx-2 my-1 border-t border-theme-gray-subtle"
             />
           );
@@ -90,7 +71,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
             key={option.id}
             onClick={() => {
               if (!option.disabled) {
-                option.onClick();
+                option.action();
                 onClose();
               }
             }}
@@ -101,14 +82,22 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
               ${
                 option.disabled
                   ? "text-gray-500 cursor-not-allowed"
-                  : `cursor-pointer ${getVariantClasses(option.variant)}`
+                  : `cursor-pointer ${getVariantClasses(option.danger)}`
               }
             `}
           >
-            <Icon
-              icon={option.icon}
-              className={`w-4 h-4 mr-3 ${option.disabled ? "text-gray-500" : ""}`}
-            />
+            {option.icon && typeof option.icon === 'string' && (
+              <Icon
+                icon={option.icon}
+                className={`w-4 h-4 mr-3 ${option.disabled ? "text-gray-500" : ""}`}
+              />
+            )}
+            {option.icon && typeof option.icon !== 'string' && (
+              <span className={`w-4 h-4 mr-3 flex items-center ${option.disabled ? "text-gray-500" : ""}`}>
+                {option.icon}
+              </span>
+            )}
+            {!option.icon && <span className="w-4 h-4 mr-3" />}
             {option.label}
           </button>
         );

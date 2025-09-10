@@ -1,54 +1,48 @@
 // src/components/table/TableHeader.tsx
-/**
- * Tabla genérica con soporte para anchos de columna por prop y CSS Grid.
- *
- * Para definir anchos, usa:
- * columns: [
- *   { id: 'name', header: 'Nombre', accessor: ..., type: 'string', width: '200px' },
- *   { id: 'email', header: 'Email', accessor: ..., type: 'string', width: 'minmax(120px,1fr)' },
- *   ...
- * ]
- * Si no se define width, usa minmax(120px,1fr) por defecto.
- */
 import React, { memo } from "react";
-import type { Column, SortDirection } from "../../../types/types.ts";
+import type { TableHeaderProps, Column } from "../../../types/components/table";
 
-interface Props<T> {
-  columns: Column<T>[];
-  sortColumn: string | null;
-  sortDirection: SortDirection;
-  onSort: (columnId: string) => void;
-}
+function TableHeaderInner<T extends object>({
+  columns,
+  sortColumn,
+  sortDirection,
+  onSort,
+  columnWidths,
+}: TableHeaderProps<T>) {
+  const handleHeaderClick = (col: Column<T>) => {
+    const columnKey = col.id || String(col.key);
+    onSort(columnKey);
+  };
 
-function TableHeaderInner<T>(props: Props<T>) {
-  const { columns, sortColumn, sortDirection, onSort } = props;
-  // CSS Grid: set gridTemplateColumns from columns
-  const gridTemplateColumns = columns
-    .map(col => col.width ? col.width : 'minmax(120px,1fr)')
-    .join(' ');
+  const handleKeyDown = (event: React.KeyboardEvent, col: Column<T>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleHeaderClick(col);
+    }
+  };
 
   return (
-    <thead className="bg-theme-gray">
-      <tr className="h-auto">
-        <th colSpan={columns.length} style={{ padding: 0, border: 'none' }}>
-          <div
-            className="w-full"
-            style={{
-              display: 'grid',
-              gridTemplateColumns,
-            }}
-          >
-            {columns.map((col) => (
-              <div
-                key={col.id}
-                onClick={() => onSort(col.id)}
-                className="px-3 py-3 text-left text-[11px] uppercase tracking-wider text-theme-light cursor-pointer select-none font-normal whitespace-normal break-words flex items-center"
-                style={{ minWidth: 0 }}
-              >
+    <thead className="bg-theme-dark sticky top-0 z-10">
+      <tr>
+        {columns.map((col, index) => {
+          const columnKey = col.id || String(col.key);
+          const width = columnWidths?.[columnKey];
+          
+          return (
+            <th
+              key={columnKey}
+              className="px-4 py-3 text-left text-sm font-medium text-theme-light uppercase tracking-wider border-b border-theme-accent/20 cursor-pointer hover:bg-theme-accent/10"
+              style={{ width }}
+              onClick={() => handleHeaderClick(col)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(event) => handleKeyDown(event, col)}
+            >
+              <div className="flex items-center justify-between">
                 <span className="whitespace-normal break-words">
-                  {col.header}
+                  {col.header || col.label}
                 </span>
-                {sortColumn === col.id && (
+                {sortColumn === columnKey && (
                   <svg
                     className="ml-1 h-4 w-4 fill-[#FE7743] flex-shrink-0"
                     viewBox="0 0 24 24"
@@ -62,13 +56,13 @@ function TableHeaderInner<T>(props: Props<T>) {
                   </svg>
                 )}
               </div>
-            ))}
-          </div>
-        </th>
+            </th>
+          );
+        })}
       </tr>
     </thead>
   );
 }
 
-const MemoizedTableHeader: React.FC<any> = memo(TableHeaderInner);
+const MemoizedTableHeader = memo(TableHeaderInner) as <T>(props: TableHeaderProps<T>) => React.ReactElement;
 export default MemoizedTableHeader;

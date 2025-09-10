@@ -1,44 +1,55 @@
 import { useState, useMemo, useCallback } from "react";
-import type { Column, SortDirection } from "../types/types";
-
-interface SortConfig {
-  columnId: string | null;
-  direction: SortDirection;
-}
+import type { Column, SortDirection, SortConfig } from "@/types";
 
 export default function useSort<T extends object>(
   data: T[],
   columns: Column<T>[]
 ) {
-  const [sortConfig, setSortConfig] = useState<SortConfig>({
-    columnId: null,
-    direction: "asc",
-  });
+  const [sortConfig, setSortConfig] = useState<SortConfig<T> | null>(null);
 
   const onSort = useCallback((columnId: string) => {
-    setSortConfig((prev) => ({
-      columnId,
-      direction:
-        prev.columnId === columnId
-          ? prev.direction === "asc"
-            ? "desc"
-            : "asc"
-          : "asc",
-    }));
-  }, []);
+    const column = columns.find((c) => c.id === columnId || String(c.key) === columnId);
+    if (!column) return;
+    
+    setSortConfig((prev: SortConfig<T> | null) => {
+      const key = column.key;
+      if (prev?.key === key) {
+        return {
+          key,
+          direction: prev.direction === "asc" ? "desc" : "asc",
+        };
+      }
+      return {
+        key,
+        direction: "asc",
+      };
+    });
+  }, [columns]);
 
   const sortedData = useMemo(() => {
-    const { columnId, direction } = sortConfig;
-    if (!columnId) return data;
-    const col = columns.find((c) => c.id === columnId)!;
+    if (!sortConfig) return data;
+    
+    const { key, direction } = sortConfig;
+    const column = columns.find((c) => c.key === key);
+    if (!column) return data;
+    
     return [...data].sort((a, b) => {
-      const aVal = col.accessor(a);
-      const bVal = col.accessor(b);
-      let diff = 0;
-      if (col.type === "number") {
-        diff = Number(aVal) - Number(bVal);
+      let aVal: unknown;
+      let bVal: unknown;
+      
+      if (column.accessor) {
+        aVal = column.accessor(a);
+        bVal = column.accessor(b);
       } else {
-        diff = String(aVal).localeCompare(String(bVal));
+        aVal = a[key];
+        bVal = b[key];
+      }
+      
+      let diff = 0;
+      if (column.type === "number") {
+        diff = Number(aVal || 0) - Number(bVal || 0);
+      } else {
+        diff = String(aVal || "").localeCompare(String(bVal || ""));
       }
       return direction === "asc" ? diff : -diff;
     });
@@ -46,8 +57,8 @@ export default function useSort<T extends object>(
 
   return {
     sortedData,
-    sortColumn: sortConfig.columnId,
-    sortDirection: sortConfig.direction,
+    sortColumn: sortConfig ? String(sortConfig.key) : null,
+    sortDirection: sortConfig?.direction || "asc",
     onSort,
   };
 }

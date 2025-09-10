@@ -1,14 +1,14 @@
-import type { Contacts } from "../../types/types";
-import type { SearchConfig } from "../../hooks/useSearch";
+import type { Contacts, SearchConfig } from "@/types";
 
 export const contactsSearchConfig: SearchConfig<Contacts> = {
   searchableFields: [
-    { value: "companyName", label: "Company Name" },
-    { value: "name", label: "Contact Name" },
+    { key: "companyName", label: "Company Name" },
+    { key: "name", label: "Contact Name" },
   ],
   caseSensitive: false,
   searchType: "includes",
   defaultField: "companyName",
+  fields: []
 };
 
 export const contactsSearchPlaceholder = "Search contacts...";

@@ -8,18 +8,13 @@ import React, { useState, useEffect } from "react";
 import { optimizedApiClient } from "../../lib/optimizedApiClient";
 import { globalCache, apiCache } from "../../lib/cacheManager";
 import { prefetchManager } from "../../lib/prefetchManager";
-import type { CacheMetrics } from "../../types/cache";
-
-interface CacheDiagnosticsProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
+import type { OptimizedApiClientMetrics, CacheDiagnosticsProps } from "@/types";
 
 export const CacheDiagnostics: React.FC<CacheDiagnosticsProps> = ({
   isOpen,
   onClose,
 }) => {
-  const [metrics, setMetrics] = useState<CacheMetrics | null>(null);
+  const [metrics, setMetrics] = useState<OptimizedApiClientMetrics | null>(null);
   const [autoRefresh, setAutoRefresh] = useState(true);
 
   useEffect(() => {

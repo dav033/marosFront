@@ -6,28 +6,11 @@ import React, {
   useRef,
   useState,
 } from "react";
-
-export type SkeletonType =
-  | "contactsTable"
-  | "genericTable"
-  | "list"
-  | "form"
-  | "leadsTable";
-
-export interface SkeletonOptions {
-  rows?: number;
-  showSections?: boolean;
-  overlay?: boolean;
-}
-
-interface LoadingContextValue {
-  isLoading: boolean;
-  skeletonType: SkeletonType | null;
-  options: SkeletonOptions;
-  showLoading: (type?: SkeletonType, options?: SkeletonOptions) => void;
-  hideLoading: () => void;
-  setSkeleton: (type: SkeletonType, options?: SkeletonOptions) => void;
-}
+import type {
+  SkeletonType,
+  SkeletonOptions,
+  LoadingContextValue
+} from "../types/contexts/loading";
 
 const LoadingContext = createContext<LoadingContextValue | undefined>(
   undefined

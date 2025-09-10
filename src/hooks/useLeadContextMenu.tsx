@@ -1,9 +1,5 @@
-import {
-  useContextMenu,
-  type ContextMenuOption,
-} from "@components/common/ContextMenu";
-// ❌ ya no se usa el servicio aquí
-import type { Lead, UseLeadContextMenuProps } from "src/types";
+import { useContextMenu } from "@components/common/ContextMenu";
+import type { ContextMenuOption, Lead, UseLeadContextMenuProps } from "@/types";
 
 export const useLeadContextMenu = ({
   onEdit,
@@ -19,7 +15,7 @@ export const useLeadContextMenu = ({
     if (!confirmed) return;
 
     try {
-      await onDelete?.(lead.id);
+      await onDelete?.(lead);
       hideContextMenu();
     } catch (error) {
       console.error("Error deleting lead:", error);
@@ -27,75 +23,77 @@ export const useLeadContextMenu = ({
     }
   };
 
-  const getLeadContextOptions = (lead: Lead): ContextMenuOption[] => [
+  const getLeadContextOptions = (lead: Lead): ContextMenuOption[] => {
+    return [
     {
       id: "edit",
       label: "Edit Lead",
       icon: "material-symbols:edit",
-      onClick: () => {
+      action: () => {
         onEdit?.(lead);
         hideContextMenu();
       },
-      variant: "default",
+
     },
     {
       id: "duplicate",
       label: "Duplicate Lead",
       icon: "material-symbols:content-copy",
-      onClick: () => {
+      action: () => {
         console.log("Duplicate lead:", lead.id);
       },
-      variant: "default",
+
     },
     {
       id: "divider-1",
       label: "─────────────",
       icon: "",
-      onClick: () => {},
+      action: () => {},
       disabled: true,
     },
     {
       id: "view-details",
       label: "View Details",
       icon: "material-symbols:visibility",
-      onClick: () => {
+      action: () => {
         console.log("View lead details:", lead.id);
       },
-      variant: "default",
+
     },
     {
       id: "view-contact",
       label: "View Contact",
       icon: "material-symbols:person",
-      onClick: () => {
+      action: () => {
         console.log("View lead contact:", lead.contact);
       },
-      variant: "default",
+
     },
     {
       id: "divider-2",
       label: "─────────────",
       icon: "",
-      onClick: () => {},
+      action: () => {},
       disabled: true,
     },
     {
       id: "change-status",
       label: "Change Status",
       icon: "material-symbols:swap-horiz",
-      onClick: () => {
+      action: () => {
         console.log("Change lead status:", lead.id);
       },
-      variant: "warning",
+
     },
     {
       id: "delete",
-      label: "Delete Lead",
+      label: "Delete Lead", 
       icon: "material-symbols:delete",
-      onClick: () => handleDeleteLead(lead),
-      variant: "danger",
+      action: () => handleDeleteLead(lead),
+      danger: true,
     },
   ];
+  };
 
   return {
     contextMenu,

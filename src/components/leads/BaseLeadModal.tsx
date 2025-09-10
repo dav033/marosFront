@@ -3,18 +3,7 @@ import Modal from "@components/common/modal/Modal";
 import ModalBody from "@components/common/modal/ModalBody";
 import ModalFooter from "@components/common/modal/ModalFooter";
 import ModalHeader from "@components/common/modal/ModalHeader";
-
-interface BaseLeadModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title: string;
-  error: string | null;
-  onSubmit: (e: React.FormEvent) => void;
-  submitText: string;
-  children: React.ReactNode;
-  isLoading?: boolean;
-  loadingText?: string;
-}
+import type { BaseLeadModalProps } from "@/types";
 
 export default function BaseLeadModal({
   isOpen,

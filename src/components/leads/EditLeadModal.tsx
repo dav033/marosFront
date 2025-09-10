@@ -3,9 +3,10 @@ import { useLeadForm } from "../../hooks/useLeadForm";
 import type {
   Contacts,
   Lead,
-  LeadFormData,
   ProjectType,
-} from "../../types/domain";
+  EditLeadModalProps,
+} from "@/types";
+import type { LeadFormData } from "../../types/components/form";
 import { FormMode } from "../../types/enums";
 import {
   formatLeadForEdit,
@@ -14,15 +15,6 @@ import {
 } from "../../utils/leadHelpers";
 import LeadFormFields from "../ui/leads/LeadFormFields.tsx";
 import BaseLeadModal from "./BaseLeadModal";
-
-interface EditLeadModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  lead: Lead | null;
-  projectTypes: ProjectType[];
-  contacts: Contacts[];
-  onLeadUpdated: (lead: Lead) => void;
-}
 
 export default function EditLeadModal({
   isOpen,
@@ -45,9 +37,10 @@ export default function EditLeadModal({
     }
 
     const updateData = {
+      id: lead.id,
       name: formData.leadName || lead.name,
       location: formData.location,
-      status: formData.status,
+      status: formData.status || undefined,
       contactId: formData.contactId ? Number(formData.contactId) : undefined,
       projectTypeId: Number(formData.projectTypeId),
       startDate: formData.startDate || undefined,

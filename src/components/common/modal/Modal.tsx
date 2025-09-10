@@ -1,13 +1,7 @@
 // src/components/common/Modal.tsx
 import React, { type ReactNode, useEffect } from "react";
 import { createPortal } from "react-dom";
-
-interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  children: ReactNode;
-  className?: string;
-}
+import type { ModalProps } from "@/types";
 
 export default function Modal({
   isOpen,

@@ -1,18 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
-import type { Contacts } from "../types/types";
-
-interface ContactsContextType {
-  contacts: Contacts[];
-  isLoading: boolean;
-  error: string | null;
-  setContacts: (contacts: Contacts[]) => void;
-  setLoading: (loading: boolean) => void;
-  setError: (error: string | null) => void;
-  addContact: (contact: Contacts) => void;
-  updateContact: (contact: Contacts) => void;
-  removeContact: (contactId: number) => void;
-}
+import type { Contacts, ContactsContextType } from "@/types";
 
 const ContactsContext = createContext<ContactsContextType | undefined>(
   undefined
@@ -25,31 +13,68 @@ export const ContactsProvider: React.FC<{ children: ReactNode }> = ({
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const addContact = (contact: Contacts) => {
-    setContacts((prev) => [...prev, contact]);
+  const fetchContacts = async () => {
+    // TODO: Implement actual API call
+    setLoading(true);
+    try {
+      // Placeholder implementation
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch contacts');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const updateContact = (updatedContact: Contacts) => {
+  const addContact = async (contact: Omit<Contacts, 'id'>) => {
+    // TODO: Implement actual API call
+    const newContact: Contacts = {
+      ...contact as Contacts,
+      id: Date.now(), // Temporary ID generation
+    };
+    setContacts((prev) => [...prev, newContact]);
+  };
+
+  const updateContact = async (id: number, contactUpdates: Partial<Contacts>) => {
+    // TODO: Implement actual API call
     setContacts((prev) =>
       prev.map((contact) =>
-        contact.id === updatedContact.id ? updatedContact : contact
+        contact.id === id ? { ...contact, ...contactUpdates } : contact
       )
     );
+  };
+
+  const deleteContact = async (id: number) => {
+    // TODO: Implement actual API call
+    setContacts((prev) => prev.filter((contact) => contact.id !== id));
   };
 
   const removeContact = (contactId: number) => {
     setContacts((prev) => prev.filter((contact) => contact.id !== contactId));
   };
 
+  const clearError = () => {
+    setError(null);
+  };
+
+  const refetch = async () => {
+    await fetchContacts();
+  };
+
   const value: ContactsContextType = {
     contacts,
+    loading: isLoading,
     isLoading,
     error,
+    fetchContacts,
+    addContact,
+    updateContact,
+    deleteContact,
+    clearError,
+    refetch,
     setContacts,
     setLoading,
     setError,
-    addContact,
-    updateContact,
     removeContact,
   };
 

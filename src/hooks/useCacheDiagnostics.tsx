@@ -4,13 +4,7 @@
  */
 
 import { useState, useEffect, useCallback } from "react";
-
-export interface CacheDebugConfig {
-  enabled: boolean;
-  hotkey: string; // Tecla para abrir diagnostics (ej: 'F12', 'Ctrl+Shift+D')
-  autoShow: boolean; // Mostrar automáticamente en development
-  showInProduction: boolean;
-}
+import type { CacheDebugConfig } from "../types/hooks/cache-diagnostics";
 
 export function useCacheDiagnostics(config: Partial<CacheDebugConfig> = {}) {
   const {

@@ -184,7 +184,7 @@ export function useInstantList<T = unknown>(
     ttl: ttl,
     strategy: "cache-first",
     enableCache: true,
-    onCacheHit: (data) => {
+    onCacheHit: (data: T[]) => {
       console.log(
         `📦 List "${listKey}" loaded from cache (${data.length} items)`
       );

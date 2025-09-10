@@ -5,13 +5,8 @@ import ModalFooter from "@components/common/modal/ModalFooter";
 import ModalHeader from "@components/common/modal/ModalHeader";
 import { useState } from "react";
 import { OptimizedContactsService } from "src/services/OptimizedContactsService";
-import type { ContactFormData } from "./ContactForm";
+import type { ContactFormData, CreateContactModalProps } from "@/types";
 import ContactForm from "./ContactForm";
-
-interface CreateContactModalProps {
-  isOpen: boolean;
-  onClose: (shouldRefetch?: boolean) => void;
-}
 
 export default function CreateContactModal({
   isOpen,
@@ -61,7 +56,7 @@ export default function CreateContactModal({
       if (!validation.nameAvailable || !validation.emailAvailable || !validation.phoneAvailable) {
         const fe: { name?: string; email?: string; phone?: string } = {};
         if (!validation.nameAvailable) fe.name = validation.nameReason || "Name already exists";
-        if (!validation.emailAvailable) fe.email = validation.emailReason || "Email already exists";
+        if (!validation.emailAvailable) fe.email = validation.emailReason || "Email already exists";      
         if (!validation.phoneAvailable) fe.phone = validation.phoneReason || "Phone already exists";
         setFieldErrors(fe);
         setIsLoading(false);

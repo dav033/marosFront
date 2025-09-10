@@ -1,16 +1,8 @@
 import React from "react";
 import Table from "@components/common/table/Table";
 import { useLeadContextMenu } from "src/hooks/useLeadContextMenu";
-import type { Column } from "src/types/types";
 import type { Lead } from "@/types";
-
-interface LeadSectionProps {
-  title: string;
-  data: Lead[];
-  columns: Column<Lead>[];
-  onEditLead?: (lead: Lead) => void;
-  onDeleteLead?: (leadId: number) => void;
-}
+import type { LeadSectionProps } from "../../../types/components/leads-contacts";
 
 export default function LeadSection({
   title,
@@ -20,8 +12,15 @@ export default function LeadSection({
   onDeleteLead,
 }: LeadSectionProps) {
   const { getLeadContextOptions } = useLeadContextMenu({
-    onEdit: onEditLead,
-    onDelete: onDeleteLead,
+    onEdit: onEditLead ? (lead: unknown) => onEditLead(lead as Lead) : undefined,
+    onDelete: onDeleteLead ? (lead: unknown) => {
+      const typedLead = lead as Lead;
+      if (typedLead?.id != null) {
+        onDeleteLead(typedLead);
+      } else {
+        console.error("Cannot delete lead: invalid or missing ID", lead);
+      }
+    } : undefined,
   });
 
   return (

@@ -1,10 +1,5 @@
 import { Icon } from "@iconify/react";
-
-interface ModalHeaderProps {
-  title: string;
-  onClose: () => void;
-  id?: string;
-}
+import type { ModalHeaderProps } from "../../../types/components/modal";
 
 export default function ModalHeader({ title, onClose, id }: ModalHeaderProps) {
   return (

@@ -1,18 +1,9 @@
 // src/components/table/Table.tsx
 import React from "react";
-import type { Column } from "../../../types/types.ts";
-import type { ContextMenuOption } from "@components/common/ContextMenu";
-import useSort from "../../../hooks/useSortResult.tsx";
-import TableHeader from "./TableHeader.tsx";
-import TableBody from "./TableBody.tsx";
-
-interface TableProps<T> {
-  columns: Column<T>[];
-  data: T[];
-  contextMenuOptions?: (row: T) => ContextMenuOption[];
-  showRowSeparators?: boolean;
-  columnWidths?: string[];
-}
+import type { Column, TableProps, ContextMenuOption } from "@/types";
+import useSort from "../../../hooks/useSortResult";
+import TableHeader from "./TableHeader";
+import TableBody from "./TableBody";
 
 export default function Table<T extends object>({
   columns,
@@ -31,7 +22,7 @@ export default function Table<T extends object>({
       <table className="w-full table-fixed custom-table text-theme-light">
         <TableHeader
           columns={columns}
-          sortColumn={sortColumn}
+          sortColumn={sortColumn || undefined}
           sortDirection={sortDirection}
           onSort={onSort}
           columnWidths={columnWidths}

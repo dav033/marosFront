@@ -1,26 +1,11 @@
 import { GenericInput } from "@components/common/GenericInput";
-
-export interface ContactFormData {
-  companyName: string;
-  name: string;
-  occupation: string;
-  product: string;
-  phone: string;
-  email: string;
-  address: string;
-}
-
-interface ContactFormProps {
-  form: ContactFormData;
-  onChange: (field: keyof ContactFormData, value: string) => void;
-  error?: string | null;
-}
+import type { ContactFormData, ContactFormComponentProps } from "@/types";
 
 export default function ContactForm({
   form,
   onChange,
   error,
-}: ContactFormProps) {
+}: ContactFormComponentProps) {
   return (
     <div className="space-y-2">
       {error && (
@@ -52,7 +37,7 @@ export default function ContactForm({
           id="occupation"
           type="text"
           placeholder="Occupation"
-          value={form.occupation}
+          value={form.occupation || ""}
           onChange={(e) => onChange("occupation", e.target.value)}
           icon="material-symbols:work"
         />
@@ -61,7 +46,7 @@ export default function ContactForm({
           id="product"
           type="text"
           placeholder="Product"
-          value={form.product}
+          value={form.product || ""}
           onChange={(e) => onChange("product", e.target.value)}
           icon="material-symbols:inventory"
         />
@@ -70,7 +55,7 @@ export default function ContactForm({
           id="phone"
           type="tel"
           placeholder="Phone"
-          value={form.phone}
+          value={form.phone || ""}
           onChange={(e) => onChange("phone", e.target.value)}
           icon="material-symbols:settings-phone-sharp"
         />
@@ -79,7 +64,7 @@ export default function ContactForm({
           id="email"
           type="email"
           placeholder="Email"
-          value={form.email}
+          value={form.email || ""}
           onChange={(e) => onChange("email", e.target.value)}
           icon="material-symbols:attach-email-outline"
         />
@@ -89,7 +74,7 @@ export default function ContactForm({
         id="address"
         type="text"
         placeholder="Address"
-        value={form.address}
+        value={form.address || ""}
         onChange={(e) => onChange("address", e.target.value)}
         icon="material-symbols:location-on"
       />

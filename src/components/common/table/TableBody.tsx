@@ -1,16 +1,7 @@
 // src/components/table/TableBody.tsx
 import React, { memo } from "react";
-import type { Column } from "../../../types/types.ts";
-import type { ContextMenuOption } from "@components/common/ContextMenu";
+import type { TableBodyProps } from "../../../types/components/table";
 import TableRow from "./TableRow.tsx";
-
-interface Props<T> {
-  columns: Column<T>[];
-  data: T[];
-  contextMenuOptions?: (row: T) => ContextMenuOption[];
-  showRowSeparators?: boolean;
-  columnWidths?: string[];
-}
 
 function TableBodyInner<T>({
   columns,
@@ -18,7 +9,7 @@ function TableBodyInner<T>({
   contextMenuOptions,
   showRowSeparators = false,
   columnWidths,
-}: Props<T>) {
+}: TableBodyProps<T>) {
   return (
     <tbody className="bg-theme-dark">
       {data.map((row, idx) => (
@@ -27,7 +18,6 @@ function TableBodyInner<T>({
             row={row}
             columns={columns}
             contextMenuOptions={contextMenuOptions}
-            columnWidths={columnWidths}
           />
           {showRowSeparators && idx < data.length - 1 && (
             <tr>

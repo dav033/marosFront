@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { GenericInput } from "@components/common/GenericInput";
-import type { ProjectType, Contacts, Lead } from "src/types";
+import type { ProjectType, Contacts, Lead, LeadFormData } from "src/types";
 import { LeadType, FormMode, ContactMode } from "src/types/enums";
 import { useLeadForm } from "src/hooks/useLeadForm";
 import BaseLeadModal from "../../../components/leads/BaseLeadModal.tsx";
@@ -13,15 +13,7 @@ import {
   createLeadWithExistingContact,
 } from "src/utils/leadHelpers";
 import { OptimizedLeadsService } from "@/services/OptimizedLeadsService";
-
-interface CreateLeadModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  projectTypes: ProjectType[];
-  contacts: Contacts[];
-  leadType: LeadType;
-  onLeadCreated: (lead: Lead) => void;
-}
+import type { CreateLeadModalProps } from "../../../types/components/leads-contacts";
 
 export default function CreateLeadModal({
   isOpen,
@@ -57,7 +49,7 @@ export default function CreateLeadModal({
     setError,
   } = useLeadForm({
     initialData: {},
-    onSubmit: async (formData) => {
+    onSubmit: async (formData: LeadFormData) => {
       let validationError: string | null = null;
       // Optional server-side leadNumber validation when user typed one
       if (formData.leadNumber) {
@@ -69,39 +61,39 @@ export default function CreateLeadModal({
 
       if (contactMode === ContactMode.NEW_CONTACT) {
         validationError = validateNewContactLead({
-          leadName: formData.leadName,
-          customerName: formData.customerName,
-          contactName: formData.contactName,
-          projectTypeId: formData.projectTypeId,
-          email: formData.email,
+          leadName: formData.leadName || "",
+          customerName: formData.customerName || "",
+          contactName: formData.contactName || "",
+          projectTypeId: formData.projectTypeId ? String(formData.projectTypeId) : "",
+          email: formData.email || "",
         });
         if (validationError) throw new Error(validationError);
         const newLead = await createLeadWithNewContact({
           // If manual number provided, include it; service will send in request
           // and backend will validate or auto-generate if blank.
-          leadName: formData.leadName,
-          customerName: formData.customerName,
-          contactName: formData.contactName,
-          phone: formData.phone,
-          email: formData.email,
+          leadName: formData.leadName || "",
+          customerName: formData.customerName || "",
+          contactName: formData.contactName || "",
+          phone: formData.phone || "",
+          email: formData.email || "",
           leadNumber: formData.leadNumber || undefined,
-          projectTypeId: Number(formData.projectTypeId),
-          location: formData.location,
+          projectTypeId: Number(formData.projectTypeId) || 0,
+          location: formData.location || "",
           leadType: leadType,
         });
         onLeadCreated(newLead);
       } else {
         validationError = validateExistingContactLead({
-          leadName: formData.leadName,
-          contactId: formData.contactId,
-          projectTypeId: formData.projectTypeId,
+          leadName: formData.leadName || "",
+          contactId: formData.contactId ? String(formData.contactId) : "",
+          projectTypeId: formData.projectTypeId ? String(formData.projectTypeId) : "",
         });
         if (validationError) throw new Error(validationError);
         const newLead = await createLeadWithExistingContact({
-          leadName: formData.leadName,
-          contactId: Number(formData.contactId),
-          projectTypeId: Number(formData.projectTypeId),
-          location: formData.location,
+          leadName: formData.leadName || "",
+          contactId: Number(formData.contactId) || 0,
+          projectTypeId: Number(formData.projectTypeId) || 0,
+          location: formData.location || "",
           leadType: leadType,
           leadNumber: formData.leadNumber || undefined,
         });
@@ -114,9 +106,9 @@ export default function CreateLeadModal({
   });
 
   // Limpiar error al modificar campos
-  const handleSafeChange = (field: keyof typeof form, value: string) => {
+  const handleSafeChange = (field: string, value: string) => {
     if (error) setError(null);
-    handleChange(field, value);
+    handleChange(field as keyof typeof form, value);
   };
 
   // Submit seguro: espera a que termine la petición antes de cerrar

@@ -6,14 +6,9 @@
 import React, { useEffect } from "react";
 import { useInstantList } from "../../hooks/useInstantData";
 import { OptimizedLeadsService } from "../../services/OptimizedLeadsService";
-import { LeadType } from "../../types/enums";
+import type { Lead, InstantLeadsListProps } from "@/types";
 import { LoadingProvider, useLoading } from "src/contexts/LoadingContext";
 import { SkeletonRenderer } from "@components/common/SkeletonRenderer";
-import type { Lead } from "@/types";
-
-interface InstantLeadsListProps {
-  leadType: LeadType;
-}
 
 const InnerInstantLeadsList: React.FC<InstantLeadsListProps> = ({
   leadType,
@@ -108,7 +103,7 @@ const InnerInstantLeadsList: React.FC<InstantLeadsListProps> = ({
 
       {/* Lista de leads - aparece INSTANTÁNEAMENTE en navegaciones repetidas */}
       <div className="grid gap-4">
-        {leads.map((lead) => (
+        {leads.map((lead: Lead) => (
           <LeadCard key={lead.id} lead={lead} isFromCache={fromCache} />
         ))}
       </div>

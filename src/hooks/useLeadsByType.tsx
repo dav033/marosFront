@@ -1,15 +1,9 @@
 import { useMemo } from "react";
-import { LeadsService } from "../services/OptimizedLeadsService";
+import { OptimizedLeadsService } from "../services/OptimizedLeadsService";
 import { LeadType, LeadStatus } from "src/types/enums";
-import type { Lead } from "src/types";
+import type { Lead, Section, Undetermined } from "src/types";
 import { useOptimizedFetch } from "./useOptimizedFetch";
 
-interface Section {
-  title: string;
-  data: Lead[];
-}
-
-type Undetermined = "UNDETERMINED";
 type BucketKey = LeadStatus | Undetermined;
 
 const SECTION_ORDER: { key: BucketKey; title: string }[] = [
@@ -29,7 +23,7 @@ export function useLeadsByType(type: LeadType) {
     refetch,
     fromCache, // para distinguir carga inicial real vs revalidación en background
   } = useOptimizedFetch<Lead[], [LeadType]>(
-    LeadsService.getLeadsByType,
+    OptimizedLeadsService.getLeadsByType,
     [type],
     {
       cacheKey: `leads-by-type-${type}`,
@@ -60,10 +54,10 @@ export function useLeadsByType(type: LeadType) {
 
     // Construimos las secciones en el orden deseado
     return SECTION_ORDER.map(({ key, title }) => ({
-      title,
+      name: title,
       data: buckets[key],
     }));
-  }, [leads ?? []]);
+  }, [leads]);
 
   return {
     sections,

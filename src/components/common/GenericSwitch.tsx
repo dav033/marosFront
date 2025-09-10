@@ -1,15 +1,6 @@
 // src/components/common/GenericSwitch.tsx
 import { useState } from "react";
-
-interface GenericSwitchProps {
-  leftLabel: string;
-  rightLabel: string;
-  value: "left" | "right";
-  onChange: (value: "left" | "right") => void;
-  disabled?: boolean;
-  className?: string;
-  size?: "sm" | "md" | "lg";
-}
+import type { GenericSwitchProps } from "../../types/components/common";
 
 export const GenericSwitch: React.FC<GenericSwitchProps> = ({
   leftLabel,
@@ -38,13 +29,16 @@ export const GenericSwitch: React.FC<GenericSwitchProps> = ({
     },
   };
 
-  const currentSize = sizeClasses[size];
+  const currentSize = sizeClasses[size as keyof typeof sizeClasses];
 
   return (
     <div
       className={`relative inline-flex ${currentSize.container} ${className}`}
     >
-      <div
+      <button
+        type="button"
+        role="switch"
+        aria-checked={value === "right"}
         className={`
           relative flex items-center justify-between w-full
           bg-theme-gray-darker rounded-full cursor-pointer transition-all duration-300
@@ -55,6 +49,7 @@ export const GenericSwitch: React.FC<GenericSwitchProps> = ({
         onClick={() =>
           !disabled && onChange(value === "left" ? "right" : "left")
         }
+        disabled={disabled}
       >
         <span
           className={`
@@ -86,7 +81,7 @@ export const GenericSwitch: React.FC<GenericSwitchProps> = ({
             height: "calc(100% - 8px)",
           }}
         />
-      </div>
+      </button>
     </div>
   );
 };

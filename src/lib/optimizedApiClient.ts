@@ -3,41 +3,10 @@
  */
 
 import axios from "axios";
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import type { AxiosInstance, AxiosResponse } from "axios";
 import { apiCache, globalCache } from "./cacheManager";
 import { prefetchManager } from "./prefetchManager";
-import type { CacheMetrics } from "../types/cache";
-
-export interface CachedRequestConfig extends AxiosRequestConfig {
-  cache?: {
-    enabled?: boolean;
-    ttl?: number; // Time to live en milliseconds
-    key?: string; // Clave personalizada para el cache
-    strategy?: "cache-first" | "network-first" | "cache-only" | "network-only";
-  };
-  prefetch?: {
-    enabled?: boolean;
-    priority?: "low" | "medium" | "high";
-    dependencies?: string[]; // Otras requests que deberían prefetched junto con esta
-  };
-  retry?: {
-    enabled?: boolean;
-    attempts?: number;
-    delay?: number;
-    backoff?: "linear" | "exponential";
-  };
-}
-
-export interface RequestMetrics {
-  cacheHits: number;
-  cacheMisses: number;
-  networkRequests: number;
-  failedRequests: number;
-  totalRequests: number;
-  averageResponseTime: number;
-  prefetchSuccess: number;
-  prefetchFailed: number;
-}
+import type { CachedRequestConfig, RequestMetrics, OptimizedApiClientMetrics } from "@/types";
 
 export class OptimizedApiClient {
   private axiosInstance: AxiosInstance;
@@ -279,7 +248,7 @@ export class OptimizedApiClient {
   /**
    * Obtener métricas del cliente
    */
-  getMetrics(): CacheMetrics {
+  getMetrics(): OptimizedApiClientMetrics {
     return {
       client: {
         hits: this.metrics.cacheHits,

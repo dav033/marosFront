@@ -1,25 +1,17 @@
 // src/components/table/TableRow.tsx
 
 import React, { memo } from "react";
-import type { Column } from "src/types/types";
+import type { TableRowProps } from "../../../types/components/table";
 import {
   ContextMenu,
-  type ContextMenuOption,
 } from "@components/common/ContextMenu";
 import { useContextMenu } from "@components/common/ContextMenu";
-
-interface Props<T> {
-  row: T;
-  columns: Column<T>[];
-  contextMenuOptions?: (row: T) => ContextMenuOption[];
-  // columns now can have width prop
-}
 
 function TableRow<T>({
   row,
   columns,
   contextMenuOptions,
-}: Props<T>) {
+}: TableRowProps<T>) {
   const { contextMenu, showContextMenu, hideContextMenu } = useContextMenu();
 
   // No longer needed: getColumnWidth
@@ -44,11 +36,11 @@ function TableRow<T>({
             }}
           >
             {columns.map((col) => {
-              const value = col.accessor(row);
+              const value = col.accessor ? col.accessor(row) : row[col.key];
               if (col.cellRenderer) {
                 return (
                   <div
-                    key={col.id}
+                    key={col.id || String(col.key)}
                     className="px-3 py-3 text-sm text-theme-light whitespace-normal break-words"
                     style={{ minWidth: 0 }}
                   >
@@ -61,11 +53,11 @@ function TableRow<T>({
               // Default cell
               return (
                 <div
-                  key={col.id}
+                  key={col.id || String(col.key)}
                   className="px-3 py-3 text-sm text-theme-light whitespace-normal break-words"
                   style={{ minWidth: 0 }}
                 >
-                  {value}
+                  {String(value ?? '')}
                 </div>
               );
             })}

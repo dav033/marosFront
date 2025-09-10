@@ -1,9 +1,7 @@
 import { apiCache } from "src/lib/cacheManager";
 import { useCallback, useState } from "react";
 import { useFetch } from "src/hooks/UseFetchResult";
-import type { StorageLayer } from "src/types/storageLayer";
-
-type CachedResult<T> = { data: T | null; age: number };
+import type { StorageLayer, CachedResult } from "@/types";
 
 const WEB_KEY = (key: string) => `cache_${key}`;
 
@@ -27,7 +25,7 @@ export function getCachedData<T>(
         }
       }
     } else {
-      const box = storage === "local" ? localStorage : sessionStorage;
+      const box = storage === "localStorage" ? localStorage : sessionStorage;
       const raw = box.getItem(WEB_KEY(cacheKey));
       if (raw) {
         const parsed = JSON.parse(raw) as { data: T; timestamp: number };
@@ -53,7 +51,7 @@ export function setCachedData<T>(
     if (storage === "memory") {
       apiCache.set(cacheKey, data, ttl);
     } else {
-      const box = storage === "local" ? localStorage : sessionStorage;
+      const box = storage === "localStorage" ? localStorage : sessionStorage;
       box.setItem(
         WEB_KEY(cacheKey),
         JSON.stringify({ data, timestamp: Date.now() })

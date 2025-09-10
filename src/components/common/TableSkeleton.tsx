@@ -1,9 +1,5 @@
 import React from "react";
-
-interface TableSkeletonProps {
-  rows?: number;
-  showSections?: boolean;
-}
+import type { TableSkeletonProps } from "@/types";
 
 const SkeletonRow = () => (
   <div className="animate-pulse">

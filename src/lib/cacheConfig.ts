@@ -1,23 +1,7 @@
 // Lightweight global cache configuration module used by the debug panel
 // Provides get/set helpers and simple persistence in localStorage.
 
-export type CacheResourceKey = "contacts" | "leads" | "projectTypes";
-
-export interface CacheResourceConfig {
-  enabled: boolean;
-  ttl: number; // ms
-}
-
-export interface DebugConfig {
-  logCacheHits: boolean;
-  logCacheMisses: boolean;
-}
-
-export interface CacheConfigShape {
-  enabled: boolean;
-  resources: Record<CacheResourceKey, CacheResourceConfig>;
-  debug: DebugConfig;
-}
+import type { CacheResourceKey, CacheResourceConfig, DebugConfig, CacheConfigShape } from "@/types";
 
 const DEFAULT_CONFIG: CacheConfigShape = {
   enabled: true,

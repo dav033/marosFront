@@ -1,12 +1,9 @@
 import React from "react";
 import { Icon } from "@iconify/react";
 import { LeadStatus } from "src/types/enums";
+import type { StatusBadgeProps } from "@/types";
 
-interface Props {
-  status: LeadStatus | string | null | undefined;
-}
-
-export default function StatusBadge({ status }: Props) {
+export default function StatusBadge({ status }: StatusBadgeProps) {
   if (status == null || status === "null" || status === undefined) {
     return (
       <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full whitespace-normal break-words bg-theme-gray text-theme-light">

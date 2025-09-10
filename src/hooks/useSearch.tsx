@@ -1,27 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
-
-export interface SearchFieldOption {
-  value: string;
-  label: string;
-}
-
-export interface SearchConfig<T> {
-  searchableFields: SearchFieldOption[];
-  caseSensitive?: boolean;
-  searchType?: "includes" | "startsWith" | "exact";
-  defaultField?: string;
-}
-
-export interface UseSearchResult<T> {
-  searchTerm: string;
-  setSearchTerm: (term: string) => void;
-  selectedField: string;
-  setSelectedField: (field: string) => void;
-  filteredData: T[];
-  clearSearch: () => void;
-  hasActiveSearch: boolean;
-  searchFields: SearchFieldOption[];
-}
+import type { SearchFieldOption, SearchConfig, UseSearchResult } from "@/types";
 
 // Helper function to get nested property value
 function getNestedValue(obj: unknown, path: string): unknown {
@@ -39,8 +17,8 @@ export function useSearch<T extends Record<string, unknown>>(
 ): UseSearchResult<T> {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedField, setSelectedField] = useState(
-    config.defaultField || config.searchableFields[0]?.value || ""
-  );
+    config.defaultField || config.searchableFields?.[0]?.key || ""
+  );  
 
   const filteredData = useMemo(() => {
     if (!searchTerm.trim() || !selectedField) {
@@ -81,6 +59,24 @@ export function useSearch<T extends Record<string, unknown>>(
   const hasActiveSearch = searchTerm.trim().length > 0;
 
   return {
+    results: filteredData,
+    loading: false,
+    error: null,
+    state: {
+      query: searchTerm,
+      field: selectedField,
+      isSearching: false,
+    },
+    actions: {
+      setQuery: setSearchTerm,
+      setField: setSelectedField,
+      clearSearch,
+      performSearch: () => {}, // No-op since we filter in real-time
+    },
+    hasResults: filteredData.length > 0,
+    totalResults: filteredData.length,
+    
+    // Legacy properties for compatibility
     searchTerm,
     setSearchTerm,
     selectedField,
@@ -88,6 +84,6 @@ export function useSearch<T extends Record<string, unknown>>(
     filteredData,
     clearSearch,
     hasActiveSearch,
-    searchFields: config.searchableFields,
+    searchFields: config.searchableFields || [],
   };
 }

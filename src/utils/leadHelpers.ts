@@ -1,50 +1,21 @@
 import { OptimizedLeadsService as LeadsService } from "../services/OptimizedLeadsService";
-import type { Lead } from "src/types";
-import { LeadType } from "src/types/enums";
-
-export interface CreateLeadByNewContactData {
-  leadNumber?: string;
-  leadName: string;
-  customerName: string;
-  contactName: string;
-  phone: string;
-  email: string;
-  projectTypeId: number;
-  location: string;
-  leadType: LeadType;
-}
-
-export interface CreateLeadByExistingContactData {
-  leadNumber?: string;
-  leadName: string;
-  contactId: number;
-  projectTypeId: number;
-  location: string;
-  leadType: LeadType;
-}
-
-export interface UpdateLeadData {
-  name?: string;
-  location?: string;
-  status?: string;
-  contactId?: number;
-  projectTypeId?: number;
-  startDate?: string;
-}
+import type { Lead, CreateLeadByNewContactData, CreateLeadByExistingContactData, UpdateLeadData, Contacts, ProjectType } from "src/types";
+import type { 
+  ValidateNewContactLeadData, 
+  ValidateExistingContactLeadData, 
+  ValidateEditLeadData, 
+  LeadForEdit,
+  SelectOption,
+  StatusOption 
+} from "src/types/utils/validation";
+import { LeadType, LeadStatus } from "src/types/enums";
 
 export const validateEmail = (email: string): boolean => {
   if (!email) return true;
   return /\S+@\S+\.\S+/.test(email);
 };
 
-export const validateNewContactLead = (data: {
-  leadNumber?: string;
-  leadName: string;
-  customerName: string;
-  contactName: string;
-  projectTypeId: string;
-  email?: string;
-}): string | null => {
+export const validateNewContactLead = (data: ValidateNewContactLeadData): string | null => {
   if (data.leadNumber && data.leadNumber.trim().length < 3) {
     return "Lead Number is too short";
   }
@@ -63,12 +34,7 @@ export const validateNewContactLead = (data: {
   return null;
 };
 
-export const validateExistingContactLead = (data: {
-  leadNumber?: string;
-  leadName: string;
-  contactId: string;
-  projectTypeId: string;
-}): string | null => {
+export const validateExistingContactLead = (data: ValidateExistingContactLeadData): string | null => {
   if (data.leadNumber && data.leadNumber.trim().length < 3) {
     return "Lead Number is too short";
   }
@@ -83,10 +49,7 @@ export const validateExistingContactLead = (data: {
   return null;
 };
 
-export const validateEditLead = (data: {
-  projectTypeId: string;
-  contactId: string;
-}): string | null => {
+export const validateEditLead = (data: ValidateEditLeadData): string | null => {
   if (!data.projectTypeId) {
     return "Please select a project type";
   }
@@ -127,29 +90,27 @@ export const deleteLead = async (
   };
 };
 
-export const formatLeadForEdit = (lead: Lead | null) => {
+export const formatLeadForEdit = (lead: LeadForEdit | null) => {
   if (!lead) return {};
 
   return {
     leadName: lead.name || "",
     location: lead.location || "",
-    status: lead.status || "",
-    contactId: lead.contact?.id?.toString() || "",
-    projectTypeId: lead.projectType?.id?.toString() || "",
+    status: lead.status || null,
+    contactId: lead.contact?.id || undefined,
+    projectTypeId: lead.projectType?.id || undefined,
     startDate: lead.startDate ? lead.startDate.split("T")[0] : "",
   };
 };
 
-export const getStatusOptions = () => [
+export const getStatusOptions = (): StatusOption[] => [
   { value: "TO_DO", label: "To Do" },
   { value: "IN_PROGRESS", label: "In Progress" },
   { value: "DONE", label: "Done" },
   { value: "LOST", label: "Lost" },
 ];
 
-import type { Contacts, ProjectType } from "src/types";
-
-export const formatContactOptions = (contacts: Contacts[]) => {
+export const formatContactOptions = (contacts: Contacts[]): SelectOption[] => {
   return contacts.map((contact) => ({
     value: contact.id.toString(),
     label: contact.companyName
@@ -158,7 +119,7 @@ export const formatContactOptions = (contacts: Contacts[]) => {
   }));
 };
 
-export const formatProjectTypeOptions = (projectTypes: ProjectType[]) => {
+export const formatProjectTypeOptions = (projectTypes: ProjectType[]): SelectOption[] => {
   return projectTypes.map((pt) => ({
     value: pt.id.toString(),
     label: pt.name,

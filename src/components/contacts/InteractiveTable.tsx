@@ -11,12 +11,12 @@ import { contactTableColumns } from "./ContactTableColumns";
 import ContactSection from "./ContactSection";
 import { GenericButton } from "@components/common/GenericButton";
 import { SearchBoxWithDropdown } from "@components/common/SearchBoxWithDropdown";
-import { useSearch } from "src/hooks/useSearch";
+import { useSearch } from "@/hooks/useSearch";
 import {
   contactsSearchConfig,
   contactsSearchPlaceholder,
 } from "./contactsSearchConfig";
-import type { Contacts } from "src/types/types";
+import type { Contacts } from "@/types";
 import { LoadingProvider, useLoading } from "src/contexts/LoadingContext";
 import { SkeletonRenderer } from "@components/common/SkeletonRenderer";
 import { OptimizedContactsService } from "src/services/OptimizedContactsService";
@@ -66,7 +66,7 @@ function ContactsInnerTable() {
     };
 
     loadContacts();
-  }, []);
+  }, [setLoading, setError, setContacts]);
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);

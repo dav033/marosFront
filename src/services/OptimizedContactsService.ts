@@ -4,7 +4,7 @@
 
 import { optimizedApiClient } from "src/lib/optimizedApiClient";
 import type { Contacts, CreateContactRequest, ContactValidationResponse } from "src/types";
-import type { DeleteContactResponse } from "src/types/deleteContactResponse";
+import type { DeleteContactResponse } from "../types/responses/deleteContact";
 
 export const OptimizedContactsService = {
   async getAllContacts(): Promise<Contacts[]> {

@@ -1,9 +1,6 @@
 // src/components/common/ModalFooter.tsx
-import React, { type ReactNode } from "react";
-
-interface ModalFooterProps {
-  children: ReactNode;
-}
+import React from "react";
+import type { ModalFooterProps } from "../../../types/components/modal";
 
 export default function ModalFooter({ children }: ModalFooterProps) {
   return (

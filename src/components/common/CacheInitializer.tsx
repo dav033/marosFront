@@ -15,13 +15,8 @@ import { OptimizedLeadsService } from "../../services/OptimizedLeadsService";
 import { optimizedApiClient } from "../../lib/optimizedApiClient";
 import { globalCache, apiCache } from "../../lib/cacheManager";
 import { prefetchManager } from "../../lib/prefetchManager";
-import type { CacheMetrics } from "../../types/cache";
-
-interface CacheInitializerProps {
-  enabled?: boolean;
-  debug?: boolean;
-  autoPreload?: boolean;
-}
+import type { CacheMetrics } from "@/types";
+import type { CacheInitializerProps } from "../../types/components/common";
 
 export const CacheInitializer: React.FC<CacheInitializerProps> = ({
   enabled = true,

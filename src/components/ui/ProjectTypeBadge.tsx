@@ -1,11 +1,7 @@
-import type { ProjectType } from "@/types";
+import type { ProjectType, ProjectTypeBadgeProps } from "@/types";
 import React from "react";
 
-interface Props {
-  projectType: ProjectType | null;
-}
-
-export default function ProjectTypeBadge({ projectType }: Props) {
+export default function ProjectTypeBadge({ projectType }: ProjectTypeBadgeProps) {
   if (!projectType) {
     return (
       <span

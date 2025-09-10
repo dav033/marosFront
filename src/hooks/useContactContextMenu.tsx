@@ -1,10 +1,6 @@
-import type { UseContactContextMenuProps } from "@/types";
-import {
-  useContextMenu,
-  type ContextMenuOption,
-} from "@components/common/ContextMenu";
+import type { UseContactContextMenuProps, ContextMenuOption, Contacts } from "@/types";
+import { useContextMenu } from "@components/common/ContextMenu";
 import { OptimizedContactsService } from "src/services/OptimizedContactsService";
-import type { Contacts } from "../types/types";
 
 export const useContactContextMenu = ({
   onEdit,
@@ -39,41 +35,38 @@ export const useContactContextMenu = ({
       id: "edit",
       label: "Edit Contact",
       icon: "material-symbols:edit",
-      onClick: () => {
+      action: () => {
         onEdit?.(contact);
         hideContextMenu();
       },
-      variant: "default",
     },
     {
       id: "duplicate",
       label: "Duplicate Contact",
       icon: "material-symbols:content-copy",
-      onClick: () => {
+      action: () => {
         // TODO: Implement duplicate functionality
         hideContextMenu();
       },
-      variant: "default",
     },
     {
       id: "view-details",
       label: "View Details",
       icon: "material-symbols:visibility",
-      onClick: () => {
+      action: () => {
         // TODO: Implement view details functionality
         hideContextMenu();
       },
-      variant: "default",
     },
     {
       id: "delete",
       label: "Delete Contact",
       icon: "material-symbols:delete",
-      onClick: () => {
+      action: () => {
         handleDeleteContact(contact);
         hideContextMenu();
       },
-      variant: "danger",
+      danger: true,
     },
   ];
 

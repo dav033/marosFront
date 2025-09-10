@@ -3,20 +3,10 @@
  * Soporta múltiples estrategias de cache, TTL, y limpieza automática
  */
 
-export interface CacheEntry<T> {
-  data: T;
-  timestamp: number;
-  ttl: number; // Time to live en milliseconds
-  key: string;
-}
-
-export interface CacheConfig {
-  maxSize: number;
-  defaultTTL: number; // 5 minutos por defecto
-  storage: "memory" | "sessionStorage" | "localStorage";
-}
+import type { CacheEntry, CacheConfig, CacheMock } from "../types/lib/cache-manager";
 
 export class CacheManager {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private cache = new Map<string, CacheEntry<any>>();
   private config: CacheConfig;
   private cleanupInterval: number | null = null;
@@ -159,6 +149,7 @@ export class CacheManager {
     return this.cache.get(key) || null;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private isExpired(entry: CacheEntry<any>): boolean {
     return Date.now() - entry.timestamp > entry.ttl;
   }
@@ -277,7 +268,7 @@ export class CacheManager {
 }
 
 // Función para crear instancias de cache que solo se ejecuta en el cliente
-function createGlobalCache() {
+function createGlobalCache(): CacheManager | CacheMock {
   if (typeof window === "undefined") {
     // Retornar un mock para el servidor
     return {
@@ -289,7 +280,7 @@ function createGlobalCache() {
       getStats: () => ({ size: 0, hits: 0, misses: 0, expired: 0 }),
       cleanup: () => {},
       destroy: () => {},
-    } as any;
+    };
   }
 
   return new CacheManager({
@@ -299,7 +290,7 @@ function createGlobalCache() {
   });
 }
 
-function createApiCache() {
+function createApiCache(): CacheManager | CacheMock {
   if (typeof window === "undefined") {
     // Retornar un mock para el servidor
     return {
@@ -311,7 +302,7 @@ function createApiCache() {
       getStats: () => ({ size: 0, hits: 0, misses: 0, expired: 0 }),
       cleanup: () => {},
       destroy: () => {},
-    } as any;
+    };
   }
 
   return new CacheManager({

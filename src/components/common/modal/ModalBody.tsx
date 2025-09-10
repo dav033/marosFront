@@ -1,9 +1,6 @@
 // src/components/common/ModalBody.tsx
-import React, { type ReactNode } from "react";
-
-interface ModalBodyProps {
-  children: ReactNode;
-}
+import React from "react";
+import type { ModalBodyProps } from "../../../types/components/modal";
 
 export default function ModalBody({ children }: ModalBodyProps) {
   return (

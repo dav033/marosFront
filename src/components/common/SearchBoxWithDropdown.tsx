@@ -1,19 +1,5 @@
 import React from "react";
-import type { SearchFieldOption } from "../../hooks/useSearch";
-
-export interface SearchBoxWithDropdownProps {
-  searchTerm: string;
-  onSearchChange: (term: string) => void;
-  selectedField: string;
-  onFieldChange: (field: string) => void;
-  searchFields: SearchFieldOption[];
-  onClearSearch: () => void;
-  placeholder?: string;
-  className?: string;
-  hasActiveSearch?: boolean;
-  resultCount?: number;
-  totalCount?: number;
-}
+import type { SearchFieldOption, SearchBoxWithDropdownProps } from "@/types";
 
 export const SearchBoxWithDropdown: React.FC<SearchBoxWithDropdownProps> = ({
   searchTerm,
@@ -29,7 +15,7 @@ export const SearchBoxWithDropdown: React.FC<SearchBoxWithDropdownProps> = ({
   totalCount,
 }) => {
   const selectedFieldLabel =
-    searchFields.find((field) => field.value === selectedField)?.label ||
+    searchFields.find((field: SearchFieldOption) => field.key === selectedField)?.label ||
     "Select Field";
 
   return (
@@ -42,10 +28,10 @@ export const SearchBoxWithDropdown: React.FC<SearchBoxWithDropdownProps> = ({
             onChange={(e) => onFieldChange(e.target.value)}
             className="appearance-none bg-theme-gray-subtle border border-theme-gray-subtle border-r-0 rounded-l-md px-3 py-2 text-sm text-theme-light focus:outline-none focus:ring-1 focus:ring-theme-primary focus:border-theme-primary cursor-pointer min-w-[140px]"
           >
-            {searchFields.map((field) => (
+            {searchFields.map((field: SearchFieldOption) => (
               <option
-                key={field.value}
-                value={field.value}
+                key={field.key}
+                value={field.key}
                 className="bg-theme-gray-subtle text-theme-light"
               >
                 {field.label}

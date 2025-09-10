@@ -1,4 +1,3 @@
-import type { Contacts } from "@/types";
 import { GenericButton } from "@components/common/GenericButton";
 import Modal from "@components/common/modal/Modal";
 import ModalBody from "@components/common/modal/ModalBody";
@@ -7,13 +6,8 @@ import ModalHeader from "@components/common/modal/ModalHeader";
 import { useEffect, useState } from "react";
 import { OptimizedContactsService } from "src/services/OptimizedContactsService";
 import type { ContactFormData } from "./ContactForm";
+import type { EditContactModalProps } from "../../types/components/leads-contacts";
 import ContactForm from "./ContactForm";
-
-interface EditContactModalProps {
-  isOpen: boolean;
-  onClose: (shouldRefetch?: boolean) => void;
-  contact: Contacts | null;
-}
 
 export default function EditContactModal({
   isOpen,

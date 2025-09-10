@@ -1,11 +1,6 @@
 import React from "react";
 import { Icon } from "@iconify/react";
-
-export interface GenericInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
-  className?: string;
-  icon?: string;
-}
+import type { GenericInputProps } from "../../types/components/common";
 
 export const GenericInput: React.FC<GenericInputProps> = ({
   className = "",

@@ -14,9 +14,9 @@ export class LeadAgent {
     // Decide if it's new or existing contact based on input
     let created: Lead;
     if (input.contactId) {
-  created = await OptimizedLeadsService.createLeadByExistingContact(input);
+      created = await OptimizedLeadsService.createLeadByExistingContact(input);
     } else {
-  created = await OptimizedLeadsService.createLeadByNewContact(input);
+      created = await OptimizedLeadsService.createLeadByNewContact(input);
     }
     this.bus.emit({ type: "LEAD_CREATED", payload: created });
     this.bus.emit({ type: "REFETCH_REQUESTED" });
@@ -35,12 +35,16 @@ export class LeadAgent {
       projectTypeId: projectType?.id,
       startDate,
     });
-  this.bus.emit({ type: "LEAD_UPDATED", payload: updated });
+    this.bus.emit({ type: "LEAD_UPDATED", payload: updated });
     return updated;
   }
 
   async remove(id: number): Promise<void> {
-  await OptimizedLeadsService.deleteLead(id);
-  this.bus.emit({ type: "LEAD_DELETED", payload: { id } });
+    if (id == null || id === undefined) {
+      console.error("Invalid id received in LeadAgent.remove:", id);
+      throw new Error("Invalid lead ID for deletion");
+    }
+    await OptimizedLeadsService.deleteLead(id);
+    this.bus.emit({ type: "LEAD_DELETED", payload: { id } });
   }
 }

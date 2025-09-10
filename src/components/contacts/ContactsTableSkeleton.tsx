@@ -2,9 +2,7 @@
  * Skeleton para la tabla de contactos que coincide con el diseño real
  */
 
-interface ContactsTableSkeletonProps {
-  rows?: number;
-}
+import type { ContactsTableSkeletonProps } from "@/types";
 
 export function ContactsTableSkeleton({
   rows = 15,

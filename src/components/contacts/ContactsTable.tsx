@@ -3,12 +3,12 @@ import { contactTableColumns } from "./ContactTableColumns";
 import ContactSection from "./ContactSection";
 import { GenericButton } from "@components/common/GenericButton";
 import { SearchBoxWithDropdown } from "@components/common/SearchBoxWithDropdown";
-import { useSearch } from "src/hooks/useSearch";
+import { useSearch } from "@/hooks/useSearch";
 import {
   contactsSearchConfig,
   contactsSearchPlaceholder,
 } from "./contactsSearchConfig";
-import type { Contacts } from "src/types/types";
+import type { Contacts, ContactsTableProps } from "@/types";
 
 // Try absolute imports for the modals
 const CreateContactModal = lazy(
@@ -17,11 +17,6 @@ const CreateContactModal = lazy(
 const EditContactModal = lazy(
   () => import("src/components/contacts/EditContactModal")
 );
-
-interface ContactsTableProps {
-  contacts: Contacts[];
-  onRefetch: () => Promise<void>;
-}
 
 export default function ContactsTable({
   contacts,

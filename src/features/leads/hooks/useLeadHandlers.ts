@@ -24,14 +24,18 @@ export function useLeadHandlers({
   }, [agent, onUpdated, bus]);
 
   // DELETE
-  const handleLeadDeleted = useCallback(async (leadId: number) => {
-    await agent.remove(leadId);
-    onDeleted(leadId);
-    bus.emit({ type: "LEAD_DELETED", payload: { id: leadId } });
+  const handleLeadDeleted = useCallback(async (lead: Lead) => {
+    if (lead?.id == null || lead.id === undefined) {
+      console.error("Invalid lead or lead.id received:", lead);
+      return;
+    }
+    await agent.remove(lead.id);
+    onDeleted(lead.id);
+    bus.emit({ type: "LEAD_DELETED", payload: { id: lead.id } });
   }, [agent, onDeleted, bus]);
 
   // Opcional: CREATE centralizado
-  const handleLeadCreated = useCallback(async (creationPayload: any) => {
+  const handleLeadCreated = useCallback(async (creationPayload: unknown) => {
     const created = await agent.create(creationPayload);
     onCreated?.(created);
     bus.emit({ type: "LEAD_CREATED", payload: created });

@@ -1,13 +1,8 @@
 import { useEffect } from "react";
-
-type Options = {
-  interval?: number;
-  enabled?: boolean;
-  tick: () => void | Promise<void>;
-};
+import type { UseVisibilityIntervalOptions } from "../types/hooks/visibility";
 
 /** Programa ticks por intervalo y al recuperar visibilidad de la pestaña. */
-export function useVisibilityInterval({ interval, enabled, tick }: Options) {
+export function useVisibilityInterval({ interval, enabled, tick }: UseVisibilityIntervalOptions) {
   useEffect(() => {
     if (!enabled || !interval) return;
 

@@ -1,12 +1,7 @@
 import React, { memo } from "react";
+import type { TableCellProps } from "../../../types/components/table";
 
-interface Props {
-  value: string | number;
-  type: "string" | "number";
-  className?: string;
-}
-
-function TableCellInner({ value, type, className = "" }: Props) {
+function TableCellInner({ value, type, className = "" }: TableCellProps) {
   return (
     <td
       className={`

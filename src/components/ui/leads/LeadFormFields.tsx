@@ -1,25 +1,14 @@
 import React from "react";
 import { GenericInput } from "@components/common/GenericInput";
-import { GenericSelect } from "@components/common/GenericSelect";
+import GenericSelect from "@components/common/GenericSelect";
 
-import { FormMode, ContactMode } from "src/types/enums";
 import {
 	getStatusOptions,
 	formatContactOptions,
 	formatProjectTypeOptions,
 } from "@utils/leadHelpers";
-import type { LeadFormData, ProjectType, Contacts } from "@/types";
-
-interface LeadFormFieldsProps {
-	form: LeadFormData;
-	onChange: (field: keyof LeadFormData, value: string) => void;
-	projectTypes: ProjectType[];
-	contacts?: Contacts[];
-	mode?: FormMode;
-	contactMode?: ContactMode;
-	// Optional override to explicitly show/hide the Lead Number field
-	showLeadNumber?: boolean;
-}
+import { FormMode, ContactMode } from "src/types/enums";
+import type { LeadFormFieldsProps } from "../../../types/components/leads-contacts";
 
 const LeadFormFields = ({
 	form,
@@ -64,7 +53,7 @@ const LeadFormFields = ({
 			<GenericSelect
 				searchable
 				options={projectTypeOptions}
-				value={form.projectTypeId}
+				value={form.projectTypeId?.toString()}
 				onChange={(val) => onChange("projectTypeId", val)}
 				placeholder="Select Project Type *"
 				icon="material-symbols:design-services"
@@ -75,7 +64,7 @@ const LeadFormFields = ({
 				<GenericSelect
 					searchable
 					options={contactOptions}
-					value={form.contactId}
+					value={form.contactId?.toString()}
 					onChange={(val) => onChange("contactId", val)}
 					placeholder="Select Contact *"
 					icon="material-symbols:person"

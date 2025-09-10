@@ -1,9 +1,5 @@
 import React from "react";
-
-export interface GenericButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  className?: string;
-}
+import type { GenericButtonProps } from "@/types";
 
 export const GenericButton: React.FC<GenericButtonProps> = ({
   className = "",

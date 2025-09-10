@@ -1,33 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { Icon } from "@iconify/react";
+import type { Option, GenericSelectProps } from "../../types/components/common";
 
-export interface Option {
-  value: string;
-  label: string;
-}
-
-export interface GenericSelectProps {
-  options: Option[];
-  value?: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  searchable?: boolean;
-  icon?: string;
-  disabled?: boolean;
-  className?: string;
-}
-
-export const GenericSelect: React.FC<GenericSelectProps> = ({
+export default function GenericSelect({
   options,
-  value = "",
+  value,
   onChange,
-  placeholder = "Select…",
+  placeholder = "Select an option",
   searchable = false,
   icon,
   disabled = false,
   className = "",
-}) => {
+}: GenericSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [position, setPosition] = useState<{
@@ -66,9 +51,9 @@ export const GenericSelect: React.FC<GenericSelectProps> = ({
     }
   }, [isOpen]);
 
-  const selectedOption = options.find((o) => o.value === value);
+  const selectedOption = options.find((o: Option) => o.value === value);
   const filteredOptions = searchable
-    ? options.filter((o) =>
+    ? options.filter((o: Option) =>
         (o.label || "").toLowerCase().includes(searchTerm.toLowerCase())
       )
     : options;
@@ -107,10 +92,11 @@ export const GenericSelect: React.FC<GenericSelectProps> = ({
           />
         </div>
       )}
-      {filteredOptions.map((opt) => (
-        <div
+      {filteredOptions.map((opt: Option) => (
+        <button
           key={opt.value}
-          className="px-3 py-2 text-sm truncate text-theme-light hover:bg-theme-gray cursor-pointer"
+          type="button"
+          className="w-full text-left px-3 py-2 text-sm truncate text-theme-light hover:bg-theme-gray cursor-pointer border-none bg-transparent"
           onClick={() => {
             onChange(opt.value);
             setIsOpen(false);
@@ -118,7 +104,7 @@ export const GenericSelect: React.FC<GenericSelectProps> = ({
           }}
         >
           {opt.label || "Sin etiqueta"}
-        </div>
+        </button>
       ))}
       {searchable && filteredOptions.length === 0 && (
         <div className="px-3 py-2 text-sm text-gray-400">No hay opciones</div>
@@ -145,7 +131,7 @@ export const GenericSelect: React.FC<GenericSelectProps> = ({
           className={`${baseControl} ${plClass}`}
         >
           <option value="">{placeholder}</option>
-          {options.map((opt) => (
+          {options.map((opt: Option) => (
             <option key={opt.value} value={opt.value}>
               {opt.label || "Sin etiqueta"}
             </option>
