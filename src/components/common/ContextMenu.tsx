@@ -3,6 +3,7 @@ import { Icon } from "@iconify/react";
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { ContextMenuProps } from "../../types/components/common";
+import type { ContextMenuOption } from "@/types";
 
 export const ContextMenu: React.FC<ContextMenuProps> = ({
   options,
