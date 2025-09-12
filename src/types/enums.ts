@@ -11,6 +11,7 @@ export enum LeadStatus {
   IN_PROGRESS = "IN_PROGRESS",
   DONE = "DONE",
   LOST = "LOST",
+  NOT_EXECUTED = "NOT_EXECUTED",
 }
 
 export enum LeadType {

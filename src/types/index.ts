@@ -17,9 +17,7 @@ export type {
   ProjectType,
   Lead,
   Project,
-  Invoice,
-  InvoiceItem,
-  Document,
+
 } from "./domain/entities";
 
 export type {

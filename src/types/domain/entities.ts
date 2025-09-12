@@ -8,7 +8,7 @@ import type {
 } from "../enums";
 
 // ===========================================
-// CORE DOMAIN ENTITIES
+// CORE DOMAIN ENTITIES (Based on Backend DTOs)
 // ===========================================
 
 export interface Contacts {
@@ -20,8 +20,7 @@ export interface Contacts {
   phone?: string;
   email?: string;
   address?: string;
-  lastContact?: string;
-  [key: string]: unknown;
+  lastContact?: string; // LocalDateTime from backend, received as ISO string
 }
 
 export interface ProjectType {
@@ -34,67 +33,23 @@ export interface Lead {
   id: number;
   leadNumber: string;
   name: string;
-  startDate: string;
+  startDate: string; // LocalDate from backend, received as ISO string
   location?: string;
   status: LeadStatus;
   contact: Contacts;
   projectType: ProjectType;
   leadType: LeadType;
-  description?: string;
-  budget?: number;
-  estimatedEndDate?: string;
-  actualEndDate?: string;
-  createdAt?: string;
-  updatedAt?: string;
 }
 
 export interface Project {
   id: number;
-  name: string;
-  description?: string;
-  status: ProjectStatus;
-  startDate: string;
-  endDate?: string;
+  projectName: string; // Backend uses 'projectName' not 'name'
+  overview?: string; // Backend uses 'overview' not 'description'
+  payments?: number[]; // List<Float> from backend
+  projectStatus: ProjectStatus;
+  invoiceStatus: InvoiceStatus;
+  quickbooks?: boolean;
+  startDate?: string; // LocalDate from backend, received as ISO string
+  endDate?: string; // LocalDate from backend, received as ISO string
   lead: Lead;
-  budget?: number;
-  actualCost?: number;
-  progress?: number;
-  team?: string[];
-  documents?: Document[];
-}
-
-export interface Invoice {
-  id: number;
-  number: string;
-  projectId: number;
-  leadId: number;
-  amount: number;
-  tax: number;
-  total: number;
-  status: InvoiceStatus;
-  issueDate: string;
-  dueDate: string;
-  paidDate?: string;
-  description?: string;
-  items: InvoiceItem[];
-}
-
-export interface InvoiceItem {
-  id: number;
-  description: string;
-  quantity: number;
-  unitPrice: number;
-  total: number;
-}
-
-export interface Document {
-  id: number;
-  name: string;
-  type: string;
-  url: string;
-  size: number;
-  uploadedAt: string;
-  uploadedBy: string;
-  projectId?: number;
-  leadId?: number;
 }
