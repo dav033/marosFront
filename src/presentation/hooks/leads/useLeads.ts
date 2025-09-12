@@ -1,17 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { Lead } from "../../../domain/entities/Lead";
 import type { LeadType } from "../../../domain/enums/LeadType";
-import { listLeads } from "../../../application/leads/ListLeads";
-import { getLeadById } from "../../../application/leads/GetLeadById";
-import { createLeadWithExistingContact } from "../../../application/leads/CreateLeadWithExistingContact";
-import { createLeadWithNewContact } from "../../../application/leads/CreateLeadWithNewContact";
-import { updateLead } from "../../../application/leads/UpdateLead";
-import { deleteLead } from "../../../application/leads/DeleteLead";
-import { validateLeadNumber } from "../../../application/leads/ValidateLeadNumber";
-import { makeLeadRepo } from "../../../infrastructure/config/di";
+import { container } from "../../../application/di/container";
 
 export function useLeads(initialType?: LeadType) {
-  const repo = useMemo(() => makeLeadRepo(), []);
   const [items, setItems] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,40 +13,52 @@ export function useLeads(initialType?: LeadType) {
     setLoading(true);
     setError(null);
     try {
-      const list = await listLeads(repo, type);
+      const listLeadsUseCase = container.getListLeads();
+      const list = await listLeadsUseCase(type);
       setItems(list);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Unexpected error");
     } finally {
       setLoading(false);
     }
-  }, [repo, type]);
+  }, [type]);
 
   const createWithExistingContact = useCallback(async (input: Omit<Lead, "id" | "contact"> & { contactId: number }) => {
-    const saved = await createLeadWithExistingContact(repo, input);
+    const createUseCase = container.getCreateLeadWithExistingContact();
+    const saved = await createUseCase(input);
     setItems((prev) => [saved, ...prev]);
     return saved;
-  }, [repo]);
+  }, []);
 
   const createWithNewContact = useCallback(async (input: Omit<Lead, "id" | "contact"> & { contact: Lead["contact"] }) => {
-    const saved = await createLeadWithNewContact(repo, input);
+    const createUseCase = container.getCreateLeadWithNewContact();
+    const saved = await createUseCase(input);
     setItems((prev) => [saved, ...prev]);
     return saved;
-  }, [repo]);
+  }, []);
 
   const update = useCallback(async (id: number, patch: Partial<Lead>) => {
-    const saved = await updateLead(repo, id, patch);
+    const updateUseCase = container.getUpdateLead();
+    const saved = await updateUseCase(id, patch);
     setItems((prev) => prev.map((l) => (l.id === id ? saved : l)));
     return saved;
-  }, [repo]);
+  }, []);
 
   const remove = useCallback(async (id: number) => {
-    await deleteLead(repo, id);
+    const deleteUseCase = container.getDeleteLead();
+    await deleteUseCase(id);
     setItems((prev) => prev.filter((l) => l.id !== id));
-  }, [repo]);
+  }, []);
 
-  const getById = useCallback(async (id: number) => getLeadById(repo, id), [repo]);
-  const validateNumber = useCallback((leadNumber: string) => validateLeadNumber(repo, leadNumber), [repo]);
+  const getById = useCallback(async (id: number) => {
+    const getUseCase = container.getGetLeadById();
+    return getUseCase(id);
+  }, []);
+  
+  const validateNumber = useCallback((leadNumber: string) => {
+    const validateUseCase = container.getValidateLeadNumber();
+    return validateUseCase(leadNumber);
+  }, []);
 
   useEffect(() => { refetch(); }, [refetch]);
 

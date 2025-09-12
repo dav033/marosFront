@@ -1,8 +1,10 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import ContactsPageWrapper from "../components/contacts/ContactsPageWrapper";
+import { ContactsContainer } from "../presentation/containers/ContactsContainer";
 ---
 
 <Layout title="Contacts - Maros Construction">
-  <ContactsPageWrapper client:load />
+  <main class="container mx-auto px-4 py-8">
+    <ContactsContainer client:load />
+  </main>
 </Layout>

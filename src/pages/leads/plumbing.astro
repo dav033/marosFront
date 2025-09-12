@@ -1,14 +1,11 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import InteractiveTable from "../../features/leads/components/InteractiveTable/InteractiveTable";
-import { LeadType } from "../../types/enums";
+import { LeadsContainer } from "../../presentation/containers/LeadsContainer";
+import { LeadType } from "../../domain/enums/LeadType";
 ---
 
 <Layout title="Plumbing Leads - Maros Construction">
-  <InteractiveTable
-    client:load
-    leadType={LeadType.PLUMBING}
-    title="Plumbing Leads"
-    createButtonText="Create Plumbing Lead"
-  />
+  <main class="container mx-auto px-4 py-8">
+    <LeadsContainer client:load leadType={LeadType.PLUMBING} />
+  </main>
 </Layout>

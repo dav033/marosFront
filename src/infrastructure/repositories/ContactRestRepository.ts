@@ -8,7 +8,8 @@ export class ContactRestRepository implements ContactRepositoryPort {
   constructor(private readonly http: HttpClient) {}
 
   async list(): Promise<Contact[]> {
-    const { data } = await this.http.get<ContactDTO[]>("/contacts");
+    // Use GET /contacts/all as per backend controller
+    const { data } = await this.http.get<ContactDTO[]>("/contacts/all");
     return data.map(contactFromDTO);
   }
 
