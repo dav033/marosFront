@@ -1,0 +1,19 @@
+export enum LeadStatus {
+  NEW = "NEW",
+  UNDETERMINED = "UNDETERMINED",
+  TO_DO = "TO_DO",
+  IN_PROGRESS = "IN_PROGRESS",
+  DONE = "DONE",
+  LOST = "LOST",
+  NOT_EXECUTED = "NOT_EXECUTED",
+}
+
+export enum LeadType {
+  CONSTRUCTION = "CONSTRUCTION",
+  PLUMBING = "PLUMBING",
+  ROOFING = "ROOFING",
+}
+
+
+
+

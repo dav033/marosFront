@@ -1,7 +1,7 @@
 import React from "react";
 import { useSidebarNavigation } from "../../hooks/useSidebarNavigation.tsx";
 import SidebarDropdown from "./SidebarDropdown.tsx";
-import SidebarItem from "./SidebarItem";
+import SidebarItem from "./SidebarItem.tsx";
 
 // Configuración de navegación como constante
 const SIDEBAR_CONFIG = {
@@ -49,6 +49,8 @@ const SIDEBAR_CONFIG = {
       items: [
         { title: "Follow-up Report", to: "/reports/all" },
         { title: "Final Report", to: "/reports/monthly" },
+        { title: "Restoration Visit", to: "/reports/restorationVisit" },
+        { title: "Restoration Final", to: "/reports/restorationFInal" },
       ],
     },
   },

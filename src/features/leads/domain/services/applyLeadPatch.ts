@@ -1,0 +1,177 @@
+// maros-app/src/features/leads/domain/services/applyLeadPatch.ts
+
+import { BusinessRuleError } from "../errors/BusinessRuleError";
+import { applyStatus, DEFAULT_TRANSITIONS } from "./leadStatusPolicy";
+import { makeLeadNumber } from "./leadNumberPolicy";
+import { ensureLeadIntegrity } from "./ensureLeadIntegrity";
+
+import type { Lead } from "../models/Lead";
+import { LeadStatus } from "../../enums";
+import type {
+  LeadPatchPolicies,
+  Clock,
+  LeadPatch,
+  ApplyLeadPatchResult,
+  ISODate,
+} from "../../types";
+
+/* ----------------- Utils puras ----------------- */
+
+function normalizeText(s: string): string {
+  return String(s ?? "").replace(/\s+/g, " ").trim();
+}
+function isIsoLocalDate(s: string): boolean {
+  return /^\d{4}-\d{2}-\d{2}$/.test(s);
+}
+function validateLeadName(raw: string): string {
+  const v = normalizeText(raw);
+  if (!v) {
+    throw new BusinessRuleError(
+      "VALIDATION_ERROR",
+      "Lead name must not be empty",
+      { details: { field: "name" } }
+    );
+  }
+  if (v.length > 140) {
+    throw new BusinessRuleError(
+      "FORMAT_ERROR",
+      "Lead name max length is 140",
+      { details: { field: "name", length: v.length } }
+    );
+  }
+  return v;
+}
+
+/** Mapea `null`/`undefined` al estado de negocio UNDETERMINED */
+function toEffectiveStatus(s: LeadStatus | null | undefined): LeadStatus {
+  return s ?? LeadStatus.UNDETERMINED;
+}
+
+/** Convierte un Partial<Record<...>> en un Record completo y readonly */
+function resolveTransitions(
+  overrides?: Partial<Record<LeadStatus, LeadStatus[]>>
+): Readonly<Record<LeadStatus, readonly LeadStatus[]>> {
+  const ro = (arr?: LeadStatus[]) =>
+    arr ? (arr as readonly LeadStatus[]) : undefined;
+  return {
+    [LeadStatus.NEW]:
+      ro(overrides?.[LeadStatus.NEW]) ??
+      DEFAULT_TRANSITIONS[LeadStatus.NEW],
+    [LeadStatus.UNDETERMINED]:
+      ro(overrides?.[LeadStatus.UNDETERMINED]) ??
+      DEFAULT_TRANSITIONS[LeadStatus.UNDETERMINED],
+    [LeadStatus.TO_DO]:
+      ro(overrides?.[LeadStatus.TO_DO]) ??
+      DEFAULT_TRANSITIONS[LeadStatus.TO_DO],
+    [LeadStatus.IN_PROGRESS]:
+      ro(overrides?.[LeadStatus.IN_PROGRESS]) ??
+      DEFAULT_TRANSITIONS[LeadStatus.IN_PROGRESS],
+    [LeadStatus.DONE]:
+      ro(overrides?.[LeadStatus.DONE]) ??
+      DEFAULT_TRANSITIONS[LeadStatus.DONE],
+    [LeadStatus.LOST]:
+      ro(overrides?.[LeadStatus.LOST]) ??
+      DEFAULT_TRANSITIONS[LeadStatus.LOST],
+    [LeadStatus.NOT_EXECUTED]:
+      ro(overrides?.[LeadStatus.NOT_EXECUTED]) ??
+      DEFAULT_TRANSITIONS[LeadStatus.NOT_EXECUTED],
+  } as const;
+}
+
+/* ----------------- Servicio principal ----------------- */
+
+/**
+ * Aplica un parche de edición de manera PURA sobre el Lead.
+ * - Valida/normaliza `name`, `leadNumber`, `startDate`.
+ * - Valida y aplica cambio de estado delegando en `leadStatusPolicy.applyStatus`.
+ * - Valida integridad del agregado resultante con `ensureLeadIntegrity`.
+ * - Emite evento si cambia el status.
+ */
+export function applyLeadPatch(
+  clock: Clock,
+  current: Lead,
+  patch: LeadPatch,
+  policies: LeadPatchPolicies = {}
+): ApplyLeadPatchResult {
+  let updated: Lead = { ...current };
+  const events: ApplyLeadPatchResult["events"] = [];
+
+  // name
+  if (patch.name !== undefined) {
+    updated = { ...updated, name: validateLeadName(patch.name) };
+  }
+
+  // location
+  if (patch.location !== undefined) {
+    const v = normalizeText(patch.location);
+    updated = { ...updated, location: v || undefined };
+  }
+
+  // leadNumber (null ⇒ vaciar; string ⇒ normalizar/validar con leadNumberPolicy)
+  if (patch.leadNumber !== undefined) {
+    const rules = policies.leadNumberPattern
+      ? { pattern: policies.leadNumberPattern }
+      : undefined;
+    const normalized = makeLeadNumber(patch.leadNumber, rules);
+    updated = { ...updated, leadNumber: normalized ?? "" };
+  }
+
+  // startDate (YYYY-MM-DD)
+  if (patch.startDate !== undefined) {
+    const d = normalizeText(patch.startDate);
+    if (d && !isIsoLocalDate(d)) {
+      throw new BusinessRuleError(
+        "FORMAT_ERROR",
+        "startDate must be in YYYY-MM-DD format",
+        { details: { field: "startDate", value: patch.startDate } }
+      );
+    }
+    updated = { ...updated, startDate: d as ISODate };
+  }
+
+  // projectTypeId ⇒ actualiza solo el id
+  if (patch.projectTypeId !== undefined) {
+    updated = {
+      ...updated,
+      projectType: {
+        ...updated.projectType,
+        id: patch.projectTypeId,
+      },
+    };
+  }
+
+  // contactId ⇒ actualiza solo el id
+  if (patch.contactId !== undefined) {
+    updated = {
+      ...updated,
+      contact: {
+        ...updated.contact,
+        id: patch.contactId,
+      },
+    };
+  }
+
+  // status ⇒ mapear null a UNDETERMINED, resolver transiciones y delegar
+  if (patch.status !== undefined) {
+    const to = toEffectiveStatus(patch.status);
+
+    const transitions = resolveTransitions(policies.allowedTransitions);
+    const { lead: withStatus, events: statusEvents } = applyStatus(
+      clock,
+      updated,
+      to,
+      transitions
+    );
+
+    updated = withStatus;
+    events.push(...statusEvents);
+  }
+
+  // ✔ Validación final de integridad del agregado (NO del draft)
+  const integrityPolicies = policies.leadNumberPattern
+    ? { leadNumberRules: { pattern: policies.leadNumberPattern } }
+    : undefined;
+  ensureLeadIntegrity(updated, integrityPolicies);
+
+  return { lead: updated, events };
+}

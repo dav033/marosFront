@@ -1,0 +1,166 @@
+import type { Project } from "@/features/project/domain/models/Project";
+import type { Lead } from "@/features/leads/domain/models/Lead";
+import type { Contacts } from "@/features/contact/domain/models/Contact";
+
+/** (Opcional) Estados usados en UI de tablas/etiquetas del reporte */
+export type ActivityStatus =
+  | "COMPLETED"
+  | "IN_PROGRESS"
+  | "PENDING"
+  | "OBSERVED"
+  | "ON_HOLD"
+  | "CANCELLED";
+
+export type CompletedActivity = {
+  activity: string;
+  status?: ActivityStatus;
+  date?: string;   // ISO o legible
+  notes?: string;
+};
+
+export type ReportImage = {
+  src: string;      // URL (o dataURL si aplica)
+  caption?: string;
+  alt?: string;
+};
+
+export type EvidenceItem = {
+  description: string;
+  imageFiles?: File[];    // imágenes locales (UI)
+  imageIds?: any[];       // IDs/objetos devueltos por Make (server)
+};
+
+export type ReportData = {
+  project: Project;
+  lead: Lead;
+  contact: Contacts;
+  completedActivities?: CompletedActivity[];
+  observations?: string[];
+  photos?: ReportImage[];
+};
+
+/* ------------------------------------------------------------------ */
+/* Utilidades internas                                                */
+/* ------------------------------------------------------------------ */
+
+function s(v: unknown, fallback = ""): string {
+  if (v == null) return fallback;
+  const t = typeof v;
+  if (t === "string") return v as string;
+  if (t === "number" || t === "boolean") return String(v);
+  return fallback;
+}
+
+function joinNonEmpty(parts: Array<string | undefined>, sep = " — "): string {
+  return parts.filter((p) => !!p && p.trim().length > 0).join(sep);
+}
+
+/* ------------------------------------------------------------------ */
+/* Selectores OPCIONALES (pueden devolver undefined)                   */
+/* ------------------------------------------------------------------ */
+
+export function selectLead(p?: Project | null): Lead | undefined {
+  return p?.lead;
+}
+
+export function selectContact(p?: Project | null): Contacts | undefined {
+  return p?.lead?.contact;
+}
+
+export function selectLocationFromLead(p?: Project | null): string | undefined {
+  return p?.lead?.location || undefined;
+}
+
+/* ------------------------------------------------------------------ */
+/* Getters SEGUROS (SIEMPRE devuelven string/array, nunca rompen)     */
+/* Úsalos en UI para evitar crashes por undefined                     */
+/* ------------------------------------------------------------------ */
+
+// Proyecto
+export function getProjectName(p?: Project | null): string {
+  return s(p?.projectName);
+}
+export function getProjectOverview(p?: Project | null): string {
+  return s(p?.overview);
+}
+export function getProjectStartDate(p?: Project | null): string {
+  return s(p?.startDate);
+}
+export function getProjectEndDate(p?: Project | null): string {
+  return s(p?.endDate);
+}
+export function getProjectPeriod(p?: Project | null): string {
+  return joinNonEmpty([getProjectStartDate(p), getProjectEndDate(p)]);
+}
+
+// Lead
+export function getLeadNumber(p?: Project | null): string {
+  return s(p?.lead?.leadNumber);
+}
+export function getLeadLocation(p?: Project | null): string {
+  return s(p?.lead?.location);
+}
+
+// Contact
+export function getClientCompany(p?: Project | null): string {
+  return s(p?.lead?.contact?.companyName);
+}
+export function getContactName(p?: Project | null): string {
+  return s(p?.lead?.contact?.name);
+}
+export function getContactEmail(p?: Project | null): string {
+  return s(p?.lead?.contact?.email);
+}
+export function getContactPhone(p?: Project | null): string {
+  return s(p?.lead?.contact?.phone);
+}
+export function getContactAddress(p?: Project | null): string {
+  return s(p?.lead?.contact?.address);
+}
+
+/* ------------------------------------------------------------------ */
+/* View helpers                                                        */
+/* ------------------------------------------------------------------ */
+
+export type HeaderView = {
+  projectName: string;
+  overview: string;
+  period: string;        // startDate — endDate
+  location: string;      // desde lead.location
+  clientCompany: string; // contact.companyName
+  contactName: string;
+  email: string;
+  phone: string;
+  address: string;
+  leadNumber: string;
+};
+
+/** Agrega todos los campos de cabecera, siempre como strings seguros. */
+export function getHeaderView(p?: Project | null): HeaderView {
+  return {
+    projectName: getProjectName(p),
+    overview: getProjectOverview(p),
+    period: getProjectPeriod(p),
+    location: getLeadLocation(p),
+    clientCompany: getClientCompany(p),
+    contactName: getContactName(p),
+    email: getContactEmail(p),
+    phone: getContactPhone(p),
+    address: getContactAddress(p),
+    leadNumber: getLeadNumber(p),
+  };
+}
+
+/* ------------------------------------------------------------------ */
+/* (Opcional) Require helpers: fallan con mensaje claro si faltan      */
+/* ------------------------------------------------------------------ */
+
+export function requireProject(p?: Project | null): asserts p is Project {
+  if (!p) throw new Error("report.ts: Project es undefined/null en runtime.");
+}
+export function requireLead(p?: Project | null): asserts p is Project {
+  if (!p?.lead) throw new Error("report.ts: Project.lead es undefined/null en runtime.");
+}
+export function requireContact(p?: Project | null): asserts p is Project {
+  if (!p?.lead?.contact) throw new Error("report.ts: Project.lead.contact es undefined/null en runtime.");
+}

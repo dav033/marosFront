@@ -1,6 +1,15 @@
+// src/hooks/useInstantData.tsx
 import type { UseInstantDataConfig, UseInstantDataResult } from "@/types";
 import { useState, useEffect, useCallback } from "react";
 import { globalCache, apiCache } from "src/lib/cacheManager";
+
+/** Considera utilizable el valor de cache sólo si no está vacío. */
+function hasUsableCacheValue<T>(value: unknown): value is T {
+  if (Array.isArray(value)) return value.length > 0;
+  if (value && typeof value === "object")
+    return Object.keys(value as Record<string, unknown>).length > 0;
+  return Boolean(value);
+}
 
 export function useInstantData<T = unknown>(
   config: UseInstantDataConfig<T>
@@ -23,15 +32,17 @@ export function useInstantData<T = unknown>(
   const [error, setError] = useState<Error | null>(null);
   const [isHydrated, setIsHydrated] = useState(false);
 
-  // Verificar cache solo después de la hidratación
+  // Verificar cache sólo después de la hidratación
   const checkCache = useCallback((): T | null => {
     if (!enableCache || !isHydrated) return null;
 
-    const cached = apiCache.get(cacheKey) || globalCache.get(cacheKey);
-    if (cached) {
+    const cachedRaw = apiCache.get(cacheKey) ?? globalCache.get(cacheKey);
+    const usable = hasUsableCacheValue<T>(cachedRaw);
+
+    if (usable) {
       setFromCache(true);
-      onCacheHit?.(cached as T);
-      return cached as T;
+      onCacheHit?.(cachedRaw as T);
+      return cachedRaw as T;
     }
 
     setFromCache(false);
@@ -74,25 +85,24 @@ export function useInstantData<T = unknown>(
   // Lógica principal de carga
   const loadData = useCallback(async () => {
     const cached = checkCache();
+    const hasUsable = hasUsableCacheValue<T>(cached);
 
-    if (cached && strategy === "cache-first") {
-      // Cache-first: usar cache si existe
-      setData(cached);
+    // Cache-first: solo usar cache si es "utilizable"
+    if (hasUsable && strategy === "cache-first") {
+      setData(cached as T);
       return;
     }
 
-    if (strategy === "network-first" || !cached) {
-      // Network-first o no hay cache: fetch de red
-      const networkData = await fetchData();
-      if (networkData) {
-        setData(networkData);
-      } else if (cached && strategy === "network-first") {
-        // Fallback a cache si falla la red
-        setData(cached);
-        setFromCache(true);
-      }
+    // Network-first o no hay cache utilizable: fetch de red
+    const networkData = await fetchData();
+    if (networkData) {
+      setData(networkData);
+    } else if (hasUsable && strategy === "network-first") {
+      // Fallback a cache si falla la red
+      setData(cached as T);
+      setFromCache(true);
     }
-  }, [checkCache, strategy, fetchData]);
+  }, [checkCache, fetchData, strategy]);
 
   // Función para refrescar datos
   const refresh = useCallback(async () => {
@@ -120,33 +130,35 @@ export function useInstantData<T = unknown>(
 
     // Verificar cache después de la hidratación
     const cached = checkCache();
+    const hasUsable = hasUsableCacheValue<T>(cached);
 
-    if (cached) {
-      setData(cached);
-      setLoading(false); // No hay loading si viene de cache
-      // Si es cache-first, no hacer loading
+    if (hasUsable) {
+      setData(cached as T);
+      setLoading(false); // No hay loading si viene de cache utilizable
       if (strategy === "cache-first") {
         return;
       }
     }
 
-    // Si no hay cache o es network-first, cargar datos
-    if (!cached || strategy === "network-first") {
+    if (!hasUsable || strategy === "network-first") {
       loadData();
     }
   }, [isHydrated, cacheKey, checkCache, loadData, strategy]);
 
   // Permite mutar el estado local y el cache sin refetch
-  const mutate = useCallback((updater: (prev: T) => T) => {
-    setData((prev) => {
-      const next = updater(prev);
-      if (enableCache) {
-        apiCache.set(cacheKey, next, ttl);
-      }
-      return next;
-    });
-    // No tocar loading/fromCache: mutación local sin red
-  }, [cacheKey, ttl, enableCache]);
+  const mutate = useCallback(
+    (updater: (prev: T) => T) => {
+      setData((prev) => {
+        const next = updater(prev);
+        if (enableCache) {
+          apiCache.set(cacheKey, next, ttl);
+        }
+        return next;
+      });
+      // No tocar loading/fromCache: mutación local sin red
+    },
+    [cacheKey, ttl, enableCache]
+  );
 
   return {
     data,
@@ -155,12 +167,13 @@ export function useInstantData<T = unknown>(
     fromCache,
     refresh,
     clearCache,
-    mutate, // ← nuevo
+    mutate,
   };
 }
 
 /**
  * Hook específico para listas que elimina skeleton en navegaciones repetidas
+ * y NO lo suprime cuando "el cache" está vacío.
  */
 export function useInstantList<T = unknown>(
   listKey: string,
@@ -194,97 +207,21 @@ export function useInstantList<T = unknown>(
     },
   });
 
-  // Determinar si mostrar skeleton
+  // Si la lista está vacía, aunque venga "fromCache", consideramos que NO suprime el skeleton.
+  const hasNonEmptyData = Array.isArray(result.data) && result.data.length > 0;
+
   const shouldShowSkeleton = showSkeletonOnlyOnFirstLoad
-    ? result.loading && !result.fromCache && result.data.length === 0
-    : result.loading;
+    ? result.loading &&
+      (!result.fromCache || !hasNonEmptyData) &&
+      !hasNonEmptyData
+    : result.loading && !hasNonEmptyData;
 
   return {
     ...result,
-    isEmpty: result.data.length === 0,
-    hasData: result.data.length > 0,
+    isEmpty: !hasNonEmptyData,
+    hasData: hasNonEmptyData,
     showSkeleton: shouldShowSkeleton,
     items: result.data,
-    mutateItems: result.mutate, // ← nuevo
-  };
-}
-
-/**
- * Hook para formularios que persisten instantáneamente
- */
-export function useInstantForm<T extends Record<string, unknown>>(
-  formKey: string,
-  initialValues: T,
-  options: {
-    autosave?: boolean;
-    autosaveDelay?: number;
-  } = {}
-): {
-  values: T;
-  setValue: (field: keyof T, value: unknown) => void;
-  setValues: (values: Partial<T>) => void;
-  reset: () => void;
-  isDirty: boolean;
-  fromCache: boolean;
-} {
-  const { autosave = true, autosaveDelay = 1000 } = options;
-
-  const result = useInstantData<T>({
-    cacheKey: `form_${formKey}`,
-    fetchFn: async () => initialValues, // Fallback a valores iniciales
-    initialValue: initialValues,
-    ttl: 3600000, // 1 hora para formularios
-    strategy: "cache-first",
-  });
-
-  const [isDirty, setIsDirty] = useState(false);
-
-  // Verificar si hay cambios
-  useEffect(() => {
-    const hasChanges = Object.keys(initialValues).some(
-      (key) => result.data[key] !== initialValues[key]
-    );
-    setIsDirty(hasChanges);
-  }, [result.data, initialValues]);
-
-  const setValue = useCallback(
-    (field: keyof T, value: unknown) => {
-      const newValues = { ...result.data, [field]: value };
-
-      // Actualizar inmediatamente en cache
-      apiCache.set(`form_${formKey}`, newValues, 3600000);
-
-      // Actualizar estado local
-      result.refresh();
-    },
-    [result, formKey]
-  );
-
-  const setValues = useCallback(
-    (values: Partial<T>) => {
-      const newValues = { ...result.data, ...values };
-
-      // Actualizar inmediatamente en cache
-      apiCache.set(`form_${formKey}`, newValues, 3600000);
-
-      // Actualizar estado local
-      result.refresh();
-    },
-    [result, formKey]
-  );
-
-  const reset = useCallback(() => {
-    apiCache.set(`form_${formKey}`, initialValues, 3600000);
-    result.refresh();
-    setIsDirty(false);
-  }, [formKey, initialValues, result]);
-
-  return {
-    values: result.data,
-    setValue,
-    setValues,
-    reset,
-    isDirty,
-    fromCache: result.fromCache,
+    mutateItems: result.mutate,
   };
 }

@@ -1,8 +1,14 @@
 import { useMemo } from "react";
-import { OptimizedLeadsService } from "../services/OptimizedLeadsService";
-import { LeadType, LeadStatus } from "src/types/enums";
-import type { Lead, Section, Undetermined } from "src/types";
+import { LeadHttpRepository } from "@/features/leads/infra/http/LeadHttpRepository";
+import { optimizedApiClient } from "@/lib/optimizedApiClient";
+
 import { useOptimizedFetch } from "./useOptimizedFetch";
+import type { Undetermined } from "@/types/hooks/optimized-fetch";
+import type { Section } from "@/types";
+import { LeadStatus, LeadType } from "@/features/leads/enums";
+import type { Lead } from "@/features/leads/domain/models/Lead";
+
+const leadRepo = new LeadHttpRepository(optimizedApiClient);
 
 type BucketKey = LeadStatus | Undetermined;
 
@@ -23,7 +29,7 @@ export function useLeadsByType(type: LeadType) {
     refetch,
     fromCache, // para distinguir carga inicial real vs revalidación en background
   } = useOptimizedFetch<Lead[], [LeadType]>(
-    OptimizedLeadsService.getLeadsByType,
+    (type: LeadType) => leadRepo.findByType(type),
     [type],
     {
       cacheKey: `leads-by-type-${type}`,
@@ -45,6 +51,7 @@ export function useLeadsByType(type: LeadType) {
       [LeadStatus.IN_PROGRESS]: [],
       [LeadStatus.DONE]: [],
       [LeadStatus.LOST]: [],
+      [LeadStatus.NOT_EXECUTED]: []
     };
 
     for (const lead of leads ?? []) {

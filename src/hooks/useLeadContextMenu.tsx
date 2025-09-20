@@ -1,17 +1,24 @@
-import { useContextMenu } from "@components/common/ContextMenu";
-import type { ContextMenuOption, Lead, UseLeadContextMenuProps } from "@/types";
+// src/hooks/useLeadContextMenu.tsx
 
-export const useLeadContextMenu = ({
+import type { Lead } from "@/features/leads/domain/models/Lead";
+import { useContextMenu, type ContextMenuOption } from "@/presentation/molecules/ContextMenu";
+import type { UseLeadContextMenuProps } from "@/types/hooks/context-menu";
+
+
+export const useLeadContextMenu = <
+  T extends { id?: number | string; leadNumber?: string; contact?: unknown } = Lead
+>({
   onEdit,
   onDelete,
-}: UseLeadContextMenuProps = {}) => {
+  onDuplicate,
+}: UseLeadContextMenuProps<T> = {}) => {
   const { contextMenu, showContextMenu, hideContextMenu } = useContextMenu();
 
-  const handleDeleteLead = async (lead: Lead) => {
+  const handleDeleteLead = async (lead: T) => {
+    const display = (lead as any).leadNumber ?? (lead as any).id ?? "";
     const confirmed = window.confirm(
-      `Are you sure you want to delete lead ${lead.leadNumber}?\n\nThis action cannot be undone.`
+      `Are you sure you want to delete lead ${display}?`
     );
-
     if (!confirmed) return;
 
     try {
@@ -19,12 +26,10 @@ export const useLeadContextMenu = ({
       hideContextMenu();
     } catch (error) {
       console.error("Error deleting lead:", error);
-      // (Opcional) mostrar toast, pero NO recargar la página
     }
   };
 
-  const getLeadContextOptions = (lead: Lead): ContextMenuOption[] => {
-    return [
+  const getLeadContextOptions = (lead: T): ContextMenuOption[] => [
     {
       id: "edit",
       label: "Edit Lead",
@@ -33,67 +38,45 @@ export const useLeadContextMenu = ({
         onEdit?.(lead);
         hideContextMenu();
       },
-
     },
     {
       id: "duplicate",
       label: "Duplicate Lead",
       icon: "material-symbols:content-copy",
       action: () => {
-        console.log("Duplicate lead:", lead.id);
+        onDuplicate?.(lead);
+        hideContextMenu();
       },
-
+      disabled: !onDuplicate,
     },
-    {
-      id: "divider-1",
-      label: "─────────────",
-      icon: "",
-      action: () => {},
-      disabled: true,
-    },
+    { id: "divider-1", label: "─────────────", action: () => {}, disabled: true, separator: true },
     {
       id: "view-details",
       label: "View Details",
       icon: "material-symbols:visibility",
-      action: () => {
-        console.log("View lead details:", lead.id);
-      },
-
+      action: () => console.log("View lead details:", (lead as any).id),
     },
     {
       id: "view-contact",
       label: "View Contact",
       icon: "material-symbols:person",
-      action: () => {
-        console.log("View lead contact:", lead.contact);
-      },
-
+      action: () => console.log("View lead contact:", (lead as any).contact),
     },
-    {
-      id: "divider-2",
-      label: "─────────────",
-      icon: "",
-      action: () => {},
-      disabled: true,
-    },
+    { id: "divider-2", label: "─────────────", action: () => {}, disabled: true, separator: true },
     {
       id: "change-status",
       label: "Change Status",
       icon: "material-symbols:swap-horiz",
-      action: () => {
-        console.log("Change lead status:", lead.id);
-      },
-
+      action: () => console.log("Change lead status:", (lead as any).id),
     },
     {
       id: "delete",
-      label: "Delete Lead", 
+      label: "Delete Lead",
       icon: "material-symbols:delete",
       action: () => handleDeleteLead(lead),
       danger: true,
     },
   ];
-  };
 
   return {
     contextMenu,

@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import { Icon } from "@iconify/react";
-import type { SidebarItemProps } from "@/types";
+import type { SidebarItemProps } from "@/types/components/ui";
 
 const SidebarItem = memo(function SidebarItem({
   title,

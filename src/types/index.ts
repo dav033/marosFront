@@ -1,5 +1,7 @@
 // src/types/index.ts
 
+import type { Contacts } from "@/features/contact/domain/models/Contact";
+
 // ===========================================
 // MAIN TYPE EXPORTS - CLEAN VERSION
 // ===========================================
@@ -10,15 +12,19 @@ export * from "./enums";
 // Context types
 export * from "./contexts";
 
-// Domain entities and business logic
-export type {
-  // Core entities from domain/entities.ts
-  Contacts,
-  ProjectType,
-  Lead,
-  Project,
+// Domain models - Re-export for convenience 
+export type { Contacts } from "@/features/contact/domain/models/Contact";
 
-} from "./domain/entities";
+// Interfaces that depend on domain models
+export interface UseInstantContactsResult {
+  contacts: Contacts[];
+  isLoading: boolean;
+  showSkeleton: boolean;
+  error: Error | null;
+  fromCache: boolean;
+  refetch: () => Promise<void>;
+}
+
 
 export type {
   // Request types from domain/requests.ts
@@ -230,7 +236,6 @@ export type {
   CreateContactModalProps,
   EditContactModalProps,
   ContactsTableSkeletonProps,
-  InteractiveTableProps,
   ContactFormComponentProps,
 } from "./components/contacts";
 
@@ -251,6 +256,7 @@ export type {
 } from "./utils/cache";
 
 // Lib types
+// Lib types
 export type {
   // API Client types
   CachedRequestConfig,
@@ -264,14 +270,6 @@ export interface UseCreateLeadOptions {
   onLeadCreated?: (lead: unknown) => void;
 }
 
-export interface UseInstantContactsResult {
-  contacts: unknown[];
-  isLoading: boolean;
-  showSkeleton: boolean;
-  error: Error | null;
-  fromCache: boolean;
-  refetch: () => Promise<void>;
-}
 
 export interface UseInstantDataConfig<T = unknown> {
   cacheKey: string;

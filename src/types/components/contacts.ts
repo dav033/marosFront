@@ -1,6 +1,6 @@
 // src/types/components/contacts.ts
 
-import type { Contacts } from "../domain/entities";
+import type { Contacts } from "@/features/contact/domain/models/Contact";
 
 export interface ContactsTableProps {
   contacts: Contacts[];
@@ -30,15 +30,6 @@ export interface EditContactModalProps {
 export interface ContactsTableSkeletonProps {
   rows?: number;
   columns?: number;
-}
-
-export interface InteractiveTableProps {
-  data: unknown[];
-  columns: unknown[];
-  loading?: boolean;
-  onRowClick?: (row: unknown) => void;
-  onEdit?: (row: unknown) => void;
-  onDelete?: (row: unknown) => void;
 }
 
 // Contact Form specific props for the form component

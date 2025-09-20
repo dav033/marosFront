@@ -1,8 +1,11 @@
 // src/types/components/form.ts
 
+import type { LeadStatus, LeadType } from "@/features/leads/enums";
 import type { ReactNode } from "react";
-import type { LeadStatus, LeadType, FormMode } from "../enums";
-import type { ProjectType, Contacts } from "../domain";
+import type { FormMode } from "../enums";
+import type { Contacts } from "@/features/contact/domain";
+import type { ProjectType } from "@/features/leads/domain/models/ProjectType";
+
 
 // ===========================================
 // FORM COMPONENT TYPES
@@ -16,7 +19,15 @@ export interface FormFieldProps {
   required?: boolean;
   disabled?: boolean;
   error?: string;
-  type?: "text" | "email" | "tel" | "number" | "date" | "textarea" | "select";
+  type?:
+    | "text"
+    | "email"
+    | "tel"
+    | "number"
+    | "date"
+    | "datetime-local"
+    | "textarea"
+    | "select";
   options?: Array<{ value: string | number; label: string }>;
   onChange?: (name: string, value: string | number) => void;
   onBlur?: (name: string) => void;
@@ -41,17 +52,17 @@ export interface LeadFormData {
   projectTypeId?: number;
   leadType: LeadType;
   contactId?: number;
-  
+
   // For new contact creation
   companyName?: string;
   contactName?: string;
-  customerName?: string; // Add this for compatibility
+  customerName?: string; // compatibility
   occupation?: string;
   product?: string;
   phone?: string;
   email?: string;
   address?: string;
-  lastContact?: string;
+  // ⛔️ lastContact eliminado
 }
 
 export interface LeadFormProps {
@@ -72,7 +83,7 @@ export interface ContactFormData {
   phone?: string;
   email?: string;
   address?: string;
-  lastContact?: string;
+  // ⛔️ lastContact eliminado
 }
 
 export interface ContactFormProps {

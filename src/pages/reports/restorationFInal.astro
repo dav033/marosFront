@@ -1,0 +1,11 @@
+---
+import Layout from "@/components/Layout";
+import type { Project } from "@/features/project/domain/models/Project";
+const title = project ? `Visit Report – ${project.projectName}` : "Visit x Report";
+const description = "Restoration Visit Report (migración sin JSON externo)";
+---
+
+
+<Layout title="Restoration Final Report" description="Restoration Final Report">
+  <RestorationFinal project={Astro.props.project} client:load />
+</Layout>

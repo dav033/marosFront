@@ -1,89 +1,61 @@
-import { useState, useMemo, useCallback } from "react";
-import type { SearchFieldOption, SearchConfig, UseSearchResult } from "@/types";
+// src/hooks/useSearch.ts
+import { useMemo, useState } from "react";
 
-// Helper function to get nested property value
-function getNestedValue(obj: unknown, path: string): unknown {
-  return path.split(".").reduce((current, key) => {
-    if (current && typeof current === "object" && key in current) {
-      return (current as Record<string, unknown>)[key];
-    }
-    return undefined;
-  }, obj);
-}
+/** Un campo de búsqueda: por key segura de T o por accessor opcional */
+export type SearchField<T> = {
+  key: keyof T & string;
+  label: string;
+  accessor?: (row: T) => string | number | null | undefined;
+};
 
-export function useSearch<T extends Record<string, unknown>>(
-  data: T[],
-  config: SearchConfig<T>
-): UseSearchResult<T> {
+export type SearchConfig<T> = {
+  fields: Array<SearchField<T>>;
+  defaultField: SearchField<T>["key"];
+  normalize?: (txt: string) => string; // p.ej. (s) => s.toLowerCase().trim()
+};
+
+export type SearchFieldOption<K extends string = string> = {
+  key: K;
+  label: string;
+};
+
+export function useSearch<T extends object>(items: T[], config: SearchConfig<T>) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedField, setSelectedField] = useState(
-    config.defaultField || config.searchableFields?.[0]?.key || ""
-  );  
+  const [selectedField, setSelectedField] =
+    useState<SearchField<T>["key"]>(config.defaultField);
 
   const filteredData = useMemo(() => {
-    if (!searchTerm.trim() || !selectedField) {
-      return data;
-    }
+    const norm = config.normalize ?? ((s: string) => s.toLowerCase().trim());
+    const term = norm(searchTerm);
+    if (!term) return items;
 
-    const searchValue = config.caseSensitive
-      ? searchTerm.trim()
-      : searchTerm.trim().toLowerCase();
+    const fieldDef = config.fields.find((f) => f.key === selectedField);
+    if (!fieldDef) return items;
 
-    return data.filter((item) => {
-      const fieldValue = selectedField.includes(".")
-        ? getNestedValue(item, selectedField)
-        : item[selectedField as keyof T];
-
-      if (fieldValue == null) return false;
-
-      const stringValue = config.caseSensitive
-        ? String(fieldValue)
-        : String(fieldValue).toLowerCase();
-
-      switch (config.searchType) {
-        case "startsWith":
-          return stringValue.startsWith(searchValue);
-        case "exact":
-          return stringValue === searchValue;
-        case "includes":
-        default:
-          return stringValue.includes(searchValue);
-      }
+    return items.filter((row) => {
+      const raw = fieldDef.accessor ? fieldDef.accessor(row) : (row as any)[fieldDef.key];
+      const val = String(raw ?? "").toLowerCase();
+      return val.includes(term);
     });
-  }, [data, searchTerm, selectedField, config]);
+  }, [items, searchTerm, selectedField, config]);
 
-  const clearSearch = useCallback(() => {
-    setSearchTerm("");
-  }, []);
+  // ⬇️ ahora devolvemos { key, label } para el dropdown
+  const searchFields: SearchFieldOption<SearchField<T>["key"]>[] = useMemo(
+    () => config.fields.map((f) => ({ key: f.key, label: f.label })),
+    [config.fields]
+  );
 
   const hasActiveSearch = searchTerm.trim().length > 0;
+  const clearSearch = () => setSearchTerm("");
 
   return {
-    results: filteredData,
-    loading: false,
-    error: null,
-    state: {
-      query: searchTerm,
-      field: selectedField,
-      isSearching: false,
-    },
-    actions: {
-      setQuery: setSearchTerm,
-      setField: setSelectedField,
-      clearSearch,
-      performSearch: () => {}, // No-op since we filter in real-time
-    },
-    hasResults: filteredData.length > 0,
-    totalResults: filteredData.length,
-    
-    // Legacy properties for compatibility
     searchTerm,
     setSearchTerm,
     selectedField,
     setSelectedField,
     filteredData,
-    clearSearch,
+    searchFields,
     hasActiveSearch,
-    searchFields: config.searchableFields || [],
+    clearSearch,
   };
 }

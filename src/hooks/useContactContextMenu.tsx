@@ -1,6 +1,21 @@
-import type { UseContactContextMenuProps, ContextMenuOption, Contacts } from "@/types";
-import { useContextMenu } from "@components/common/ContextMenu";
-import { OptimizedContactsService } from "src/services/OptimizedContactsService";
+// src/presentation/organisms/contacts/hooks/useContactContextMenu.ts
+import type { Contacts } from "@/features/contact/domain/models/Contact";
+import { useContextMenu } from "@/presentation/molecules/ContextMenu";
+import type { ContextMenuOption, UseContactContextMenuProps } from "@/types";
+
+// ✅ Usar Clean Architecture: Application + Infra (sin carpeta services)
+import type { ContactsAppContext } from "@/features/contact/application";
+import { deleteContact as ucDeleteContact } from "@/features/contact/application";
+import { ContactHttpRepository } from "@/features/contact/infra";
+
+// Factory mínimo de contexto (Contact). Si ya expones un makeContactsAppContext desde Application,
+// puedes reemplazar esta función por ese factory y mantener la misma firma.
+function makeContactsAppContext(): ContactsAppContext {
+  return {
+    repos: { contact: new ContactHttpRepository() },
+    ports: {}, // no se requiere unicidad para delete
+  };
+}
 
 export const useContactContextMenu = ({
   onEdit,
@@ -12,18 +27,13 @@ export const useContactContextMenu = ({
     const confirmed = window.confirm(
       `Are you sure you want to delete contact ${contact.name}?\n\nThis action cannot be undone.`
     );
-
     if (!confirmed) return;
 
     try {
-      const result = await OptimizedContactsService.deleteContact(contact.id);
-
-      // Si no hubo excepción y result indica éxito, refrescar via callback
-      if (result) {
-        onDelete?.(contact.id);
-      } else {
-        alert("Could not delete contact.");
-      }
+      const ctx = makeContactsAppContext();
+      // En Clean Architecture, delete no retorna boolean; si no lanza error, se asume éxito.
+      await ucDeleteContact(ctx, contact.id);
+      onDelete?.(contact.id);
     } catch (error) {
       console.error("Error deleting contact:", error);
       alert("Unexpected error deleting contact.");

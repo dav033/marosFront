@@ -1,14 +1,21 @@
-import type { Contacts, SearchConfig } from "@/types";
+// src/components/contacts/contactsSearchConfig.ts
+import type { Contacts } from "@/features/contact/domain/models/Contact";
+import type { SearchConfig } from "@/hooks/useSearch";
+
+export const contactsSearchPlaceholder = "Search contacts…";
 
 export const contactsSearchConfig: SearchConfig<Contacts> = {
-  searchableFields: [
-    { key: "companyName", label: "Company Name" },
-    { key: "name", label: "Contact Name" },
+  fields: [
+    { key: "companyName", label: "Company" },
+    { key: "name",        label: "Contact Name" },
+    { key: "occupation",  label: "Occupation" },
+    { key: "product",     label: "Product" },
+    { key: "phone",       label: "Phone" },
+    { key: "email",       label: "Email" },
+    { key: "address",     label: "Address" },
+    { key: "lastContact", label: "Last Contact" },
+    { key: "id",          label: "ID" },
   ],
-  caseSensitive: false,
-  searchType: "includes",
-  defaultField: "companyName",
-  fields: []
+  defaultField: "name",
+  normalize: (s) => s.toLowerCase().trim(),
 };
-
-export const contactsSearchPlaceholder = "Search contacts...";

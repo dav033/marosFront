@@ -1,5 +1,6 @@
 // src/types/hooks/context-menu.ts
 
+import type { Lead } from "@/features/leads/domain";
 import type { ReactNode } from "react";
 
 // ===========================================
@@ -58,8 +59,8 @@ export interface UseContactContextMenuProps {
   onCreateLead?: (contact: unknown) => void;
 }
 
-export interface UseLeadContextMenuProps {
-  onEdit?: (lead: unknown) => void;
-  onDelete?: (lead: unknown) => void;
-  onDuplicate?: (lead: unknown) => void;
+export interface UseLeadContextMenuProps<T = Lead> {
+  onEdit?: (lead: T) => void;
+  onDelete?: (lead: T) => void;
+  onDuplicate?: (lead: T) => void;
 }

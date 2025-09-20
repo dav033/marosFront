@@ -1,40 +1,14 @@
-export enum InvoiceStatus {
-  PAID = "PAID",
-  PENDING = "PENDING",
-  NOT_EXECUTED = "NOT_EXECUTED",
-}
-
-export enum LeadStatus {
-  NEW = "NEW",
-  UNDETERMINED = "UNDETERMINED",
-  TO_DO = "TO_DO",
-  IN_PROGRESS = "IN_PROGRESS",
-  DONE = "DONE",
-  LOST = "LOST",
-  NOT_EXECUTED = "NOT_EXECUTED",
-}
-
-export enum LeadType {
-  CONSTRUCTION = "CONSTRUCTION",
-  PLUMBING = "PLUMBING",
-  ROOFING = "ROOFING",
-}
-
-export enum ProjectStatus {
-  NOT_EXECUTED = "NOT_EXECUTED",
-  IN_PROGRESS = "IN_PROGRESS",
-  COMPLETED = "COMPLETED",
-  LOST = "LOST",
-  POSTPONED = "POSTPONED",
-}
-
+// src/types/enums.ts
 export enum FormMode {
   CREATE = "CREATE",
   EDIT = "EDIT",
 }
 
+/**
+ * Enum canónico para ContactMode en TODA la app.
+ * Los valores "left" | "right" facilitan el bridge con GenericSwitch.
+ */
 export enum ContactMode {
   NEW_CONTACT = "left",
   EXISTING_CONTACT = "right",
 }
-
