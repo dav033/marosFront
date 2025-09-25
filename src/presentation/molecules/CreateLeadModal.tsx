@@ -1,18 +1,18 @@
 // src/presentation/organisms/leads/CreateLeadModal.tsx
 import React from "react";
-import { FormMode, ContactMode } from "@/types/enums";
-import type { LeadFormData } from "@/types/components/form";
-import type { LeadType } from "@/features/leads/enums";
-import type { Lead } from "@/features/leads/domain";
 
-import BaseLeadModal from "../organisms/BaseLeadModal";
-import LeadFormFields, { type LeadFormFieldsProps } from "./LeadFormFields";
+import type { Lead } from "@/features/leads/domain";
+import type { LeadType } from "@/features/leads/enums";
 import ContactModeSelector, {
-  type NewContactForm,
   type NewContactChangeHandler,
+  type NewContactForm,
 } from "@/presentation/molecules/ContactModeSelector";
+import type { LeadFormData } from "@/types/components/form";
+import {FormMode } from "@/types/enums";
 
 import { useCreateLeadVM } from "../hooks/useCreateLeadVM";
+import BaseLeadModal from "../organisms/BaseLeadModal";
+import LeadFormFields, { type LeadFormFieldsProps } from "./LeadFormFields";
 
 export type CreateLeadModalProps = {
   isOpen: boolean;
@@ -22,8 +22,8 @@ export type CreateLeadModalProps = {
     id: number;
     name: string;
     companyName: string;
-    email?: string;
-    phone?: string;
+    email?: string | undefined;
+    phone?: string | undefined;
   }>;
   leadType: LeadType;
   onLeadCreated: (lead: Lead) => void;
@@ -62,9 +62,9 @@ export default function CreateLeadModal({
   // ---------- Adaptador para ContactModeSelector ----------
   const newContactForm: NewContactForm = {
     customerName: form.customerName ?? "",
-    contactName:  form.contactName  ?? "",
-    email:        form.email        ?? "",
-    phone:        form.phone,
+    contactName: form.contactName ?? "",
+    email: form.email ?? "",
+    phone: form.phone ?? undefined,
   };
 
   const handleNewContactChange: NewContactChangeHandler = (key, value) => {
@@ -74,13 +74,13 @@ export default function CreateLeadModal({
 
   // ---------- Adaptador para LeadFormFields ----------
   const leadFields: LeadFormFieldsProps["form"] = {
-    leadNumber:   form.leadNumber ?? "",
-    leadName:     form.leadName   ?? "",
-    projectTypeId: form.projectTypeId,
-    contactId:     form.contactId,
-    location:     form.location   ?? "",
-    status:       (form.status ?? "") as any,
-    startDate:    form.startDate ?? undefined,
+    leadNumber: form.leadNumber ?? "",
+    leadName: form.leadName ?? "",
+    ...(form.projectTypeId !== undefined ? { projectTypeId: form.projectTypeId } : {}),
+    ...(form.contactId !== undefined ? { contactId: form.contactId } : {}),
+    location: form.location ?? "",
+    status: form.status ?? "",
+    startDate: form.startDate ?? undefined,
   };
 
   const handleLeadFieldsChange: LeadFormFieldsProps["onChange"] = (
@@ -90,12 +90,12 @@ export default function CreateLeadModal({
     if (error) setError(null);
     // numéricos opcionales → se permiten undefined
     if (field === "projectTypeId" || field === "contactId") {
-      handleSafeChange(field as keyof LeadFormData, value as any);
+      handleSafeChange(field as keyof LeadFormData, value as number | undefined);
       return;
     }
     // strings: normalizar undefined → ""
     const normalized = (value ?? "") as string;
-    handleSafeChange(field as keyof LeadFormData, normalized as any);
+    handleSafeChange(field as keyof LeadFormData, normalized);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -128,7 +128,7 @@ export default function CreateLeadModal({
         form={leadFields}
         onChange={handleLeadFieldsChange}
         projectTypes={projectTypes}
-        contacts={contacts}
+        contacts={contacts ?? []}
         mode={FormMode.CREATE}
         contactMode={contactMode}          // ✅ enum unificado
         showLeadNumber={showLeadNumber}

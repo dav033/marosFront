@@ -1,6 +1,8 @@
 // src/types/hooks/search.ts
 
-import type { Contacts, Lead } from "../domain";
+import type { Contact } from "@/features/contact/domain/models/Contact";
+import type { Lead } from "@/features/leads/domain";
+
 
 // ===========================================
 // SEARCH HOOK TYPES
@@ -58,7 +60,7 @@ export interface UseSearchResult<T> {
 }
 
 // Specific search configurations
-export interface ContactSearchConfig extends SearchConfig<Contacts> {
+export interface ContactSearchConfig extends SearchConfig<Contact> {
   includeInactive?: boolean;
 }
 

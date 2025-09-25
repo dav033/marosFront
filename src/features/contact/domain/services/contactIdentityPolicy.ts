@@ -77,7 +77,7 @@ export type MakeIdentityKeyOptions = Readonly<{
  * - email>phone>name
  */
 export function makeContactIdentityKey(
-  input: { name?: string; companyName?: string; email?: string; phone?: string },
+  input: { name?: string | undefined; companyName?: string | undefined; email?: string | undefined; phone?: string | undefined },
   options: MakeIdentityKeyOptions = {}
 ): string {
   const { strategy = "email>phone>name-company", minPhoneDigits = 7 } = options;
@@ -109,10 +109,10 @@ export function areIdentityKeysEqual(a?: string, b?: string): boolean {
 /* ----------------- Duplicados ----------------- */
 
 export type ContactLike = Readonly<{
-  name?: string;
-  companyName?: string;
-  email?: string;
-  phone?: string;
+  name?: string | undefined;
+  companyName?: string | undefined;
+  email?: string | undefined;
+  phone?: string | undefined;
 }>;
 
 export type DuplicateCheckOptions = MakeIdentityKeyOptions & {
@@ -173,10 +173,10 @@ export function areContactsPotentialDuplicates(
 /* ----------------- Paquete de normalización para UI/Tests ----------------- */
 
 export function computeIdentityFields(input: ContactLike): Readonly<{
-  email?: string;
-  phone?: string;
-  name?: string;
-  companyName?: string;
+  email?: string | undefined;
+  phone?: string | undefined;
+  name?: string | undefined;
+  companyName?: string | undefined;
   key: string;
 }> {
   const email = normalizeEmail(input.email);

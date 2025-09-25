@@ -16,7 +16,7 @@ export type BusinessErrorKind =
  */
 export class BusinessRuleError extends Error {
   readonly kind: BusinessErrorKind;
-  readonly details?: Record<string, unknown>;
+  readonly details?: Record<string, unknown> | undefined;
 
   constructor(
     kind: BusinessErrorKind,
@@ -30,8 +30,8 @@ export class BusinessRuleError extends Error {
 
     // Soporte nativo para 'cause' (TS/Node modernos) sin romper navegadores antiguos
     if (options?.cause !== undefined) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (this as any).cause = options.cause;
+      // assign cause in a typed-safe manner without using `any`
+      (this as unknown as { cause?: unknown }).cause = options.cause;
     }
   }
 
@@ -54,7 +54,10 @@ export const businessError = (
   kind: BusinessErrorKind,
   message: string,
   details?: Record<string, unknown>
-) => new BusinessRuleError(kind, message, { details });
+) =>
+  details !== undefined
+    ? new BusinessRuleError(kind, message, { details })
+    : new BusinessRuleError(kind, message);
 
 /** Asserts de dominio: lanzan BusinessRuleError si la condición no se cumple. */
 export function assertBusiness(

@@ -1,7 +1,9 @@
 // src/presentation/molecules/table/TableRow.tsx
 import React, { memo } from "react";
-import type { TableRowProps } from "@/types/components/table";
+
 import { useContextMenu } from "@/presentation/hooks/useContextMenu";
+import type { TableRowProps } from "@/types/components/table";
+
 import { ContextMenu } from "../ContextMenu";
 // Mantén tus hooks/componentes de menú contextual externos:
 
@@ -33,7 +35,7 @@ function TableRowInner<T>({
 
               const raw = col.accessor
                 ? col.accessor(row)
-                : (row as any)[col.key as keyof T];
+                : (row as unknown as Record<string, unknown>)[String(col.key)];
               const content = col.cellRenderer
                 ? col.cellRenderer(raw, row)
                 : String(raw ?? "");

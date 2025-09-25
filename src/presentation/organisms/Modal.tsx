@@ -1,7 +1,9 @@
 import React, { useEffect, useId, useRef } from "react";
 import { createPortal } from "react-dom";
-import type { ModalProps } from "@/types/components/modal";
+
+
 import Overlay from "../atoms/Overlay";
+import type { ModalProps } from "../../types/components";
 
 const SIZE_MAP = {
   sm: "w-full max-w-sm",
@@ -20,7 +22,7 @@ export default function Modal({
   size = "md",
   closeOnOverlayClick = true,
   closeOnEscape = true,
-  showCloseButton = false, // header ya trae close por defecto; este flag es por compat
+  showCloseButton: _showCloseButton = false, // header ya trae close por defecto; este flag es por compat
   className = "",
   overlayClassName = "",
   contentClassName = "",
@@ -94,7 +96,7 @@ export default function Modal({
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <Overlay
         className={overlayClassName}
-        onClick={closeOnOverlayClick ? onClose : undefined}
+        {...(closeOnOverlayClick ? { onClick: onClose } : {})}
       />
       <div
         ref={panelRef}

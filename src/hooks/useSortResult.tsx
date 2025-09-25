@@ -1,5 +1,6 @@
-import { useState, useMemo, useCallback } from "react";
-import type { Column, SortDirection, SortConfig } from "@/types";
+import { useCallback,useMemo, useState } from "react";
+
+import type { Column, SortConfig } from "@/types";
 
 export default function useSort<T extends object>(
   data: T[],

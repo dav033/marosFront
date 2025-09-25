@@ -1,9 +1,10 @@
 // maros-app/src/features/leads/domain/services/leadStatusPolicy.ts
 
 import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
+
 import { LeadStatus } from "../../enums";
-import type { Lead } from "../models/Lead";
 import type { Clock, DomainEvent } from "../../types";
+import type { Lead } from "../models/Lead";
 
 /**
  * Matriz de transiciones por defecto.

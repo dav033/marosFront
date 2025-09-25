@@ -1,8 +1,8 @@
-import type { LeadRepositoryPort } from "@/features/leads/domain/ports/LeadRepositoryPort";
 import type { Lead } from "@/features/leads/domain/models/Lead";
-import type { LeadDraft, LeadId } from "@/features/leads/types";
+import type { LeadRepositoryPort } from "@/features/leads/domain/ports/LeadRepositoryPort";
 import type { LeadType } from "@/features/leads/enums";
-import { optimizedApiClient } from "@/lib/optimizedApiClient";
+import type { LeadDraft, LeadId } from "@/features/leads/types";
+import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
 
 /**
  * Adaptador HTTP para creaciones "local-only" (sin sincronizar con ClickUp).

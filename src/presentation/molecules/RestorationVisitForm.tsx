@@ -1,52 +1,69 @@
-import { Input } from "../atoms";
-import RestorationVisit from "../organisms/RestorationVisit";
+import React from "react";
 
-interface RestorationVisitFormFields {
+import { Input } from "../atoms"; // se asume que acepta name, value, onChange, label
+
+export interface RestorationVisitFormValues {
   projectNumber: string;
-  ProjectName: string;
-  ProjectLocation: string;
-  ClientName: string;
-  ContactName: string;
-  Email?: string;
+  projectName: string;
+  projectLocation: string;
+  clientName: string;
+  contactName: string;
+  email?: string;
   phone?: string;
-  StartDate?: string; // YYYY-MM-DD
-  Overview: string;
+  startDate?: string; // YYYY-MM-DD
+  overview: string;
 }
 
-export default function RestorationVisitForm(
-  props: RestorationVisitFormFields
-) {
+type BindFn = <K extends keyof RestorationVisitFormValues>(
+  key: K
+) => {
+  name: K;
+  value: RestorationVisitFormValues[K] | "";
+  onChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+};
+
+type Props = {
+  values: RestorationVisitFormValues;
+  bind: BindFn;
+};
+
+export default function RestorationVisitForm({ values: _values, bind }: Props) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Columna izquierda */}
       <div>
         <div className="mb-2">
-          <Input value={props.projectNumber} label="Project Number" />
+          <Input {...bind("projectNumber")} label="Project Number" />
         </div>
         <div className="mb-2">
-          <Input value={props.ProjectName} label="Project Name" />
+          <Input {...bind("projectName")} label="Project Name" />
         </div>
         <div className="mb-2">
-          <Input value={props.ProjectLocation} label="Project Location" />
+          <Input {...bind("projectLocation")} label="Project Location" />
         </div>
         <div className="mb-2">
-          <Input value={props.ClientName} label="Client Name" />
+          <Input {...bind("clientName")} label="Client Name" />
         </div>
         <div className="mb-2">
-          <Input value={props.ContactName} label="Contact Name" />
+          <Input {...bind("contactName")} label="Contact Name" />
         </div>
       </div>
+
+      {/* Columna derecha */}
       <div>
         <div className="mb-2">
-          <Input value={props.Email} label="Email" />
+          <Input {...bind("email")} label="Email" />
         </div>
         <div className="mb-2">
-          <Input value={props.phone} label="Phone" />
+          <Input {...bind("phone")} label="Phone" />
         </div>
         <div className="mb-2">
-          <Input value={props.StartDate} label="Start Date" />
+          {/* Si su <Input> soporta type, puede usar type="date" */}
+          <Input {...bind("startDate")} label="Start Date" />
         </div>
         <div className="mb-2">
-          <Input value={props.Overview} label="Overview" />
+          {/* Si su diseño usa Textarea, cámbielo aquí por su <Textarea> atom */}
+          <Input {...bind("overview")} label="Overview" />
         </div>
       </div>
     </div>

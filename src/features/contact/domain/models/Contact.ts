@@ -1,11 +1,11 @@
-export interface Contacts {
+export interface Contact {
   id: number;
   companyName: string;
   name: string;
-  occupation?: string;
-  product?: string;
-  phone?: string;
-  email?: string;
-  address?: string;
-  lastContact?: string; 
+  occupation?: string | undefined;
+  product?: string | undefined;
+  phone?: string | undefined;
+  email?: string | undefined;
+  address?: string | undefined;
+  lastContact?: string | undefined;
 }

@@ -9,71 +9,71 @@ export { LeadStatus, LeadType } from "../enums";
 
 // Tipos de dominio
 export type {
-  LeadId,
+  ApplyLeadPatchResult,
+  Clock,
   ContactId,
-  ProjectTypeId,
+  DomainEvent,
+  Err,
   ISODate,
   ISODateTime,
-  Clock,
-  LeadPolicies,
-  LeadPatch,
   LeadDraft,
-  LeadDraftWithNewContact,
   LeadDraftWithExistingContact,
-  ApplyLeadPatchResult,
-  DomainEvent,
+  LeadDraftWithNewContact,
+  LeadId,
+  LeadPatch,
+  LeadPolicies,
   Ok,
-  Err,
+  ProjectTypeId,
   Result,
 } from "../types";
-export { SystemClock, ok, err } from "../types";
+export { err,ok, SystemClock } from "../types";
 
 // Errors
 export { BusinessRuleError } from "./errors/BusinessRuleError";
 
 // Services / Policies
+export { applyLeadPatch } from "./services/applyLeadPatch";
 export {
-  buildLeadDraftForNewContact,
   buildLeadDraftForExistingContact,
+  buildLeadDraftForNewContact,
 } from "./services/buildLeadDraft";
-export { makeLeadNumber } from "./services/leadNumberPolicy";
+export { ensureLeadDraftIntegrity } from "./services/ensureLeadDraftIntegrity";
+export { ensureLeadIntegrity } from "./services/ensureLeadIntegrity";
 export {
-  normalizeNewContact,
   ensureNewContactMinimums,
+  normalizeNewContact,
   resolveContactLink,
 } from "./services/leadContactLinkPolicy";
 export {
-  DEFAULT_TRANSITIONS,
-  canTransition,
-  ensureTransition,
-  applyStatus,
-} from "./services/leadStatusPolicy";
-export { applyLeadPatch } from "./services/applyLeadPatch";
-export { ensureLeadIntegrity } from "./services/ensureLeadIntegrity";
-export { ensureLeadDraftIntegrity } from "./services/ensureLeadDraftIntegrity";
+  mapDraftWithExistingContactToPayload,
+  mapDraftWithNewContactToPayload,
+  mapLeadDraftToCreatePayload,
+} from "./services/leadCreateMapper";
+export { makeLeadNumber } from "./services/leadNumberPolicy";
+export { mapLeadFromDTO, mapLeadsFromDTO } from "./services/leadReadMapper";
 export {
+  DEFAULT_STATUS_ORDER,
+  filterByStatus,
+  filterByType,
+  partitionByStatus,
+  sortByStartDateDesc,
+} from "./services/leadsQueries";
+export {
+  applyStatus,
+  canTransition,
+  DEFAULT_TRANSITIONS,
+  ensureTransition,
+} from "./services/leadStatusPolicy";
+export {
+  countsInOrder,
   summarizeLeads,
   summarizeLeadsByType,
-  countsInOrder,
 } from "./services/leadStatusSummary";
-export {
-  mapLeadDraftToCreatePayload,
-  mapDraftWithNewContactToPayload,
-  mapDraftWithExistingContactToPayload,
-} from "./services/leadCreateMapper";
 export {
   mapLeadPatchToUpdatePayload,
   type UpdateLeadPayload,
 } from "./services/leadUpdateMapper";
-export { mapLeadFromDTO, mapLeadsFromDTO } from "./services/leadReadMapper";
-export {
-  DEFAULT_STATUS_ORDER,
-  filterByType,
-  filterByStatus,
-  partitionByStatus,
-  sortByStartDateDesc,
-} from "./services/leadsQueries";
 
 // Ports (solo Leads, como acordamos)
-export type { LeadRepositoryPort } from "./ports/LeadRepositoryPort";
 export type { LeadNumberAvailabilityPort } from "./ports/LeadNumberAvailabilityPort";
+export type { LeadRepositoryPort } from "./ports/LeadRepositoryPort";

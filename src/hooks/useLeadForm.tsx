@@ -1,112 +1,58 @@
-// src/presentation/hooks/useLeadForm.ts
-import { useState, useCallback } from "react";
-import { LeadType } from "@/features/leads/enums";
-import { validateEmail } from "@utils/leadHelpers";
-import type { LeadFormData, UseLeadFormOptions } from "@/types/components";
+// src/hooks/useLeadForm.ts
 
-export const useLeadForm = ({
-  initialData = {},
-  onSubmit,
-  onSuccess,
-}: UseLeadFormOptions) => {
-  const makeInitial = (d: Partial<LeadFormData>): LeadFormData => ({
-    // Requeridos con fallback seguro
-    name: d.name ?? d.leadName ?? "",
-    leadType: d.leadType ?? LeadType.CONSTRUCTION,
-    startDate: d.startDate ?? "",
-    status: d.status ?? null,
+import { useState } from "react";
+import type { LeadType } from "@/features/leads/domain";
+import type { LeadFormData } from "@/types";
 
-    // Opcionales con normalización útil para el form
-    leadNumber: d.leadNumber ?? "",
-    leadName: d.leadName ?? "",
-    location: d.location ?? "",
-    projectTypeId: d.projectTypeId ?? 0,
-    contactId: d.contactId ?? 0,
+/**
+ * Opciones del hook del formulario de Lead.
+ * - leadType es requerido (lo usa el controlador y validaciones).
+ * - defaults permite hidratar el formulario con valores iniciales.
+ */
+export interface UseLeadFormOptions {
+  leadType: LeadType;
+  defaults?: Partial<LeadFormData>;
+}
 
-    companyName: d.companyName ?? "",
-    contactName: d.contactName ?? d.customerName ?? "",
-    customerName: d.customerName ?? "",
-    occupation: d.occupation ?? "",
-    product: d.product ?? "",
-    phone: d.phone ?? "",
-    email: d.email ?? "",
-    address: d.address ?? "",
-  });
+/**
+ * Hook controlado para el formulario de Lead.
+ * Devuelve el objeto form y un handleChange genérico.
+ */
+export function useLeadForm(options: UseLeadFormOptions) {
+  const { defaults } = options;
 
-  const [form, setForm] = useState<LeadFormData>(() => makeInitial(initialData));
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // Estructura base del formulario; ajuste los campos si su LeadFormData varía.
+  const base: LeadFormData = {
+    // datos del lead
+    leadName: "",
+    leadNumber: "",
+    location: "",
+    projectTypeId: "" as unknown as number, // se castea a number en el submit
+    // modo contacto existente
+    contactId: "" as unknown as number,
+    // contacto nuevo
+    companyName: "",
+    customerName: "",
+    contactName: "",
+    occupation: "",
+    product: "",
+    phone: "",
+    email: "",
+    address: "",
+    // agregue aquí cualquier otro campo real de su LeadFormData
+    ...(defaults ?? {}),
+  } as LeadFormData;
 
-  // Acepta string | number y normaliza numéricos / nulos
-  const handleChange = useCallback(
-    (field: keyof LeadFormData, value: string | number) => {
-      setForm((prev) => {
-        const next: LeadFormData = { ...prev };
+  const [form, setForm] = useState<LeadFormData>(base);
 
-        if (field === "projectTypeId" || field === "contactId") {
-          const num =
-            value === "" || value === undefined || value === null
-              ? undefined
-              : Number(value);
-          (next as any)[field] = num;
-        } else if (field === "status") {
-          // "" ⇒ null; cualquier otro valor se asigna tal cual
-          (next as any)[field] = (value as string) === "" ? null : (value as any);
-        } else {
-          (next as any)[field] = String(value ?? "");
-        }
-
-        // Si el usuario completa leadName y name está vacío, sincroniza por conveniencia
-        if (field === "leadName" && !next.name) {
-          next.name = String(value ?? "");
-        }
-
-        return next;
-      });
-    },
-    []
-  );
-
-  const resetForm = useCallback(() => {
-    setForm(makeInitial(initialData));
-    setError(null);
-  }, [initialData]);
-
-  const handleSubmit = useCallback(
-    async (e: React.FormEvent) => {
-      e.preventDefault();
-
-      if (!validateEmail(form.email ?? "")) {
-        setError("Please enter a valid email");
-        return;
-      }
-
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        await onSubmit(form);
-        resetForm();
-        onSuccess?.(form);
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error("Form submission error:", err);
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [form, onSubmit, onSuccess, resetForm]
-  );
-
-  return {
-    form,
-    isLoading,
-    error,
-    handleChange,
-    handleSubmit,
-    resetForm,
-    setError,
-    setForm,
+  const handleChange = <K extends keyof LeadFormData>(
+    field: K,
+    value: LeadFormData[K]
+  ) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
   };
-};
+
+  return { form, handleChange };
+}
+
+export default useLeadForm;

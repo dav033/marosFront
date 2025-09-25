@@ -1,5 +1,6 @@
-import CloseButton from "../atoms/CloseButton.tsx";
 import type { ModalHeaderProps } from "@/types/components/modal";
+
+import CloseButton from "../atoms/CloseButton.tsx";
 
 export default function ModalHeader({ title, onClose, id }: ModalHeaderProps) {
   return (

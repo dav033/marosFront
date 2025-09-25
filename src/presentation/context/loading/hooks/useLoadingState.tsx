@@ -1,6 +1,7 @@
 // src/presentation/context/loading/hooks/useLoadingState.ts
 import { useContext } from "react";
-import { LoadingStateContext, type LoadingState } from "../LoadingContext.tsx";
+
+import { type LoadingState,LoadingStateContext } from "../LoadingContext.tsx";
 
 export default function useLoadingState(): LoadingState {
   const ctx = useContext(LoadingStateContext);

@@ -1,62 +1,63 @@
 // src/presentation/organisms/ContactsIsland.tsx
+/* eslint-disable simple-import-sort/imports */
 import React from "react";
-import ContactsTable from "./ContactsTable";
 import { useInstantContacts } from "@/hooks/useInstantContacts";
-
-import { LoadingProvider } from "@/presentation/context/loading/LoadingContext";
 import useLoading from "@/presentation/context/loading/hooks/useLoading";
+import { LoadingProvider } from "@/presentation/context/loading/LoadingContext";
 import SkeletonRenderer from "@/presentation/organisms/SkeletonRenderer";
+import type { Contact } from "@/features/contact/domain/models/Contact";
+import ContactsTable from "./ContactsTable";
 
 function ContactsIslandInner() {
-  const hook = useInstantContacts() as any;
-  const contacts = hook.contacts ?? [];
+  type ContactLite = { id: number; name?: string; companyName?: string; email?: string; phone?: string };
+
+  const hook = useInstantContacts() as unknown as {
+    contacts?: ContactLite[] | undefined;
+    isLoading?: boolean | undefined;
+    loading?: boolean | undefined;
+    error?: unknown;
+    refetch?: (() => Promise<void>) | undefined;
+    reload?: ((force?: boolean) => Promise<void>) | undefined;
+  };
+
+  const contacts = (hook.contacts as ContactLite[]) ?? [];
   const isLoading = hook.isLoading ?? hook.loading ?? false;
   const error = hook.error ?? null;
-  const refetch = hook.refetch ?? (hook.reload ? () => hook.reload(true) : undefined);
+  const refetch =
+    hook.refetch ?? (hook.reload ? (() => hook.reload!(true)) : (async () => {}));
 
   const { setSkeleton, showLoading, hideLoading } = useLoading();
 
-  React.useEffect(() => {
-    console.log("[ContactsIsland] MOUNT");
-    return () => console.log("[ContactsIsland] UNMOUNT");
-  }, []);
-
   // ⚙️ Configura tipo de skeleton: SIN overlay
   React.useEffect(() => {
-    console.log("[ContactsIsland] setSkeleton -> contactsTable (inline)");
     setSkeleton("contactsTable", { rows: 15 /* overlay: false por defecto */ });
   }, [setSkeleton]);
 
   // 🔁 Refleja la carga real al contexto global (sin overlay)
   React.useEffect(() => {
-    console.log("[ContactsIsland] isLoading=", isLoading);
     if (isLoading) {
-      console.log("[ContactsIsland] showLoading()");
       showLoading("contactsTable", { rows: 15 }); // ← sin overlay
     } else {
-      console.log("[ContactsIsland] hideLoading()");
       hideLoading();
     }
     return () => {
-      console.log("[ContactsIsland] cleanup -> hideLoading()");
       hideLoading();
     };
   }, [isLoading, showLoading, hideLoading]);
 
   if (error) {
-    const message = typeof error === "string" ? error : error?.message;
-    console.log("[ContactsIsland] ERROR", message);
+    const message = typeof error === "string" ? error : (error && typeof error === 'object' && 'message' in error ? String((error as { message?: unknown }).message ?? '') : String(error ?? ''));
+
     return <div className="p-4 text-red-600">Error: {message}</div>;
   }
 
-  console.log("[ContactsIsland] render table, contacts=", contacts?.length ?? 0);
   return (
     <div className="space-y-6">
       {isLoading ? (
         // 🧱 Skeleton ocupa el mismo espacio que la tabla
         <SkeletonRenderer />
       ) : (
-        <ContactsTable contacts={contacts} onRefetch={refetch} />
+  <ContactsTable contacts={contacts as unknown as Contact[]} onRefetch={refetch} />
       )}
     </div>
   );

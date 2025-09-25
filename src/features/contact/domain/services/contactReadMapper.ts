@@ -1,7 +1,8 @@
 // src/features/contact/domain/services/contactReadMapper.ts
 
-import type { Contacts } from "../models/Contact";
 import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
+
+import type { Contact } from "../models/Contact";
 import { ensureContactIntegrity } from "./ensureContactIntegrity";
 
 /** DTO flexible de la API; muchos campos pueden venir opcionales o null */
@@ -26,11 +27,11 @@ function norm(s: unknown): string {
 }
 
 /** Mapea UN contacto DTO → dominio y valida integridad */
-export function mapContactFromDTO(dto: ApiContactDTO): Contacts {
+export function mapContactFromDTO(dto: ApiContactDTO): Contact {
   if (!dto)
     throw new BusinessRuleError("NOT_FOUND", "Contact payload is empty");
 
-  const contact: Contacts = {
+  const contact: Contact = {
     id: dto.id,
     companyName: norm(dto.companyName),
     name: norm(dto.name),
@@ -50,7 +51,7 @@ export function mapContactFromDTO(dto: ApiContactDTO): Contacts {
 /** Lista de DTOs → lista de dominio (fail-fast en primer error) */
 export function mapContactsFromDTO(
   list?: readonly ApiContactDTO[] | null
-): Contacts[] {
+): Contact[] {
   const src = Array.isArray(list) ? list : [];
   return src.map(mapContactFromDTO);
 }

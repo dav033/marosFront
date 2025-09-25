@@ -1,7 +1,8 @@
 // src/presentation/atoms/DateInput.tsx
 import React from "react";
-import Input, { type InputProps } from "./Input";
+
 import Icon from "./Icon";
+import Input, { type InputProps } from "./Input";
 
 export interface DateInputProps
   extends Omit<InputProps, "type" | "value" | "onChange"> {

@@ -1,7 +1,9 @@
 // src/types/components/table.ts
 
 import type { ReactElement, ReactNode } from "react";
-import type { Lead, Contacts } from "../domain";
+
+import type { Lead } from "@/features/leads/domain/models/Lead";
+
 import type { ContextMenuOption } from "../hooks";
 
 export interface TableSkeletonProps {
@@ -22,23 +24,23 @@ export interface TableCellProps {
 export interface TableBodyProps<T> {
   columns: Column<T>[];
   data: T[];
-  contextMenuOptions?: (row: T) => ContextMenuOption[];
-  showRowSeparators?: boolean;
-  columnWidths?: Record<string, string>;
+  contextMenuOptions?: ((row: T) => ContextMenuOption[]) | undefined;
+  showRowSeparators?: boolean | undefined;
+  columnWidths?: Record<string, string> | undefined;
 }
 
 export interface TableRowProps<T> {
   row: T;
   columns: Column<T>[];
-  contextMenuOptions?: (row: T) => ContextMenuOption[];
+  contextMenuOptions?: ((row: T) => ContextMenuOption[]) | undefined;
 }
 
 export interface TableHeaderProps<T> {
   columns: Column<T>[];
-  sortColumn?: string;
-  sortDirection?: SortDirection;
+  sortColumn?: string | undefined;
+  sortDirection?: SortDirection | undefined;
   onSort: (columnId: string) => void;
-  columnWidths?: Record<string, string>;
+  columnWidths?: Record<string, string> | undefined;
 }
 
 export type SortDirection = "asc" | "desc";
@@ -96,13 +98,5 @@ export interface LeadsTableProps {
   onSort?: (key: keyof Lead) => void;
 }
 
-export interface ContactsTableProps {
-  data: Contacts[];
-  onContactView?: (contactId: number) => void;
-  onContactEdit?: (contactId: number) => void;
-  sortConfig?: {
-    key: string;
-    direction: "asc" | "desc";
-  };
-  onSort?: (key: string) => void;
-}
+// Specialized contacts table props are declared in ./contacts.ts and re-exported
+export type { ContactsTableProps } from "./contacts";

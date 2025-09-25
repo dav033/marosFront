@@ -1,19 +1,18 @@
 // maros-app/src/features/leads/domain/services/applyLeadPatch.ts
 
-import { BusinessRuleError } from "../errors/BusinessRuleError";
-import { applyStatus, DEFAULT_TRANSITIONS } from "./leadStatusPolicy";
-import { makeLeadNumber } from "./leadNumberPolicy";
-import { ensureLeadIntegrity } from "./ensureLeadIntegrity";
-
-import type { Lead } from "../models/Lead";
 import { LeadStatus } from "../../enums";
 import type {
-  LeadPatchPolicies,
-  Clock,
-  LeadPatch,
   ApplyLeadPatchResult,
+  Clock,
   ISODate,
+  LeadPatch,
+  LeadPatchPolicies,
 } from "../../types";
+import { BusinessRuleError } from "../errors/BusinessRuleError";
+import type { Lead } from "../models/Lead";
+import { ensureLeadIntegrity } from "./ensureLeadIntegrity";
+import { makeLeadNumber } from "./leadNumberPolicy";
+import { applyStatus, DEFAULT_TRANSITIONS } from "./leadStatusPolicy";
 
 /* ----------------- Utils puras ----------------- */
 

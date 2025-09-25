@@ -1,8 +1,8 @@
 // src/features/project/index.ts
 
 // Types and enums
-export * from "./types";
 export * from "./enums";
+export * from "./types";
 
 // Domain layer
 export * from "./domain";

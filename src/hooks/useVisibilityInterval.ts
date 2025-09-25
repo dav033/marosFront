@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+
 import type { UseVisibilityIntervalOptions } from "../types/hooks/visibility";
 
 /** Programa ticks por intervalo y al recuperar visibilidad de la pestaña. */

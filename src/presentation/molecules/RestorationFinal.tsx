@@ -1,7 +1,9 @@
-import * as React from "react";
 import classNames from "classnames";
+import * as React from "react";
+
 import type { Project } from "@/features/project/domain/models/Project"
 import type { EvidenceItem } from "@/types/report";
+
 import Divider from "../atoms/Divider";
 import PdfButton from "../atoms/PdfButton";
 import SectionTitle from "../atoms/SectionTitle";
@@ -79,12 +81,12 @@ export default function RestorationFinal({
         subtitle="Informe final de restauración"
         logoUrl={logoUrl}
         editableLogo={editableLogo}
-        onLogoChange={onLogoChange}
+        {...(onLogoChange ? { onLogoChange } : {})}
       />
 
       {/* Acciones */}
       <div className="flex items-center justify-end">
-        <PdfButton onClick={onExportPdf}>Descargar PDF</PdfButton>
+  <PdfButton {...(onExportPdf ? { onClick: onExportPdf } : {})}>Descargar PDF</PdfButton>
       </div>
 
       <Divider />

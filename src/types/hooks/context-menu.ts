@@ -1,7 +1,8 @@
 // src/types/hooks/context-menu.ts
 
-import type { Lead } from "@/features/leads/domain";
 import type { ReactNode } from "react";
+
+import type { Lead } from "@/features/leads/domain";
 
 // ===========================================
 // CONTEXT MENU HOOK TYPES

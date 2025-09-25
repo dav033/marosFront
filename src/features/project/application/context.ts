@@ -1,26 +1,11 @@
-// src/features/project/application/context.ts
+// Application context for Project feature
+import type { ProjectRepositoryPort } from "@/features/project/domain/ports/ProjectRepositoryPort";
 
-import type {
-  GetProjectsUseCasePort,
-  GetProjectByIdUseCasePort,
-  CreateProjectUseCasePort,
-  UpdateProjectUseCasePort,
-  DeleteProjectUseCasePort,
-  GetProjectsWithLeadsUseCasePort,
-} from "./usecases";
-
-/**
- * Contexto de aplicación para la feature de proyectos.
- * Contiene todos los casos de uso disponibles.
- */
-export interface ProjectApplicationContext {
-  // Consultas
-  getProjects: GetProjectsUseCasePort;
-  getProjectById: GetProjectByIdUseCasePort;
-  getProjectsWithLeads: GetProjectsWithLeadsUseCasePort;
-  
-  // Comandos
-  createProject: CreateProjectUseCasePort;
-  updateProject: UpdateProjectUseCasePort;
-  deleteProject: DeleteProjectUseCasePort;
+export function makeProjectsAppContext(deps: ProjectsAppContext): ProjectsAppContext {
+  return deps;
 }
+
+export type ProjectsAppContext = Readonly<{
+  repos: Readonly<{ project: ProjectRepositoryPort }>;
+  ports?: Readonly<{}>;
+}>;

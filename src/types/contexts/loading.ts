@@ -2,7 +2,6 @@
  * Loading Context types
  */
 
-import type { ReactNode } from "react";
 
 export type SkeletonType =
   | "contactsTable"
@@ -12,9 +11,9 @@ export type SkeletonType =
   | "leadsTable";
 
 export interface SkeletonOptions {
-  rows?: number;
-  showSections?: boolean;
-  overlay?: boolean;
+  rows?: number | undefined;
+  showSections?: boolean | undefined;
+  overlay?: boolean | undefined;
 }
 
 export interface LoadingContextValue {

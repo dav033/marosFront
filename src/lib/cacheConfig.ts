@@ -1,19 +1,31 @@
-// Lightweight global cache configuration module used by the debug panel
-// Provides get/set helpers and simple persistence in localStorage.
+// src/lib/cacheConfig.ts
 
-import type { CacheResourceKey, CacheResourceConfig, DebugConfig, CacheConfigShape } from "@/types";
+export type CacheResourceKey = string;
 
-const DEFAULT_CONFIG: CacheConfigShape = {
+export interface CacheResourceConfig {
+  ttl?: number;
+  enabled?: boolean;
+}
+
+export interface CacheDebugConfig {
+  /** Log general de eventos de cache */
+  log?: boolean;
+  /** Log específico de aciertos de cache */
+  logCacheHits?: boolean;
+  /** Log específico de fallos de cache */
+  logCacheMisses?: boolean;
+}
+
+export interface CacheConfigShape {
+  enabled: boolean;
+  resources: Record<CacheResourceKey, CacheResourceConfig>;
+  debug?: CacheDebugConfig | undefined;
+}
+
+export const DEFAULT_CONFIG: CacheConfigShape = {
   enabled: true,
-  resources: {
-    contacts: { enabled: true, ttl: 15 * 60 * 1000 }, // 15m
-    leads: { enabled: true, ttl: 15 * 60 * 1000 }, // 15m
-    projectTypes: { enabled: true, ttl: 10 * 60 * 1000 }, // 10m
-  },
-  debug: {
-    logCacheHits: false,
-    logCacheMisses: false,
-  },
+  resources: {},
+  debug: { log: false, logCacheHits: false, logCacheMisses: false },
 };
 
 const STORAGE_KEY = "app.cache.config";
@@ -23,15 +35,22 @@ function readPersisted(): CacheConfigShape | null {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    // Shallow validation to avoid corrupt states
+    const parsed = JSON.parse(raw) as Partial<CacheConfigShape>;
+    // Validación básica para evitar estados corruptos
     if (typeof parsed?.enabled === "boolean" && parsed.resources) {
+      const parsedDebug = (parsed.debug ?? {}) as Partial<CacheDebugConfig>;
       return {
         ...DEFAULT_CONFIG,
         ...parsed,
-        resources: { ...DEFAULT_CONFIG.resources, ...parsed.resources },
-        debug: { ...DEFAULT_CONFIG.debug, ...(parsed.debug || {}) },
-      } as CacheConfigShape;
+        resources: {
+          ...DEFAULT_CONFIG.resources,
+          ...(parsed.resources ?? {}),
+        },
+        debug: {
+          ...DEFAULT_CONFIG.debug,
+          ...parsedDebug,
+        },
+      };
     }
     return null;
   } catch {
@@ -61,7 +80,9 @@ export const cacheConfig = {
       resources: partial.resources
         ? { ...state.resources, ...partial.resources }
         : state.resources,
-      debug: partial.debug ? { ...state.debug, ...partial.debug } : state.debug,
+      debug: partial.debug
+        ? { ...(state.debug ?? {}), ...partial.debug }
+        : state.debug,
     };
     persist(state);
   },
@@ -73,7 +94,10 @@ export const cacheConfig = {
       ...state,
       resources: {
         ...state.resources,
-        [resource]: { ...state.resources[resource], ...partial },
+        [resource]: {
+          ...(state.resources[resource] ?? {}),
+          ...(partial ?? {}),
+        },
       },
     };
     persist(state);

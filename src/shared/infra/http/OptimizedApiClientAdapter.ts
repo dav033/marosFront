@@ -1,6 +1,7 @@
 // src/shared/infra/http/OptimizedApiClientAdapter.ts
 import type { HttpClient, HttpResponse } from "./HttpClient";
-import { optimizedApiClient, OptimizedApiClient } from "./OptimizedApiClient";
+import type { OptimizedApiClient} from "./OptimizedApiClient";
+import {optimizedApiClient } from "./OptimizedApiClient";
 import type { CachedRequestConfig } from "./types";
 
 function mergeConfigs(a?: CachedRequestConfig, b?: CachedRequestConfig): CachedRequestConfig {

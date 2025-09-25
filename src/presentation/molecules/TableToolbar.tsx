@@ -1,7 +1,9 @@
 import React, { useMemo } from "react";
+
 import Button from "@/presentation/atoms/Button";
-import { SearchBoxWithDropdown } from "./SearchBoxWithDropdown";
 import type { SearchFieldOption } from "@/types";
+
+import { SearchBoxWithDropdown } from "./SearchBoxWithDropdown";
 
 export type TableToolbarProps = {
   onCreate?: () => void;
@@ -61,7 +63,7 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
           onFieldChange={onFieldChange}
           searchFields={normalizedFields}       // 👈 ya con { key, label }
           onClearSearch={onClearSearch}
-          placeholder={placeholder}
+          {...(placeholder ? { placeholder } : {})}
           hasActiveSearch={hasActiveSearch}
           resultCount={resultCount}
           totalCount={totalCount}

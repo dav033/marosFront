@@ -6,13 +6,13 @@ import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
 export type ContactDraft = Readonly<{
   companyName: string;
   name: string;
-  phone?: string;
-  email?: string;
-  occupation?: string;
-  product?: string;
-  address?: string;
+  phone?: string | undefined;
+  email?: string | undefined;
+  occupation?: string | undefined;
+  product?: string | undefined;
+  address?: string | undefined;
   /** ISO 8601 (ej. "2025-09-12T10:30:00Z"), opcional */
-  lastContact?: string;
+  lastContact?: string | undefined;
 }>;
 
 /* ----------------- Utils puras ----------------- */
@@ -53,12 +53,12 @@ function normEmail(e?: string): string | undefined {
 export function buildContactDraft(input: {
   companyName: string;
   name: string;
-  phone?: string;
-  email?: string;
-  occupation?: string;
-  product?: string;
-  address?: string;
-  lastContact?: string;
+  phone?: string | undefined;
+  email?: string | undefined;
+  occupation?: string | undefined;
+  product?: string | undefined;
+  address?: string | undefined;
+  lastContact?: string | undefined;
 }): ContactDraft {
   const companyName = normText(input.companyName);
   const name = normText(input.name);

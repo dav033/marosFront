@@ -1,8 +1,9 @@
 import React from "react";
-import BaseContactModal from "@/presentation/organisms/BaseContactModal";
-import ContactForm from "@/presentation/molecules/ContactForm";
-import type { ContactFormData } from "@/types";
+
 import { useCreateContactController } from "@/presentation/hooks/useCreateContactController";
+import ContactForm from "@/presentation/molecules/ContactForm";
+import BaseContactModal from "@/presentation/organisms/BaseContactModal";
+import type { ContactFormData } from "@/types";
 
 export type CreateContactModalProps = {
   isOpen: boolean;

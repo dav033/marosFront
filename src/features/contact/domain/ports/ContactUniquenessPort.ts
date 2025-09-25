@@ -1,12 +1,12 @@
 // src/features/contact/application/ports/ContactUniquenessPort.ts
 
-import type { Contacts } from "../models/Contact";
+import type { Contact } from "../models/Contact";
 
 export type ContactUniquenessCheck = Readonly<{
-  name?: string;
-  companyName?: string;
-  email?: string;
-  phone?: string;
+  name?: string | undefined;
+  companyName?: string | undefined;
+  email?: string | undefined;
+  phone?: string | undefined;
 }>;
 
 /**
@@ -25,5 +25,6 @@ export interface ContactUniquenessPort {
   /**
    * Lista de potenciales duplicados, útil para flujos de revisión/merge.
    */
-  findDuplicates(candidate: ContactUniquenessCheck): Promise<Contacts[]>;
+  findDuplicates(candidate: ContactUniquenessCheck): Promise<Contact[]>;
 }
+

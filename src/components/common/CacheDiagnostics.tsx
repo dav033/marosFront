@@ -3,23 +3,34 @@
  * Muestra métricas en tiempo real del sistema de cache
  */
 
+import React, { useEffect, useState } from "react";
 
-import React, { useState, useEffect } from "react";
-import { optimizedApiClient } from "../../lib/optimizedApiClient";
-import { globalCache, apiCache } from "../../lib/cacheManager";
+import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
+import type { OptimizedApiClientMetrics } from "@/shared/infra/http/types";
+import type { CacheDiagnosticsProps } from "@/types";
+
 import { prefetchManager } from "../../lib/prefetchManager";
-import type { OptimizedApiClientMetrics, CacheDiagnosticsProps } from "@/types";
 
 export const CacheDiagnostics: React.FC<CacheDiagnosticsProps> = ({
   isOpen,
   onClose,
 }) => {
-  const [metrics, setMetrics] = useState<OptimizedApiClientMetrics | null>(null);
+  // Helper para leer campos numéricos desde objetos con shape variable
+  const safeNum = (obj: unknown, key: string): number => {
+    if (obj && typeof obj === "object") {
+      const v = (obj as Record<string, unknown>)[key];
+      if (typeof v === "number") return v;
+      if (typeof v === "string") return Number(v) || 0;
+    }
+    return 0;
+  };
+  const [metrics, setMetrics] = useState<OptimizedApiClientMetrics | null>(
+    null
+  );
   const [autoRefresh, setAutoRefresh] = useState(true);
 
   useEffect(() => {
     if (!isOpen) return;
-
 
     const updateMetrics = () => {
       // Usar el tipado correcto directamente
@@ -182,29 +193,33 @@ export const CacheDiagnostics: React.FC<CacheDiagnosticsProps> = ({
               <div className="space-y-1 text-sm">
                 <div>
                   Total Tasks:{" "}
-                  <span className="font-mono">{prefetch.total}</span>
+                  <span className="font-mono">{prefetch.total ?? 0}</span>
                 </div>
                 <div>
                   Pending:{" "}
                   <span className="font-mono text-orange-600">
-                    {prefetch.pending}
+                    {safeNum(prefetch, "pending") ||
+                      safeNum(prefetch, "queued")}
                   </span>
                 </div>
                 <div>
                   Running:{" "}
                   <span className="font-mono text-blue-600">
-                    {prefetch.runningTasks}
+                    {safeNum(prefetch, "runningTasks") ||
+                      safeNum(prefetch, "running")}
                   </span>
                 </div>
                 <div>
                   Completed:{" "}
                   <span className="font-mono text-green-600">
-                    {prefetch.completed}
+                    {prefetch.completed ?? 0}
                   </span>
                 </div>
                 <div>
                   Queue Size:{" "}
-                  <span className="font-mono">{prefetch.queueSize}</span>
+                  <span className="font-mono">
+                    {safeNum(prefetch, "queueSize")}
+                  </span>
                 </div>
               </div>
             </div>
@@ -218,19 +233,19 @@ export const CacheDiagnostics: React.FC<CacheDiagnosticsProps> = ({
                 <div>
                   Size:{" "}
                   <span className="font-mono">
-                    {apiStats.size} / {apiStats.maxSize}
+                    {apiStats.size ?? 0} / {safeNum(apiStats, "maxSize")}
                   </span>
                 </div>
                 <div>
                   Valid Entries:{" "}
                   <span className="font-mono text-green-600">
-                    {apiStats.valid}
+                    {safeNum(apiStats, "valid")}
                   </span>
                 </div>
                 <div>
                   Expired:{" "}
                   <span className="font-mono text-red-600">
-                    {apiStats.expired}
+                    {safeNum(apiStats, "expired")}
                   </span>
                 </div>
                 <div className="mt-2">
@@ -238,7 +253,7 @@ export const CacheDiagnostics: React.FC<CacheDiagnosticsProps> = ({
                     <div
                       className="bg-blue-600 h-2 rounded-full"
                       style={{
-                        width: `${(apiStats.size / apiStats.maxSize) * 100}%`,
+                        width: `${((apiStats.size ?? 0) / (safeNum(apiStats, "maxSize") || 1)) * 100}%`,
                       }}
                     />
                   </div>
@@ -252,19 +267,19 @@ export const CacheDiagnostics: React.FC<CacheDiagnosticsProps> = ({
                 <div>
                   Size:{" "}
                   <span className="font-mono">
-                    {globalStats.size} / {globalStats.maxSize}
+                    {globalStats.size ?? 0} / {safeNum(globalStats, "maxSize")}
                   </span>
                 </div>
                 <div>
                   Valid Entries:{" "}
                   <span className="font-mono text-green-600">
-                    {globalStats.valid}
+                    {safeNum(globalStats, "valid")}
                   </span>
                 </div>
                 <div>
                   Expired:{" "}
                   <span className="font-mono text-red-600">
-                    {globalStats.expired}
+                    {safeNum(globalStats, "expired")}
                   </span>
                 </div>
                 <div className="mt-2">
@@ -272,7 +287,7 @@ export const CacheDiagnostics: React.FC<CacheDiagnosticsProps> = ({
                     <div
                       className="bg-green-600 h-2 rounded-full"
                       style={{
-                        width: `${(globalStats.size / globalStats.maxSize) * 100}%`,
+                        width: `${((globalStats.size ?? 0) / (safeNum(globalStats, "maxSize") || 1)) * 100}%`,
                       }}
                     />
                   </div>

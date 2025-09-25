@@ -1,7 +1,9 @@
 // src/hooks/useInstantData.tsx
+import { useCallback,useEffect, useState } from "react";
+import { apiCache,globalCache } from "src/lib/cacheManager";
+
 import type { UseInstantDataConfig, UseInstantDataResult } from "@/types";
-import { useState, useEffect, useCallback } from "react";
-import { globalCache, apiCache } from "src/lib/cacheManager";
+import { getErrorMessage } from "@/utils/errors";
 
 /** Considera utilizable el valor de cache sólo si no está vacío. */
 function hasUsableCacheValue<T>(value: unknown): value is T {
@@ -71,8 +73,8 @@ export function useInstantData<T = unknown>(
 
         setFromCache(false);
         return result;
-      } catch (err) {
-        setError(err as Error);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err : new Error(getErrorMessage(err)));
         setFromCache(false);
         return null;
       } finally {
@@ -186,7 +188,7 @@ export function useInstantList<T = unknown>(
 ) {
   const {
     ttl = 300000,
-    prefetch = true,
+    prefetch: _prefetch = true,
     showSkeletonOnlyOnFirstLoad = true,
   } = options;
 
@@ -197,14 +199,10 @@ export function useInstantList<T = unknown>(
     ttl: ttl,
     strategy: "cache-first",
     enableCache: true,
-    onCacheHit: (data: T[]) => {
-      console.log(
-        `📦 List "${listKey}" loaded from cache (${data.length} items)`
-      );
+    onCacheHit: (_data: T[]) => {
+      // no-op by default; callers may provide a handler
     },
-    onCacheMiss: () => {
-      console.log(`🌐 List "${listKey}" not in cache, fetching...`);
-    },
+    onCacheMiss: () => {},
   });
 
   // Si la lista está vacía, aunque venga "fromCache", consideramos que NO suprime el skeleton.

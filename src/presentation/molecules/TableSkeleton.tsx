@@ -1,5 +1,6 @@
 // src/presentation/molecules/TableSkeleton.tsx
 import React from "react";
+
 import CardRowSkeleton from "./CardRowSkeleton";
 import SectionHeaderSkeleton from "./SectionHeaderSkeleton";
 

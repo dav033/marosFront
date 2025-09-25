@@ -1,6 +1,8 @@
 // src/types/hooks/fetch.ts
+/* eslint-disable simple-import-sort/imports */
 
 import type { AxiosRequestConfig } from "axios";
+import type { RequestMetrics } from "../lib/api-client";
 
 // ===========================================
 // FETCH HOOK TYPES
@@ -46,6 +48,6 @@ export interface OptimizedFetchConfig {
 export interface FetchContextValue {
   defaultConfig: OptimizedFetchConfig;
   setDefaultConfig: (config: Partial<OptimizedFetchConfig>) => void;
-  metrics: Map<string, import("../lib/api-client").RequestMetrics>;
+  metrics: Map<string, RequestMetrics>;
   clearMetrics: () => void;
 }

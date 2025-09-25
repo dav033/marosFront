@@ -1,16 +1,17 @@
-// src/presentation/organisms/ContactSection.tsx
 import React from "react";
+
+import type { Contact } from "@/features/contact/domain/models/Contact";
+import { useContactContextMenu } from "@/hooks/useContactContextMenu";
+import type { Column } from "@/types";
+
 // ⬇️ Usa la DataTable nueva (ajusta la ruta si es distinta en tu repo)
 import DataTable from "./DataTable.tsx";
-import { useContactContextMenu } from "@/hooks/useContactContextMenu";
-import type { Contacts } from "@/features/contact/domain/models/Contact";
-import type { Column } from "@/types";
 
 export type ContactSectionProps = {
   title: string;
-  data: Contacts[];
-  columns: Column<Contacts>[];
-  onEditContact?: (c: Contacts) => void;
+  data: Contact[];
+  columns: Column<Contact>[];
+  onEditContact?: (c: Contact) => void;
   onDeleteContact?: (id: number) => void;
 };
 
@@ -21,16 +22,13 @@ export default function ContactSection({
   onEditContact,
   onDeleteContact,
 }: ContactSectionProps) {
-  const { getContactContextOptions } = useContactContextMenu({
-    onEdit: onEditContact
-      ? (contact: unknown) => onEditContact(contact as Contacts)
-      : undefined,
-    onDelete: onDeleteContact
-      ? (contact: unknown) => onDeleteContact((contact as Contacts).id)
-      : undefined,
-  });
+  const contactMenuOpts: Parameters<typeof useContactContextMenu>[0] = {};
+  if (onEditContact) contactMenuOpts.onEdit = (contact: unknown) => onEditContact(contact as Contact);
+  if (onDeleteContact) contactMenuOpts.onDelete = (contact: unknown) => onDeleteContact((contact as Contact).id);
 
-  // (Opcional) Si definiste anchos por columna en tus Column<Contacts>, DataTable los respeta.
+  const { getContactContextOptions } = useContactContextMenu(contactMenuOpts);
+
+  // (Opcional) Si definiste anchos por columna en tus Column<Contact>, DataTable los respeta.
   // Si prefieres forzar anchos por id/clave, puedes pasar `columnWidths={{ companyName:"18%", ... }}`.
 
   return (
@@ -39,7 +37,7 @@ export default function ContactSection({
         {title} ({data.length})
       </h2>
 
-      <DataTable<Contacts>
+  <DataTable<Contact>
         columns={columns}
         data={data}
         contextMenuOptions={getContactContextOptions}

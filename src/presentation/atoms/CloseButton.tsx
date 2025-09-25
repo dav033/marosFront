@@ -17,9 +17,9 @@ export default function CloseButton({
     <IconButton
       icon="material-symbols:close"
       aria-label={ariaLabel}
-      onClick={onClick}
-      disabled={disabled}
-      className={className}
+      onClick={onClick ?? (() => {})}
+      disabled={disabled ?? false}
+      className={className ?? ""}
     />
   );
 }

@@ -1,12 +1,12 @@
-import { optimizedApiClient } from "@/lib/optimizedApiClient"; // ajusta la ruta si difiere
-
-import type { Contacts } from "@/features/contact/domain/models/Contact";
+import type { Contact } from "@/features/contact/domain/models/Contact";
 import type {
   CreateContactRequestDTO,
 } from "@/features/contact/domain/services/mapContactDraftToCreatePayload";
 import type {
   UpdateContactRequestDTO,
 } from "@/features/contact/domain/services/mapContactToUpdatePayload";
+import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
+
 import type { ContactRepositoryPort } from "../../domain";
 
 // Si ya tienes mapeadores de DTO ⇄ dominio, úsalos aquí.
@@ -14,38 +14,38 @@ import type { ContactRepositoryPort } from "../../domain";
 // import { mapContactFromDTO } from "@/features/contact/domain/services/mapContactFromDTO";
 
 export class ContactHttpRepository implements ContactRepositoryPort {
-  async create(payload: CreateContactRequestDTO): Promise<Contacts> {
+  async create(payload: CreateContactRequestDTO): Promise<Contact> {
     const res = await optimizedApiClient.post("/contacts", payload);
-    return res.data as Contacts; // o mapContactFromDTO(res.data)
+    return res.data as Contact; // o mapContactFromDTO(res.data)
   }
 
-  async update(id: number, payload: UpdateContactRequestDTO): Promise<Contacts> {
+  async update(id: number, payload: UpdateContactRequestDTO): Promise<Contact> {
     const res = await optimizedApiClient.put(`/contacts/${id}`, payload);
-    return res.data as Contacts; // o mapContactFromDTO(res.data)
+    return res.data as Contact; // o mapContactFromDTO(res.data)
   }
 
   async delete(id: number): Promise<void> {
     await optimizedApiClient.delete(`/contacts/${id}`);
   }
 
-  async getById(id: number): Promise<Contacts | null> {
+  async findById(id: number): Promise<Contact | null> {
     const res = await optimizedApiClient.get(`/contacts/${id}`);
-    return (res.data ?? null) as Contacts; // o mapContactFromDTO(res.data)
+    return (res.data ?? null) as Contact; // o mapContactFromDTO(res.data)
   }
 
-  async getAll(): Promise<Contacts[]> {
+  async findAll(): Promise<Contact[]> {
     // Con cache si tu cliente lo soporta
     const res = await optimizedApiClient.get("/contacts/all", {
       cache: { enabled: true, strategy: "cache-first", ttl: 5 * 60 * 1000 },
     });
-    return (Array.isArray(res.data) ? res.data : []) as Contacts[];
+    return (Array.isArray(res.data) ? res.data : []) as Contact[];
   }
 
-  async search?(query: string): Promise<Contacts[]> {
+  async search?(query: string): Promise<Contact[]> {
     const res = await optimizedApiClient.get("/contacts/search", {
       params: { q: query },
       cache: { enabled: true, strategy: "network-first", ttl: 60 * 1000 },
     });
-    return (Array.isArray(res.data) ? res.data : []) as Contacts[];
+    return (Array.isArray(res.data) ? res.data : []) as Contact[];
   }
 }

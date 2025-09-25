@@ -1,21 +1,17 @@
 // src/types/components/leads.ts
 
 import type React from "react";
-import type { LeadType } from "@/features/leads/enums";
+
+import type { Contact } from "@/features/contact/domain/models/Contact";
 import type { Lead } from "@/features/leads/domain/models/Lead";
+import type { LeadType } from "@/features/leads/enums";
+
 import type { LeadFormData } from "./form";
 
 // Types for basic data entities
 export interface ProjectType {
   id: number;
   name: string;
-}
-
-export interface Contacts {
-  id: number;
-  name: string;
-  phone?: string;
-  email?: string;
 }
 
 export type FormMode = "create" | "edit";
@@ -29,7 +25,7 @@ export interface LeadFormFieldsProps {
   form: Record<string, unknown>;
   onChange: (field: string, value: string) => void;
   projectTypes: ProjectType[];
-  contacts: Contacts[];
+  contacts: Contact[];
   mode: FormMode;
   contactMode?: ContactMode;
   showLeadNumber?: boolean;
@@ -50,7 +46,7 @@ export interface CreateLocalLeadModalProps {
   isOpen: boolean;
   onClose: () => void;
   projectTypes: ProjectType[];
-  contacts: Contacts[];
+  contacts: Contact[];
   leadType: LeadType;
   onLeadCreated: (lead: Lead) => void;
 }
@@ -60,7 +56,7 @@ export interface EditLeadModalProps {
   onClose: () => void;
   lead: Lead | null;
   projectTypes: ProjectType[];
-  contacts: Contacts[];
+  contacts: Contact[];
   onLeadUpdated: (lead: Lead) => void;
 }
 

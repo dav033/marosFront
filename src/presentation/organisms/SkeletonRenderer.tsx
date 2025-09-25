@@ -1,13 +1,23 @@
 import React from "react";
-import useLoading from "@/presentation/context/loading/hooks/useLoading";
+
 import ContactsTableSkeleton from "../molecules/ContactsTableSkeleton";
 import FormSkeleton from "../molecules/FormSkeleton";
 import ListSkeleton from "../molecules/ListSkeleton";
 import TableSkeleton from "../molecules/TableSkeleton";
+import useLoading from "../context/loading/hooks/useLoading";
 
-
-type SkeletonType = "contactsTable" | "genericTable" | "leadsTable" | "list" | "form" | string;
-type SkeletonOptions = { rows?: number; showSections?: boolean; overlay?: boolean };
+type SkeletonType =
+  | "contactsTable"
+  | "genericTable"
+  | "leadsTable"
+  | "list"
+  | "form"
+  | string;
+type SkeletonOptions = {
+  rows?: number;
+  showSections?: boolean;
+  overlay?: boolean;
+};
 
 const SkeletonRenderer: React.FC = () => {
   const { isLoading, skeletonType, options } = useLoading() as {
@@ -16,21 +26,22 @@ const SkeletonRenderer: React.FC = () => {
     options: SkeletonOptions;
   };
 
-  console.log("[SkeletonRenderer] render", { isLoading, skeletonType, options });
-
   if (!isLoading) {
-    console.log("[SkeletonRenderer] NO RENDER: isLoading=false");
     return null;
   }
   if (!skeletonType) {
-    console.log("[SkeletonRenderer] NO RENDER: skeletonType=null");
     return null;
   }
 
   let content: React.ReactNode;
   switch (skeletonType) {
     case "contactsTable":
-      content = <ContactsTableSkeleton rows={options?.rows ?? 15} data-testid="sk-contacts" />;
+      content = (
+        <ContactsTableSkeleton
+          rows={options?.rows ?? 15}
+          data-testid="sk-contacts"
+        />
+      );
       break;
     case "genericTable":
     case "leadsTable":
@@ -43,17 +54,22 @@ const SkeletonRenderer: React.FC = () => {
       );
       break;
     case "list":
-      content = <ListSkeleton rows={options?.rows ?? 8} data-testid="sk-list" />;
+      content = (
+        <ListSkeleton rows={options?.rows ?? 8} data-testid="sk-list" />
+      );
       break;
     case "form":
-      content = <FormSkeleton rows={options?.rows ?? 6} data-testid="sk-form" />;
+      content = (
+        <FormSkeleton rows={options?.rows ?? 6} data-testid="sk-form" />
+      );
       break;
     default:
-      content = <TableSkeleton rows={options?.rows ?? 8} data-testid="sk-default" />;
+      content = (
+        <TableSkeleton rows={options?.rows ?? 8} data-testid="sk-default" />
+      );
   }
 
   if (options?.overlay) {
-    console.log("[SkeletonRenderer] RENDER overlay");
     return (
       <div
         data-testid="sk-overlay"
@@ -64,7 +80,6 @@ const SkeletonRenderer: React.FC = () => {
     );
   }
 
-  console.log("[SkeletonRenderer] RENDER inline");
   return <div data-testid="sk-inline">{content}</div>;
 };
 

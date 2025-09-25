@@ -1,11 +1,11 @@
 // maros-app/src/features/leads/domain/services/ensureLeadIntegrity.ts
 
+import type { LeadStatus as LeadStatusType } from "../../enums";
+import { LeadStatus } from "../../enums";
+import type { LeadNumberRules } from "../../types";
 import { BusinessRuleError } from "../errors/BusinessRuleError";
 import type { Lead } from "../models/Lead";
-import { LeadStatus } from "../../enums";
-import type { LeadStatus as LeadStatusType } from "../../enums";
 import { normalizeLeadNumber, validateLeadNumberFormat } from "./leadNumberPolicy";
-import type { LeadNumberRules } from "../../types";
 
 /** Utilidad: normaliza strings básicos */
 function normalizeText(s: unknown): string {

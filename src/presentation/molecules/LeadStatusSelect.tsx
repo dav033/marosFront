@@ -1,6 +1,7 @@
 import React from "react";
+
+import type { LeadStatus } from "@/features/leads/enums";
 import { Select } from "@/presentation/atoms";
-import { LeadStatus } from "@/features/leads/enums";
 import { getLeadStatusOptions } from "@/presentation/utils/leadsOptions";
 
 export type LeadStatusSelectProps = {

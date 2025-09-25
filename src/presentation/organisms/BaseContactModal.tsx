@@ -1,7 +1,8 @@
 import React, { useId } from "react";
+
 import FormModalFrame from "@/presentation/molecules/FormModalFrame";
-import ModalErrorBanner from "@/presentation/molecules/ModalErrorBanner";
 import ModalActions from "@/presentation/molecules/ModalActions";
+import ModalErrorBanner from "@/presentation/molecules/ModalErrorBanner";
 
 export type BaseContactModalProps = {
   isOpen: boolean;
@@ -53,10 +54,11 @@ export default function BaseContactModal({
       title={title}
       size={size}
       className={className}
-      descriptionId={descId}
+      {...(descId ? { descriptionId: descId } : {})}
       body={
         <>
-          <ModalErrorBanner id={descId} message={error ?? null} />
+          {/* only pass id when defined to satisfy exactOptionalPropertyTypes */}
+          <ModalErrorBanner {...(descId ? { id: descId } : {})} message={error ?? null} />
           <form id={resolvedFormId} onSubmit={onSubmit} className="space-y-3">
             {children}
           </form>

@@ -1,6 +1,7 @@
 // maros-app/src/features/leads/domain/services/leadContactLinkPolicy.ts
 
 import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
+
 import type { ContactId, NewContact } from "../../types";
 
 /**

@@ -1,20 +1,13 @@
-// src/features/project/domain/services/applyProjectPatch.ts
+import type { ApplyProjectPatchResult,ProjectPatch } from "@/features/project/types";
+import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
 
-import { BusinessRuleError } from "../errors/BusinessRuleError";
 import type { Project } from "../models/Project";
-import type { ProjectPatch, ApplyProjectPatchResult } from "../../types";
 
-/**
- * Aplica un patch a un Project existente, validando las reglas de negocio.
- */
-export function applyProjectPatch(
-  project: Project,
-  patch: ProjectPatch
-): ApplyProjectPatchResult {
+/** Aplica un patch a un Project existente, con validaciones mínimas. */
+export function applyProjectPatch(project: Project, patch: ProjectPatch): ApplyProjectPatchResult {
   let hasChanges = false;
-  const updatedProject = { ...project };
+  const updatedProject: Project = { ...project }; // ✅ corregido
 
-  // Aplicar cambios del patch
   if (patch.projectName !== undefined && patch.projectName !== project.projectName) {
     const normalizedName = patch.projectName.trim();
     if (!normalizedName) {
@@ -25,21 +18,15 @@ export function applyProjectPatch(
   }
 
   if (patch.overview !== undefined && patch.overview !== project.overview) {
-    updatedProject.overview = patch.overview?.trim() || undefined;
+    updatedProject.overview = patch.overview?.trim() || "";
     hasChanges = true;
   }
 
-  if (patch.payments !== undefined && JSON.stringify(patch.payments) !== JSON.stringify(project.payments)) {
-    // Validar que todos los pagos sean números válidos y no negativos
-    if (patch.payments) {
-      const invalidPayments = patch.payments.filter(p => 
-        typeof p !== 'number' || isNaN(p) || p < 0
-      );
-      if (invalidPayments.length > 0) {
-        throw new BusinessRuleError("VALIDATION_ERROR", "All payments must be valid non-negative numbers");
-      }
+  if (patch.payments !== undefined) {
+    if (!Array.isArray(patch.payments) || patch.payments.some(p => typeof p !== "number" || !isFinite(p) || p < 0)) {
+      throw new BusinessRuleError("VALIDATION_ERROR", "payments must be an array of non-negative numbers");
     }
-    updatedProject.payments = patch.payments;
+    updatedProject.payments = [...patch.payments];
     hasChanges = true;
   }
 
@@ -68,22 +55,6 @@ export function applyProjectPatch(
     hasChanges = true;
   }
 
-  if (patch.leadId !== undefined && patch.leadId !== project.lead?.id) {
-    // Note: leadId in patch represents the ID, but Project model contains full Lead object
-    // This will need to be handled at the application layer when fetching the Lead
-    // For now, we mark that there's a change but don't modify the lead property directly
-    hasChanges = true;
-  }
-
-  // Validar fechas después de aplicar cambios
-  if (updatedProject.startDate && updatedProject.endDate) {
-    if (updatedProject.endDate <= updatedProject.startDate) {
-      throw new BusinessRuleError("VALIDATION_ERROR", "End date must be after start date");
-    }
-  }
-
-  return {
-    project: updatedProject,
-    hasChanges,
-  };
+  // Nota: el cambio de leadId lo resuelve el repositorio/servicio de aplicación
+  return { project: updatedProject, hasChanges };
 }

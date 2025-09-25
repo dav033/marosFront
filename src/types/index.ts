@@ -1,6 +1,6 @@
 // src/types/index.ts
 
-import type { Contacts } from "@/features/contact/domain/models/Contact";
+import type { Contact } from "@/features/contact/domain/models/Contact";
 
 // ===========================================
 // MAIN TYPE EXPORTS - CLEAN VERSION
@@ -13,11 +13,12 @@ export * from "./enums";
 export * from "./contexts";
 
 // Domain models - Re-export for convenience 
-export type { Contacts } from "@/features/contact/domain/models/Contact";
+export type { Contact } from "@/features/contact/domain/models/Contact";
+export type { Lead } from "@/features/leads/domain/models/Lead";
 
 // Interfaces that depend on domain models
 export interface UseInstantContactsResult {
-  contacts: Contacts[];
+  contacts: Contact[];
   isLoading: boolean;
   showSkeleton: boolean;
   error: Error | null;
@@ -27,32 +28,56 @@ export interface UseInstantContactsResult {
 
 
 export type {
+  ContactValidationResponse,
   // Request types from domain/requests.ts
   CreateContactRequest,
-  CreateLeadRequest,
-  ContactValidationResponse,
-  CreateLeadByNewContactData,
   CreateLeadByExistingContactData,
+  CreateLeadByNewContactData,
+  CreateLeadRequest,
   UpdateLeadData,
 } from "./domain/requests";
-
 export type {
+  ApiListResponse,
   // Response types from domain/responses.ts
   ApiResponse,
-  ApiListResponse,
-  ContactsResponse,
-  LeadsResponse,
-  ProjectTypesResponse,
   ContactResponse,
-  LeadResponse,
-  ProjectTypeResponse,
+  ContactsResponse,
   LeadNumberResponse,
+  LeadResponse,
+  LeadsResponse,
+  ProjectTypeResponse,
+  ProjectTypesResponse,
 } from "./domain/responses";
 
 // Library types
 export * from "./lib";
 
 // System types
+export type {
+  ApiClient,
+  // API types
+  ApiClientConfig,
+  ApiError,
+  ApiInterceptors,
+  RequestConfig,
+} from "./system/api";
+export type {
+  CacheConfig,
+  CacheEntry,
+  CacheManager,
+  CacheMetrics,
+  CacheStorage,
+  // Cache types
+  StorageLayer,
+} from "./system/cache";
+export type {
+  CacheConfigShape,
+  CacheDebugConfig,
+  CacheResourceConfig,
+  // Configuration types
+  CacheResourceKey,
+  DebugConfig,
+} from "./system/config";
 export type {
   // Context types
   ContactsContextType,
@@ -65,203 +90,161 @@ export type {
   NotificationContextValue,
   NotificationProviderProps,
 } from "./system/contexts";
-
+export type {
+  PrefetchCondition,
+  PrefetchConfig,
+  // Prefetch types
+  PrefetchManager,
+  PrefetchPriority,
+  PrefetchStats,
+  PrefetchTask,
+  PrefetchTrigger,
+} from "./system/prefetch";
 export type {
   // Sidebar types
   SidebarContextType,
+  SidebarDropdownProps,
+  SidebarItemProps,
   SidebarProviderProps,
   SidebarWrapperProps,
-  SidebarItemProps,
   TriggerProps,
-  SidebarDropdownProps,
 } from "./system/sidebar";
-
-export type {
-  // Configuration types
-  CacheResourceKey,
-  CacheResourceConfig,
-  DebugConfig,
-  CacheConfigShape,
-  CacheDebugConfig,
-} from "./system/config";
-
-export type {
-  // API types
-  ApiClientConfig,
-  ApiError,
-  ApiInterceptors,
-  RequestConfig,
-  ApiClient,
-} from "./system/api";
-
-export type {
-  // Cache types
-  StorageLayer,
-  CacheConfig,
-  CacheEntry,
-  CacheMetrics,
-  CacheStorage,
-  CacheManager,
-} from "./system/cache";
-
-export type {
-  // Prefetch types
-  PrefetchManager,
-  PrefetchTask,
-  PrefetchConfig,
-  PrefetchStats,
-  PrefetchPriority,
-  PrefetchTrigger,
-  PrefetchCondition,
-} from "./system/prefetch";
 
 // Hook types
 export type {
-  // Search types
-  SearchFieldOption,
-  SearchConfig,
-  SearchState,
-  SearchActions,
-  UseSearchResult,
-  ContactSearchConfig,
-  LeadSearchConfig,
-} from "./hooks/search";
-
+  ContactContextMenuOptions,
+  ContextMenuOption,
+  // Context menu types
+  ContextMenuPosition,
+  ContextMenuState,
+  LeadContextMenuOptions,
+  UseContactContextMenuProps,
+  UseContextMenuResult,
+  UseLeadContextMenuProps,
+} from "./hooks/context-menu";
 export type {
+  FetchContextValue,
+  FetchOptions,
   // Fetch types
   FetchState,
-  FetchOptions,
   UseFetchResult,
-  FetchContextValue,
 } from "./hooks/fetch";
-
-export type {
-  // Optimized fetch types
-  OptimizedFetchConfig,
-  UseOptimizedFetchReturn,
-  VisibilityIntervalOptions,
-  Undetermined,
-  LeadsByTypeConfig,
-} from "./hooks/optimized-fetch";
-
 export type {
   // Lead hook types
   UseCreateLeadResult,
 } from "./hooks/leads";
-
 export type {
-  // Context menu types
-  ContextMenuPosition,
-  ContextMenuOption,
-  ContextMenuState,
-  UseContextMenuResult,
-  ContactContextMenuOptions,
-  LeadContextMenuOptions,
-  UseContactContextMenuProps,
-  UseLeadContextMenuProps,
-} from "./hooks/context-menu";
+  LeadsByTypeConfig,
+  // Optimized fetch types
+  OptimizedFetchConfig,
+  Undetermined,
+  UseOptimizedFetchReturn,
+  VisibilityIntervalOptions,
+} from "./hooks/optimized-fetch";
+export type {
+  ContactSearchConfig,
+  LeadSearchConfig,
+  SearchActions,
+  SearchConfig,
+  // Search types
+  SearchFieldOption,
+  SearchState,
+  UseSearchResult,
+} from "./hooks/search";
 
 // Component types
 export type {
-  // Table types
-  TableSkeletonProps,
-  Column,
-  TableProps,
-  SortConfig,
-  SortDirection,
-  LeadsTableProps,
-} from "./components/table";
-
+  BadgeVariant,
+  ProjectTypeBadgeProps,
+  // Badge component types
+  StatusBadgeProps,
+} from "./components/badges";
 export type {
+  CacheDiagnosticsProps,
+  // Common component types
+  SearchBoxWithDropdownProps,
+} from "./components/common";
+export type {
+  ContactFormComponentProps,
+  ContactSectionProps,
+  // Contact component types
+  ContactsTableProps,
+  ContactsTableSkeletonProps,
+  CreateContactModalProps,
+  EditContactModalProps,
+} from "./components/contacts";
+export type {
+  ContactFormData,
+  ContactFormProps,
   // Form types
   FormFieldProps,
   FormProps,
   LeadFormData,
   LeadFormProps,
-  ContactFormData,
-  ContactFormProps,
   UseLeadFormOptions,
 } from "./components/form";
-
 export type {
-  // Modal types
-  ModalProps,
-  ConfirmModalProps,
-  AlertModalProps,
-  FormModalProps,
-} from "./components/modal";
-
-export type {
-  // UI component types
-  BaseButtonProps,
-  IconButtonProps,
-  GenericButtonProps,
-  CardProps,
-  CardHeaderProps,
-  CardContentProps,
-  CardFooterProps,
-  LoadingSpinnerProps,
-  LoadingOverlayProps,
-  BadgeProps,
-} from "./components/ui";
-
-export type {
-  // Badge component types
-  StatusBadgeProps,
-  ProjectTypeBadgeProps,
-  BadgeVariant,
-} from "./components/badges";
-
-export type {
-  // Common component types
-  SearchBoxWithDropdownProps,
-  CacheDiagnosticsProps,
-} from "./components/common";
-
-export type {
+  BaseLeadModalProps,
+  ContactModeSelectorProps,
+  CreateLocalLeadModalProps,
+  EditLeadModalProps,
   // Lead component types
   InstantLeadsListProps,
   LeadFormFieldsProps,
   SelectorFields,
-  ContactModeSelectorProps,
-  CreateLocalLeadModalProps,
-  EditLeadModalProps,
-  BaseLeadModalProps,
 } from "./components/leads";
-
 export type {
-  // Contact component types
-  ContactsTableProps,
-  ContactSectionProps,
-  CreateContactModalProps,
-  EditContactModalProps,
-  ContactsTableSkeletonProps,
-  ContactFormComponentProps,
-} from "./components/contacts";
+  AlertModalProps,
+  ConfirmModalProps,
+  FormModalProps,
+  // Modal types
+  ModalProps,
+} from "./components/modal";
+export type {
+  Column,
+  LeadsTableProps,
+  SortConfig,
+  SortDirection,
+  TableProps,
+  // Table types
+  TableSkeletonProps,
+} from "./components/table";
+export type {
+  BadgeProps,
+  // UI component types
+  BaseButtonProps,
+  CardContentProps,
+  CardFooterProps,
+  CardHeaderProps,
+  CardProps,
+  GenericButtonProps,
+  IconButtonProps,
+  LoadingOverlayProps,
+  LoadingSpinnerProps,
+} from "./components/ui";
 
 // Utility types
-export type {
-  // Validation types
-  ValidateNewContactLeadData,
-  ValidateExistingContactLeadData,
-  ValidateEditLeadData,
-  LeadForEdit,
-  SelectOption,
-  StatusOption,
-} from "./utils/validation";
-
 export type {
   // Cache utility types
   CachedResult,
 } from "./utils/cache";
+export type {
+  LeadForEdit,
+  SelectOption,
+  StatusOption,
+  ValidateEditLeadData,
+  ValidateExistingContactLeadData,
+  // Validation types
+  ValidateNewContactLeadData,
+} from "./utils/validation";
 
 // Lib types
 // Lib types
 export type {
   // API Client types
   CachedRequestConfig,
-  RequestMetrics,
   OptimizedApiClientMetrics,
+  RequestMetrics,
 } from "./lib/api-client";
 
 // Legacy interfaces - these should be migrated eventually

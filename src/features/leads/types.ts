@@ -1,6 +1,7 @@
 // maros-app/src/features/leads/domain/types.ts
 
 import type { Lead } from "@/features/leads/domain/models/Lead";
+
 import type { LeadStatus, LeadType } from "./enums";
 
 /** Alias semánticos compatibles con su modelo/DTO actual (números/strings). */

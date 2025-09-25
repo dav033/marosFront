@@ -1,14 +1,15 @@
 // src/features/leads/application/usecases/commands/patchLead.ts
-import type { LeadsAppContext } from "../../context";
 import type {
+  ISODate,
   Lead,
   LeadId,
   LeadPatch,
-  ISODate,
 } from "@/features/leads/domain";
 import { applyLeadPatch } from "@/features/leads/domain";
-import { getLeadById } from "../queries/getLeadById";
 import type { LeadPatchPolicies } from "@/features/leads/types";
+
+import type { LeadsAppContext } from "../../context";
+import { getLeadById } from "../queries/getLeadById";
 
 /** Construye un LeadPatch SOLO con los cambios (sin mutar, para respetar readonly). */
 function diffToPatch(current: Lead, updated: Lead): LeadPatch {

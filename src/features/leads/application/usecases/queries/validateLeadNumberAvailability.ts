@@ -1,5 +1,6 @@
 // src/features/leads/application/usecases/queries/validateLeadNumberAvailability.ts
 import { ensureLeadNumberAvailable } from "@/features/leads/domain/services/leadNumberPolicy";
+
 import type { LeadsAppContext } from "../../context";
 
 /**

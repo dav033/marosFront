@@ -1,4 +1,5 @@
 import React from "react";
+
 import Badge from "@/presentation/atoms/Badge";
 import type { ProjectTypeBadgeProps } from "@/types/components/badges";
 

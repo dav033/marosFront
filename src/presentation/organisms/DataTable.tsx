@@ -1,9 +1,10 @@
-// src/presentation/organisms/table/DataTable.tsx
 import React from "react";
-import type { TableProps } from "@/types/components/table";
+
 import TableRoot from "@/presentation/atoms/table/TableRoot";
-import TableHeader from "@/presentation/molecules/table/TableHeader";
 import TableBody from "@/presentation/molecules/table/TableBody";
+import TableHeader from "@/presentation/molecules/table/TableHeader";
+import type { TableProps } from "@/types/components/table";
+
 import useSort from "../hooks/useSort";
 
 export default function DataTable<T extends object>({

@@ -4,26 +4,26 @@
  * Muestra skeleton en primera carga si NO hay datos útiles en cache.
  */
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { UseInstantContactsResult } from "src/types";
-import { apiCache } from "src/lib/cacheManager";
-import type { Contacts } from "@/features/contact/domain/models/Contact";
 
 // Clean Architecture: casos de uso + adapters
 import {
-  listContacts,
   type ContactsAppContext,
+  listContacts,
 } from "@/features/contact/application";
+import type { Contact } from "@/features/contact/domain/models/Contact";
 import {
   ContactHttpRepository,
   ContactUniquenessHttpService,
 } from "@/features/contact/infra";
+import { getErrorMessage } from "@/utils/errors";
+import { apiCache } from "@/shared/infra/http/cache/cacheManager";
 
 // Factory mínimo de contexto para Contacts
 function makeCtx(): ContactsAppContext {
   return {
     repos: { contact: new ContactHttpRepository() },
-    ports: { uniqueness: new ContactUniquenessHttpService() },
   };
 }
 
@@ -31,17 +31,20 @@ export function useInstantContacts(): UseInstantContactsResult {
   const ENDPOINT = "/contacts/all";
   const API_CACHE_KEY = `api_GET_${ENDPOINT}`;
 
-  const rawCached = apiCache.get(API_CACHE_KEY) as Contacts[] | undefined | null;
+  const rawCached = apiCache.get(API_CACHE_KEY) as Contact[] | undefined | null;
 
   // Consideramos "cache utilizable" SOLO si trae datos no vacíos
-  const hasUsableCache =
-    Array.isArray(rawCached) ? rawCached.length > 0 : Boolean(rawCached);
+  const hasUsableCache = Array.isArray(rawCached)
+    ? rawCached.length > 0
+    : Boolean(rawCached);
 
-  const initialContacts: Contacts[] = hasUsableCache ? (rawCached as Contacts[]) : [];
+  const initialContacts: Contact[] = hasUsableCache
+    ? (rawCached as Contact[])
+    : [];
 
   // Empezamos en loading=true para permitir skeleton durante la primera carga
   // Si ya hay datos en memoria (cache utilizable), skeleton no bloqueará la UI (contacts.length > 0)
-  const [contacts, setContacts] = useState<Contacts[]>(initialContacts);
+  const [contacts, setContacts] = useState<Contact[]>(initialContacts);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const [fromCache, setFromCache] = useState<boolean>(hasUsableCache);
@@ -63,9 +66,9 @@ export function useInstantContacts(): UseInstantContactsResult {
       setContacts(data);
       apiCache.set(API_CACHE_KEY, data, 5 * 60 * 1000); // TTL 5 min (ajustable)
       setFromCache(false); // post-red
-    } catch (err) {
-      console.error("Error fetching contacts:", err);
-      setError(err as Error);
+    } catch (err: unknown) {
+      console.error("Error fetching contacts:", getErrorMessage(err));
+      setError(err instanceof Error ? err : new Error(getErrorMessage(err)));
     } finally {
       setIsLoading(false);
     }

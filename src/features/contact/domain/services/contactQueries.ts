@@ -1,6 +1,6 @@
 // src/features/contact/domain/services/contactQueries.ts
 
-import type { Contacts } from "../models/Contact";
+import type { Contact } from "../models/Contact";
 
 /* Utils puras */
 function norm(s: unknown): string {
@@ -15,13 +15,13 @@ function normLower(s: unknown): string {
  * Si tu backend define un flag específico, ajusta esta regla.
  * Aquí consideramos activo si tiene al menos un medio de contacto (email o phone).
  */
-export function filterActive(contacts: readonly Contacts[]): Contacts[] {
+export function filterActive(contacts: readonly Contact[]): Contact[] {
   const src = Array.isArray(contacts) ? contacts : [];
   return src.filter((c) => !!norm(c.email) || !!norm(c.phone));
 }
 
 /** Ordena por nombre ascendente (A→Z), estable y defensivo. */
-export function sortByNameAsc(contacts: readonly Contacts[]): Contacts[] {
+export function sortByNameAsc(contacts: readonly Contact[]): Contact[] {
   const src = Array.isArray(contacts) ? contacts : [];
   return [...src].sort((a, b) => {
     const an = normLower(a.name);
@@ -34,7 +34,7 @@ export function sortByNameAsc(contacts: readonly Contacts[]): Contacts[] {
 }
 
 /** Ordena por empresa ascendente (A→Z). */
-export function sortByCompanyAsc(contacts: readonly Contacts[]): Contacts[] {
+export function sortByCompanyAsc(contacts: readonly Contact[]): Contact[] {
   const src = Array.isArray(contacts) ? contacts : [];
   return [...src].sort((a, b) => {
     const ac = normLower(a.companyName);
@@ -51,9 +51,9 @@ export function sortByCompanyAsc(contacts: readonly Contacts[]): Contacts[] {
  * - Coincidencia por inclusión (contains).
  */
 export function searchByText(
-  contacts: readonly Contacts[],
+  contacts: readonly Contact[],
   query: string
-): Contacts[] {
+): Contact[] {
   const q = normLower(query);
   if (!q) return Array.isArray(contacts) ? [...contacts] : [];
   const src = Array.isArray(contacts) ? contacts : [];
@@ -89,10 +89,10 @@ export function paginate<T>(
 
 /** Agrupa por empresa. */
 export function groupByCompany(
-  contacts: readonly Contacts[]
-): Record<string, Contacts[]> {
+  contacts: readonly Contact[]
+): Record<string, Contact[]> {
   const src = Array.isArray(contacts) ? contacts : [];
-  return src.reduce<Record<string, Contacts[]>>((acc, c) => {
+  return src.reduce<Record<string, Contact[]>>((acc, c) => {
     const key = norm(c.companyName) || "(Sin empresa)";
     (acc[key] ||= []).push(c);
     return acc;

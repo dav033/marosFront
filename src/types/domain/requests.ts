@@ -1,7 +1,7 @@
 // src/types/domain/requests.ts
 
-import type { LeadStatus, LeadType } from "../enums";
-import type { Contacts, ProjectType } from "./entities";
+import type { ProjectType } from "@/features/leads/domain/models/ProjectType";
+import type { LeadStatus, LeadType } from "@/features/leads/enums";
 
 // ===========================================
 // API REQUEST/RESPONSE TYPES

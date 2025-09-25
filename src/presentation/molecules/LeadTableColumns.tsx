@@ -1,9 +1,10 @@
 // src/presentation/molecules/leads/LeadTableColumns.tsx
 import React from "react";
-import type { Column } from "@/types/components/table";
+
 import type { Lead } from "@/features/leads/domain/models/Lead";
-import StatusBadge from "@/presentation/molecules/StatusBadge";
 import ProjectTypeBadge from "@/presentation/molecules/ProjectTypeBadge";
+import StatusBadge from "@/presentation/molecules/StatusBadge";
+import type { Column } from "@/types/components/table";
 import { formatDate } from "@/utils/dateHelpers";
 
 export const leadTableColumns: Column<Lead>[] = [

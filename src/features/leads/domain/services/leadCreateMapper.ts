@@ -1,11 +1,11 @@
 // maros-app/src/features/leads/domain/services/leadCreateMapper.ts
 
-import type { LeadType, LeadStatus } from "../../enums";
+import type { LeadStatus,LeadType } from "../../enums";
 import type {
   ISODate,
   LeadDraft,
-  LeadDraftWithNewContact,
   LeadDraftWithExistingContact,
+  LeadDraftWithNewContact,
 } from "../../types";
 
 /* ----------------- Tipos DTO (payload hacia backend) ----------------- */

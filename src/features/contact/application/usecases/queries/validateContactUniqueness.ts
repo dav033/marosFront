@@ -1,7 +1,7 @@
-import type { ContactsAppContext } from "../../context";
 import type { ContactUniquenessCheck } from "@/features/contact/domain/ports/ContactUniquenessPort";
 import { isDuplicateContact } from "@/features/contact/domain/services/contactUniquenessPolicy";
-import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
+
+import type { ContactsAppContext } from "../../context";
 
 /**
  * Consulta de unicidad/duplicados:
@@ -18,7 +18,9 @@ export async function validateContactUniqueness(
   }
 
   // 2) Fallback local (política pura)
-  const all = await ctx.repos.contact.getAll();
+  const all = await ctx.repos.contact.findAll();
   const { duplicate, match } = isDuplicateContact(candidate, all, {});
-  return duplicate ? { duplicate: true, conflictId: (match as any)?.id } : { duplicate: false };
+  if (!duplicate) return { duplicate: false };
+  const id = (match as Partial<{ id?: number }>)?.id;
+  return id === undefined ? { duplicate: true } : { duplicate: true, conflictId: id };
 }

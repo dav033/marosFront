@@ -1,7 +1,8 @@
 // src/features/leads/application/usecases/commands/changeLeadStatus.ts
-import type { LeadsAppContext } from "../../context";
 import type { Lead, LeadId, LeadStatus } from "@/features/leads/domain";
 import { applyStatus, DEFAULT_TRANSITIONS } from "@/features/leads/domain";
+
+import type { LeadsAppContext } from "../../context";
 import { getLeadById } from "../queries/getLeadById";
 
 export type ChangeLeadStatusOptions = Readonly<{

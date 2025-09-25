@@ -1,5 +1,6 @@
 // src/hooks/useSort.ts
 import { useCallback, useMemo, useState } from "react";
+
 import type { Column, SortDirection } from "@/types/components/table";
 
 export default function useSort<T>(data: T[], columns: Column<T>[]) {
@@ -36,7 +37,7 @@ export default function useSort<T>(data: T[], columns: Column<T>[]) {
 
     const getValue = (row: T): unknown => {
       if (col.accessor) return col.accessor(row);
-      return (row as any)[col.key as keyof T];
+      return (row as unknown as Record<string, unknown>)[String(col.key)];
     };
 
     const copy = [...data];

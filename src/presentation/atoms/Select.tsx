@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
-import { createPortal } from "react-dom";
 import { Icon } from "@iconify/react";
+import React, { useEffect,useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 /*
  * Atom: Select (estilos y comportamiento equivalentes a tu GenericSelect)

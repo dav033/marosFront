@@ -1,22 +1,23 @@
 // src/presentation/organisms/CreateLocalLeadModal.tsx
 import React from "react";
-import BaseLeadModal from "./BaseLeadModal";
 
-import { FormMode } from "@/types/enums";
-import { ContactMode } from "@/types/enums";              // <-- usa enum de dominio
+import type { LeadStatus } from "@/features/leads/domain";
 import { useCreateLocalLeadController } from "@/presentation/hooks/useCreateLocalLeadController";
 import type { CreateLocalLeadModalProps } from "@/types";
-import type { LeadStatus } from "@/features/leads/domain";
+import type { ContactMode } from "@/types/enums";              // <-- usa enum de dominio
+import { FormMode } from "@/types/enums";
+
 import type { NewContactChangeHandler, NewContactForm } from "../molecules/ContactModeSelector";
-import type { LeadFormFieldsProps } from "../molecules/LeadFormFields";
 import ContactModeSelector from "../molecules/ContactModeSelector";
+import type { LeadFormFieldsProps } from "../molecules/LeadFormFields";
 import LeadFormFields from "../molecules/LeadFormFields";
+import BaseLeadModal from "./BaseLeadModal";
 
 type LeadFieldsForUI = {
   leadNumber: string;
   leadName: string;
-  projectTypeId?: number;
-  contactId?: number;
+  projectTypeId?: number | undefined;
+  contactId?: number | undefined;
   location: string;
   status?: "" | LeadStatus;
   startDate?: string;
@@ -58,8 +59,8 @@ export default function CreateLocalLeadModal({
   const leadFields: LeadFieldsForUI = {
     leadNumber: form.leadNumber ?? "",
     leadName:   form.leadName   ?? "",
-    projectTypeId: form.projectTypeId,
-    contactId:     form.contactId,
+    ...(form.projectTypeId !== undefined ? { projectTypeId: form.projectTypeId } : {}),
+    ...(form.contactId !== undefined ? { contactId: form.contactId } : {}),
     location:   form.location   ?? "",
     status:    (form.status ?? "") as "" | LeadStatus,
     startDate:  form.startDate ?? undefined,

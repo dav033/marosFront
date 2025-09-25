@@ -1,15 +1,16 @@
 // src/presentation/molecules/ContactModeSelector.tsx
 import React from "react";
-import { Input, Icon } from "@/presentation/atoms";
-import { ContactMode } from "@/types/enums";
+
+import { Icon,Input } from "@/presentation/atoms";
 import ContactModeSwitch from "@/presentation/molecules/ContactModeSwitch";
+import { ContactMode } from "@/types/enums";
 
 // ✅ Exportamos estos tipos, y los usa el llamador (evita “two different types…”)
 export type NewContactForm = {
   customerName: string;
   contactName: string;
-  phone?: string;
-  email?: string;
+  phone?: string | undefined;
+  email?: string | undefined;
 };
 
 export type NewContactChangeHandler = <K extends keyof NewContactForm>(

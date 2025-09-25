@@ -1,143 +1,115 @@
-// src/presentation/hooks/useCreateLocalLeadController.ts
+// src/presentation/hooks/useCreateLocalLeadController.tsx
+
 import { useState } from "react";
 
-import { ContactMode, FormMode } from "@/types/enums";
-
-import { useLeadForm } from "@/hooks/useLeadForm";
 import {
-  createLeadWithNewContact,
-  createLeadWithExistingContact,
-  validateLeadNumberAvailability,
+  createLead, // ✅ único punto de entrada
   makeLeadsAppContext,
+  validateLeadNumberAvailability,
 } from "@/features/leads/application";
-import { LeadType, SystemClock, type Lead } from "@/features/leads/domain";
-import { LocalLeadRepository } from "@/features/leads/infra/http/LocalLeadRepository";
+import type {
+  Lead,
+  LeadType,
+  ProjectTypeId,
+  ContactId,
+} from "@/features/leads/domain";
+import { SystemClock } from "@/features/leads/domain";
 import { LeadNumberAvailabilityHttpService } from "@/features/leads/infra/http/LeadNumberAvailabilityHttpService";
-
-import {
-  validateNewContactLead,
-  validateExistingContactLead,
-} from "@/utils/leadHelpers";
+import { LocalLeadRepository } from "@/features/leads/infra/http/LocalLeadRepository";
+import { useLeadForm } from "@/hooks/useLeadForm";
 import type { LeadFormData } from "@/types";
+import { ContactMode } from "@/types/enums";
+import { ContactRepositoryAdapterForLeads } from "@/features/leads/infra/adapters/ContactRepositoryAdapterForLeads";
 
-type UseCreateLocalLeadControllerArgs = {
+type ControllerOptions = {
   leadType: LeadType;
-  onLeadCreated: (lead: Lead) => void;
+  onCreated?: (lead: Lead) => void;
 };
 
 export function useCreateLocalLeadController({
   leadType,
-  onLeadCreated,
-}: UseCreateLocalLeadControllerArgs) {
+  onCreated,
+}: ControllerOptions) {
+  const [isLoading, setIsLoading] = useState(false);
   const [contactMode, setContactMode] = useState<ContactMode>(
     ContactMode.NEW_CONTACT
   );
+  const [error, setError] = useState<string | null>(null);
 
-  // Construimos un contexto "local-only" (repo local + validador)
+  const { form, handleChange } = useLeadForm({ leadType });
+
   const ctx = makeLeadsAppContext({
     clock: SystemClock,
-    repos: { lead: new LocalLeadRepository() },
-    services: { leadNumberAvailability: new LeadNumberAvailabilityHttpService() },
-  });
-
-  const {
-    form,
-    isLoading,
-    error,
-    handleChange,
-    handleSubmit,
-    resetForm,
-    setError,
-  } = useLeadForm({
-    initialData: {},
-    onSubmit: async (formData: LeadFormData) => {
-      // Requisito: siempre debe venir leadNumber en local-only
-      if (!formData.leadNumber) {
-        throw new Error("Lead Number is required for local-only creation");
-      }
-      // Validación de unicidad vía caso de uso
-      await validateLeadNumberAvailability(ctx, formData.leadNumber);
-
-      let validationError: string | null = null;
-
-      if (contactMode === ContactMode.NEW_CONTACT) {
-        // Validación de UI adicional (si quieres mantenerla)
-        validationError = validateNewContactLead({
-          leadNumber: formData.leadNumber || "",
-          leadName: formData.leadName || "",
-          customerName: formData.customerName || "",
-          contactName: formData.contactName || "",
-          projectTypeId: formData.projectTypeId?.toString() || "",
-          email: formData.email || "",
-        });
-        if (validationError) throw new Error(validationError);
-
-        // Caso de uso con contacto nuevo (mapeando customerName/contactName)
-        const lead = await createLeadWithNewContact(
-          ctx,
-          {
-            leadName: formData.leadName || "",
-            leadNumber: formData.leadNumber || "",
-            location: formData.location || "",
-            projectTypeId: Number(formData.projectTypeId) || 0,
-            leadType,
-            contact: {
-              companyName: formData.customerName || "",
-              name: formData.contactName || "",
-              phone: formData.phone || "",
-              email: formData.email || "",
-            },
-          },
-          {
-            policies: {},
-            checkNumberAvailability: false, // ya validamos arriba
-          }
-        );
-        onLeadCreated(lead);
-      } else {
-        validationError = validateExistingContactLead({
-          leadNumber: formData.leadNumber || "",
-          leadName: formData.leadName || "",
-          contactId: formData.contactId?.toString() || "",
-          projectTypeId: formData.projectTypeId?.toString() || "",
-        });
-        if (validationError) throw new Error(validationError);
-
-        const lead = await createLeadWithExistingContact(
-          ctx,
-          {
-            leadName: formData.leadName || "",
-            leadNumber: formData.leadNumber || "",
-            location: formData.location || "",
-            projectTypeId: Number(formData.projectTypeId) || 0,
-            leadType,
-            contactId: Number(formData.contactId) || 0,
-          },
-          {
-            policies: {},
-            checkNumberAvailability: false, // ya validamos arriba
-          }
-        );
-        onLeadCreated(lead);
-      }
-
-      resetForm();
+    repos: {
+      lead: new LocalLeadRepository(),
+      // ✅ ahora sí: cumplimos el contrato del contexto de Leads
+      contact: new ContactRepositoryAdapterForLeads(),
     },
-    onSuccess: () => {
-      // cerrar modal lo hará el componente
+    services: {
+      leadNumberAvailability: new LeadNumberAvailabilityHttpService(),
     },
   });
 
   const handleContactModeChange = (mode: ContactMode) => {
+    if (error) setError(null);
     setContactMode(mode);
-    // Limpiar campos irrelevantes al alternar
-    if (mode === ContactMode.NEW_CONTACT) {
-      handleChange("contactId", "");
-    } else {
-      handleChange("customerName", "");
-      handleChange("contactName", "");
-      handleChange("phone", "");
-      handleChange("email", "");
+  };
+
+  const handleSubmit = async (formData: LeadFormData) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      // En creación local, exigimos leadNumber
+      if (!formData.leadNumber) {
+        throw new Error("Lead Number is required for local-only creation");
+      }
+
+      // Validación de unicidad
+      await validateLeadNumberAvailability(ctx, formData.leadNumber);
+
+      // Construcción de input para createLead (unión discriminada)
+      const common = {
+        leadName: formData.leadName ?? "",
+        leadNumber: formData.leadNumber, // string requerido
+        location: formData.location ?? "",
+        projectTypeId: Number(formData.projectTypeId) as ProjectTypeId,
+        leadType,
+      } as const;
+
+      const input =
+        contactMode === ContactMode.EXISTING_CONTACT
+          ? ({
+              ...common,
+              contactId: Number(formData.contactId) as ContactId,
+            } as const)
+          : ({
+              ...common,
+              // NewContact espera strings, no undefined
+              contact: {
+                companyName:
+                  formData.companyName || formData.customerName || "",
+                name: formData.contactName || formData.customerName || "",
+                occupation: formData.occupation || "",
+                product: formData.product || "",
+                phone: formData.phone || "",
+                email: formData.email || "",
+                address: formData.address || "",
+              },
+            } as const);
+
+      const created = await createLead(ctx, input, {
+        checkNumberAvailability: true,
+        policies: {},
+      });
+
+      onCreated?.(created);
+      return created;
+    } catch (e: any) {
+      setError(e?.message ?? "Unexpected error");
+      throw e;
+    } finally {
+      setIsLoading(false);
     }
   };
 

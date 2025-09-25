@@ -1,5 +1,6 @@
 // src/presentation/molecules/SectionHeaderSkeleton.tsx
 import React from "react";
+
 import SkeletonBlock from "@/presentation/atoms/SkeletonBlock";
 
 export type SectionHeaderSkeletonProps = {

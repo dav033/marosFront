@@ -1,0 +1,135 @@
+import * as React from "react";
+
+import {
+  createProject,
+  deleteProject,
+  getProjectById,
+  getProjects,
+  getProjectsByStatus,
+  getProjectsWithLeads,
+  updateProject,
+} from "@/features/project/application";
+import type { Project } from "@/features/project/domain/models/Project";
+import type { ProjectStatus } from "@/features/project/enums";
+import { ProjectApplicationContextFactory } from "@/features/project/infra/ProjectApplicationContextFactory";
+import type { ProjectDraft, ProjectId, ProjectPatch, ProjectWithLeadView } from "@/features/project/types";
+import { getErrorMessage } from "@/utils/errors";
+
+type State = {
+  data: Project[];
+  loading: boolean;
+  error: string | null;
+};
+
+const ctx = ProjectApplicationContextFactory.createHttpContext();
+
+/** ViewModel para Listado/CRUD de Projects. */
+export function useProjectsVm(initialStatus?: ProjectStatus) {
+  const [state, setState] = React.useState<State>({ data: [], loading: false, error: null });
+
+  const loadAll = React.useCallback(async () => {
+    setState(s => ({ ...s, loading: true, error: null }));
+    try {
+  const data = await getProjects(ctx);
+  setState({ data, loading: false, error: null });
+      return data;
+    } catch (e: unknown) {
+      const msg = getErrorMessage(e) || "Failed to load projects";
+      setState(s => ({ ...s, loading: false, error: msg }));
+      throw e;
+    }
+  }, []);
+
+  const loadByStatus = React.useCallback(async (status: ProjectStatus) => {
+  setState(s => ({ ...s, loading: true, error: null }));
+    try {
+  const data = await getProjectsByStatus(ctx, status);
+  setState({ data, loading: false, error: null });
+      return data;
+    } catch (e: unknown) {
+      const msg = getErrorMessage(e) || "Failed to load projects";
+      setState(s => ({ ...s, loading: false, error: msg }));
+      throw e;
+    }
+  }, []);
+
+  /** ⬇️ Nuevo: carga projects con sus leads */
+ const loadWithLeads = React.useCallback(async () => {
+  setState((s) => ({ ...s, loading: true, error: null }));
+    try {
+  const data = await getProjectsWithLeads(ctx); // ProjectWithLeadView[]
+  setState({ data, loading: false, error: null });
+      return data as ProjectWithLeadView[];
+    } catch (e: unknown) {
+      const msg = getErrorMessage(e) || "Failed to load projects with leads";
+      setState((s) => ({
+        ...s,
+        loading: false,
+        error: msg,
+      }));
+      throw e;
+    }
+  }, []);
+
+  const create = React.useCallback(async (draft: ProjectDraft) => {
+  setState(s => ({ ...s, loading: true, error: null }));
+    try {
+  const created = await createProject(ctx, draft);
+      setState(s => ({ ...s, loading: false, data: [created, ...s.data] }));
+      return created;
+    } catch (e: unknown) {
+      const msg = getErrorMessage(e) || "Failed to create project";
+      setState(s => ({ ...s, loading: false, error: msg }));
+      throw e;
+    }
+  }, []);
+
+  const update = React.useCallback(async (id: ProjectId, patch: ProjectPatch) => {
+  setState(s => ({ ...s, loading: true, error: null }));
+    try {
+  const updated = await updateProject(ctx, id, patch);
+      setState(s => ({
+        ...s,
+        loading: false,
+        data: s.data.map(p => (p.id === id ? updated : p)),
+      }));
+      return updated;
+    } catch (e: unknown) {
+      const msg = getErrorMessage(e) || "Failed to update project";
+      setState(s => ({ ...s, loading: false, error: msg }));
+      throw e;
+    }
+  }, []);
+
+  const remove = React.useCallback(async (id: ProjectId) => {
+  setState(s => ({ ...s, loading: true, error: null }));
+    try {
+  await deleteProject(ctx, id);
+      setState(s => ({ ...s, loading: false, data: s.data.filter(p => p.id !== id) }));
+    } catch (e: unknown) {
+      const msg = getErrorMessage(e) || "Failed to delete project";
+      setState(s => ({ ...s, loading: false, error: msg }));
+      throw e;
+    }
+  }, []);
+
+
+   
+
+  React.useEffect(() => {
+    if (initialStatus) void loadByStatus(initialStatus);
+    else void loadAll();
+  }, [initialStatus, loadAll, loadByStatus]);
+
+  return {
+    ...state,
+    reload: initialStatus ? () => loadByStatus(initialStatus) : loadAll,
+    loadAll,
+    loadByStatus,
+    loadWithLeads, // ⬅️ expuesto para consumo desde la UI
+    create,
+    update,
+    remove,
+    getById: (id: ProjectId) => getProjectById(ctx, id),
+  };
+}

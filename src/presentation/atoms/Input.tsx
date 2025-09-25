@@ -1,6 +1,6 @@
 // src/presentation/atoms/Input.tsx
-import React, { forwardRef } from "react";
 import cn from "classnames";
+import React, { forwardRef } from "react";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -11,8 +11,7 @@ export interface InputProps
   hint?: string;
 }
 
-const field =
-  "block w-full bg-theme-dark text-theme-light placeholder-gray-400 border-0 rounded-xl focus:outline-none";
+// (removed unused 'field' constant) - styles are applied inline where needed
 
 export default forwardRef<HTMLInputElement, InputProps>(function Input(
   { className, label, error, leftAddon, rightAddon, hint, id, ...props },

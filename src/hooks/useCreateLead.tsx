@@ -1,23 +1,27 @@
 import { useCallback } from "react";
 import type { LeadFormData, UseCreateLeadOptions } from "src/types";
-import {
-  validateNewContactLead,
-  validateExistingContactLead,
-  createLeadWithNewContact,
-  createLeadWithExistingContact,
-} from "../utils/leadHelpers";
+
 import { LeadType } from "@/features/leads/enums";
+import { useLeadsApp } from "@/di/DiProvider";
+import { createLead } from "@/features/leads/application";
+
+import {
+  validateExistingContactLead,
+  validateNewContactLead,
+} from "../utils/leadHelpers";
 
 export const useCreateLead = ({
   leadType,
   onLeadCreated,
 }: UseCreateLeadOptions) => {
+  const ctx = useLeadsApp();
+
   // Map the string leadType to the actual LeadType enum
   const getLeadType = useCallback(() => {
     switch (leadType) {
       case "new-contact":
       case "existing-contact":
-        return LeadType.CONSTRUCTION; // Default to CONSTRUCTION for now
+        return LeadType.CONSTRUCTION; // Ajuste si su enum requiere otro valor
       default:
         return LeadType.CONSTRUCTION;
     }
@@ -26,67 +30,76 @@ export const useCreateLead = ({
   const createWithNewContact = useCallback(
     async (formData: LeadFormData) => {
       const validationError = validateNewContactLead({
-        leadName: formData.leadName || '',
-        customerName: formData.customerName || '',
-        contactName: formData.contactName || '',
-        projectTypeId: formData.projectTypeId?.toString() || '',
-        email: formData.email || '',
+        leadName: formData.leadName || "",
+        customerName: formData.customerName || "",
+        contactName: formData.contactName || "",
+        projectTypeId: formData.projectTypeId?.toString() || "",
+        email: formData.email || "",
       });
+      if (validationError) throw new Error(validationError);
 
-      if (validationError) {
-        throw new Error(validationError);
-      }
-
-      // Ensure required fields are present
       if (!formData.leadName) throw new Error("Lead name is required");
       if (!formData.customerName) throw new Error("Customer name is required");
       if (!formData.contactName) throw new Error("Contact name is required");
       if (!formData.projectTypeId) throw new Error("Project type is required");
 
-      const newLead = await createLeadWithNewContact({
+      const input = {
         leadName: formData.leadName,
-        customerName: formData.customerName,
-        contactName: formData.contactName,
-        phone: formData.phone || '',
-        email: formData.email || '',
+        leadNumber: formData.leadNumber ?? null,
+        location: formData.location || "",
         projectTypeId: Number(formData.projectTypeId),
-        location: formData.location || '',
         leadType: getLeadType(),
+        contact: {
+          companyName: formData.customerName || "",
+          name: formData.contactName || "",
+          phone: formData.phone || "",
+          email: formData.email || "",
+          address: formData.address || "",
+          occupation: formData.occupation || "",
+          product: formData.product || "",
+        },
+      } as const;
+
+      const newLead = await createLead(ctx, input, {
+        checkNumberAvailability: true, // cámbielo si ya valida antes
+        policies: {},
       });
 
-      onLeadCreated?.(newLead); // Safe optional call
+      onLeadCreated?.(newLead as any);
     },
-    [getLeadType, onLeadCreated]
+    [ctx, getLeadType, onLeadCreated]
   );
 
   const createWithExistingContact = useCallback(
     async (formData: LeadFormData) => {
       const validationError = validateExistingContactLead({
-        leadName: formData.leadName || '',
-        contactId: formData.contactId?.toString() || '',
-        projectTypeId: formData.projectTypeId?.toString() || '',
+        leadName: formData.leadName || "",
+        contactId: formData.contactId?.toString() || "",
+        projectTypeId: formData.projectTypeId?.toString() || "",
       });
+      if (validationError) throw new Error(validationError);
 
-      if (validationError) {
-        throw new Error(validationError);
-      }
-
-      // Ensure required fields are present
       if (!formData.leadName) throw new Error("Lead name is required");
       if (!formData.contactId) throw new Error("Contact selection is required");
       if (!formData.projectTypeId) throw new Error("Project type is required");
 
-      const newLead = await createLeadWithExistingContact({
+      const input = {
         leadName: formData.leadName,
-        contactId: Number(formData.contactId),
+        leadNumber: formData.leadNumber ?? null,
+        location: formData.location || "",
         projectTypeId: Number(formData.projectTypeId),
-        location: formData.location || '',
         leadType: getLeadType(),
+        contactId: Number(formData.contactId),
+      } as const;
+
+      const newLead = await createLead(ctx, input, {
+        checkNumberAvailability: true,
+        policies: {},
       });
 
-      onLeadCreated?.(newLead); // Safe optional call
+      onLeadCreated?.(newLead as any);
     },
-    [getLeadType, onLeadCreated]
+    [ctx, getLeadType, onLeadCreated]
   );
 
   return {

@@ -1,22 +1,20 @@
-// src/presentation/molecules/LeadFormFields.tsx
-import React from "react";
-import { Input, Icon } from "@/presentation/atoms";
-import { LeadStatus } from "@/features/leads/enums";
-import { FormMode, ContactMode } from "src/types/enums";
-// nuevas moléculas
-import ProjectTypeSelect from "@/presentation/molecules/ProjectTypeSelect";
-import ContactSelect from "@/presentation/molecules/ContactSelect";
-import LeadStatusSelect from "@/presentation/molecules/LeadStatusSelect";
+import type { LeadStatus } from "../../features/leads/domain";
+import { ContactMode, FormMode } from "../../types";
+import { Icon, Input } from "../atoms";
+import ContactSelect from "./ContactSelect";
+import LeadStatusSelect from "./LeadStatusSelect";
+import ProjectTypeSelect from "./ProjectTypeSelect";
+
 
 export type LeadFormFieldsProps = {
   form: {
     leadNumber: string;
     leadName: string;
-    projectTypeId?: number;
-    contactId?: number;
+    projectTypeId?: number | undefined;
+    contactId?: number | undefined;
     location: string;
     status?: LeadStatus | "";
-    startDate?: string; // YYYY-MM-DD
+    startDate?: string | undefined; // YYYY-MM-DD
   };
   onChange: (
     field:
@@ -34,8 +32,8 @@ export type LeadFormFieldsProps = {
     id: number;
     name: string;
     companyName?: string;
-    phone?: string;
-    email?: string;
+    phone?: string | undefined;
+    email?: string | undefined;
   }>;
   mode?: FormMode;
   contactMode?: ContactMode;
@@ -84,7 +82,7 @@ const LeadFormFields: React.FC<LeadFormFieldsProps> = ({
 
       <ProjectTypeSelect
         projectTypes={projectTypes}
-        value={form.projectTypeId}
+        value={form.projectTypeId ?? ""}
         onChange={(val) => onChange("projectTypeId", val)}
         placeholder="Select Project Type *"
         className="w-full mb-3"
@@ -93,7 +91,7 @@ const LeadFormFields: React.FC<LeadFormFieldsProps> = ({
       {showContactSelect && (
         <ContactSelect
           contacts={contacts}
-          value={form.contactId}
+          value={form.contactId ?? ""}
           onChange={(val) => onChange("contactId", val)}
           placeholder="Select Contact *"
           className="w-full mb-3"

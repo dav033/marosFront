@@ -1,7 +1,8 @@
 // src/presentation/molecules/ContactModeSwitch.tsx
 import React from "react";
-import GenericSwitch from "@/presentation/atoms/GenericSwitch";
+
 import type { GenericSwitchProps } from "@/presentation/atoms/GenericSwitch";
+import GenericSwitch from "@/presentation/atoms/GenericSwitch";
 import { ContactMode } from "@/types/enums";
 
 export type ContactModeSwitchProps = {

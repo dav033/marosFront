@@ -1,4 +1,3 @@
-// src/components/common/SearchBoxWithDropdown.tsx
 import React from "react";
 
 type SearchFieldOption = { key: string; label: string };

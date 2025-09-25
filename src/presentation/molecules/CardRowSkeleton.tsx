@@ -1,5 +1,6 @@
 // src/presentation/molecules/CardRowSkeleton.tsx
 import React from "react";
+
 import SkeletonBlock from "@/presentation/atoms/SkeletonBlock";
 
 export type LineItem = { w: string; h?: number };

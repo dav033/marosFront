@@ -21,9 +21,63 @@ const CacheConfigPanel: React.FC = () => {
     setConfig(cacheConfig.get());
   };
 
+  const updateDebug = (partial: Partial<NonNullable<typeof config.debug>>) => {
+    cacheConfig.set({ debug: { ...(config.debug ?? {}), ...partial } });
+    setConfig(cacheConfig.get());
+  };
+
   const resetConfig = () => {
     cacheConfig.reset();
     setConfig(cacheConfig.get());
+  };
+
+  const resourceNodes = Object.entries(config.resources).map(
+    ([resource, settings]) => {
+      const s = {
+        enabled: settings.enabled ?? true,
+        ttl: settings.ttl ?? 0,
+      };
+      const key = resource as "contacts" | "leads" | "projectTypes";
+      return (
+        <div key={resource} className="flex items-center justify-between py-2">
+          <div className="flex items-center space-x-3">
+            <input
+              type="checkbox"
+              checked={Boolean(s.enabled)}
+              onChange={(e) => updateResourceCache(key, e.target.checked)}
+              disabled={!config.enabled}
+              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded disabled:opacity-50"
+            />
+            <div>
+              <span className="text-sm text-gray-900 capitalize">
+                {resource}
+              </span>
+              <div className="text-xs text-gray-500">
+                TTL: {s.ttl ? Math.round(s.ttl / 60000) : "—"} minutes
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center space-x-2">
+            <span
+              className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
+                s.enabled && config.enabled
+                  ? "bg-green-100 text-green-800"
+                  : "bg-red-100 text-red-800"
+              }`}
+            >
+              {s.enabled && config.enabled ? "Active" : "Disabled"}
+            </span>
+          </div>
+        </div>
+      );
+    }
+  );
+
+  // Valores seguros para debug cuando es undefined
+  const dbg = {
+    log: config.debug?.log ?? false,
+    logCacheHits: config.debug?.logCacheHits ?? false,
+    logCacheMisses: config.debug?.logCacheMisses ?? false,
   };
 
   return (
@@ -66,43 +120,7 @@ const CacheConfigPanel: React.FC = () => {
           Resource-specific Settings
         </h4>
 
-        {Object.entries(config.resources).map(([resource, settings]) => (
-          <div
-            key={resource}
-            className="flex items-center justify-between py-2"
-          >
-            <div className="flex items-center space-x-3">
-              <input
-                type="checkbox"
-                checked={settings.enabled}
-                onChange={(e) =>
-                  updateResourceCache(resource as any, e.target.checked)
-                }
-                disabled={!config.enabled}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded disabled:opacity-50"
-              />
-              <div>
-                <span className="text-sm text-gray-900 capitalize">
-                  {resource}
-                </span>
-                <div className="text-xs text-gray-500">
-                  TTL: {Math.round(settings.ttl / 1000 / 60)} minutes
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span
-                className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
-                  settings.enabled && config.enabled
-                    ? "bg-green-100 text-green-800"
-                    : "bg-red-100 text-red-800"
-                }`}
-              >
-                {settings.enabled && config.enabled ? "Active" : "Disabled"}
-              </span>
-            </div>
-          </div>
-        ))}
+        {resourceNodes}
       </div>
 
       {/* Debug Settings */}
@@ -114,12 +132,8 @@ const CacheConfigPanel: React.FC = () => {
           <label className="flex items-center space-x-2">
             <input
               type="checkbox"
-              checked={config.debug.logCacheHits}
-              onChange={(e) =>
-                cacheConfig.set({
-                  debug: { ...config.debug, logCacheHits: e.target.checked },
-                })
-              }
+              checked={dbg.logCacheHits}
+              onChange={(e) => updateDebug({ logCacheHits: e.target.checked })}
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
             <span className="text-sm text-gray-700">Log cache hits</span>
@@ -127,15 +141,24 @@ const CacheConfigPanel: React.FC = () => {
           <label className="flex items-center space-x-2">
             <input
               type="checkbox"
-              checked={config.debug.logCacheMisses}
+              checked={dbg.logCacheMisses}
               onChange={(e) =>
-                cacheConfig.set({
-                  debug: { ...config.debug, logCacheMisses: e.target.checked },
-                })
+                updateDebug({ logCacheMisses: e.target.checked })
               }
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
             <span className="text-sm text-gray-700">Log cache misses</span>
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={dbg.log}
+              onChange={(e) => updateDebug({ log: e.target.checked })}
+              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <span className="text-sm text-gray-700">
+              Enable general logging
+            </span>
           </label>
         </div>
       </div>

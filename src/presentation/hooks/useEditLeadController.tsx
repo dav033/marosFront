@@ -1,10 +1,11 @@
 // src/presentation/hooks/useEditLeadController.ts
 import { useCallback, useEffect, useMemo, useState } from "react";
+
 import { useLeadsApp } from "@/di/DiProvider";
 import { patchLead } from "@/features/leads/application"; // use case
 import type { Lead } from "@/features/leads/domain";
-import type { LeadFormData } from "@/types/components/form";
 import { LeadStatus, LeadType } from "@/features/leads/enums";
+import type { LeadFormData } from "@/types/components/form";
 
 /** Opciones del controlador */
 type UseEditLeadControllerOptions = {
@@ -92,20 +93,20 @@ export function useEditLeadController({ lead, onSaved }: UseEditLeadControllerOp
     if (!lead) return;
     setIsLoading(true);
     setError(null);
-
+    const l = lead as unknown as Record<string, unknown>;
     try {
       // Construye patch SOLO con cambios relevantes
       const patch: Record<string, unknown> = {};
       const newName = form.leadName || form.name || lead.name;
 
-      if (newName !== lead.name) patch.name = newName;
-      if ((form.location ?? "") !== (lead.location ?? "")) patch.location = form.location ?? "";
-      if (form.status !== lead.status) patch.status = form.status; // LeadStatus | null
-      if ((form.startDate ?? "") !== (lead.startDate ?? "")) patch.startDate = form.startDate ?? "";
-      if (form.projectTypeId && form.projectTypeId !== lead.projectType.id) patch.projectTypeId = form.projectTypeId;
-      if (form.contactId && form.contactId !== lead.contact.id) patch.contactId = form.contactId;
-      if ((form.leadNumber ?? "") !== (lead.leadNumber ?? "")) patch.leadNumber = form.leadNumber ?? "";
-      if (form.leadType && form.leadType !== lead.leadType) patch.leadType = form.leadType;
+  if (newName !== l["name"]) (patch as Record<string, unknown>)["name"] = newName;
+  if ((form.location ?? "") !== (l["location"] ?? "")) (patch as Record<string, unknown>)["location"] = form.location ?? "";
+  if (form.status !== l["status"]) (patch as Record<string, unknown>)["status"] = form.status; // LeadStatus | null
+  if ((form.startDate ?? "") !== (l["startDate"] ?? "")) (patch as Record<string, unknown>)["startDate"] = form.startDate ?? "";
+  if (form.projectTypeId && form.projectTypeId !== ((l["projectType"] as Record<string, unknown> | undefined)?.["id"] as number | undefined)) (patch as Record<string, unknown>)["projectTypeId"] = form.projectTypeId;
+  if (form.contactId && form.contactId !== ((l["contact"] as Record<string, unknown> | undefined)?.["id"] as number | undefined)) (patch as Record<string, unknown>)["contactId"] = form.contactId;
+  if ((form.leadNumber ?? "") !== (l["leadNumber"] ?? "")) (patch as Record<string, unknown>)["leadNumber"] = form.leadNumber ?? "";
+  if (form.leadType && form.leadType !== l["leadType"]) (patch as Record<string, unknown>)["leadType"] = form.leadType;
 
       const saved = await patchLead(app, lead.id, patch); // aplica reglas de dominio y persiste
       onSaved?.(saved);

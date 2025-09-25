@@ -1,6 +1,6 @@
 // src/features/contact/domain/services/contactMergePolicy.ts
 
-import type { Contacts } from "../models/Contact";
+import type { Contact } from "../models/Contact";
 
 /**
  * Estrategia de fusión:
@@ -26,13 +26,13 @@ function isDefined<T>(v: T | undefined | null): v is T {
  * - `id` siempre se conserva del `local` (defensivo).
  */
 export function mergeContact(
-  local: Contacts,
-  api?: Partial<Contacts> | null
-): Contacts {
+  local: Contact,
+  api?: Partial<Contact> | null
+): Contact {
   if (!api) return { ...local };
 
   // Campos primitivos controlados
-  const merged: Contacts = {
+  const merged: Contact = {
     id: local.id, // defensivo
     companyName: isDefined(api.companyName)
       ? api.companyName
@@ -57,9 +57,9 @@ export function mergeContact(
  * - Si viene parcial, se usa `mergeContact`.
  */
 export function mergeApiUpdateFallback(
-  local: Contacts,
-  apiResult?: Contacts | Partial<Contacts> | null
-): Contacts {
+  local: Contact,
+  apiResult?: Contact | Partial<Contact> | null
+): Contact {
   if (!apiResult) return { ...local };
   return mergeContact(local, apiResult);
 }
@@ -68,9 +68,9 @@ export function mergeApiUpdateFallback(
  * Reemplaza (inmutable) un contacto dentro de una colección por id.
  */
 export function mergeContactIntoCollection(
-  collection: readonly Contacts[],
-  updated: Contacts
-): Contacts[] {
+  collection: readonly Contact[],
+  updated: Contact
+): Contact[] {
   const list = Array.isArray(collection) ? collection : [];
   let replaced = false;
   const out = list.map((c) => {

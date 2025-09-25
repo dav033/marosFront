@@ -1,15 +1,20 @@
 import type { Lead } from "@/features/leads/domain/models/Lead";
+
 import type { InvoiceStatus, ProjectStatus } from "../../enums";
 
 export interface Project {
+  location: string;
+  leadNumber: string;
+  customerName: string;
+  contactName: string;
   id: number;
-  projectName: string; // Backend uses 'projectName' not 'name'
-  overview?: string; // Backend uses 'overview' not 'description'
-  payments?: number[]; // List<Float> from backend
+  projectName: string;
+  overview?: string;
+  payments?: number[];
   projectStatus: ProjectStatus;
   invoiceStatus: InvoiceStatus;
   quickbooks?: boolean;
-  startDate?: string; // LocalDate from backend, received as ISO string
+  startDate?: string;
   lead: Lead;
-  endDate?: string; // LocalDate from backend, received as ISO string
+  endDate?: string;
 }

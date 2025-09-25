@@ -1,19 +1,16 @@
 // maros-app/src/features/leads/domain/services/leadNumberPolicy.ts
 
-import type { LeadNumberRules } from "../../types";
 import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
 
-export const DEFAULT_LEAD_NUMBER_RULES: Required<
-  Omit<LeadNumberRules, "pattern" | "minLength" | "maxLength">
-> &
-  Pick<LeadNumberRules, "pattern" | "minLength" | "maxLength"> = {
+import type { LeadNumberRules } from "../../types";
+
+export const DEFAULT_LEAD_NUMBER_RULES: LeadNumberRules = {
   trim: true,
   collapseWhitespace: true,
   uppercase: false,
   allowEmpty: true,
   minLength: 0,
-  maxLength: 0, // 0 = sin límite superior
-  pattern: undefined,
+  maxLength: 0,
 };
 
 /** Normalización básica según reglas. */

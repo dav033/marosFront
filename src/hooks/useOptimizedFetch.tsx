@@ -1,11 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { StorageLayer, OptimizedFetchConfig, UseOptimizedFetchReturn } from "@/types";
+
+import type { OptimizedFetchConfig, UseOptimizedFetchReturn } from "@/types";
+import { getErrorMessage } from "@/utils/errors";
+
+import type { UseVisibilityIntervalOptions } from "../types/hooks/visibility";
 import { getCachedData, setCachedData } from "../utils/cacheHelpers";
-import { useIsMounted } from "./useIsMounted";
-import { useAbortControllerRef } from "./useAbortControllerRef";
-import { useVisibilityInterval } from "./useVisibilityInterval";
-import { useStableDepsKey } from "./useStableDepsKey";
 import { primeCache } from "../utils/primeCache";
+import { useAbortControllerRef } from "./useAbortControllerRef";
+import { useIsMounted } from "./useIsMounted";
+import { useStableDepsKey } from "./useStableDepsKey";
+import { useVisibilityInterval } from "./useVisibilityInterval";
 
 export function useOptimizedFetch<T, P extends unknown[]>(
   requestFn: (...args: P) => Promise<T>,
@@ -38,82 +42,97 @@ export function useOptimizedFetch<T, P extends unknown[]>(
   // Dependencias estables
   const depsKey = useStableDepsKey(params as unknown[], deps);
 
-  const doRequest = useCallback(async (force = false): Promise<T> => {
-    // 1) Intentar caché si no es force
-    if (!force) {
-      const { data: cached, age } = getCachedData<T>(cacheKey, storage, ttl);
-      if (cached != null) {
-        if (isMounted.current) {
-          setData(cached);
-          setFromCache(true);
-          setCacheAge(age);
-          setError(null);
-          if (showSkeletonOnlyOnFirstLoad && age > ttl * backgroundRefreshThreshold) {
-            // Refresco en background, pero no bloquear retorno
-            void doRequest(true);
+  const doRequest = useCallback(
+    async (force = false): Promise<T> => {
+      // 1) Intentar caché si no es force
+      if (!force) {
+        const { data: cached, age } = getCachedData<T>(cacheKey, storage, ttl);
+        if (cached != null) {
+          if (isMounted.current) {
+            setData(cached);
+            setFromCache(true);
+            setCacheAge(age);
+            setError(null);
+            if (
+              showSkeletonOnlyOnFirstLoad &&
+              age > ttl * backgroundRefreshThreshold
+            ) {
+              // Refresco en background, pero no bloquear retorno
+              void doRequest(true);
+            }
+            if (showSkeletonOnlyOnFirstLoad) return cached;
           }
-          if (showSkeletonOnlyOnFirstLoad) return cached;
         }
       }
-    }
 
-    // 2) Dedupe si hay una promesa en vuelo y no es force
-    if (inFlightRef.current && !force) return inFlightRef.current;
+      // 2) Dedupe si hay una promesa en vuelo y no es force
+      if (inFlightRef.current && !force) return inFlightRef.current;
 
-    // 3) Preparar nueva petición
-    const ac = replace();
+      // 3) Preparar nueva petición
+      const ac = replace();
 
-    if (!data || force) setLoading(true);
-    setError(null);
+      if (!data || force) setLoading(true);
+      setError(null);
 
-    const p = (async () => {
-      const result = await requestFn(...params);
-      if (!isMounted.current || ac.signal.aborted) return result;
+      const p = (async () => {
+        const result = await requestFn(...params);
+        if (!isMounted.current || ac.signal.aborted) return result;
 
-      setData(result);
-      setFromCache(false);
-      setCacheAge(0);
-      setCachedData(cacheKey, storage, ttl, result);
-      return result;
-    })();
+        setData(result);
+        setFromCache(false);
+        setCacheAge(0);
+        setCachedData(cacheKey, storage, ttl, result);
+        return result;
+      })();
 
-    inFlightRef.current = p;
+      inFlightRef.current = p;
 
-    try {
-      return await p;
-    } catch (e) {
-      if (!isMounted.current || (signal && (signal as AbortSignal).aborted)) {
-        return Promise.reject(e);
+      try {
+        return await p;
+      } catch (e: unknown) {
+        if (!isMounted.current || (signal && (signal as AbortSignal).aborted)) {
+          return Promise.reject(e);
+        }
+        setError(e instanceof Error ? e : new Error(getErrorMessage(e)));
+        setFromCache(false);
+        throw e;
+      } finally {
+        if (isMounted.current) setLoading(false);
+        inFlightRef.current = null;
+        setInitialized(true);
       }
-      setError(e as Error);
-      setFromCache(false);
-      throw e;
-    } finally {
-      if (isMounted.current) setLoading(false);
-      inFlightRef.current = null;
-      setInitialized(true);
-    }
-  }, [
-    backgroundRefreshThreshold,
-    cacheKey,
-    data,
-    params,
-    requestFn,
-    showSkeletonOnlyOnFirstLoad,
-    storage,
-    ttl,
-    isMounted,
-    replace,
-    signal,
-  ]);
+    },
+    [
+      backgroundRefreshThreshold,
+      cacheKey,
+      data,
+      params,
+      requestFn,
+      showSkeletonOnlyOnFirstLoad,
+      storage,
+      ttl,
+      isMounted,
+      replace,
+      signal,
+    ]
+  );
 
-  const forceRefresh = useCallback(async () => { await doRequest(true); }, [doRequest]);
-  const refetch = useCallback(async () => { await doRequest(true); }, [doRequest]);
+  const forceRefresh = useCallback(async () => {
+    await doRequest(true);
+  }, [doRequest]);
+  const refetch = useCallback(async () => {
+    await doRequest(true);
+  }, [doRequest]);
 
   // 4) Primer render: priming desde caché y posible refresh en background
   useEffect(() => {
     if (initialized) return;
-    const primed = primeCache<T>(cacheKey, storage, ttl, backgroundRefreshThreshold);
+    const primed = primeCache<T>(
+      cacheKey,
+      storage,
+      ttl,
+      backgroundRefreshThreshold
+    );
 
     if (primed.cached != null && showSkeletonOnlyOnFirstLoad) {
       setData(primed.cached);
@@ -147,11 +166,14 @@ export function useOptimizedFetch<T, P extends unknown[]>(
   }, [depsKey, initialized, doRequest]);
 
   // 6) Programación: intervalo + visibilidad
+  // `useVisibilityInterval` expects a number for interval; when undefined, pass 0 and let hook guard.
   useVisibilityInterval({
-    interval: refetchInterval,
+    interval: refetchInterval ?? 0,
     enabled: Boolean(refetchInterval && initialized && !loading),
-    tick: async () => { await doRequest(true); },
-  });
+    tick: async () => {
+      await doRequest(true);
+    },
+  } as UseVisibilityIntervalOptions);
 
   return { data, loading, error, refetch, fromCache, cacheAge, forceRefresh };
 }
@@ -165,14 +187,20 @@ export function useCachedList<T>(
   } = {}
 ) {
   const { ttl = 300_000, refetchInterval } = options;
-  return useOptimizedFetch(fetchFn, [] as const, {
-    cacheKey,
-    ttl,
-    storage: "memory",
-    showSkeletonOnlyOnFirstLoad: true,
-    refetchInterval,
-    backgroundRefreshThreshold: 0.5,
-  });
+  return useOptimizedFetch(
+    fetchFn,
+    [] as const,
+    Object.assign(
+      {
+        cacheKey,
+        ttl,
+        storage: "memory",
+        showSkeletonOnlyOnFirstLoad: true,
+        backgroundRefreshThreshold: 0.5,
+      },
+      refetchInterval ? { refetchInterval } : {}
+    ) as OptimizedFetchConfig
+  );
 }
 
 export function useLiveData<T>(
@@ -181,12 +209,18 @@ export function useLiveData<T>(
   options: { refetchInterval?: number; ttl?: number } = {}
 ) {
   const { refetchInterval = 30_000, ttl = 60_000 } = options;
-  return useOptimizedFetch(fetchFn, [] as const, {
-    cacheKey,
-    ttl,
-    storage: "memory",
-    showSkeletonOnlyOnFirstLoad: true,
-    refetchInterval,
-    backgroundRefreshThreshold: 0.5,
-  });
+  return useOptimizedFetch(
+    fetchFn,
+    [] as const,
+    Object.assign(
+      {
+        cacheKey,
+        ttl,
+        storage: "memory",
+        showSkeletonOnlyOnFirstLoad: true,
+        backgroundRefreshThreshold: 0.5,
+      },
+      refetchInterval ? { refetchInterval } : {}
+    ) as OptimizedFetchConfig
+  );
 }

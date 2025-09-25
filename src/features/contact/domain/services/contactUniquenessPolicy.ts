@@ -1,43 +1,43 @@
 // src/features/contact/domain/services/contactUniquenessPolicy.ts
 
-import type { Contacts } from "../models/Contact";
 import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
-// Si prefieres aislar errores por feature, mueve BusinessRuleError a contact/domain/errors.
 
+import type { Contact } from "../models/Contact";
+// Si prefieres aislar errores por feature, mueve BusinessRuleError a contact/domain/errors.
 import {
-  makeContactIdentityKey,
-  normalizeEmail,
-  normalizePhone,
-  normalizeName,
-  normalizeCompany,
-  type DuplicateCheckOptions,
   areContactsPotentialDuplicates,
+  type DuplicateCheckOptions,
+  makeContactIdentityKey,
+  normalizeCompany,
+  normalizeEmail,
+  normalizeName,
+  normalizePhone,
 } from "./contactIdentityPolicy";
 
 /* ----------------- Tipos ----------------- */
 
 export type ContactLike = Readonly<{
-  name?: string;
-  companyName?: string;
-  email?: string;
-  phone?: string;
+  name?: string | undefined;
+  companyName?: string | undefined;
+  email?: string | undefined;
+  phone?: string | undefined;
 }>;
 
 export type UniquenessOptions = DuplicateCheckOptions;
 
 export type DuplicateMatch = Readonly<{
   key: string; // identity key evaluada
-  match: Contacts; // primer contacto que colisiona
+  match: Contact; // primer contacto que colisiona
 }>;
 
 export type DuplicateGroup = Readonly<{
   key: string; // identity key compartida
-  items: Contacts[]; // contactos agrupados por la misma identidad
+  items: Contact[]; // contactos agrupados por la misma identidad
 }>;
 
 /* ----------------- Helpers ----------------- */
 
-function toLike(c: Contacts | ContactLike): ContactLike {
+function toLike(c: Contact | ContactLike): ContactLike {
   return {
     name: "name" in c ? c.name : undefined,
     companyName: "companyName" in c ? c.companyName : undefined,
@@ -52,10 +52,10 @@ function toLike(c: Contacts | ContactLike): ContactLike {
  * Construye un índice (identity key → contactos).
  */
 export function buildIdentityIndex(
-  contacts: readonly Contacts[],
+  contacts: readonly Contact[],
   opts: UniquenessOptions = {}
-): Map<string, Contacts[]> {
-  const index = new Map<string, Contacts[]>();
+): Map<string, Contact[]> {
+  const index = new Map<string, Contact[]>();
   for (const c of contacts ?? []) {
     const key = makeContactIdentityKey(
       {
@@ -78,10 +78,10 @@ export function buildIdentityIndex(
  * Retorna además la primera coincidencia y la identity key evaluada.
  */
 export function isDuplicateContact(
-  candidate: Contacts | ContactLike,
-  existing: readonly Contacts[],
+  candidate: Contact | ContactLike,
+  existing: readonly Contact[],
   opts: UniquenessOptions = {}
-): { duplicate: boolean; key: string; match?: Contacts } {
+): { duplicate: boolean; key: string; match?: Contact } {
   const like = toLike(candidate);
 
   const key = makeContactIdentityKey(
@@ -121,12 +121,12 @@ export function isDuplicateContact(
  * Lista TODOS los posibles duplicados de un candidato dentro de `existing`.
  */
 export function listPotentialDuplicates(
-  candidate: Contacts | ContactLike,
-  existing: readonly Contacts[],
+  candidate: Contact | ContactLike,
+  existing: readonly Contact[],
   opts: UniquenessOptions = {}
-): Contacts[] {
+): Contact[] {
   const like = toLike(candidate);
-  const out: Contacts[] = [];
+  const out: Contact[] = [];
   for (const item of existing ?? []) {
     if (areContactsPotentialDuplicates(like, item, opts)) {
       out.push(item);
@@ -139,7 +139,7 @@ export function listPotentialDuplicates(
  * Agrupa la colección completa por identity key, devolviendo sólo grupos con colisión (size > 1).
  */
 export function findDuplicateGroups(
-  contacts: readonly Contacts[],
+  contacts: readonly Contact[],
   opts: UniquenessOptions = {}
 ): DuplicateGroup[] {
   const index = buildIdentityIndex(contacts, opts);
@@ -156,8 +156,8 @@ export function findDuplicateGroups(
  * Lanza si `candidate` colisiona con un contacto existente (según políticas).
  */
 export function assertUniqueContact(
-  candidate: Contacts | ContactLike,
-  existing: readonly Contacts[],
+  candidate: Contact | ContactLike,
+  existing: readonly Contact[],
   opts: UniquenessOptions = {}
 ): void {
   const { duplicate, key, match } = isDuplicateContact(
@@ -166,16 +166,15 @@ export function assertUniqueContact(
     opts
   );
   if (duplicate && match) {
-    throw new BusinessRuleError("CONFLICT", "Duplicate contact detected", {
-      details: {
-        identityKey: key,
-        duplicateOf: {
-          id: (match as any).id,
-          name: match.name,
-          email: match.email,
-          phone: match.phone,
-        },
+    const details = {
+      identityKey: key,
+      duplicateOf: {
+        id: match?.id,
+        name: match?.name,
+        email: match?.email,
+        phone: match?.phone,
       },
-    });
+    } as Record<string, unknown>;
+    throw new BusinessRuleError("CONFLICT", "Duplicate contact detected", { details });
   }
 }

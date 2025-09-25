@@ -3,7 +3,8 @@
  * Incluye atajos de teclado y modo debug
  */
 
-import { useState, useEffect, useCallback } from "react";
+import { useCallback,useEffect, useState } from "react";
+
 import type { CacheDebugConfig } from "../types/hooks/cache-diagnostics";
 
 export function useCacheDiagnostics(config: Partial<CacheDebugConfig> = {}) {
@@ -131,9 +132,11 @@ export function usePerformanceMonitor(
             console.log(`🎨 LCP: ${entry.startTime.toFixed(2)}ms`);
           }
           if (entry.entryType === "first-input") {
-            console.log(
-              `⚡ FID: ${(entry as any).processingStart - entry.startTime}ms`
-            );
+            // processingStart may exist on some browsers; guard its presence
+            const processingStart = (entry as PerformanceEntry & { processingStart?: number }).processingStart;
+            if (typeof processingStart === 'number') {
+              console.log(`⚡ FID: ${processingStart - entry.startTime}ms`);
+            }
           }
         }
       });
@@ -151,11 +154,11 @@ export function usePerformanceMonitor(
 
     // Monitor de memory usage
     const monitorMemory = () => {
-      if ("memory" in performance) {
-        const memory = (performance as any).memory;
-        console.log(
-          `🧠 Memory: ${(memory.usedJSHeapSize / 1024 / 1024).toFixed(2)}MB used`
-        );
+      if ((performance as unknown as { memory?: { usedJSHeapSize?: number } }).memory) {
+        const memory = (performance as unknown as { memory?: { usedJSHeapSize?: number } }).memory!;
+        if (typeof memory.usedJSHeapSize === 'number') {
+          console.log(`🧠 Memory: ${(memory.usedJSHeapSize / 1024 / 1024).toFixed(2)}MB used`);
+        }
       }
     };
 

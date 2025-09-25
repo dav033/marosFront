@@ -1,5 +1,7 @@
 import { useCallback, useState } from "react";
+
 import type { ContactFormData } from "@/types";
+import { getErrorMessage } from "@/utils/errors";
 
 const EMPTY: ContactFormData = {
   companyName: "",
@@ -52,8 +54,9 @@ export function useCreateContactController({ onSubmit }: UseCreateContactControl
       });
       setForm(EMPTY);
       return true;
-    } catch (e: any) {
-      setError(e?.message ?? "Failed to create contact");
+      } catch (e: unknown) {
+        const msg = getErrorMessage(e) || "Failed to create contact";
+        setError(msg);
       return false;
     } finally {
       setLoading(false);

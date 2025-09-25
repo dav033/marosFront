@@ -1,8 +1,8 @@
 // src/features/leads/domain/ports/LeadRepositoryPort.ts
 
-import type { Lead } from "../models/Lead";
-import type { LeadId, LeadDraft, LeadPatch } from "../../types";
 import type { LeadType } from "../../enums";
+import type { LeadDraft, LeadId, LeadPatch } from "../../types";
+import type { Lead } from "../models/Lead";
 
 /**
  * Puerto de repositorio para el agregado Lead.

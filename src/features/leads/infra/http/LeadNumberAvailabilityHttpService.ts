@@ -3,6 +3,7 @@
 import type { LeadNumberAvailabilityPort } from "@/features/leads/domain/ports/LeadNumberAvailabilityPort";
 import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
 import type { HttpClientLike } from "@/shared/infra/http/types";
+
 import { endpoints } from "./endpoints";
 
 type ValidateLeadNumberDTO = Readonly<{ valid: boolean }>;

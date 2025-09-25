@@ -1,12 +1,12 @@
 // src/presentation/organisms/contacts/hooks/useContactContextMenu.ts
-import type { Contacts } from "@/features/contact/domain/models/Contact";
-import { useContextMenu } from "@/presentation/molecules/ContextMenu";
-import type { ContextMenuOption, UseContactContextMenuProps } from "@/types";
-
 // ✅ Usar Clean Architecture: Application + Infra (sin carpeta services)
 import type { ContactsAppContext } from "@/features/contact/application";
 import { deleteContact as ucDeleteContact } from "@/features/contact/application";
+import type { Contact } from "@/features/contact/domain/models/Contact";
 import { ContactHttpRepository } from "@/features/contact/infra";
+import { useContextMenu } from "@/presentation/molecules/ContextMenu";
+import type { ContextMenuOption, UseContactContextMenuProps } from "@/types";
+import { getErrorMessage } from "@/utils/errors";
 
 // Factory mínimo de contexto (Contact). Si ya expones un makeContactsAppContext desde Application,
 // puedes reemplazar esta función por ese factory y mantener la misma firma.
@@ -23,7 +23,7 @@ export const useContactContextMenu = ({
 }: UseContactContextMenuProps = {}) => {
   const { contextMenu, showContextMenu, hideContextMenu } = useContextMenu();
 
-  const handleDeleteContact = async (contact: Contacts) => {
+  const handleDeleteContact = async (contact: Contact) => {
     const confirmed = window.confirm(
       `Are you sure you want to delete contact ${contact.name}?\n\nThis action cannot be undone.`
     );
@@ -34,13 +34,14 @@ export const useContactContextMenu = ({
       // En Clean Architecture, delete no retorna boolean; si no lanza error, se asume éxito.
       await ucDeleteContact(ctx, contact.id);
       onDelete?.(contact.id);
-    } catch (error) {
-      console.error("Error deleting contact:", error);
+    } catch (error: unknown) {
+       
+      console.error("Error deleting contact:", getErrorMessage(error));
       alert("Unexpected error deleting contact.");
     }
   };
 
-  const getContactContextOptions = (contact: Contacts): ContextMenuOption[] => [
+  const getContactContextOptions = (contact: Contact): ContextMenuOption[] => [
     {
       id: "edit",
       label: "Edit Contact",

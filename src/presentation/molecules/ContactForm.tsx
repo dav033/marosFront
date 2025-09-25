@@ -1,6 +1,7 @@
 // src/presentation/molecules/ContactForm.tsx
 import React from "react";
-import { Input, Icon } from "@/presentation/atoms";
+
+import { Icon,Input } from "@/presentation/atoms";
 import type { ContactFormData } from "@/types";
 
 export type ContactFormProps = {

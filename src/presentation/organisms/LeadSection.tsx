@@ -1,10 +1,11 @@
 // src/presentation/organisms/leads/LeadSection.tsx
+/* eslint-disable simple-import-sort/imports */
 import React from "react";
-import DataTable from "@/presentation/organisms/DataTable";
-import type { Column } from "@/types/components/table";
-import type { Lead } from "@/features/leads/domain/models/Lead";
-import { useLeadContextMenu } from "@/hooks/useLeadContextMenu";
-import type { ContextMenuOption as CMOption } from "@/types/hooks/context-menu";
+import type { ReactNode } from "react";
+import type { Lead } from "../../features/leads/domain/models/Lead";
+import type { Column } from "../../types/components/table";
+import { useLeadContextMenu } from "../../hooks/useLeadContextMenu";
+import DataTable from "./DataTable";
 
 export type LeadSectionProps = {
   title: string;
@@ -17,17 +18,18 @@ export type LeadSectionProps = {
 
 // Adaptador → convierte opciones provenientes de la UI (que usan id: string | number)
 // al tipo canónico de la app (id: string) definido en src/types/hooks/context-menu
-function toCMOption(option: any): CMOption {
+function toCMOption(option: unknown): any {
+  const o = (option as Record<string, unknown>) ?? {};
   return {
-    id: String(option?.id ?? ""),
-    label: String(option?.label ?? ""),
-    icon: option?.icon,
-    separator: Boolean(option?.separator),
-    disabled: Boolean(option?.disabled),
-    danger: Boolean(option?.danger),
+    id: String(o["id"] ?? ""),
+    label: String(o["label"] ?? ""),
+    icon: o["icon"] as ReactNode,
+    separator: Boolean(o["separator"]),
+    disabled: Boolean(o["disabled"]),
+    danger: Boolean(o["danger"]),
     action:
-      typeof option?.action === "function"
-        ? (option.action as () => void)
+      typeof o["action"] === "function"
+        ? (o["action"] as () => void)
         : () => {},
   };
 }
@@ -40,10 +42,11 @@ export default function LeadSection({
   onDeleteLead,
   className = "",
 }: LeadSectionProps) {
-  const { getLeadContextOptions } = useLeadContextMenu<Lead>({
-    onEdit: onEditLead,
-    onDelete: onDeleteLead,
-  });
+  const leadMenuOpts: Parameters<typeof useLeadContextMenu<Lead>>[0] = {};
+  if (onEditLead) leadMenuOpts.onEdit = onEditLead;
+  if (onDeleteLead) leadMenuOpts.onDelete = onDeleteLead;
+
+  const { getLeadContextOptions } = useLeadContextMenu<Lead>(leadMenuOpts);
 
   return (
     <section className={`space-y-2 ${className}`}>
@@ -56,7 +59,9 @@ export default function LeadSection({
       <DataTable<Lead>
         columns={columns}
         data={data}
-        contextMenuOptions={(row) => getLeadContextOptions(row).map(toCMOption)}
+        contextMenuOptions={(row: Lead) =>
+          getLeadContextOptions(row).map(toCMOption)
+        }
         showRowSeparators
       />
     </section>

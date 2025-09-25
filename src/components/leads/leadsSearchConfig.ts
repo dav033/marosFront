@@ -1,18 +1,24 @@
-import type { SearchConfig } from "@/types";
-import type { Lead } from "@/types";
-export const leadsSearchConfig: SearchConfig<Lead> = {
-  searchableFields: [
-    { key: "leadNumber", label: "Lead Number" },
-    { key: "name", label: "Lead Name" },
-    { key: "location", label: "Location" },
-    { key: "contact.name", label: "Contact Name" },
-    { key: "contact.companyName", label: "Company Name" },
-    { key: "projectType.name", label: "Project Type" },
-  ],
-  caseSensitive: false,
-  searchType: "includes",
-  defaultField: "name",
-  fields: []
+import type { SearchConfig } from '@/shared/search/types';
+import { defaultNormalize } from '@/shared/search/normalize';
+
+export type Lead = {
+  id: string;
+  fullName: string;
+  email?: string;
+  phone?: string;
+  status?: 'new' | 'qualified' | 'won' | 'lost';
+  source?: string;
 };
 
-export const leadsSearchPlaceholder = "Search leads...";
+export const leadSearchConfig: SearchConfig<Lead> = {
+  fields: [
+    { key: 'fullName', label: 'Full name' },
+    { key: 'email', label: 'Email' },
+    { key: 'phone', label: 'Phone' },
+    { key: 'status', label: 'Status' },
+    { key: 'source', label: 'Source' },
+  ],
+  placeholder: 'Search leads by name, email, status…',
+  debounceMs: 200,
+  normalize: defaultNormalize,
+};

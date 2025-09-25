@@ -1,15 +1,15 @@
 // src/presentation/organisms/EditContactModal.tsx
 import React from "react";
-import BaseContactModal from "@/presentation/organisms/BaseContactModal";
-import ContactForm from "@/presentation/molecules/ContactForm";
-import type { Contacts } from "@/features/contact/domain/models/Contact";
-import { useEditContactController } from "@/presentation/hooks/useEditContactController";
+import type { Contact } from "../../types";
+import { useEditContactController } from "../hooks/useEditContactController";
+import ContactForm from "../molecules/ContactForm";
+import BaseContactModal from "./BaseContactModal";
 
 export type EditContactModalProps = {
   isOpen: boolean;
   onClose: (shouldRefetch?: boolean) => void;
-  contact: Contacts | null;
-  onContactUpdated: (updated: Contacts) => Promise<void> | void;
+  contact: Contact | null;
+  onContactUpdated: (updated: Contact) => Promise<void> | void;
   submitting?: boolean;
   serverError?: string;
 };
@@ -20,11 +20,16 @@ export type EditContactModalProps = {
  */
 export default function EditContactModal(props: EditContactModalProps) {
   if (!props.contact) return null;
-  return <EditContactModalInner {...(props as EditContactModalInnerProps)} contact={props.contact} />;
+  return (
+    <EditContactModalInner
+      {...(props as EditContactModalInnerProps)}
+      contact={props.contact}
+    />
+  );
 }
 
 type EditContactModalInnerProps = Omit<EditContactModalProps, "contact"> & {
-  contact: Contacts; // aquí ya garantizamos non-null
+  contact: Contact; // aquí ya garantizamos non-null
 };
 
 /**

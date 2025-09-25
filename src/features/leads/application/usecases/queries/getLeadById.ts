@@ -1,7 +1,8 @@
 // src/features/leads/application/usecases/queries/getLeadById.ts
-import type { LeadsAppContext } from "../../context";
 import type { Lead, LeadId } from "@/features/leads/domain";
 import { BusinessRuleError } from "@/features/leads/domain";
+
+import type { LeadsAppContext } from "../../context";
 
 export async function getLeadById(
   ctx: LeadsAppContext,

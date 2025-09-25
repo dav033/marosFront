@@ -1,14 +1,12 @@
-import React, {
-  useState,
-  useRef,
-  useLayoutEffect,
-  Children,
-  isValidElement,
-  cloneElement,
-} from "react";
 import { Icon } from "@iconify/react";
 import classNames from "classnames";
-import type { TriggerProps, SidebarDropdownProps } from "@/types";
+import React, {
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+
+import type { SidebarDropdownProps } from "@/types";
 
 /**
  * SidebarDropdown

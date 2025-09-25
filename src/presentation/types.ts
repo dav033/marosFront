@@ -1,5 +1,5 @@
 // src/types/components/table.ts
-import * as React from "react";
+import type * as React from "react";
 
 export type SortDirection = "asc" | "desc";
 

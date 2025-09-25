@@ -1,23 +1,20 @@
 // src/presentation/organisms/leads/LeadsBoard.tsx
-import { useLeadsApp } from "@/di/DiProvider";
-import type { LeadType } from "@/features/leads/enums";
 import React, { Suspense, useEffect, useMemo, useRef } from "react";
-// ⚠️ Asegúrate de importar el hook correcto (ruta única en tu repo)
-import { useLeadsVM } from "@/presentation/hooks/useLeadsVM";
-
-import { EmptyState } from "@/presentation/molecules/EmptyState";
-import { ErrorBanner } from "@/presentation/molecules/ErrorBanner";
-import { LeadHeader } from "@/presentation/molecules/LeadHeader";
-import { LeadsToolbar } from "@/presentation/molecules/LeadsToolbar";
-import { leadTableColumns } from "@/presentation/molecules/LeadTableColumns";
-import CreateLeadModal from "@/presentation/molecules/CreateLeadModal";
-
-import SkeletonRenderer from "@/presentation/organisms/SkeletonRenderer";
-import useLoading from "@/presentation/context/loading/hooks/useLoading";
 
 import CreateLocalLeadModal from "./CreateLocalLeadModal";
 import EditLeadModal from "./EditLeadModal";
 import LeadSection from "./LeadSection";
+import { useLeadsApp } from "../../di/DiProvider";
+import type { LeadType } from "../../types";
+import useLoading from "../context/loading/hooks/useLoading";
+import { useLeadsVM } from "../hooks/useLeadsVM";
+import CreateLeadModal from "../molecules/CreateLeadModal";
+import { EmptyState } from "../molecules/EmptyState";
+import { ErrorBanner } from "../molecules/ErrorBanner";
+import { LeadHeader } from "../molecules/LeadHeader";
+import { LeadsToolbar } from "../molecules/LeadsToolbar";
+import { leadTableColumns } from "../molecules/LeadTableColumns";
+import SkeletonRenderer from "./SkeletonRenderer";
 
 export type LeadsBoardProps = {
   leadType: LeadType;
@@ -28,8 +25,8 @@ export type LeadsBoardProps = {
     id: number;
     name: string;
     companyName: string;
-    email?: string;
-    phone?: string;
+    email?: string | undefined;
+    phone?: string | undefined;
   }>;
   /** Notifica al padre (LeadsApp) para mostrar/ocultar el skeleton */
   onLoadingChange?: (loading: boolean) => void;
@@ -133,7 +130,7 @@ export default function LeadsBoard({
             contacts={contacts}
             leadType={leadType}
             onLeadCreated={(created) =>
-              vm.setLeads((prev) => [created, ...prev])
+              vm.setLeads((prev: any) => [created, ...prev])
             }
           />
         )}
@@ -144,8 +141,8 @@ export default function LeadsBoard({
             projectTypes={projectTypes}
             contacts={contacts}
             leadType={leadType}
-            onLeadCreated={(created) =>
-              vm.setLeads((prev) => [created, ...prev])
+            onLeadCreated={(created: any) =>
+              vm.setLeads((prev: any) => [created, ...prev])
             }
           />
         )}
@@ -162,17 +159,27 @@ export default function LeadsBoard({
       </Suspense>
 
       <div className="space-y-6">
-        {vm.sections.map(({ title: secTitle, data, status }) => (
-          <LeadSection
-            key={`${secTitle}-${status ?? "none"}`}
-            title={secTitle}
-            data={data}
-            columns={columns}
-            onEditLead={vm.openEdit}
-            // ⬇️ LeadSection espera (lead: Lead) => void; adaptamos a id y manejamos async
-            onDeleteLead={async (lead) => await vm.onLeadDeleted(lead.id)}
-          />
-        ))}
+        {vm.sections.map(
+          ({
+            title: secTitle,
+            data,
+            status,
+          }: {
+            title: string;
+            data: any[];
+            status?: string;
+          }) => (
+            <LeadSection
+              key={`${secTitle}-${status ?? "none"}`}
+              title={secTitle}
+              data={data}
+              columns={columns}
+              onEditLead={vm.openEdit}
+              // ⬇️ LeadSection espera (lead: Lead) => void; adaptamos a id y manejamos async
+              onDeleteLead={async (lead) => await vm.onLeadDeleted(lead.id)}
+            />
+          )
+        )}
       </div>
 
       {vm.leads.length === 0 && (

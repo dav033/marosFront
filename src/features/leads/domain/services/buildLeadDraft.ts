@@ -1,24 +1,23 @@
 // maros-app/src/features/leads/domain/services/buildLeadDraft.ts
 
-import { BusinessRuleError } from "../errors/BusinessRuleError";
-import { makeLeadNumber } from "./leadNumberPolicy";
-import {
-  normalizeNewContact,
-  ensureNewContactMinimums,
-} from "./leadContactLinkPolicy";
-import { ensureLeadDraftIntegrity } from "./ensureLeadDraftIntegrity";
-
-import type { LeadType, LeadStatus } from "../../enums";
+import type { LeadStatus,LeadType } from "../../enums";
 import type {
-  ProjectTypeId,
   Clock,
-  NewContact,
-  LeadPolicies,
-  LeadDraftWithNewContact,
-  ISODate,
   ContactId,
+  ISODate,
   LeadDraftWithExistingContact,
+  LeadDraftWithNewContact,
+  LeadPolicies,
+  NewContact,
+  ProjectTypeId,
 } from "../../types";
+import { BusinessRuleError } from "../errors/BusinessRuleError";
+import { ensureLeadDraftIntegrity } from "./ensureLeadDraftIntegrity";
+import {
+  ensureNewContactMinimums,
+  normalizeNewContact,
+} from "./leadContactLinkPolicy";
+import { makeLeadNumber } from "./leadNumberPolicy";
 
 /** Entradas comunes para construir un LeadDraft. */
 type CommonInput = Readonly<{

@@ -1,9 +1,9 @@
 // src/features/contact/domain/services/ensureContactDraftIntegrity.ts
 
 import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
+
 // Si prefieres aislar errores por feature, mueve BusinessRuleError a
 // src/features/contact/domain/errors/BusinessRuleError.ts y ajusta este import.
-
 import type { ContactDraft } from "./buildContactDraft";
 
 export type ContactDraftPolicies = Readonly<{

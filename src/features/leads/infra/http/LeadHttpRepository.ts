@@ -1,23 +1,20 @@
 // src/features/leads/infra/http/LeadHttpRepository.ts
 
-import type { LeadRepositoryPort } from "@/features/leads/domain/ports/LeadRepositoryPort";
 import type { Lead } from "@/features/leads/domain/models/Lead";
-import type { LeadDraft, LeadId, LeadPatch } from "@/features/leads/types";
+import type { LeadRepositoryPort } from "@/features/leads/domain/ports/LeadRepositoryPort";
+// Mappers de dominio (DTO <-> Domain)
+import {
+  type ApiLeadDTO,
+  mapLeadFromDTO,
+  mapLeadsFromDTO,
+} from "@/features/leads/domain/services/leadReadMapper";
+import { mapLeadPatchToUpdatePayload } from "@/features/leads/domain/services/leadUpdateMapper";
 import type { LeadType } from "@/features/leads/enums";
-
+import type { LeadDraft, LeadId, LeadPatch } from "@/features/leads/types";
 import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
 import type { HttpClientLike } from "@/shared/infra/http/types"; // ← usamos la interfaz mínima
 
 import { endpoints } from "./endpoints";
-
-// Mappers de dominio (DTO <-> Domain)
-import {
-  mapLeadFromDTO,
-  mapLeadsFromDTO,
-  type ApiLeadDTO,
-} from "@/features/leads/domain/services/leadReadMapper";
-import { mapLeadDraftToCreatePayload } from "@/features/leads/domain/services/leadCreateMapper";
-import { mapLeadPatchToUpdatePayload } from "@/features/leads/domain/services/leadUpdateMapper";
 
 /**
  * Adapter HTTP que implementa el puerto de repositorio de Leads.
@@ -42,11 +39,8 @@ export class LeadHttpRepository implements LeadRepositoryPort {
   }
 
   async saveNew(draft: LeadDraft): Promise<Lead> {
-    console.log('🔍 LeadHttpRepository.saveNew called with:', draft);
-    
     // Branch 1: crear contacto nuevo + lead
     if ("contact" in draft) {
-      console.log('📝 Creating lead with new contact');
       const contact = {
         companyName: draft.contact.companyName,
         name: draft.contact.name,
@@ -60,17 +54,15 @@ export class LeadHttpRepository implements LeadRepositoryPort {
         location: draft.location,
         status: null,
         contact: null, // Debe ser null
-        projectType: { 
+        projectType: {
           id: Number(draft.projectTypeId), // Asegurar que es número
-          name: "", 
-          color: "" 
+          name: "",
+          color: "",
         },
         leadType: draft.leadType,
       };
       const request = { lead, contact };
-      
-      console.log('📤 Sending request to /leads/new-contact:', JSON.stringify(request, null, 2));
-      
+
       const { data } = await this.api.post<ApiLeadDTO>(
         "/leads/new-contact",
         request,
@@ -82,13 +74,14 @@ export class LeadHttpRepository implements LeadRepositoryPort {
           },
         }
       );
-      if (!data) throw new Error("Empty response creating Lead with new contact");
-      console.log('✅ Lead created with new contact:', data);
+      if (!data)
+        throw new Error("Empty response creating Lead with new contact");
+
       return mapLeadFromDTO(data);
     }
 
     // Branch 2: usar contacto existente + lead
-    console.log('📝 Creating lead with existing contact');
+
     const lead = {
       leadNumber: draft.leadNumber ?? "",
       name: draft.name,
@@ -96,20 +89,18 @@ export class LeadHttpRepository implements LeadRepositoryPort {
       location: draft.location,
       status: null,
       contact: null, // Debe ser null, no undefined
-      projectType: { 
+      projectType: {
         id: Number(draft.projectTypeId), // Asegurar que es número
-        name: "", 
-        color: "" 
+        name: "",
+        color: "",
       },
       leadType: draft.leadType,
     };
-    const request = { 
-      lead, 
-      contactId: Number(draft.contactId) // Asegurar que es número
+    const request = {
+      lead,
+      contactId: Number(draft.contactId), // Asegurar que es número
     };
-    
-    console.log('📤 Sending request to /leads/existing-contact:', JSON.stringify(request, null, 2));
-    
+
     const { data } = await this.api.post<ApiLeadDTO>(
       "/leads/existing-contact",
       request,
@@ -121,8 +112,9 @@ export class LeadHttpRepository implements LeadRepositoryPort {
         },
       }
     );
-    if (!data) throw new Error("Empty response creating Lead with existing contact");
-    console.log('✅ Lead created with existing contact:', data);
+    if (!data)
+      throw new Error("Empty response creating Lead with existing contact");
+
     return mapLeadFromDTO(data);
   }
 

@@ -1,6 +1,6 @@
 // src/types/components/ui.ts
 
-import type { ReactNode, ButtonHTMLAttributes, HTMLAttributes } from "react";
+import type { ButtonHTMLAttributes, HTMLAttributes,ReactNode } from "react";
 
 // ===========================================
 // UI COMPONENT TYPES
@@ -11,13 +11,13 @@ export interface BaseButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
   variant?: "primary" | "secondary" | "success" | "warning" | "danger" | "ghost" | "link";
   size?: "sm" | "md" | "lg";
   loading?: boolean;
-  disabled?: boolean;
+  disabled?: boolean | undefined;
   children: ReactNode;
-  className?: string;
+  className?: string | undefined;
 }
 
 export interface IconButtonProps extends Omit<BaseButtonProps, 'children'> {
-  icon: ReactNode;
+  icon: string | ReactNode;
   'aria-label': string;
 }
 
@@ -65,9 +65,9 @@ export interface LoadingSpinnerProps {
 
 export interface LoadingOverlayProps {
   isVisible: boolean;
-  message?: string;
-  spinner?: ReactNode;
-  className?: string;
+  message?: string | undefined;
+  spinner?: ReactNode | undefined;
+  className?: string | undefined;
 }
 
 // Badge component interfaces

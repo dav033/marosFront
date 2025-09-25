@@ -1,9 +1,9 @@
 // src/features/contact/domain/services/applyContactPatch.ts
 
-import type { Contacts } from "../models/Contact";
 import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
-// Si prefieres no cruzar features, define BusinessRuleError en contact/domain/errors y ajusta el import.
 
+import type { Contact } from "../models/Contact";
+// Si prefieres no cruzar features, define BusinessRuleError en contact/domain/errors y ajusta el import.
 import type { ContactDraftPolicies } from "./ensureContactDraftIntegrity";
 
 /* ----------------- Tipos ----------------- */
@@ -11,17 +11,17 @@ import type { ContactDraftPolicies } from "./ensureContactDraftIntegrity";
 export type ContactPatch = Readonly<{
   companyName?: string;
   name?: string;
-  phone?: string;
-  email?: string;
-  occupation?: string;
-  product?: string;
-  address?: string;
+  phone?: string | undefined;
+  email?: string | undefined;
+  occupation?: string | undefined;
+  product?: string | undefined;
+  address?: string | undefined;
   /** ISO 8601 (YYYY-MM-DD o datetime). */
-  lastContact?: string;
+  lastContact?: string | undefined;
 }>;
 
 export type ApplyContactPatchResult = Readonly<{
-  contact: Contacts;
+  contact: Contact;
   events: ReadonlyArray<
     Readonly<{
       type: "ContactUpdated";
@@ -84,19 +84,19 @@ function isISODateOrDateTime(s: string): boolean {
 /* ----------------- Servicio principal ----------------- */
 
 /**
- * Aplica un patch de forma PURA sobre un Contacts:
+ * Aplica un patch de forma PURA sobre un Contact:
  * - Normaliza campos de texto/email/teléfono.
  * - Valida formatos y longitudes configurables.
  * - Devuelve el contacto actualizado y un evento con la lista de campos cambiados.
  */
 export function applyContactPatch(
-  current: Contacts,
+  current: Contact,
   patch: ContactPatch,
   policies: ContactDraftPolicies = {}
 ): ApplyContactPatchResult {
   const cfg = { ...DEFAULTS, ...policies };
 
-  let updated: Contacts = { ...current };
+  let updated: Contact = { ...current };
   const changed: string[] = [];
 
   // companyName

@@ -7,7 +7,6 @@ export type { Project } from "./models/Project";
 export type { ProjectRepositoryPort } from "./ports/ProjectRepositoryPort";
 
 // Services
-export * from "./services";
-
+ 
 // Errors
 export { BusinessRuleError } from "./errors/BusinessRuleError";

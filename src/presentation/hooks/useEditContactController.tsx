@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import type { Contacts } from "@/features/contact/domain/models/Contact";
+
+import type { Contact } from "@/features/contact/domain/models/Contact";
 import type { ContactFormData } from "@/types";
 
 export type UseEditContactControllerParams = {
-  contact: Contacts | null;
-  onSubmit: (data: Contacts) => Promise<void> | void;
+  contact: Contact | null;
+  onSubmit: (data: Contact) => Promise<void> | void;
 };
 
 export function useEditContactController({ contact, onSubmit }: UseEditContactControllerParams) {
@@ -60,14 +61,15 @@ export function useEditContactController({ contact, onSubmit }: UseEditContactCo
       }
       setLoading(true);
       setError(null);
-      const merged: Contacts = {
+      const merged: Contact = {
         ...contact,
         ...form,
       };
       await onSubmit(merged);
       return true;
-    } catch (e: any) {
-      setError(e?.message ?? "Failed to update contact");
+    } catch (e: unknown) {
+      const msg = (e as Error | undefined)?.message ?? String(e ?? "Failed to update contact");
+      setError(msg);
       return false;
     } finally {
       setLoading(false);

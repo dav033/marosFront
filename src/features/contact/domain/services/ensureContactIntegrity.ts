@@ -1,7 +1,8 @@
 // src/features/contact/domain/services/ensureContactIntegrity.ts
 
-import type { Contacts } from "../models/Contact";
 import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
+
+import type { Contact } from "../models/Contact";
 // Si prefieres aislar errores por feature, mueve BusinessRuleError a
 // src/features/contact/domain/errors/BusinessRuleError.ts y ajusta este import.
 
@@ -47,11 +48,11 @@ function isISODateOrDateTime(s: string): boolean {
 /* ----------------- servicio ----------------- */
 
 /**
- * Valida la integridad del agregado Contacts (post-lectura o post-patch).
+ * Valida la integridad del agregado Contact (post-lectura o post-patch).
  * Lanza BusinessRuleError si alguna regla no se cumple.
  */
 export function ensureContactIntegrity(
-  contact: Contacts,
+  contact: Contact,
   policies: ContactIntegrityPolicies = {}
 ): void {
   const cfg = { ...DEFAULTS, ...policies };
@@ -133,7 +134,7 @@ export function ensureContactIntegrity(
 
 /** Variante que devuelve boolean en lugar de lanzar. */
 export function isContactIntegrityOK(
-  contact: Contacts,
+  contact: Contact,
   policies: ContactIntegrityPolicies = {}
 ): boolean {
   try {

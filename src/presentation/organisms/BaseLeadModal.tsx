@@ -1,9 +1,11 @@
 // src/presentation/molecules/BaseLeadModal.tsx
 import React, { useId } from "react";
-import FormModalFrame from "@/presentation/molecules/FormModalFrame";
-import ModalErrorBanner from "@/presentation/molecules/ModalErrorBanner";
-import ModalActions from "@/presentation/molecules/ModalActions";
-import type { BaseLeadModalProps } from "@/types/components/leads";
+import type { BaseLeadModalProps } from "../../types";
+import FormModalFrame from "../molecules/FormModalFrame";
+import ModalActions from "../molecules/ModalActions";
+import ModalErrorBanner from "../molecules/ModalErrorBanner";
+
+
 
 /**
  * Organismo para modales con formulario (agnóstico al caso de uso).
@@ -38,10 +40,10 @@ export default function BaseLeadModal({
       title={title}
       size={size}
       className={className}
-      descriptionId={descId}
+      {...(descId ? { descriptionId: descId } : {})}
       body={
         <>
-          <ModalErrorBanner id={descId} message={error} />
+          <ModalErrorBanner {...(descId ? { id: descId } : {})} message={error} />
           <form id={resolvedFormId} onSubmit={onSubmit} className="space-y-3">
             {children}
           </form>

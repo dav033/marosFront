@@ -1,8 +1,10 @@
 // src/presentation/molecules/table/TableBody.tsx
 import React, { memo } from "react";
-import type { TableBodyProps } from "@/types/components/table";
-import TableRow from "./TableRow";
+
 import SeparatorRow from "@/presentation/atoms/table/SeparatorRow";
+import type { TableBodyProps } from "@/types/components/table";
+
+import TableRow from "./TableRow";
 
 function TableBodyInner<T>({
   columns,

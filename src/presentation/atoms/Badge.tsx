@@ -1,6 +1,6 @@
 // src/presentation/components/ui/Badge.tsx
-import React from "react";
 import { Icon } from "@iconify/react";
+import React from "react";
 
 export type BadgeColor = "gray" | "primary" | "success" | "warning" | "danger";
 export type BadgeVariant = "solid" | "soft" | "outline";

@@ -1,5 +1,6 @@
-import type { UseFetchResult } from "@/types";
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+import type { UseFetchResult } from "../types/hooks/fetch";
+import { getErrorMessage } from "../utils/errors";
 
 export function useFetch<T, P extends unknown[]>(
   requestFn: (...args: P) => Promise<T>,
@@ -16,8 +17,8 @@ export function useFetch<T, P extends unknown[]>(
     try {
       const result = await requestFn(...params);
       setData(result);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : getErrorMessage(err));
       setData(null); // Limpiar data en caso de error
     } finally {
       setLoading(false);

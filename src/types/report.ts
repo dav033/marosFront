@@ -1,6 +1,6 @@
-import type { Project } from "@/features/project/domain/models/Project";
+import type { Contact } from "@/features/contact/domain/models/Contact";
 import type { Lead } from "@/features/leads/domain/models/Lead";
-import type { Contacts } from "@/features/contact/domain/models/Contact";
+import type { Project } from "@/features/project/domain/models/Project";
 
 /** (Opcional) Estados usados en UI de tablas/etiquetas del reporte */
 export type ActivityStatus =
@@ -27,13 +27,13 @@ export type ReportImage = {
 export type EvidenceItem = {
   description: string;
   imageFiles?: File[];    // imágenes locales (UI)
-  imageIds?: any[];       // IDs/objetos devueltos por Make (server)
+  imageIds?: Array<string | number | { id: string | number }>; // IDs/objetos devueltos por Make (server)
 };
 
 export type ReportData = {
   project: Project;
   lead: Lead;
-  contact: Contacts;
+  contact: Contact;
   completedActivities?: CompletedActivity[];
   observations?: string[];
   photos?: ReportImage[];
@@ -63,7 +63,7 @@ export function selectLead(p?: Project | null): Lead | undefined {
   return p?.lead;
 }
 
-export function selectContact(p?: Project | null): Contacts | undefined {
+export function selectContact(p?: Project | null): Contact | undefined {
   return p?.lead?.contact;
 }
 

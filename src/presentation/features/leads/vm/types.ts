@@ -1,7 +1,9 @@
 // Capa: Presentation — Tipos del ViewModel
 import type { Dispatch, SetStateAction } from "react";
+
 import type { Lead } from "@/features/leads/domain/models/Lead";
-import { LeadStatus, type LeadType } from "@/features/leads/enums";
+import type { LeadStatus, LeadType } from "@/features/leads/enums";
+
 
 export type AuxStatus = "UNDETERMINED" | "NOT_EXECUTED";
 export type SectionKey = LeadStatus | AuxStatus;
@@ -40,7 +42,6 @@ export interface LeadsVMHandlers {
 }
 
 export type LeadsVM = LeadsVMState & { modals: LeadsVMModals } & LeadsVMHandlers;
-export type LeadsVMDeps = { /* (No se usa en esta versión) */ };
 
 export type LeadsVMParams = {
   leadType: LeadType;

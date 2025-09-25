@@ -1,5 +1,5 @@
-// src/infrastructure/http/axiosLoadingInterceptors.ts
-import axios from "axios";
+// src/shared/infra/http/axiosLoadingInterceptors.ts
+import type { AxiosInstance } from "axios";
 import { loadingBus } from "@/presentation/context/loading/loadingBus";
 
 const matchForSkeleton = (url?: string) =>
@@ -7,36 +7,41 @@ const matchForSkeleton = (url?: string) =>
 
 let pendingTracked = 0;
 
-axios.interceptors.request.use((config) => {
-  if (matchForSkeleton(config.url)) {
-    if (pendingTracked === 0) {
-      const isContacts = /contacts/i.test(config.url || "");
-      const type = isContacts ? "contactsTable" : "leadsTable";
-      loadingBus.set(type, {
-        overlay: true,
-        rows: isContacts ? 15 : 12,
-        showSections: !isContacts,
-      });
-      loadingBus.show(type);
+/**
+ * Instala interceptores de "loading" sobre una **instancia** de Axios.
+ */
+export function attachLoadingInterceptors(instance: AxiosInstance) {
+  instance.interceptors.request.use((config) => {
+    if (matchForSkeleton(config.url)) {
+      if (pendingTracked === 0) {
+        const isContacts = /contacts/i.test(config.url || "");
+        const type = isContacts ? "contactsTable" : "leadsTable";
+        loadingBus.set(type, {
+          overlay: true,
+          rows: isContacts ? 15 : 12,
+          showSections: !isContacts,
+        });
+        loadingBus.show(type);
+      }
+      pendingTracked += 1;
     }
-    pendingTracked += 1;
-  }
-  return config;
-});
+    return config;
+  });
 
-axios.interceptors.response.use(
-  (res) => {
-    if (matchForSkeleton(res.config?.url)) {
-      pendingTracked = Math.max(0, pendingTracked - 1);
-      if (pendingTracked === 0) loadingBus.hide();
+  instance.interceptors.response.use(
+    (res) => {
+      if (matchForSkeleton(res.config?.url)) {
+        pendingTracked = Math.max(0, pendingTracked - 1);
+        if (pendingTracked === 0) loadingBus.hide();
+      }
+      return res;
+    },
+    (err) => {
+      if (matchForSkeleton(err.config?.url)) {
+        pendingTracked = Math.max(0, pendingTracked - 1);
+        if (pendingTracked === 0) loadingBus.hide();
+      }
+      return Promise.reject(err);
     }
-    return res;
-  },
-  (err) => {
-    if (matchForSkeleton(err.config?.url)) {
-      pendingTracked = Math.max(0, pendingTracked - 1);
-      if (pendingTracked === 0) loadingBus.hide();
-    }
-    return Promise.reject(err);
-  }
-);
+  );
+}

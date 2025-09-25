@@ -1,12 +1,12 @@
 // src/features/leads/domain/services/ensureLeadDraftIntegrity.ts
 
-import { BusinessRuleError } from "../errors/BusinessRuleError";
 import type {
   LeadDraft,
-  LeadDraftWithNewContact,
   LeadDraftWithExistingContact,
+  LeadDraftWithNewContact,
   LeadPolicies,
 } from "../../types";
+import { BusinessRuleError } from "../errors/BusinessRuleError";
 import { ensureNewContactMinimums } from "./leadContactLinkPolicy";
 
 /* Utils */
@@ -26,7 +26,7 @@ export function ensureLeadDraftIntegrity(
   policies: LeadPolicies = {}
 ): void {
   // name
-  const name = normalizeText((draft as any).name);
+  const name = normalizeText((draft as unknown as Record<string, unknown>)["name"]);
   if (!name) {
     throw new BusinessRuleError("VALIDATION_ERROR", "Lead name must not be empty", {
       details: { field: "name" },
@@ -39,25 +39,22 @@ export function ensureLeadDraftIntegrity(
   }
 
   // startDate
-  const sd = normalizeText((draft as any).startDate);
+  const sd = normalizeText((draft as unknown as Record<string, unknown>)["startDate"]);
   if (!sd || !isIsoLocalDate(sd)) {
     throw new BusinessRuleError(
       "FORMAT_ERROR",
       "startDate must be in YYYY-MM-DD format",
-      { details: { field: "startDate", value: (draft as any).startDate } }
+  { details: { field: "startDate", value: (draft as unknown as Record<string, unknown>)["startDate"] } }
     );
   }
 
   // projectTypeId
-  if (
-    typeof (draft as any).projectTypeId !== "number" ||
-    !Number.isFinite((draft as any).projectTypeId) ||
-    (draft as any).projectTypeId <= 0
-  ) {
+  const projectTypeIdVal = (draft as unknown as Record<string, unknown>)["projectTypeId"];
+  if (typeof projectTypeIdVal !== "number" || !Number.isFinite(projectTypeIdVal) || projectTypeIdVal <= 0) {
     throw new BusinessRuleError(
       "INTEGRITY_VIOLATION",
       "projectTypeId must be a positive number",
-      { details: { field: "projectTypeId", value: (draft as any).projectTypeId } }
+      { details: { field: "projectTypeId", value: projectTypeIdVal } }
     );
   }
 

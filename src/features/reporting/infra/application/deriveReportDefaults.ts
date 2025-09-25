@@ -25,9 +25,9 @@ export function deriveVisitDefaults(project: Project) {
     overview: project.overview ?? "",
 
     // Secciones dinámicas (UI):
-    activities: [] as Array<{ activity: string; imageFiles?: File[]; imageIds?: any[] }>,
-    additional_activities: [] as Array<{ activity: string; imageFiles?: File[]; imageIds?: any[] }>,
-    evidence_images: [] as Array<{ description: string; imageFiles?: File[]; imageIds?: any[] }>,
+  activities: [] as Array<{ activity: string; imageFiles?: File[]; imageIds?: Array<string | number> }>,
+  additional_activities: [] as Array<{ activity: string; imageFiles?: File[]; imageIds?: Array<string | number> }>,
+  evidence_images: [] as Array<{ description: string; imageFiles?: File[]; imageIds?: Array<string | number> }>,
     next_activities: [] as string[],
     observations: [] as string[],
   };
@@ -57,7 +57,7 @@ export function deriveFinalDefaults(project: Project) {
 
     // Secciones dinámicas:
     completed_activities: [] as string[],
-    evidence_images: [] as Array<{ description: string; imageFiles?: File[]; imageIds?: any[] }>,
+  evidence_images: [] as Array<{ description: string; imageFiles?: File[]; imageIds?: Array<string | number> }>,
   };
 }
 

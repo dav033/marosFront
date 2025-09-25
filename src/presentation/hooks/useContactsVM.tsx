@@ -1,12 +1,13 @@
 // Capa: Presentation — Contacts VM (lista para UI)
 import * as React from "react";
-import type { Contacts } from "@/features/contact/domain/models/Contact";
+
 import type { ContactsAppContext } from "@/features/contact/application";
 import { listContacts } from "@/features/contact/application/usecases/queries/listContacts";
+import type { Contact } from "@/features/contact/domain/models/Contact";
 import type { ContactsVM } from "@/features/contact/vm/types";
 
 export function useContactsVM(ctx: ContactsAppContext): ContactsVM {
-  const [contacts, setContacts] = React.useState<Contacts[]>([]);
+  const [contacts, setContacts] = React.useState<Contact[]>([]);
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -16,8 +17,9 @@ export function useContactsVM(ctx: ContactsAppContext): ContactsVM {
       const items = await listContacts(ctx);
       setContacts(items ?? []);
       setError(null);
-    } catch (e: any) {
-      setError(e?.message ?? "Unexpected error");
+    } catch (e: unknown) {
+      const msg = (e as Error | undefined)?.message ?? String(e ?? "Unexpected error");
+      setError(msg);
     } finally {
       setIsLoading(false);
     }

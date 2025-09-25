@@ -1,10 +1,12 @@
 import React from "react";
-import type { ContactsTableSkeletonProps } from "@/types";
+import type { ContactsTableSkeletonProps } from "../../types/components/contacts";
 
 /**
  * Skeleton para la tabla de contactos que coincide con el diseño real
  */
-export function ContactsTableSkeleton({ rows = 15 }: ContactsTableSkeletonProps) {
+export function ContactsTableSkeleton({
+  rows = 15,
+}: ContactsTableSkeletonProps) {
   return (
     <div
       className="animate-pulse w-full max-w-full mx-auto p-6"
@@ -80,10 +82,10 @@ export function ContactsTableSkeleton({ rows = 15 }: ContactsTableSkeletonProps)
                     index % 4 === 0
                       ? "80%"
                       : index % 4 === 1
-                      ? "90%"
-                      : index % 4 === 2
-                      ? "75%"
-                      : "85%",
+                        ? "90%"
+                        : index % 4 === 2
+                          ? "75%"
+                          : "85%",
                 }}
               />
 
@@ -92,7 +94,8 @@ export function ContactsTableSkeleton({ rows = 15 }: ContactsTableSkeletonProps)
                 className="h-4 rounded"
                 style={{
                   backgroundColor: "var(--color-gray)",
-                  width: index % 3 === 0 ? "60%" : index % 3 === 1 ? "0%" : "70%",
+                  width:
+                    index % 3 === 0 ? "60%" : index % 3 === 1 ? "0%" : "70%",
                 }}
               />
 
@@ -105,10 +108,10 @@ export function ContactsTableSkeleton({ rows = 15 }: ContactsTableSkeletonProps)
                     index % 4 === 0
                       ? "0%"
                       : index % 4 === 1
-                      ? "65%"
-                      : index % 4 === 2
-                      ? "0%"
-                      : "75%",
+                        ? "65%"
+                        : index % 4 === 2
+                          ? "0%"
+                          : "75%",
                 }}
               />
 
@@ -127,12 +130,12 @@ export function ContactsTableSkeleton({ rows = 15 }: ContactsTableSkeletonProps)
                     index % 5 === 0
                       ? "0%"
                       : index % 5 === 1
-                      ? "90%"
-                      : index % 5 === 2
-                      ? "85%"
-                      : index % 5 === 3
-                      ? "0%"
-                      : "95%",
+                        ? "90%"
+                        : index % 5 === 2
+                          ? "85%"
+                          : index % 5 === 3
+                            ? "0%"
+                            : "95%",
                 }}
               />
 
@@ -145,14 +148,14 @@ export function ContactsTableSkeleton({ rows = 15 }: ContactsTableSkeletonProps)
                     index % 6 === 0
                       ? "80%"
                       : index % 6 === 1
-                      ? "0%"
-                      : index % 6 === 2
-                      ? "90%"
-                      : index % 6 === 3
-                      ? "0%"
-                      : index % 6 === 4
-                      ? "75%"
-                      : "85%",
+                        ? "0%"
+                        : index % 6 === 2
+                          ? "90%"
+                          : index % 6 === 3
+                            ? "0%"
+                            : index % 6 === 4
+                              ? "75%"
+                              : "85%",
                 }}
               />
             </div>
@@ -167,9 +170,18 @@ export function ContactsTableSkeleton({ rows = 15 }: ContactsTableSkeletonProps)
           style={{ backgroundColor: "var(--color-gray)" }}
         />
         <div className="flex space-x-2">
-          <div className="h-8 rounded w-8" style={{ backgroundColor: "var(--color-gray)" }} />
-          <div className="h-8 rounded w-8" style={{ backgroundColor: "var(--color-gray)" }} />
-          <div className="h-8 rounded w-8" style={{ backgroundColor: "var(--color-gray)" }} />
+          <div
+            className="h-8 rounded w-8"
+            style={{ backgroundColor: "var(--color-gray)" }}
+          />
+          <div
+            className="h-8 rounded w-8"
+            style={{ backgroundColor: "var(--color-gray)" }}
+          />
+          <div
+            className="h-8 rounded w-8"
+            style={{ backgroundColor: "var(--color-gray)" }}
+          />
         </div>
       </div>
     </div>

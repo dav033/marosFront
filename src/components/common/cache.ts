@@ -1,5 +1,3 @@
-// src/types/cache.ts
-
 // Métricas genéricas de un caché. Acepta campos adicionales sin romper el tipado.
 export interface CacheGauge {
   size: number;

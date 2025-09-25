@@ -1,10 +1,12 @@
 // src/types/components/form.ts
 
-import type { LeadStatus, LeadType } from "@/features/leads/enums";
 import type { ReactNode } from "react";
-import type { FormMode } from "../enums";
-import type { Contacts } from "@/features/contact/domain";
+
+import type { Contact } from "@/features/contact/domain/models/Contact";
 import type { ProjectType } from "@/features/leads/domain/models/ProjectType";
+import type { LeadStatus, LeadType } from "@/features/leads/enums";
+
+import type { FormMode } from "../enums";
 
 
 // ===========================================
@@ -14,11 +16,11 @@ import type { ProjectType } from "@/features/leads/domain/models/ProjectType";
 export interface FormFieldProps {
   label: string;
   name: string;
-  value?: string | number;
-  placeholder?: string;
-  required?: boolean;
-  disabled?: boolean;
-  error?: string;
+  value?: string | number | undefined;
+  placeholder?: string | undefined;
+  required?: boolean | undefined;
+  disabled?: boolean | undefined;
+  error?: string | undefined;
   type?:
     | "text"
     | "email"
@@ -29,60 +31,60 @@ export interface FormFieldProps {
     | "textarea"
     | "select";
   options?: Array<{ value: string | number; label: string }>;
-  onChange?: (name: string, value: string | number) => void;
-  onBlur?: (name: string) => void;
-  className?: string;
+  onChange?: ((name: string, value: string | number) => void) | undefined;
+  onBlur?: ((name: string) => void) | undefined;
+  className?: string | undefined;
 }
 
 export interface FormProps {
   children: ReactNode;
-  onSubmit?: (data: Record<string, unknown>) => void;
-  className?: string;
-  loading?: boolean;
+  onSubmit?: ((data: Record<string, unknown>) => void) | undefined;
+  className?: string | undefined;
+  loading?: boolean | undefined;
 }
 
 // Lead-specific form interfaces
 export interface LeadFormData {
-  leadNumber?: string;
+  leadNumber?: string | undefined;
   name: string;
-  leadName?: string; // Alias for compatibility
+  leadName?: string | undefined; // Alias for compatibility
   startDate: string;
-  location?: string;
+  location?: string | undefined;
   status: LeadStatus | null;
-  projectTypeId?: number;
+  projectTypeId?: number | undefined;
   leadType: LeadType;
-  contactId?: number;
+  contactId?: number | undefined;
 
   // For new contact creation
-  companyName?: string;
-  contactName?: string;
-  customerName?: string; // compatibility
-  occupation?: string;
-  product?: string;
-  phone?: string;
-  email?: string;
-  address?: string;
+  companyName?: string | undefined;
+  contactName?: string | undefined;
+  customerName?: string | undefined; // compatibility
+  occupation?: string | undefined;
+  product?: string | undefined;
+  phone?: string | undefined;
+  email?: string | undefined;
+  address?: string | undefined;
   // ⛔️ lastContact eliminado
 }
 
 export interface LeadFormProps {
   mode: FormMode;
   initialData?: Partial<LeadFormData>;
-  contacts: Contacts[];
+  contacts: Contact[];
   projectTypes: ProjectType[];
   onSubmit: (data: LeadFormData) => Promise<void>;
   onCancel: () => void;
-  loading?: boolean;
+  loading?: boolean | undefined;
 }
 
 export interface ContactFormData {
   companyName: string;
   name: string;
-  occupation?: string;
-  product?: string;
-  phone?: string;
-  email?: string;
-  address?: string;
+  occupation?: string | undefined;
+  product?: string | undefined;
+  phone?: string | undefined;
+  email?: string | undefined;
+  address?: string | undefined;
   // ⛔️ lastContact eliminado
 }
 
@@ -91,11 +93,11 @@ export interface ContactFormProps {
   initialData?: Partial<ContactFormData>;
   onSubmit: (data: ContactFormData) => Promise<void>;
   onCancel: () => void;
-  loading?: boolean;
+  loading?: boolean | undefined;
 }
 
 export interface UseLeadFormOptions {
   initialData?: Partial<LeadFormData>;
   onSubmit: (data: LeadFormData) => Promise<void>;
-  onSuccess?: (lead: unknown) => void;
+  onSuccess?: ((lead: unknown) => void) | undefined;
 }

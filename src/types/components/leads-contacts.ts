@@ -2,8 +2,14 @@
  * Lead and Contact component types
  */
 
-import type { LeadFormData, ProjectType, Contacts } from "../index";
-import type { FormMode, ContactMode } from "../enums";
+import type { Contact } from "@/features/contact/domain/models/Contact";
+import type { Lead } from "@/features/leads/domain/models/Lead";
+import type { ProjectType } from "@/features/leads/domain/models/ProjectType";
+import type { LeadType } from "@/features/leads/enums";
+import type { Column } from "@/types/components/table";
+
+import type { ContactMode,FormMode } from "../enums";
+import type { LeadFormData } from "./form";
 
 // ===========================================
 // LEAD COMPONENTS
@@ -13,7 +19,7 @@ export interface LeadFormFieldsProps {
   form: LeadFormData;
   onChange: (field: keyof LeadFormData, value: string) => void;
   projectTypes: ProjectType[];
-  contacts?: Contacts[];
+  contacts?: Contact[] | undefined;
   mode?: FormMode;
   contactMode?: ContactMode;
   // Optional override to explicitly show/hide the Lead Number field
@@ -27,22 +33,22 @@ export interface LeadFormFieldsProps {
 export interface EditContactModalProps {
   isOpen: boolean;
   onClose: (shouldRefetch?: boolean) => void;
-  contact: Contacts | null;
+  contact: Contact | null;
 }
 
 export interface CreateLeadModalProps {
   isOpen: boolean;
   onClose: () => void;
   projectTypes: ProjectType[];
-  contacts: Contacts[];
-  leadType: import("../enums").LeadType;
-  onLeadCreated: (lead: import("../index").Lead) => void;
+  contacts: Contact[] | undefined;
+  leadType: LeadType;
+  onLeadCreated: (lead: Lead) => void;
 }
 
 export interface LeadSectionProps {
   title: string;
-  data: import("../index").Lead[];
-  columns: import("../index").Column<import("../index").Lead>[];
-  onEditLead?: (lead: import("../index").Lead) => void;
-  onDeleteLead?: (lead: import("../index").Lead) => void;
+  data: Lead[];
+  columns: Column<Lead>[];
+  onEditLead?: (lead: Lead) => void;
+  onDeleteLead?: (lead: Lead) => void;
 }

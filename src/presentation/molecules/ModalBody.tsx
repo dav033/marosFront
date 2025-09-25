@@ -1,4 +1,5 @@
 import React from "react";
+
 import type { ModalBodyProps } from "@/types/components/modal";
 
 export default function ModalBody({ children }: ModalBodyProps) {

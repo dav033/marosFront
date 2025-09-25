@@ -1,15 +1,17 @@
 // src/types/system/contexts.ts
 
 import type { ReactNode } from "react";
-import type { Contacts, Lead } from "../domain";
+
+import type { Contact } from "@/features/contact/domain/models/Contact";
+import type { Lead } from "@/features/leads/domain";
 
 // ===========================================
 // REACT CONTEXT TYPES
 // ===========================================
 
-// Contacts Context
+// Contact Context
 export interface ContactsContextType {
-  contacts: Contacts[];
+  contacts: Contact[];
   loading: boolean;
   isLoading?: boolean; // Legacy compatibility
   error: string | null;
@@ -19,8 +21,8 @@ export interface ContactsContextType {
   
   // Actions
   fetchContacts: () => Promise<void>;
-  addContact: (contact: Omit<Contacts, 'id'>) => Promise<void>;
-  updateContact: (id: number, contact: Partial<Contacts>) => Promise<void>;
+  addContact: (contact: Omit<Contact, 'id'>) => Promise<void>;
+  updateContact: (id: number, contact: Partial<Contact>) => Promise<void>;
   deleteContact: (id: number) => Promise<void>;
   setSearchTerm?: (term: string) => void;
   setSorting?: (field: string, direction: "asc" | "desc") => void;
@@ -28,7 +30,7 @@ export interface ContactsContextType {
   refetch: () => Promise<void>;
   
   // Legacy methods for compatibility
-  setContacts: (contacts: Contacts[]) => void;
+  setContacts: (contacts: Contact[]) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   removeContact?: (contactId: number) => void;

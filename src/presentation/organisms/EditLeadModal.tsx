@@ -1,10 +1,12 @@
-// src/presentation/organisms/EditLeadModal.tsx
 import React from "react";
+
+import type { Contact } from "@/features/contact/domain/models/Contact";
+import type { Lead, ProjectType } from "@/features/leads/domain";
+import type { LeadStatus } from "@/features/leads/enums";
+import { useEditLeadController } from "@/presentation/hooks/useEditLeadController";
 import BaseLeadModal from "@/presentation/organisms/BaseLeadModal";
 import { FormMode } from "@/types/enums";
-import type { Lead, ProjectType } from "@/features/leads/domain";
-import { useEditLeadController } from "@/presentation/hooks/useEditLeadController";
-import type { Contacts } from "@/features/contact/domain/models/Contact";
+
 import LeadFormFields from "../molecules/LeadFormFields";
 
 type Props = {
@@ -12,7 +14,7 @@ type Props = {
   onClose: (shouldRefetch?: boolean) => void;
   lead: Lead | null;
   projectTypes: ProjectType[];
-  contacts: Contacts[];
+  contacts: Contact[];
   onLeadUpdated?: (lead: Lead) => void;
 };
 
@@ -37,10 +39,10 @@ const EditLeadModal: React.FC<Props> = ({
   const formForFields = {
     leadNumber: form.leadNumber ?? "",
     leadName: form.leadName ?? form.name ?? "",
-    projectTypeId: form.projectTypeId,
-    contactId: form.contactId,
+    ...(form.projectTypeId !== undefined ? { projectTypeId: form.projectTypeId } : {}),
+    ...(form.contactId !== undefined ? { contactId: form.contactId } : {}),
     location: form.location ?? "",
-    status: (form.status ?? "") as any, // "" | LeadStatus
+  status: form.status ? (form.status as unknown as "" | LeadStatus) : "",
     startDate: form.startDate ?? "",
   };
 

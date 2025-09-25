@@ -1,9 +1,12 @@
 /**
  * Leads Context types
  */
+/* eslint-disable simple-import-sort/imports */
 
-import React, { type ReactNode } from "react";
+import type React from "react";
+import { type ReactNode } from "react";
 import type { Lead } from "../index";
+import type { LeadType, LeadStatus } from "../enums";
 
 export interface LeadsState {
   leads: Lead[];
@@ -34,8 +37,8 @@ export interface LeadsContextType extends LeadsState {
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   // Filtered getters
-  getLeadsByType: (type: import("../enums").LeadType) => Lead[];
-  getLeadsByStatus: (status: import("../enums").LeadStatus) => Lead[];
+  getLeadsByType: (type: LeadType) => Lead[];
+  getLeadsByStatus: (status: LeadStatus) => Lead[];
   getUndeterminedLeads: () => Lead[];
   getPendingLeads: () => Lead[];
   getInProgressLeads: () => Lead[];

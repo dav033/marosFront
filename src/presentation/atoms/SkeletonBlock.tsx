@@ -1,5 +1,5 @@
-import React from "react";
 import cn from "classnames";
+import React from "react";
 
 export type SkeletonBlockProps = {
   /** Alto en px (por defecto 16) */

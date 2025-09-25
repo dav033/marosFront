@@ -1,4 +1,5 @@
 import React from "react";
+
 import type { SearchFieldOption } from "@/types";
 
 type Props = {

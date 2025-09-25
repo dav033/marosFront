@@ -1,41 +1,37 @@
-// src/features/project/types.ts
-
 import type { Project } from "./domain/models/Project";
-import type { ProjectStatus, InvoiceStatus } from "./enums";
+import type { InvoiceStatus,ProjectStatus } from "./enums";
 
-/** Alias semánticos compatibles con su modelo/DTO actual (números/strings). */
+/** Alias semánticos */
 export type ProjectId = number;
 export type LeadId = number;
-export type ISODate = string; // "YYYY-MM-DD"
-export type ISODateTime = string; // ISO 8601 completo
+export type ISODate = string;      // "YYYY-MM-DD"
+export type ISODateTime = string;  // ISO 8601
 
-/** Reloj inyectable para testear reglas con fechas sin usar Date.now() directo. */
+/** Reloj inyectable para reglas con fechas */
 export interface Clock {
-  now(): number; // ms desde epoch
-  todayISO(): ISODate; // "YYYY-MM-DD"
+  now(): number;
+  todayISO(): ISODate;
 }
-
-/** Implementación por defecto del Clock (inyecte en servicios). */
 export const SystemClock: Clock = {
   now: () => Date.now(),
   todayISO: () => new Date().toISOString().split("T")[0] as ISODate,
 };
 
-/** Result helpers (por si prefiere evitar throws en flujos normales). */
+/** Result helpers */
 export type Ok<T> = { ok: true; value: T };
 export type Err<E> = { ok: false; error: E };
 export type Result<T, E> = Ok<T> | Err<E>;
 export const ok = <T>(value: T): Ok<T> => ({ ok: true, value });
 export const err = <E>(error: E): Err<E> => ({ ok: false, error });
 
-/** Políticas opcionales aplicables en creación/edición de projects. */
+/** Políticas opcionales */
 export interface ProjectPolicies {
   requireLead?: boolean;
   requireProjectName?: boolean;
   allowEmptyPayments?: boolean;
 }
 
-/** Borrador para crear un nuevo Project (sin ID). */
+/** Borrador de creación */
 export interface ProjectDraft {
   projectName: string;
   overview?: string;
@@ -48,7 +44,7 @@ export interface ProjectDraft {
   leadId?: LeadId;
 }
 
-/** Patch para actualizar un Project existente. */
+/** Patch de actualización */
 export interface ProjectPatch {
   projectName?: string;
   overview?: string;
@@ -61,16 +57,38 @@ export interface ProjectPatch {
   leadId?: LeadId;
 }
 
-/** Resultado de aplicar un patch a un Project. */
+/** Resultado de aplicar patch */
 export interface ApplyProjectPatchResult {
   project: Project;
   hasChanges: boolean;
 }
 
-/** Eventos de dominio (si los llegara a necesitar). */
+/** Evento de dominio (opcional) */
 export interface DomainEvent {
   type: string;
   aggregateId: string;
   timestamp: number;
   payload: unknown;
 }
+
+export interface ProjectWithLeadView {
+  id: number;
+  projectName: string;
+  overview?: string;
+  projectStatus?: string;
+  invoiceStatus?: string;
+  quickbooks?: boolean;
+  startDate?: string; // ISO (LocalDate → string)
+  endDate?: string;
+
+  leadId?: number;
+  leadName?: string;
+  leadNumber?: string;
+
+  location?: string;
+  contactName?: string;
+  customerName?: string;
+  email?: string;
+  phone?: string;
+}
+

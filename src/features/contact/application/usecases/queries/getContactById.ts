@@ -1,12 +1,13 @@
-import type { ContactsAppContext } from "../../context";
-import type { Contacts } from "@/features/contact/domain/models/Contact";
+import type { Contact } from "@/features/contact/domain/models/Contact";
 import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
+
+import type { ContactsAppContext } from "../../context";
 
 export async function getContactById(
   ctx: ContactsAppContext,
   id: number
-): Promise<Contacts> {
-  const contact = await ctx.repos.contact.getById(id);
+): Promise<Contact> {
+  const contact = await ctx.repos.contact.findById(id);
   if (!contact) {
     throw new BusinessRuleError("NOT_FOUND", "Contact not found", {
       details: { id },

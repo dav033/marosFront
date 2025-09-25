@@ -1,6 +1,6 @@
 // src/presentation/molecules/contact/ContactColumns.tsx
+import type { Contact } from "@/features/contact/domain/models/Contact";
 import type { Column } from "@/types";
-import type { Contacts } from "@/types";
 
 // Anchos (la tabla usa style.width)
 export const contactColumnWidths: Record<
@@ -25,12 +25,12 @@ export const contactColumnWidths: Record<
 };
 
 // Helper para definir columnas sin repetir label/header
-const col = <K extends keyof Contacts>(
+const col = <K extends keyof Contact>(
   key: K,
   header: string,
   width: string,
-  accessor?: (r: Contacts) => unknown
-): Column<Contacts> => ({
+  accessor?: (r: Contact) => unknown
+): Column<Contact> => ({
   key, // mantiene keyof Contacts si tu Column lo soporta
   label: header, // ✅ requerido por el tipo Column
   header, // tu TableHeader usa header || label
@@ -38,7 +38,7 @@ const col = <K extends keyof Contacts>(
   ...(accessor ? { accessor } : {}),
 });
 
-export const contactTableColumns: Column<Contacts>[] = [
+export const contactTableColumns: Column<Contact>[] = [
   col(
     "companyName",
     "Company",

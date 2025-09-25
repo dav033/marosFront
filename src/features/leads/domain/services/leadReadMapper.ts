@@ -1,7 +1,9 @@
 // src/features/leads/domain/services/leadReadMapper.ts
 import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
+
+import type { LeadType } from "../../enums";
+import { LeadStatus } from "../../enums";
 import type { Lead } from "../models/Lead";
-import { LeadStatus, LeadType } from "../../enums";
 
 // =====================
 // Config de lectura
@@ -80,7 +82,7 @@ function resolveProjectTypeId(dto: ApiLeadDTO): number {
   const id =
     asNumber(dto.projectType?.id) ??
     asNumber(dto.projectTypeId) ??
-    asNumber((dto as any).project_type_id) ??
+  asNumber((dto as unknown as Record<string, unknown>)["project_type_id"]) ??
     asNumber(dto.type);
   // Fallback “Unclassified”: id positivo para no romper render
   return id && id > 0 ? id : 9999;
@@ -160,7 +162,7 @@ export function mapLeadsFromDTO(list: readonly ApiLeadDTO[] | null | undefined):
       out.push(mapLeadFromDTO(dto));
     } catch (e: unknown) {
       const reason = e instanceof Error ? e.message : "unknown error";
-      dropped.push({ id: (dto as any)?.id, reason });
+      dropped.push({ id: (dto as Partial<ApiLeadDTO>)?.id, reason });
     }
   }
 

@@ -1,30 +1,41 @@
-// src/components/contacts/ContactsTable.tsx
-import React, { useState, useMemo, useCallback, Suspense, lazy } from "react";
-import { contactTableColumns } from "@/presentation/molecules/ContactTableColumns";
-import ContactSection from "@/presentation/organisms/ContactSection";
-import { SearchBoxWithDropdown } from "../molecules/SearchBoxWithDropdown.tsx";
-import { useSearch } from "@/hooks/useSearch";
-import type { Contacts } from "@/features/contact/domain/models/Contact";
-import type { ContactFormData } from "@/types";
-import CreateContactModal from "./CreateContactModal";
+import React, { lazy, Suspense, useCallback, useMemo, useState } from "react";
+
 import {
   contactsSearchConfig,
   contactsSearchPlaceholder,
 } from "@/components/contacts/contactsSearchConfig";
+import type { Contact } from "@/features/contact/domain/models/Contact";
+import { contactTableColumns } from "@/presentation/molecules/ContactTableColumns";
+import ContactSection from "@/presentation/organisms/ContactSection";
+import type { ContactFormData } from "@/types";
+
 import { Button } from "../atoms/index.ts";
+import { SearchBoxWithDropdown } from "../molecules/SearchBoxWithDropdown.tsx";
+import CreateContactModal from "./CreateContactModal";
+import { useContactsApplication } from "@/presentation/hooks/useContactsApplication";
+import { getErrorMessage } from "@/utils/errors";
+import { useSearch } from "@/shared/search/useSearch.tsx";
 
 const EditContactModal = lazy(() => import("./EditContactModal.tsx"));
 
 export type ContactsTableProps = {
-  contacts: Contacts[];
+  contacts: Contact[];
   onRefetch: () => Promise<void>;
 };
 
-export default function ContactsTable({ contacts, onRefetch }: ContactsTableProps) {
+export default function ContactsTable({
+  contacts,
+  onRefetch,
+}: ContactsTableProps) {
+  const app = useContactsApplication();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [editingContact, setEditingContact] = useState<Contacts | null>(null);
-
+  const [editingContact, setEditingContact] = useState<Contact | null>(null);
+  // Memoized wrapper for create to keep stable reference for callbacks
+  const create = React.useCallback(
+    (draft: ContactFormData) => app.create(draft),
+    [app]
+  );
   // creación
   const [isCreating, setIsCreating] = useState(false);
   const [createError, setCreateError] = useState<string | undefined>(undefined);
@@ -38,13 +49,13 @@ export default function ContactsTable({ contacts, onRefetch }: ContactsTableProp
     setSearchTerm,
     setSelectedField,
     clearSearch,
-  } = useSearch<Contacts>(contacts, contactsSearchConfig);
+  } = useSearch<Contact>(contacts, contactsSearchConfig);
 
   const memoColumns = useMemo(() => contactTableColumns, []);
 
   const handleSearchChange = (value: string) => setSearchTerm(value);
   const handleFieldChange = (field: string) =>
-    setSelectedField(field as keyof Contacts);
+    setSelectedField(field as keyof Contact);
 
   const handleCreateClose = useCallback(
     async (shouldRefetch?: boolean) => {
@@ -63,14 +74,14 @@ export default function ContactsTable({ contacts, onRefetch }: ContactsTableProp
     [onRefetch]
   );
 
-  const handleEditOpen = useCallback((contact: Contacts) => {
+  const handleEditOpen = useCallback((contact: Contact) => {
     setEditingContact(contact);
     setIsEditOpen(true);
   }, []);
 
   const handleDeleteContact = useCallback(
-    async (contactId: number) => {
-      // TODO: deleteContact(contactId)
+    async (_contactId: number) => {
+      // TODO: deleteContact(_contactId)
       await onRefetch();
     },
     [onRefetch]
@@ -78,25 +89,36 @@ export default function ContactsTable({ contacts, onRefetch }: ContactsTableProp
 
   // ⬇️ faltaba onSubmit para crear
   const handleCreateSubmit = useCallback(
-    async (values: ContactFormData) => {
+    async (_values: ContactFormData) => {
       try {
         setIsCreating(true);
         setCreateError(undefined);
-        // TODO: createContact(values)
+        // Llamada al caso de uso de creación via Presentation API
+        await create(_values);
+
+        // Refrescar lista y cerrar modal
         await onRefetch();
         setIsCreateOpen(false);
-      } catch (err: any) {
-        setCreateError(err?.message ?? "Failed to create contact");
+      } catch (err: unknown) {
+        const msg =
+          getErrorMessage(err) ||
+          (err && typeof err === "object" && "message" in err
+            ? String(
+                (err as { message?: unknown }).message ??
+                  "Failed to create contact"
+              )
+            : String(err ?? "Failed to create contact"));
+        setCreateError(msg);
       } finally {
         setIsCreating(false);
       }
     },
-    [onRefetch]
+    [onRefetch, create]
   );
 
   // ⬇️ NUEVO: handler requerido por EditContactModal
   const handleContactUpdated = useCallback(
-    async (updated: Contacts) => {
+    async (_updated: Contact) => {
       // puedes hacer optimista aquí si quieres
       await onRefetch();
       setIsEditOpen(false);
@@ -108,7 +130,10 @@ export default function ContactsTable({ contacts, onRefetch }: ContactsTableProp
   return (
     <div
       className="w-full max-w-full mx-auto p-6"
-      style={{ backgroundColor: "var(--color-dark)", color: "var(--color-light)" }}
+      style={{
+        backgroundColor: "var(--color-dark)",
+        color: "var(--color-light)",
+      }}
     >
       {/* Header */}
       <div className="flex justify-between items-center mb-6 gap-4">
@@ -125,10 +150,11 @@ export default function ContactsTable({ contacts, onRefetch }: ContactsTableProp
             onSearchChange={handleSearchChange}
             selectedField={selectedField}
             onFieldChange={handleFieldChange}
-            searchFields={searchFields}
+            searchFields={searchFields.map(({ value, label }) => ({ key: value, label }))}
             onClearSearch={clearSearch}
-            placeholder={contactsSearchPlaceholder}
-            hasActiveSearch={hasActiveSearch}
+            {...(contactsSearchPlaceholder
+              ? { placeholder: contactsSearchPlaceholder }
+              : {})}
             resultCount={filteredData.length}
             totalCount={contacts.length}
           />
@@ -143,7 +169,7 @@ export default function ContactsTable({ contacts, onRefetch }: ContactsTableProp
             onClose={handleCreateClose}
             onSubmit={handleCreateSubmit}
             submitting={isCreating}
-            serverError={createError}
+            {...(createError ? { serverError: createError } : {})}
           />
         </Suspense>
       )}

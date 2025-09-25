@@ -1,6 +1,9 @@
 // src/types/domain/responses.ts
 
-import type { Contacts, Lead, ProjectType } from "./entities";
+import type { Contact } from "@/features/contact/domain/models/Contact";
+import type { Lead } from "@/features/leads/domain/models/Lead";
+
+import type { ProjectType } from "../components/leads";
 
 // ===========================================
 // API RESPONSE TYPES
@@ -27,12 +30,12 @@ export interface ApiListResponse<T> {
 }
 
 // Specific API responses
-export interface ContactsResponse extends ApiListResponse<Contacts> {}
+export interface ContactsResponse extends ApiListResponse<Contact> {}
 export interface LeadsResponse extends ApiListResponse<Lead> {}
 export interface ProjectTypesResponse extends ApiListResponse<ProjectType> {}
 
 // Single item responses
-export interface ContactResponse extends ApiResponse<Contacts> {}
+export interface ContactResponse extends ApiResponse<Contact> {}
 export interface LeadResponse extends ApiResponse<Lead> {}
 export interface ProjectTypeResponse extends ApiResponse<ProjectType> {}
 

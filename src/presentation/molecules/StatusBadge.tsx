@@ -1,116 +1,63 @@
+// src/presentation/components/lead/StatusBadge.tsx
 import React from "react";
-import Badge, { type BadgeColor, type BadgeSize, type BadgeVariant } from "@/presentation/atoms/Badge";
-import { LeadStatus } from "@/features/leads/enums";
+import { LeadStatus } from "@/features/leads/domain"; // ajuste la ruta si su enum vive en otro módulo
 
-export type StatusBadgeProps = {
-  /** Estado del lead. Acepta null/undefined/"null" y lo trata como UNDETERMINED */
-  status?: LeadStatus | null | string;
-  /** Ajustes visuales que proxyamos al átomo Badge */
-  size?: BadgeSize;            // "sm" | "md" | "lg"
-  variant?: BadgeVariant;      // "solid" | "soft" | "outline"
-  uppercase?: boolean;
+type Size = "sm" | "md";
+
+const SIZE_CLASS: Record<Size, string> = {
+  sm: "text-xs px-2 py-0.5 rounded-md",
+  md: "text-sm px-2.5 py-1 rounded-lg",
+};
+
+/**
+ * Estilos por estado: claves EXACTAS del enum.
+ * Si agrega/quita un estado en LeadStatus, TypeScript exigirá actualizar aquí.
+ */
+const STATUS_STYLES: Record<LeadStatus, string> = {
+  [LeadStatus.NEW]:
+    "bg-indigo-100 text-indigo-800 ring-1 ring-inset ring-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-200 dark:ring-indigo-900",
+  [LeadStatus.UNDETERMINED]:
+    "bg-zinc-100 text-zinc-800 ring-1 ring-inset ring-zinc-200 dark:bg-zinc-800 dark:text-zinc-200 dark:ring-zinc-700",
+  [LeadStatus.TO_DO]:
+    "bg-amber-100 text-amber-800 ring-1 ring-inset ring-amber-200 dark:bg-amber-900/30 dark:text-amber-200 dark:ring-amber-900",
+  [LeadStatus.IN_PROGRESS]:
+    "bg-blue-100 text-blue-800 ring-1 ring-inset ring-blue-200 dark:bg-blue-900/30 dark:text-blue-200 dark:ring-blue-900",
+  [LeadStatus.DONE]:
+    "bg-emerald-100 text-emerald-800 ring-1 ring-inset ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-200 dark:ring-emerald-900",
+  [LeadStatus.LOST]:
+    "bg-rose-100 text-rose-800 ring-1 ring-inset ring-rose-200 dark:bg-rose-900/30 dark:text-rose-200 dark:ring-rose-900",
+  [LeadStatus.NOT_EXECUTED]:
+    "bg-slate-100 text-slate-800 ring-1 ring-inset ring-slate-200 dark:bg-slate-900/30 dark:text-slate-200 dark:ring-slate-900",
+};
+
+export type StatusBadgeProps = Readonly<{
+  /** Estado EXACTO del enum de dominio. */
+  status: LeadStatus;
+  /** Tamaño visual del badge. */
+  size?: Size;
+  /** Clases extra para personalización. */
   className?: string;
-  /** Permite sobreescribir la etiqueta si necesitas traducción/contexto distinto */
-  labelOverride?: string;
-};
+  /** Si true, oculta el texto y deja solo el chip de color. */
+  hideLabel?: boolean;
+}>;
 
-type StatusConfig = {
-  label: string;
-  icon: string;        // iconify name
-  color: BadgeColor;   // "gray" | "primary" | "success" | "warning" | "danger"
-};
-
-const STATUS_MAP: Record<string, StatusConfig> = {
-  // Valores mapeados (los que usa buildSections)
-  "Pending": {
-    label: "Pending",
-    icon: "material-symbols:add-circle-outline-sharp",
-    color: "primary",
-  },
-  "In Progress": {
-    label: "In progress",
-    icon: "material-symbols:schedule",
-    color: "warning",
-  },
-  "Completed": {
-    label: "Completed",
-    icon: "material-symbols:check-circle",
-    color: "success",
-  },
-  "Undetermined": {
-    label: "Undetermined",
-    icon: "material-symbols:help-outline",
-    color: "gray",
-  },
-  "Lost": {
-    label: "Lost",
-    icon: "material-symbols:cancel",
-    color: "danger",
-  },
-  // Valores originales para compatibilidad
-  [LeadStatus.NEW]: {
-    label: "New",
-    icon: "material-symbols:add-circle-outline-sharp",
-    color: "primary",
-  },
-  [LeadStatus.UNDETERMINED]: {
-    label: "Undetermined",
-    icon: "material-symbols:help-outline",
-    color: "gray",
-  },
-  [LeadStatus.TO_DO]: {
-    label: "To do",
-    icon: "material-symbols:flag",
-    color: "primary",
-  },
-  [LeadStatus.IN_PROGRESS]: {
-    label: "In progress",
-    icon: "material-symbols:schedule",
-    color: "warning",
-  },
-  [LeadStatus.DONE]: {
-    label: "Done",
-    icon: "material-symbols:check-circle",
-    color: "success",
-  },
-  [LeadStatus.LOST]: {
-    label: "Lost",
-    icon: "material-symbols:cancel",
-    color: "danger",
-  },
-  [LeadStatus.NOT_EXECUTED]: {
-    label: "Not executed",
-    icon: "material-symbols:block",
-    color: "gray",
-  },
-};
-
-export default function StatusBadge({
+export function StatusBadge({
   status,
-  size = "md",
-  variant = "solid",
-  uppercase = false,
+  size = "sm",
   className = "",
-  labelOverride,
+  hideLabel = false,
 }: StatusBadgeProps) {
-  // Normalizamos null/undefined/"null" → UNDETERMINED
-  const effective =
-    (status === null || status === undefined || status === "null"
-      ? LeadStatus.UNDETERMINED
-      : (status as LeadStatus));
+  const cls = [
+    "inline-flex items-center font-medium",
+    SIZE_CLASS[size],
+    STATUS_STYLES[status],
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
-  const cfg = STATUS_MAP[effective] ?? STATUS_MAP[LeadStatus.UNDETERMINED];
-
-  return (
-    <Badge
-      label={labelOverride ?? cfg.label}
-      leftIcon={cfg.icon}
-      color={cfg.color}
-      variant={variant}
-      size={size}
-      rounded="full"
-      uppercase={uppercase}
-      className={className}
-    />
-  );
+  // Muestra exactamente el valor del enum (p.ej., "IN_PROGRESS")
+  return <span className={cls}>{hideLabel ? null : status}</span>;
 }
+
+export default StatusBadge;

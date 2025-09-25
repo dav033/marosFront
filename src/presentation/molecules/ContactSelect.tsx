@@ -1,4 +1,5 @@
 import React from "react";
+
 import Select from "@/presentation/atoms/Select";
 import { formatContactOptions } from "@/presentation/utils/leadsOptions";
 
@@ -6,15 +7,15 @@ export type ContactLite = {
   id: number;
   name: string;
   companyName?: string;
-  phone?: string;
-  email?: string;
+  phone?: string | undefined;
+  email?: string | undefined;
 };
 
 export type ContactSelectProps = {
   /** Lista de contactos en formato liviano */
   contacts: ReadonlyArray<ContactLite>;
   /** ID seleccionado (o undefined si no hay selección) */
-  value?: number;
+  value: number | "" | undefined;
   /** Emite el ID (number) o undefined cuando se limpia */
   onChange: (contactId: number | undefined) => void;
   /** Placeholder del control */

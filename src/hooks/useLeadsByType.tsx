@@ -1,12 +1,14 @@
 import { useMemo } from "react";
+
+import type { Lead } from "@/features/leads/domain/models/Lead";
+import type { LeadType } from "@/features/leads/enums";
+import { LeadStatus } from "@/features/leads/enums";
 import { LeadHttpRepository } from "@/features/leads/infra/http/LeadHttpRepository";
-import { optimizedApiClient } from "@/lib/optimizedApiClient";
+import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
+import type { Section } from "@/types";
+import type { Undetermined } from "@/types/hooks/optimized-fetch";
 
 import { useOptimizedFetch } from "./useOptimizedFetch";
-import type { Undetermined } from "@/types/hooks/optimized-fetch";
-import type { Section } from "@/types";
-import { LeadStatus, LeadType } from "@/features/leads/enums";
-import type { Lead } from "@/features/leads/domain/models/Lead";
 
 const leadRepo = new LeadHttpRepository(optimizedApiClient);
 

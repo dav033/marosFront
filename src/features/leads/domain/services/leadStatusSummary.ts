@@ -1,7 +1,8 @@
 // maros-app/src/features/leads/domain/services/leadStatusSummary.ts
 
+import type { LeadType } from "../../enums";
+import { LeadStatus } from "../../enums";
 import type { Lead } from "../models/Lead";
-import { LeadStatus, LeadType } from "../../enums";
 
 /** Estado efectivo: mapea null/undefined a UNDETERMINED (defensivo). */
 function toEffectiveStatus(s: LeadStatus | null | undefined): LeadStatus {
@@ -37,16 +38,7 @@ function zeroCounts(): MutableStatusCounts {
 }
 
 /** Regla de “activo”: pendientes/en progreso/por hacer/indeterminados/nuevos. */
-function isActive(status: LeadStatus): boolean {
-  switch (status) {
-    case LeadStatus.DONE:
-    case LeadStatus.LOST:
-    case LeadStatus.NOT_EXECUTED:
-      return false;
-    default:
-      return true;
-  }
-}
+// `isActive` helper was unused; remove to satisfy lint. Keep logic in callers if needed.
 
 /**
  * Calcula contadores por estado y métricas básicas.

@@ -2,10 +2,19 @@
 import type { Lead } from "@/features/leads/domain/models/Lead";
 import type { LeadType } from "@/features/leads/enums";
 
+type LeadRepoLike = Partial<{
+  listByType: (t: LeadType) => Promise<unknown>;
+  fetchByType: (t: LeadType) => Promise<unknown>;
+  getByType: (t: LeadType) => Promise<unknown>;
+  findByType: (t: LeadType) => Promise<unknown>;
+  list: (opts?: Record<string, unknown>) => Promise<unknown>;
+  search: (opts?: Record<string, unknown>) => Promise<unknown>;
+}>;
+
 // El contexto propio de su app (ya existente en su proyecto)
 export type LeadsAppContext = {
   repos: {
-    lead: any; // Debe implementar al menos uno de: listByType | fetchByType | getByType | findByType
+    lead?: LeadRepoLike;
   };
 };
 
@@ -13,7 +22,7 @@ export type LeadsAppContext = {
  * Resolver defensivo: acepta distintas firmas del repositorio.
  * Mantiene compatibilidad sin filtrar detalles de Infra a la UI.
  */
-function resolveFetchByType(reposLead: any): ((t: LeadType) => Promise<unknown>) {
+function resolveFetchByType(reposLead?: LeadRepoLike): ((t: LeadType) => Promise<unknown>) {
   if (!reposLead) throw new Error("Lead repository not found in ctx.repos.lead");
 
   const candidate =
@@ -27,8 +36,9 @@ function resolveFetchByType(reposLead: any): ((t: LeadType) => Promise<unknown>)
       return [];
     });
 
-  const needsBind = typeof candidate?.bind === "function";
-  return (lt: LeadType) => (needsBind ? candidate.call(reposLead, lt) : candidate(lt));
+  const candidateFn = candidate as unknown as Function;
+  const needsBind = typeof candidateFn?.bind === "function";
+  return (lt: LeadType) => (needsBind ? candidateFn.call(reposLead, lt) : candidate(lt));
 }
 
 /**
@@ -42,6 +52,8 @@ export async function fetchLeadsByType(
   const fetch = resolveFetchByType(ctx?.repos?.lead);
   const res = await fetch(leadType);
   // Normaliza sólo la forma de contenedor (array o {items})
-  const items = Array.isArray(res) ? (res as any[]) : ((res as any)?.items ?? []);
-  return items as Lead[];
+  const items = Array.isArray(res)
+    ? (res as unknown[])
+  : ((res as Record<string, unknown> | null)?.["items"] ?? []);
+  return (items as unknown[]) as Lead[];
 }

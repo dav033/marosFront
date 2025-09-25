@@ -3,7 +3,7 @@ export type UseCaseErrorKind = "INFRA_ERROR" | "UNEXPECTED";
 
 export class UseCaseError extends Error {
   readonly kind: UseCaseErrorKind;
-  readonly details?: Record<string, unknown>;
+  readonly details?: Record<string, unknown> | undefined;
 
   constructor(
     kind: UseCaseErrorKind,
@@ -15,8 +15,8 @@ export class UseCaseError extends Error {
     this.kind = kind;
     this.details = options?.details;
     if (options?.cause !== undefined) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (this as any).cause = options.cause;
+      // assign cause in a typed-safe manner
+      (this as unknown as { cause?: unknown }).cause = options.cause;
     }
   }
 }

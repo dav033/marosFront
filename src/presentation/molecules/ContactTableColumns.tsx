@@ -1,5 +1,5 @@
+import type { Contact } from "@/features/contact/domain/models/Contact";
 import type { Column } from "@/types";
-import type { Contacts } from "@/features/contact/domain/models/Contact";
 
 /**
  * Columnas para la nueva Table (grid). Importante:
@@ -7,7 +7,7 @@ import type { Contacts } from "@/features/contact/domain/models/Contact";
  * - `header` es lo que se muestra (si falta, TableHeader usa `label`)
  * - `width` se usa en el grid del body y como style.width en el header
  */
-export const contactTableColumns: Column<Contacts>[] = [
+export const contactTableColumns: Column<Contact>[] = [
   {
     id: "company",
     key: "companyName",

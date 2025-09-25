@@ -1,88 +1,95 @@
-// src/features/project/infra/http/HttpProjectRepository.ts
+import type { Project } from "@/features/project/domain/models/Project";
+import type { ProjectRepositoryPort } from "@/features/project/domain/ports/ProjectRepositoryPort";
+import type { ProjectStatus } from "@/features/project/enums";
+import type {
+  LeadId,
+  ProjectDraft,
+  ProjectId,
+  ProjectPatch,
+  ProjectWithLeadView,
+} from "@/features/project/types";
+import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
 
-import type { ProjectRepositoryPort } from "../../domain/ports/ProjectRepositoryPort";
-import type { Project } from "../../domain/models/Project";
-import type { ProjectId, LeadId, ProjectDraft, ProjectPatch } from "../../types";
-import type { ProjectStatus } from "../../enums";
-import { optimizedApiClient } from "@/lib/optimizedApiClient";
+import { PROJECTS_API } from "./endpoints";
 
-/**
- * Implementación HTTP del repositorio de proyectos.
- */
+/** Implementación HTTP del repositorio de Projects. */
 export class HttpProjectRepository implements ProjectRepositoryPort {
-  private readonly baseUrl = "/api/projects";
+  constructor(private readonly http = optimizedApiClient) {}
 
   async findAll(): Promise<Project[]> {
-    const response = await optimizedApiClient.get<Project[]>(this.baseUrl);
-    return response.data;
+    const { data } = await this.http.get<Project[]>(PROJECTS_API.base);
+    return data;
   }
 
   async findById(id: ProjectId): Promise<Project | null> {
     try {
-      const response = await optimizedApiClient.get<Project>(`${this.baseUrl}/${id}`);
-      return response.data;
-    } catch (error: unknown) {
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as { response?: { status?: number } };
-        if (axiosError.response?.status === 404) {
-          return null;
-        }
-      }
-      throw error;
+      const { data } = await this.http.get<Project>(PROJECTS_API.byId(id));
+      return data;
+    } catch (e: unknown) {
+      const maybe = e as { response?: { status?: number } } | undefined;
+      if (maybe?.response?.status === 404) return null;
+      throw e;
     }
   }
 
   async findByName(projectName: string): Promise<Project | null> {
-    // El backend no tiene endpoint específico para buscar por nombre
-    // Buscamos todos y filtramos en el cliente (no ideal para datasets grandes)
-    const projects = await this.findAll();
-    return projects.find(p => p.projectName === projectName) || null;
+    // No hay endpoint dedicado: filtramos cliente (OK para datasets pequeños)
+    const all = await this.findAll();
+    return all.find((p) => p.projectName === projectName) ?? null;
   }
 
   async findByStatus(status: ProjectStatus): Promise<Project[]> {
-    const response = await optimizedApiClient.get<Project[]>(`${this.baseUrl}/status`, {
-      params: { status }
-    });
-    return response.data;
+    const { data } = await this.http.get<Project[]>(
+      PROJECTS_API.byStatus(status)
+    );
+    return data;
   }
 
   async findWithLeads(): Promise<Project[]> {
-    const response = await optimizedApiClient.get<Project[]>(`${this.baseUrl}/with-leads`);
-    return response.data;
+    const { data } = await this.http.get<Project[]>(PROJECTS_API.withLeads);
+    return data;
   }
 
   async saveNew(draft: ProjectDraft): Promise<Project> {
-    const response = await optimizedApiClient.post<Project>(this.baseUrl, draft);
-    return response.data;
+    const { data } = await this.http.post<Project>(PROJECTS_API.base, draft);
+    return data;
   }
 
   async update(id: ProjectId, patch: ProjectPatch): Promise<Project> {
-    const response = await optimizedApiClient.put<Project>(`${this.baseUrl}/${id}`, patch);
-    return response.data;
+    const { data } = await this.http.put<Project>(PROJECTS_API.byId(id), patch);
+    return data;
   }
 
   async delete(id: ProjectId): Promise<void> {
-    await optimizedApiClient.delete(`${this.baseUrl}/${id}`);
+    await this.http.delete(PROJECTS_API.byId(id));
   }
 
   async count(): Promise<number> {
-    const response = await optimizedApiClient.get<{ count: number }>(`${this.baseUrl}/count`);
-    return response.data.count;
+    const { data } = await this.http.get<{ count: number }>(PROJECTS_API.count);
+    return data.count;
   }
 
   async leadExists(leadId: LeadId): Promise<boolean> {
     try {
-      // Asumiendo que existe un endpoint para verificar leads
-      const response = await optimizedApiClient.get(`/api/leads/${leadId}`);
-      return response.status === 200;
-    } catch (error: unknown) {
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as { response?: { status?: number } };
-        if (axiosError.response?.status === 404) {
-          return false;
-        }
-      }
-      throw error;
+      const r = await this.http.get(`/api/leads/${leadId}`); // controlador de Leads existe
+      return r.status === 200;
+    } catch (e: unknown) {
+      const maybe = e as { response?: { status?: number } } | undefined;
+      if (maybe?.response?.status === 404) return false;
+      throw e;
     }
+  }
+
+  async getWithLeads(): Promise<ProjectWithLeadView[]> {
+    const { data } = await optimizedApiClient.get("/api/projects/with-leads");
+    // Normaliza fechas a string (por si vienen como ISO/generadas por Jackson)
+    return (Array.isArray(data) ? data : []).map((it: unknown) => {
+      const asObj = it as Record<string, unknown>;
+      return {
+        ...(asObj as Record<string, unknown>),
+  startDate: (asObj["startDate"] ?? null) as string | null,
+  endDate: (asObj["endDate"] ?? null) as string | null,
+      } as ProjectWithLeadView;
+    });
   }
 }

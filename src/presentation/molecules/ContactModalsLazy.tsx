@@ -1,5 +1,7 @@
-import React, { Suspense, lazy } from "react";
-import type { Contacts, ContactFormData } from "@/types";
+import React, { lazy,Suspense } from "react";
+
+import type { Contact } from "@/features/contact/domain/models/Contact";
+import type { ContactFormData } from "@/types";
 
 const CreateContactModal = lazy(() => import("../organisms/CreateContactModal.tsx"));
 const EditContactModal   = lazy(() => import("../organisms/EditContactModal.tsx"));
@@ -9,9 +11,9 @@ export type ContactModalsLazyProps = {
   onCloseCreate: () => void;
   isEditOpen: boolean;
   onCloseEdit: () => void;
-  editingContact: Contacts | null;
+  editingContact: Contact | null;
   onSubmit: (values: ContactFormData) => Promise<void> | void;
-  onContactUpdated: (updated: Contacts) => Promise<void> | void;
+  onContactUpdated: (updated: Contact) => Promise<void> | void;
 };
 
 const ContactModalsLazy: React.FC<ContactModalsLazyProps> = ({

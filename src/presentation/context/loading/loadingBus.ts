@@ -19,10 +19,10 @@ export function unmountLoadingActions() {
 
 export const loadingBus = {
   set(type: string, opts?: SkeletonOptions) {
-    actionsRef?.setSkeleton(type as any, opts);
+    actionsRef?.setSkeleton(type, opts);
   },
   show(type?: string, opts?: SkeletonOptions) {
-    actionsRef?.showLoading(type as any, opts);
+    actionsRef?.showLoading(type, opts);
   },
   hide() {
     actionsRef?.hideLoading();

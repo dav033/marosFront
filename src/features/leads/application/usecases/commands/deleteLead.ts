@@ -1,6 +1,7 @@
 // src/features/leads/application/usecases/commands/deleteLead.ts
-import type { LeadsAppContext } from "../../context";
 import type { LeadId } from "@/features/leads/domain";
+
+import type { LeadsAppContext } from "../../context";
 import { getLeadById } from "../queries/getLeadById";
 
 /**
@@ -12,6 +13,5 @@ export async function deleteLead(
   id: LeadId
 ): Promise<void> {
   // asegura existencia (útil para UX y logs)
-  await getLeadById(ctx, id);
   await ctx.repos.lead.delete(id);
 }

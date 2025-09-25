@@ -3,6 +3,6 @@
 export * from "./cache-diagnostics";
 export * from "./context-menu";
 export * from "./fetch";
-export * from "./search";
 export * from "./leads";
+export * from "./search";
 export * from "./visibility";

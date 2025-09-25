@@ -1,7 +1,8 @@
 // src/features/leads/domain/services/leadsQueries.ts
 
+import type { LeadType } from "../../enums";
+import { LeadStatus } from "../../enums";
 import type { Lead } from "../models/Lead";
-import { LeadStatus, LeadType } from "../../enums";
 
 /** Mapea null/undefined a UNDETERMINED (defensivo). */
 function effectiveStatus(s: LeadStatus | null | undefined): LeadStatus {

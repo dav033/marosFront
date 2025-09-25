@@ -1,4 +1,5 @@
 import React from "react";
+
 import type { ModalFooterProps } from "@/types/components/modal";
 
 export default function ModalFooter({ children }: ModalFooterProps) {

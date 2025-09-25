@@ -1,6 +1,9 @@
 // src/types/components/common.ts
-import React from "react";
+/* eslint-disable simple-import-sort/imports */
+
+import type React from "react";
 import type { SearchFieldOption } from "../hooks";
+import type { ContextMenuOption } from "../index";
 
 export interface SearchBoxWithDropdownProps {
   searchTerm: string;
@@ -9,8 +12,8 @@ export interface SearchBoxWithDropdownProps {
   onFieldChange: (field: string) => void;
   searchFields: SearchFieldOption[];
   onClearSearch: () => void;
-  placeholder?: string;
-  className?: string;
+  placeholder?: string | undefined;
+  className?: string | undefined;
   hasActiveSearch?: boolean;
   resultCount?: number;
   totalCount?: number;
@@ -34,11 +37,11 @@ export interface GenericSelectProps {
   options: Option[];
   value?: string;
   onChange: (value: string) => void;
-  placeholder?: string;
-  searchable?: boolean;
-  icon?: string;
-  disabled?: boolean;
-  className?: string;
+  placeholder?: string | undefined;
+  searchable?: boolean | undefined;
+  icon?: string | undefined;
+  disabled?: boolean | undefined;
+  className?: string | undefined;
 }
 
 export interface GenericSwitchProps {
@@ -56,7 +59,7 @@ export interface GenericSwitchProps {
 // ===========================================
 
 export interface ContextMenuProps {
-  options: import("../index").ContextMenuOption[];
+  options: ContextMenuOption[];
   isVisible: boolean;
   position: { x: number; y: number };
   onClose: () => void;

@@ -1,5 +1,6 @@
 // src/presentation/molecules/leads/EmptyState.tsx
 import React from "react";
+
 import Button from "../atoms/Button";
 
 export const EmptyState: React.FC<{

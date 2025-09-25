@@ -1,5 +1,5 @@
 // src/shared/infra/http/cache/cacheManager.ts
-type Entry<T> = { value: T; expiresAt?: number };
+type Entry<T> = { value: T; expiresAt?: number | undefined };
 
 class MemoryCache<T = unknown> {
   private store = new Map<string, Entry<T>>();
@@ -45,8 +45,22 @@ class MemoryCache<T = unknown> {
     return count;
   }
 
+  // Compatibility: remove a single key (old API used `delete`)
+  delete(key: string): boolean {
+    const existed = this.store.delete(key);
+    this.stats.size = this.store.size;
+    return existed;
+  }
+
   getStats() {
-    return { ...this.stats };
+    // Return extra fields for backward compatibility with older consumers
+    return {
+      ...this.stats,
+      // best-effort compatibility fields
+      maxSize: 0,
+      expired: 0,
+      valid: this.store.size,
+    };
   }
 }
 

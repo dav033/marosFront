@@ -1,11 +1,11 @@
 ---
-import Layout from "@/components/Layout";
-import type { Project } from "@/features/project/domain/models/Project";
-const title = project ? `Visit Report – ${project.projectName}` : "Visit x Report";
-const description = "Restoration Visit Report (migración sin JSON externo)";
+import Layout from "../../layouts/Layout.astro";
+const pageTitle = "Final Restoration Report";
 ---
 
-
-<Layout title="Restoration Final Report" description="Restoration Final Report">
-  <RestorationFinal project={Astro.props.project} client:load />
+<Layout title={pageTitle}>
+  <main class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-4">{pageTitle}</h1>
+    <p class="opacity-70">This page consolidates the final restoration metrics and observations.</p>
+  </main>
 </Layout>

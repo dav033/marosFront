@@ -1,8 +1,9 @@
 // src/presentation/molecules/table/TableHeader.tsx
 import React, { memo } from "react";
-import Th from "@/presentation/atoms/table/Th";
+
 import SortIcon from "@/presentation/atoms/table/SortIcon";
-import type { TableHeaderProps, Column } from "@/types/components/table";
+import Th from "@/presentation/atoms/table/Th";
+import type { Column,TableHeaderProps } from "@/types/components/table";
 
 function TableHeaderInner<T extends object>({
   columns,
@@ -34,9 +35,9 @@ function TableHeaderInner<T extends object>({
           return (
             <Th
               key={key}
-              width={width}
+              {...(width ? { width } : {})}
+              {...(sortDirection ? { sortDirection } : {})}
               active={active}
-              sortDirection={sortDirection}
               role="button"
               tabIndex={0}
               onClick={() => onHeaderClick(col)}

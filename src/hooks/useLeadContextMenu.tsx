@@ -1,7 +1,7 @@
 // src/hooks/useLeadContextMenu.tsx
 
 import type { Lead } from "@/features/leads/domain/models/Lead";
-import { useContextMenu, type ContextMenuOption } from "@/presentation/molecules/ContextMenu";
+import { type ContextMenuOption,useContextMenu } from "@/presentation/molecules/ContextMenu";
 import type { UseLeadContextMenuProps } from "@/types/hooks/context-menu";
 
 
@@ -15,7 +15,7 @@ export const useLeadContextMenu = <
   const { contextMenu, showContextMenu, hideContextMenu } = useContextMenu();
 
   const handleDeleteLead = async (lead: T) => {
-    const display = (lead as any).leadNumber ?? (lead as any).id ?? "";
+  const display = (lead as unknown as Record<string, unknown>)["leadNumber"] ?? (lead as unknown as Record<string, unknown>)["id"] ?? "";
     const confirmed = window.confirm(
       `Are you sure you want to delete lead ${display}?`
     );
@@ -54,20 +54,20 @@ export const useLeadContextMenu = <
       id: "view-details",
       label: "View Details",
       icon: "material-symbols:visibility",
-      action: () => console.log("View lead details:", (lead as any).id),
+  action: () => console.log("View lead details:", (lead as unknown as Record<string, unknown>)["id"]),
     },
     {
       id: "view-contact",
       label: "View Contact",
       icon: "material-symbols:person",
-      action: () => console.log("View lead contact:", (lead as any).contact),
+  action: () => console.log("View lead contact:", (lead as unknown as Record<string, unknown>)["contact"]),
     },
     { id: "divider-2", label: "─────────────", action: () => {}, disabled: true, separator: true },
     {
       id: "change-status",
       label: "Change Status",
       icon: "material-symbols:swap-horiz",
-      action: () => console.log("Change lead status:", (lead as any).id),
+  action: () => console.log("Change lead status:", (lead as unknown as Record<string, unknown>)["id"]),
     },
     {
       id: "delete",

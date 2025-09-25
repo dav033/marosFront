@@ -1,7 +1,9 @@
-import { apiCache } from "src/lib/cacheManager";
 import { useCallback, useState } from "react";
 import { useFetch } from "src/hooks/UseFetchResult";
-import type { StorageLayer, CachedResult } from "@/types";
+import { apiCache } from "src/lib/cacheManager";
+
+import type { CachedResult,StorageLayer } from "@/types";
+import { getErrorMessage } from "@/utils/errors";
 
 const WEB_KEY = (key: string) => `cache_${key}`;
 
@@ -34,8 +36,9 @@ export function getCachedData<T>(
         box.removeItem(WEB_KEY(cacheKey));
       }
     }
-  } catch (e) {
-    console.warn(`[useOptimizedFetch] Error reading cache ${cacheKey}:`, e);
+  } catch (e: unknown) {
+    // Mostrar mensaje acotado para evitar acceso a propiedades de unknown
+    console.warn(`[useOptimizedFetch] Error reading cache ${cacheKey}:`, getErrorMessage(e));
   }
   return { data: null, age: 0 };
 }
@@ -57,8 +60,8 @@ export function setCachedData<T>(
         JSON.stringify({ data, timestamp: Date.now() })
       );
     }
-  } catch (e) {
-    console.warn(`[useOptimizedFetch] Error saving cache ${cacheKey}:`, e);
+  } catch (e: unknown) {
+    console.warn(`[useOptimizedFetch] Error saving cache ${cacheKey}:`, getErrorMessage(e));
   }
 }
 
@@ -78,7 +81,7 @@ export function stableKey(input: unknown): string {
 // =========================
 
 /** Indicador mínimo para el ejemplo de migración. */
-export function CacheIndicator(props: {
+export function CacheIndicator(_props: {
   fromCache?: boolean;
   loading?: boolean;
   cacheAge?: number;

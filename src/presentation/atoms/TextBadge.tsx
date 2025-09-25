@@ -1,5 +1,5 @@
-import * as React from "react";
 import classNames from "classnames";
+import * as React from "react";
 
 export type BadgeVariant = "neutral" | "success" | "warning" | "danger" | "info";
 

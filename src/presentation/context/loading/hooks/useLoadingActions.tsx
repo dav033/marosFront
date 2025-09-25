@@ -1,6 +1,7 @@
 // src/presentation/context/loading/hooks/useLoadingActions.ts
 import { useContext } from "react";
-import { LoadingActionsContext, type LoadingActions } from "../LoadingContext.tsx";
+
+import { type LoadingActions,LoadingActionsContext } from "../LoadingContext.tsx";
 
 export default function useLoadingActions(): LoadingActions {
   const ctx = useContext(LoadingActionsContext);

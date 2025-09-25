@@ -1,3 +1,5 @@
+import { getErrorMessage } from "@/utils/errors";
+
 export function formatDate(
   dateValue: string | Date | null | undefined,
   options: {
@@ -19,8 +21,8 @@ export function formatDate(
     if (isNaN(date.getTime())) {
       return "—";
     }
-  } catch (error) {
-    console.warn("Invalid date format:", dateValue);
+  } catch (error: unknown) {
+      console.warn("Invalid date format:", getErrorMessage(error));
     return "—";
   }
 
@@ -108,8 +110,8 @@ export function formatDateTime(
     if (isNaN(date.getTime())) {
       return "—";
     }
-  } catch (error) {
-    console.warn("Invalid datetime format:", dateValue);
+  } catch (error: unknown) {
+      console.warn("Invalid datetime format:", getErrorMessage(error));
     return "—";
   }
 

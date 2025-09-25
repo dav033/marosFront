@@ -1,13 +1,14 @@
-import { useState, useCallback } from "react";
-import type { Contacts } from "@/features/contact/domain/models/Contact";
-import { patchContact } from "@/features/contact/application/usecases/commands/patchContact";
+import { useCallback,useState } from "react";
+
 import type { ContactsAppContext } from "@/features/contact/application/context";
+import { patchContact } from "@/features/contact/application/usecases/commands/patchContact";
+import type { Contact } from "@/features/contact/domain/models/Contact";
 import { ContactHttpRepository } from "@/features/contact/infra/http/ContactHttpRepository";
 import type { ContactFormData } from "@/types/components/form";
 
 type EditContactForm = ContactFormData;
 
-export function useEditContact(initial?: Contacts | null) {
+export function useEditContact(initial?: Contact | null) {
   const [form, setForm] = useState<EditContactForm>(() => ({
     companyName: initial?.companyName ?? "",
     name: initial?.name ?? "",
@@ -52,7 +53,7 @@ export function useEditContact(initial?: Contacts | null) {
         address: form.address || undefined,
       };
 
-      await patchContact(ctx, initial.id, patch);
+  await patchContact(ctx, initial.id, patch);
       return true;
     } catch (e) {
       const msg =

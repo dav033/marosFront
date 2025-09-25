@@ -1,13 +1,16 @@
-// src/presentation/islands/LeadsApp.tsx
 import React from "react";
-import { DiProvider } from "@/di/DiProvider";
-import { LeadType } from "@/features/leads/enums";
 
-import { LoadingProvider } from "@/presentation/context/loading/LoadingContext";
+import { DiProvider, useContactsApp, useLeadsApp } from "@/di/DiProvider";
+import { LeadType } from "@/features/leads/enums";
 import useLoading from "@/presentation/context/loading/hooks/useLoading";
+import { LoadingProvider } from "@/presentation/context/loading/LoadingContext";
+
+import { useContactsVM } from "../hooks/useContactsVM";
+import { useProjectTypesVM } from "../hooks/useProjectTypesVM";
 import LeadsBoard from "../organisms/LeadsBoard";
-import { useInstantList } from "@/hooks/useInstantData";
-import { OptimizedLeadsService } from "@/services/OptimizedLeadsService";
+
+// ⬇️ Reemplazo del servicio obsoleto por VMs
+
 
 type Props = {
   leadType: LeadType;
@@ -41,42 +44,36 @@ function LeadsInner({
 }) {
   const { setSkeleton, showLoading, hideLoading } = useLoading();
 
-  // 🔥 AGREGAR LOS DATOS QUE ESTABAN FALTANDO
-  console.log('🔍 LeadsInner: Loading project types and contacts...');
-  
-  const { items: projectTypes = [] } = useInstantList(
-    "project_types",
-    OptimizedLeadsService.getProjectTypes,
-    { ttl: 600000 }
-  );
-
-  const { items: contacts = [] } = useInstantList(
-    "contacts",
-    OptimizedLeadsService.getContacts,
-    { ttl: 300000 }
-  );
-
-  console.log('📊 LeadsInner data loaded:', {
-    projectTypesCount: projectTypes.length,
-    contactsCount: contacts.length
-  });
-
-  // ⚙️ Configura el tipo de skeleton: SIN overlay
+  // ⚙️ Configuración del skeleton (sin overlay). Se mantiene igual.
   React.useEffect(() => {
-    console.log("[LeadsApp] setSkeleton -> leadsTable (inline)");
-    setSkeleton("leadsTable", { rows: 12, showSections: true }); // ← sin overlay
+     
+    
+    setSkeleton("leadsTable", { rows: 12, showSections: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Recibe del board la señal de carga real y la refleja en el contexto
+  // Contextos para los VMs
+  const leadsCtx = useLeadsApp();
+  const contactsCtx = useContactsApp();
+
+  // ✅ Carga de datos auxiliares con VMs (sin tocar el loading global)
+  const { projectTypes = [] } = useProjectTypesVM(leadsCtx);
+  const { contacts = [] } = useContactsVM(contactsCtx);
+
+  // Señal de carga proveniente del board (mantiene comportamiento original)
   const handleLoadingChange = React.useCallback(
     (loading: boolean) => {
-      console.log("[LeadsApp] onLoadingChange:", loading);
-      if (loading) showLoading("leadsTable"); // usa las opciones ya configuradas (inline)
+       
+      
+      if (loading) showLoading("leadsTable");
       else hideLoading();
     },
     [showLoading, hideLoading]
   );
+
+  // Log informativo (opcional, puede quitarse)
+   
+  
 
   return (
     <>
@@ -88,9 +85,7 @@ function LeadsInner({
         contacts={contacts}
         onLoadingChange={handleLoadingChange}
       />
-      {/* Si usas portales para modales, mantenlos dentro del Provider */}
       <div id="modal-root" />
-      {/* ⬇️ OJO: ya NO renderizamos SkeletonRenderer aquí; se muestra dentro del Board. */}
     </>
   );
 }
@@ -104,7 +99,8 @@ export default function LeadsApp(props: Props) {
   const resolvedTitle = props.title ?? fallback.title;
   const resolvedCreateButtonText = props.createButtonText ?? fallback.createButtonText;
 
-  console.log("[LeadsApp] render ", { leadType: props.leadType, resolvedTitle });
+   
+  
 
   return (
     <DiProvider>
