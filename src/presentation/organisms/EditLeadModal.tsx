@@ -4,10 +4,10 @@ import type { Contact } from "@/features/contact/domain/models/Contact";
 import type { Lead, ProjectType } from "@/features/leads/domain";
 import type { LeadStatus } from "@/features/leads/enums";
 import { useEditLeadController } from "@/presentation/hooks/useEditLeadController";
-import BaseLeadModal from "@/presentation/organisms/BaseLeadModal";
+import BaseFormModal from "@/presentation/organisms/BaseFormModal";
 import { FormMode } from "@/types/enums";
-
 import LeadFormFields from "../molecules/LeadFormFields";
+
 
 type Props = {
   isOpen: boolean;
@@ -42,7 +42,7 @@ const EditLeadModal: React.FC<Props> = ({
     ...(form.projectTypeId !== undefined ? { projectTypeId: form.projectTypeId } : {}),
     ...(form.contactId !== undefined ? { contactId: form.contactId } : {}),
     location: form.location ?? "",
-  status: form.status ? (form.status as unknown as "" | LeadStatus) : "",
+    status: form.status ? (form.status as unknown as "" | LeadStatus) : "",
     startDate: form.startDate ?? "",
   };
 
@@ -56,7 +56,7 @@ const EditLeadModal: React.FC<Props> = ({
   };
 
   return (
-    <BaseLeadModal
+    <BaseFormModal
       isOpen={isOpen}
       onClose={() => onClose()}
       title={`Editar Lead${lead?.leadNumber ? ` #${lead.leadNumber}` : ""}`}
@@ -68,7 +68,7 @@ const EditLeadModal: React.FC<Props> = ({
     >
       <LeadFormFields
         form={formForFields}
-        onChange={(field, value) => {
+        onChange={(field: string, value: any) => {
           // Garantizamos string para cumplir la firma del controlador
           const asString = value == null ? "" : String(value);
           handleChange(field as keyof typeof form, asString);
@@ -79,7 +79,7 @@ const EditLeadModal: React.FC<Props> = ({
         mode={FormMode.EDIT}
         showLeadNumber
       />
-    </BaseLeadModal>
+    </BaseFormModal>
   );
 };
 

@@ -1,33 +1,22 @@
-// src/hooks/useSearch.ts
 import { useEffect, useMemo, useState } from "react";
 
-/** Campo de búsqueda: permite keys reales del modelo o “virtuales” (p.ej. "contact.name") */
 export type SearchField<T> = {
   key: keyof T | string;
   label: string;
-  /** Si se provee, extrae el valor desde el modelo (útil para campos anidados o computados) */
-  accessor?: (row: T) => string | number | null | undefined;
-  /** Oculta el campo en el dropdown sin eliminarlo de la config */
-  searchable?: boolean; // default: true
+    accessor?: (row: T) => string | number | null | undefined;
+    searchable?: boolean; // default: true
 };
 
-/** Configuración de búsqueda genérica */
 export type SearchConfig<T> = {
   fields: Array<SearchField<T>>;
-  /** Campo por defecto (si no se selecciona uno) */
-  defaultField?: keyof T | string;
-  /** Placeholder del input */
-  placeholder?: string;
-  /** ms de debounce para el input */
-  debounceMs?: number; // default: 200
-  /** Normalizador de texto (default: lower + sin acentos) */
-  normalize?: (s: string) => string;
+    defaultField?: keyof T | string;
+    placeholder?: string;
+    debounceMs?: number; // default: 200
+    normalize?: (s: string) => string;
 };
 
-/** '*' = buscar en todos los campos visibles */
 export type AnyField<T> = "*" | (keyof T | string);
 
-/** Estado expuesto por el hook */
 export type UseSearchState<T> = {
   searchTerm: string;
   setSearchTerm: (v: string) => void;
@@ -35,10 +24,8 @@ export type UseSearchState<T> = {
   selectedField: AnyField<T>;
   setSelectedField: (f: AnyField<T>) => void;
 
-  /** Filtrado aplicado en cliente */
-  filteredData: T[];
-  /** Campos disponibles para el dropdown (ya filtrados por searchable) */
-  searchFields: Array<{ value: AnyField<T>; label: string }>;
+    filteredData: T[];
+    searchFields: Array<{ value: AnyField<T>; label: string }>;
 
   hasActiveSearch: boolean;
   clearSearch: () => void;

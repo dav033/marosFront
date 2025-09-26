@@ -1,8 +1,4 @@
-// src/components/common/GenericSwitch.tsx
 import React from "react";
-
-// Si ya tienes este tipo compartido, reemplaza esta definición por el import:
-// import type { GenericSwitchProps } from "../../types/components/common";
 export type GenericSwitchProps = {
   leftLabel: React.ReactNode;
   rightLabel: React.ReactNode;

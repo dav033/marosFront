@@ -1,4 +1,3 @@
-// Capa: Application — Use case para listar Project Types
 import type { ProjectType } from "@/features/leads/domain/models/ProjectType";
 
 import type { LeadsAppContext } from "../../context";

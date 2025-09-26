@@ -1,11 +1,6 @@
-// src/types/domain/requests.ts
 
 import type { ProjectType } from "@/features/leads/domain/models/ProjectType";
 import type { LeadStatus, LeadType } from "@/features/leads/enums";
-
-// ===========================================
-// API REQUEST/RESPONSE TYPES
-// ===========================================
 
 export interface CreateContactRequest {
   companyName: string;
@@ -37,8 +32,6 @@ export interface ContactValidationResponse {
   emailReason?: string;
   phoneReason?: string;
 }
-
-// Helper interfaces for lead creation
 export interface CreateLeadByNewContactData {
   leadNumber?: string;
   leadName: string;

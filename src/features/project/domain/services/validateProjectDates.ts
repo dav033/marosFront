@@ -1,7 +1,6 @@
 import type { ISODate } from "@/features/project/types";
 import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
 
-/** Valida que la fecha esté dentro de un rango razonable. */
 export function validateDateWithinRange(
   date: string,
   fieldName: string,
@@ -23,7 +22,6 @@ export function validateDateWithinRange(
   }
 }
 
-/** Normaliza un ISODate a "YYYY-MM-DD". */
 export function normalizeDateISO(date: string): ISODate {
   const parsed = new Date(date);
   if (isNaN(parsed.getTime())) {

@@ -1,4 +1,3 @@
-// src/types/components/contacts.ts
 /* eslint-disable simple-import-sort/imports */
 
 import type { Contact } from "@/features/contact/domain/models/Contact";
@@ -9,8 +8,6 @@ export interface ContactsTableProps {
   contacts: Contact[];
   onRefetch: () => Promise<void>;
 }
-
-// Singular aliases for gradual migration
 export type ContactTableProps = ContactsTableProps;
 
 export interface ContactSectionProps {
@@ -20,8 +17,6 @@ export interface ContactSectionProps {
   onEditContact?: (contact: Contact) => void;
   onDeleteContact?: (contactId: number) => void;
 }
-
-// Alias for contacts table skeleton (singular)
 export type ContactTableSkeletonProps = ContactsTableSkeletonProps;
 
 export interface CreateContactModalProps {
@@ -40,8 +35,6 @@ export interface ContactsTableSkeletonProps {
   rows?: number;
   columns?: number;
 }
-
-// Contact Form specific props for the form component
 export interface ContactFormComponentProps {
   form: ContactFormData;
   onChange: (field: keyof ContactFormData, value: string) => void;

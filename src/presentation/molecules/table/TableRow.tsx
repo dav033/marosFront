@@ -1,11 +1,9 @@
-// src/presentation/molecules/table/TableRow.tsx
 import React, { memo } from "react";
 
 import { useContextMenu } from "@/presentation/hooks/useContextMenu";
 import type { TableRowProps } from "@/types/components/table";
 
 import { ContextMenu } from "../ContextMenu";
-// Mantén tus hooks/componentes de menú contextual externos:
 
 function TableRowInner<T>({
   row,

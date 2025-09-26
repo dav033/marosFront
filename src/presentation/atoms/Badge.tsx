@@ -1,4 +1,3 @@
-// src/presentation/components/ui/Badge.tsx
 import { Icon } from "@iconify/react";
 import React from "react";
 
@@ -7,24 +6,15 @@ export type BadgeVariant = "solid" | "soft" | "outline";
 export type BadgeSize = "sm" | "md" | "lg";
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  /** Texto interno del badge. Si se pasa children, tiene prioridad. */
-  label?: React.ReactNode;
-  /** Variante visual */
-  variant?: BadgeVariant;
-  /** Paleta de color */
-  color?: BadgeColor;
-  /** Tamaño */
-  size?: BadgeSize;
-  /** Bordes: redondo (pill) o pequeño, para compatibilidad con Status/ProjectType */
-  rounded?: "full" | "sm";
-  /** Icono opcional (@iconify/react) antes del texto */
-  leftIcon?: string;
-  /** Forzar MAYÚSCULAS (ProjectTypeBadge usa uppercase) */
-  uppercase?: boolean;
-  /** Deshabilitado (aplica estilo y aria-disabled) */
-  disabled?: boolean;
-  /** Clase extra */
-  className?: string;
+    label?: React.ReactNode;
+    variant?: BadgeVariant;
+    color?: BadgeColor;
+    size?: BadgeSize;
+    rounded?: "full" | "sm";
+    leftIcon?: string;
+    uppercase?: boolean;
+    disabled?: boolean;
+    className?: string;
 }
 
 const sizeClasses: Record<BadgeSize, string> = {
@@ -39,7 +29,6 @@ const roundedClasses = {
 };
 
 function makeColorClasses(variant: BadgeVariant, color: BadgeColor) {
-  // Usamos tokens del tema y utilidades comunes del proyecto.
   switch (variant) {
     case "outline": {
       switch (color) {
@@ -70,7 +59,6 @@ function makeColorClasses(variant: BadgeVariant, color: BadgeColor) {
       }
     }
     default: {
-      // solid
       switch (color) {
         case "primary":
           return "bg-theme-primary text-theme-light";
@@ -90,7 +78,6 @@ function makeColorClasses(variant: BadgeVariant, color: BadgeColor) {
 const base = [
   "inline-flex items-center whitespace-normal break-words",
   "font-medium select-none",
-  // matching otros badges del proyecto
   "gap-1",
 ].join(" ");
 

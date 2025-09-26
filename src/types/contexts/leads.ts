@@ -1,6 +1,3 @@
-/**
- * Leads Context types
- */
 /* eslint-disable simple-import-sort/imports */
 
 import type React from "react";
@@ -29,14 +26,12 @@ export interface LeadsProviderProps {
 
 export interface LeadsContextType extends LeadsState {
   dispatch: React.Dispatch<LeadsAction>;
-  // Helper methods
   addLead: (lead: Lead) => void;
   updateLead: (lead: Lead) => void;
   deleteLead: (leadId: number) => void;
   setLeads: (leads: Lead[]) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
-  // Filtered getters
   getLeadsByType: (type: LeadType) => Lead[];
   getLeadsByStatus: (status: LeadStatus) => Lead[];
   getUndeterminedLeads: () => Lead[];

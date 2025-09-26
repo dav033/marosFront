@@ -1,22 +1,16 @@
-// src/presentation/molecules/SectionHeaderSkeleton.tsx
 import React from "react";
 
 import SkeletonBlock from "@/presentation/atoms/SkeletonBlock";
 
 export type SectionHeaderSkeletonProps = {
-  /** Alto/width del bloque izquierdo */
-  leftHeight?: number;
+    leftHeight?: number;
   leftWidthClass?: string; // Tailwind width (w-*)
-  /** Alto/width del bloque derecho (acción) */
-  rightHeight?: number;
+    rightHeight?: number;
   rightWidthClass?: string; // Tailwind width (w-*)
-  /** Mostrar la “acción” a la derecha */
-  showRight?: boolean;
-  /** Clases extra para el wrapper y el contenedor interno */
-  className?: string;
+    showRight?: boolean;
+    className?: string;
   containerClassName?: string;
-  /** Desactivar el pulso */
-  pulse?: boolean;
+    pulse?: boolean;
 };
 
 export default function SectionHeaderSkeleton({

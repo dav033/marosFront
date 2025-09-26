@@ -1,17 +1,6 @@
-// src/features/contact/domain/services/contactMergePolicy.ts
 
 import type { Contact } from "../models/Contact";
 
-/**
- * Estrategia de fusión:
- * - Si la API devuelve un contacto completo, se usa ese como fuente de verdad.
- * - Si la API devuelve `null` o un objeto parcial (por gateways intermedios),
- *   se fusiona de forma inmutable: cada campo toma el valor definido del resultado
- *   de API cuando exista, o el valor local en su defecto.
- *
- * Nota: este módulo NO hace I/O ni normaliza formatos; asume que la
- * capa de mapeo (DTO → dominio) ya dejó el objeto en forma.
- */
 
 /* ----------------- helpers ----------------- */
 
@@ -19,19 +8,11 @@ function isDefined<T>(v: T | undefined | null): v is T {
   return v !== undefined && v !== null;
 }
 
-/**
- * Fusiona dos contactos de forma inmutable, campo a campo.
- * - `api` tiene prioridad cuando el campo viene definido.
- * - `local` se preserva cuando `api` no define el campo.
- * - `id` siempre se conserva del `local` (defensivo).
- */
 export function mergeContact(
   local: Contact,
   api?: Partial<Contact> | null
 ): Contact {
   if (!api) return { ...local };
-
-  // Campos primitivos controlados
   const merged: Contact = {
     id: local.id, // defensivo
     companyName: isDefined(api.companyName)
@@ -51,11 +32,6 @@ export function mergeContact(
   return merged;
 }
 
-/**
- * Atajo común cuando un update HTTP devuelve 204/empty body:
- * - Si `apiResult` viene como `undefined | null`, se retorna el local tal cual.
- * - Si viene parcial, se usa `mergeContact`.
- */
 export function mergeApiUpdateFallback(
   local: Contact,
   apiResult?: Contact | Partial<Contact> | null
@@ -64,9 +40,6 @@ export function mergeApiUpdateFallback(
   return mergeContact(local, apiResult);
 }
 
-/**
- * Reemplaza (inmutable) un contacto dentro de una colección por id.
- */
 export function mergeContactIntoCollection(
   collection: readonly Contact[],
   updated: Contact

@@ -1,4 +1,3 @@
-// src/features/leads/application/errors/UseCaseError.ts
 export type UseCaseErrorKind = "INFRA_ERROR" | "UNEXPECTED";
 
 export class UseCaseError extends Error {
@@ -15,7 +14,6 @@ export class UseCaseError extends Error {
     this.kind = kind;
     this.details = options?.details;
     if (options?.cause !== undefined) {
-      // assign cause in a typed-safe manner
       (this as unknown as { cause?: unknown }).cause = options.cause;
     }
   }

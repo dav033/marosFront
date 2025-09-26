@@ -1,22 +1,8 @@
-// src/types/index.ts
-
 import type { Contact } from "@/features/contact/domain/models/Contact";
-
-// ===========================================
-// MAIN TYPE EXPORTS - CLEAN VERSION
-// ===========================================
-
-// Enums - export first as they're used by other types
 export * from "./enums";
-
-// Context types
 export * from "./contexts";
-
-// Domain models - Re-export for convenience 
 export type { Contact } from "@/features/contact/domain/models/Contact";
 export type { Lead } from "@/features/leads/domain/models/Lead";
-
-// Interfaces that depend on domain models
 export interface UseInstantContactsResult {
   contacts: Contact[];
   isLoading: boolean;
@@ -26,10 +12,8 @@ export interface UseInstantContactsResult {
   refetch: () => Promise<void>;
 }
 
-
 export type {
   ContactValidationResponse,
-  // Request types from domain/requests.ts
   CreateContactRequest,
   CreateLeadByExistingContactData,
   CreateLeadByNewContactData,
@@ -38,7 +22,6 @@ export type {
 } from "./domain/requests";
 export type {
   ApiListResponse,
-  // Response types from domain/responses.ts
   ApiResponse,
   ContactResponse,
   ContactsResponse,
@@ -48,14 +31,9 @@ export type {
   ProjectTypeResponse,
   ProjectTypesResponse,
 } from "./domain/responses";
-
-// Library types
 export * from "./lib";
-
-// System types
 export type {
   ApiClient,
-  // API types
   ApiClientConfig,
   ApiError,
   ApiInterceptors,
@@ -67,19 +45,16 @@ export type {
   CacheManager,
   CacheMetrics,
   CacheStorage,
-  // Cache types
   StorageLayer,
 } from "./system/cache";
 export type {
   CacheConfigShape,
   CacheDebugConfig,
   CacheResourceConfig,
-  // Configuration types
   CacheResourceKey,
   DebugConfig,
 } from "./system/config";
 export type {
-  // Context types
   ContactsContextType,
   ContactsProviderProps,
   LeadsContextType,
@@ -93,7 +68,6 @@ export type {
 export type {
   PrefetchCondition,
   PrefetchConfig,
-  // Prefetch types
   PrefetchManager,
   PrefetchPriority,
   PrefetchStats,
@@ -101,7 +75,6 @@ export type {
   PrefetchTrigger,
 } from "./system/prefetch";
 export type {
-  // Sidebar types
   SidebarContextType,
   SidebarDropdownProps,
   SidebarItemProps,
@@ -109,12 +82,9 @@ export type {
   SidebarWrapperProps,
   TriggerProps,
 } from "./system/sidebar";
-
-// Hook types
 export type {
   ContactContextMenuOptions,
   ContextMenuOption,
-  // Context menu types
   ContextMenuPosition,
   ContextMenuState,
   LeadContextMenuOptions,
@@ -125,17 +95,12 @@ export type {
 export type {
   FetchContextValue,
   FetchOptions,
-  // Fetch types
   FetchState,
   UseFetchResult,
 } from "./hooks/fetch";
-export type {
-  // Lead hook types
-  UseCreateLeadResult,
-} from "./hooks/leads";
+export type { UseCreateLeadResult } from "./hooks/leads";
 export type {
   LeadsByTypeConfig,
-  // Optimized fetch types
   OptimizedFetchConfig,
   Undetermined,
   UseOptimizedFetchReturn,
@@ -146,28 +111,19 @@ export type {
   LeadSearchConfig,
   SearchActions,
   SearchConfig,
-  // Search types
   SearchFieldOption,
   SearchState,
   UseSearchResult,
 } from "./hooks/search";
-
-// Component types
 export type {
   BadgeVariant,
   ProjectTypeBadgeProps,
-  // Badge component types
   StatusBadgeProps,
 } from "./components/badges";
-export type {
-  CacheDiagnosticsProps,
-  // Common component types
-  SearchBoxWithDropdownProps,
-} from "./components/common";
+export type { SearchBoxWithDropdownProps } from "./components/common";
 export type {
   ContactFormComponentProps,
   ContactSectionProps,
-  // Contact component types
   ContactsTableProps,
   ContactsTableSkeletonProps,
   CreateContactModalProps,
@@ -176,7 +132,6 @@ export type {
 export type {
   ContactFormData,
   ContactFormProps,
-  // Form types
   FormFieldProps,
   FormProps,
   LeadFormData,
@@ -188,7 +143,6 @@ export type {
   ContactModeSelectorProps,
   CreateLocalLeadModalProps,
   EditLeadModalProps,
-  // Lead component types
   InstantLeadsListProps,
   LeadFormFieldsProps,
   SelectorFields,
@@ -197,7 +151,6 @@ export type {
   AlertModalProps,
   ConfirmModalProps,
   FormModalProps,
-  // Modal types
   ModalProps,
 } from "./components/modal";
 export type {
@@ -206,12 +159,10 @@ export type {
   SortConfig,
   SortDirection,
   TableProps,
-  // Table types
   TableSkeletonProps,
 } from "./components/table";
 export type {
   BadgeProps,
-  // UI component types
   BaseButtonProps,
   CardContentProps,
   CardFooterProps,
@@ -222,37 +173,24 @@ export type {
   LoadingOverlayProps,
   LoadingSpinnerProps,
 } from "./components/ui";
-
-// Utility types
-export type {
-  // Cache utility types
-  CachedResult,
-} from "./utils/cache";
+export type { CachedResult } from "./utils/cache";
 export type {
   LeadForEdit,
   SelectOption,
   StatusOption,
   ValidateEditLeadData,
   ValidateExistingContactLeadData,
-  // Validation types
   ValidateNewContactLeadData,
 } from "./utils/validation";
-
-// Lib types
-// Lib types
 export type {
-  // API Client types
   CachedRequestConfig,
   OptimizedApiClientMetrics,
   RequestMetrics,
 } from "./lib/api-client";
-
-// Legacy interfaces - these should be migrated eventually
 export interface UseCreateLeadOptions {
   leadType: "new-contact" | "existing-contact";
   onLeadCreated?: (lead: unknown) => void;
 }
-
 
 export interface UseInstantDataConfig<T = unknown> {
   cacheKey: string;

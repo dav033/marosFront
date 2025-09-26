@@ -1,4 +1,3 @@
-// Capa: Presentation — Hook principal (sin resolver repos; usa el use case)
 import * as React from "react";
 
 import type { LeadsAppContext } from "@/features/leads/application/context";
@@ -46,8 +45,6 @@ export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType): LeadsVM {
       cancelled = true;
     };
   }, [load]);
-
-  // Modales
   const [isCreateOpen, setIsCreateOpen] = React.useState(false);
   const [isCreateLocalOpen, setIsCreateLocalOpen] = React.useState(false);
   const [isEditOpen, setIsEditOpen] = React.useState(false);
@@ -71,8 +68,6 @@ export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType): LeadsVM {
     setIsEditOpen(false);
     setEditingLead(null);
   }, []);
-
-  // Sincronización local
   const onLeadUpdated = React.useCallback((lead: Lead) => {
     setLeads((prev) => {
       const next = prev.map((l) => (l.id === lead.id ? lead : l));
@@ -84,11 +79,7 @@ export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType): LeadsVM {
   const onLeadDeleted = React.useCallback(
     async (leadId: Lead["id"]) => {
       try {
-        // Ejecutar el caso de uso que invoca al repositorio (DELETE HTTP)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         await deleteLeadUseCase((ctx as any) as LeadsAppContext, leadId as any);
-
-        // Actualizar estado local solo tras éxito remoto
         setLeads((prev) => {
           const next = prev.filter((l) => l.id !== leadId);
           setSections(buildLeadSections(next));
@@ -96,7 +87,6 @@ export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType): LeadsVM {
         });
       } catch (e: unknown) {
         const msg = getErrorMessage(e) || "Failed to delete lead";
-        // eslint-disable-next-line no-console
         console.error("deleteLead failed:", msg, e);
         throw e;
       }

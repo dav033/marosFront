@@ -1,210 +1,130 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 // src/shared/infra/http/OptimizedApiClient.ts
-/**
- * API Client optimizado con sistema de cache y prefetch integrado.
- * - BaseURL directo a 8080 (tomado de .env o fallback).
- * - Credenciales desactivadas por defecto para evitar conflictos CORS con ACAO:"*".
- */
 import axios, {
   type AxiosInstance,
   type AxiosRequestConfig,
   type AxiosRequestHeaders,
   type AxiosResponse,
-  type InternalAxiosRequestConfig,
 } from "axios";
-
-import { getErrorMessage } from "@/utils/errors";
+import { unifiedCache } from "./cache/cacheManager";
+import type { CachedRequestConfig } from "./types";
+// (Opcional) mantenga sus interceptores de loading si los usa:
 import { attachLoadingInterceptors } from "./axiosLoadingInterceptors";
-import { apiCache, globalCache } from "./cache/cacheManager";
-import type { CachedRequestConfig, RequestMetrics } from "./types";
-import { prefetchManager } from "./prefetch/prefetchManager";
 
-// ========= ENV y defaults =========
-const { VITE_API_BASE_URL, VITE_ENABLE_DIAGNOSTICS, VITE_ENABLE_CACHE } =
-  import.meta.env;
-
-// Forzar 8080 como destino directo si no hay ENV
+const { VITE_API_BASE_URL } = import.meta.env;
 const BASE_URL = VITE_API_BASE_URL || "http://localhost:8080";
 
-const DIAG =
-  VITE_ENABLE_DIAGNOSTICS === true ||
-  VITE_ENABLE_DIAGNOSTICS === "true" ||
-  VITE_ENABLE_DIAGNOSTICS === "1";
-
-const CACHE_ENABLED_DEFAULT =
-  VITE_ENABLE_CACHE === true ||
-  VITE_ENABLE_CACHE === "true" ||
-  VITE_ENABLE_CACHE === "1";
-// ==================================
+/**
+ * stableKey: serializa objetos/arrays/fechas de forma determinística
+ * para construir claves de caché estables e independientes del orden
+ * de las propiedades.
+ */
+function stableKey(input: unknown): string {
+  const normalize = (v: unknown): unknown => {
+    if (v === null || v === undefined) return v;
+    if (v instanceof Date) return v.toISOString();
+    if (Array.isArray(v)) return v.map(normalize);
+    if (typeof v === "object") {
+      const o = v as Record<string, unknown>;
+      const out: Record<string, unknown> = {};
+      for (const k of Object.keys(o).sort()) {
+        out[k] = normalize(o[k]);
+      }
+      return out;
+    }
+    return v;
+  };
+  try {
+    return JSON.stringify(normalize(input));
+  } catch {
+    return String(input);
+  }
+}
 
 export class OptimizedApiClient {
   private axiosInstance: AxiosInstance;
+  private inFlight = new Map<string, Promise<AxiosResponse<any>>>();
 
-  private metrics: RequestMetrics = {
-    cacheHits: 0,
-    cacheMisses: 0,
-    networkRequests: 0,
-    failedRequests: 0,
-    totalRequests: 0,
-    averageResponseTime: 0,
-    prefetchSuccess: 0,
-    prefetchFailed: 0,
-  };
-
-  private responseTimes: number[] = [];
-
-  constructor(baseURL: string) {
+  constructor(baseURL: string = BASE_URL) {
     this.axiosInstance = axios.create({
-      baseURL, // ⬅️ http://localhost:8080 (o el valor de VITE_API_BASE_URL)
+      baseURL,
       headers: { "Content-Type": "application/json" },
-      withCredentials: false, // ⬅️ MUY IMPORTANTE para CORS cuando el backend usa ACAO:"*"
+      withCredentials: false,
     });
-
-    this.setupInterceptors();
-    attachLoadingInterceptors(this.axiosInstance);
-
-    // Inyectar requester para prefetch sin dependencia circular
-    prefetchManager.setRequester(async (depUrl: string) => {
-      try {
-        await this.axiosInstance.get(depUrl, { withCredentials: false });
-      } catch {
-        /* noop */
-      }
-    });
+    attachLoadingInterceptors?.(this.axiosInstance);
   }
 
-  async get<T = unknown>(
-    url: string,
-    config: CachedRequestConfig = {}
-  ): Promise<AxiosResponse<T>> {
-    const startTime = Date.now();
-    this.metrics.totalRequests++;
-
-    const cacheKey = this.generateCacheKey("GET", url, config.params);
-    const cacheConfig = {
-      enabled: CACHE_ENABLED_DEFAULT,
-      strategy: "cache-first" as const,
-      ...(config.cache ?? {}),
-    };
-
-    if (cacheConfig.enabled && cacheConfig.strategy !== "network-only") {
-      const cached = this.getCachedResponse<T>(cacheKey);
-      if (cached) {
-        this.metrics.cacheHits++;
-        this.recordResponseTime(Date.now() - startTime);
-        if (cacheConfig.strategy === "cache-first") return cached;
-      } else {
-        this.metrics.cacheMisses++;
-      }
-    }
-
-    if (cacheConfig.strategy === "cache-only") {
-      throw new Error(`No cached data available for ${url}`);
-    }
-
-    try {
-      this.metrics.networkRequests++;
-      const response = await this.makeRequest<T>("GET", url, undefined, config);
-
-      if (cacheConfig.enabled) {
-        this.setCachedResponse(cacheKey, response, cacheConfig.ttl);
-      }
-
-      const deps = config.prefetch?.dependencies || [];
-      if (deps.length > 0) {
-        await prefetchManager.prefetchMany(deps);
-        this.metrics.prefetchSuccess += deps.length;
-      }
-
-      this.recordResponseTime(Date.now() - startTime);
-      return response;
-    } catch (error) {
-      this.metrics.failedRequests++;
-
-      if (DIAG) {
-        if (axios.isAxiosError(error)) {
-          // eslint-disable-next-line no-console
-          console.warn(
-            `API Error: ${error.response?.status} ${error.response?.statusText}`
-          );
-        } else {
-          // eslint-disable-next-line no-console
-          console.warn("API Error:", getErrorMessage(error));
-        }
-      }
-
-      if (cacheConfig.enabled && cacheConfig.strategy === "network-first") {
-        const cached = this.getCachedResponse<T>(cacheKey);
-        if (cached) return cached;
-      }
-      throw error;
-    }
+  // ========= API pública =========
+  get<T = unknown>(url: string, config?: CachedRequestConfig) {
+    return this.cachedRequest<T>("GET", url, undefined, config);
   }
-
-  async post<T = unknown>(
-    url: string,
-    body?: unknown,
-    config: CachedRequestConfig = {}
-  ): Promise<AxiosResponse<T>> {
+  post<T = unknown>(url: string, body?: unknown, config?: CachedRequestConfig) {
     return this.makeRequest<T>("POST", url, body, config);
   }
-
-  async put<T = unknown>(
-    url: string,
-    body?: unknown,
-    config: CachedRequestConfig = {}
-  ): Promise<AxiosResponse<T>> {
+  put<T = unknown>(url: string, body?: unknown, config?: CachedRequestConfig) {
     return this.makeRequest<T>("PUT", url, body, config);
   }
-
-  async delete<T = unknown>(
-    url: string,
-    config: CachedRequestConfig = {}
-  ): Promise<AxiosResponse<T>> {
+  delete<T = unknown>(url: string, config?: CachedRequestConfig) {
     return this.makeRequest<T>("DELETE", url, undefined, config);
   }
 
-  // ———————————————————— Privates ————————————————————
+  clearCache() { unifiedCache.clear(); }
 
-  private setupInterceptors(): void {
-    this.axiosInstance.interceptors.request.use(
-      (config: InternalAxiosRequestConfig) => {
-        (config as { startTime?: number }).startTime = Date.now();
-        (config as unknown as { __diag?: boolean }).__diag = DIAG;
+  // ========= Internos =========
+  private generateCacheKey(method: string, url: string, params?: Record<string, unknown>) {
+    const q = params ? stableKey(params) : "";
+    return `${method}:${url}?${q}`;
+  }
 
-        // Asegurar que no se reintroduzcan credenciales salvo que se pidan explícitamente
-        if (typeof config.withCredentials !== "boolean") {
-          config.withCredentials = false;
-        }
+  private async cachedRequest<T>(
+    method: "GET",
+    url: string,
+    _body?: unknown,
+    config?: CachedRequestConfig
+  ): Promise<AxiosResponse<T>> {
+    const cacheCfg = { enabled: true, strategy: "cache-first" as const, ttl: 5 * 60_000, ...(config?.cache ?? {}) };
+    const key = this.generateCacheKey(method, url, config?.params);
 
-        return config;
-      },
-      (error) => Promise.reject(error)
-    );
+    // 1) Intento "fresh"
+    if (cacheCfg.enabled && cacheCfg.strategy !== "network-only") {
+      const hit = unifiedCache.getFresh<AxiosResponse<T>>(key);
+      if (hit) return hit.value;
+    }
 
-    this.axiosInstance.interceptors.response.use(
-      (response) => {
-        const start = (response.config as { startTime?: number }).startTime;
-        if (typeof start === "number") {
-          this.recordResponseTime(Date.now() - start);
-        }
-        return response;
-      },
-      (error) => {
-        const enable = (error?.config as any)?.__diag;
-        if (enable && axios.isAxiosError(error)) {
-          // eslint-disable-next-line no-console
-          console.warn(
-            `API Error: ${error.response?.status} ${error.response?.statusText}`,
-            {
-              url: error.config?.url,
-              method: error.config?.method,
-              data: error.response?.data,
-            }
-          );
-        }
-        return Promise.reject(error);
+    // 2) SWR: devolver STALE y revalidar en background
+    if (cacheCfg.enabled && cacheCfg.strategy === "cache-first") {
+      const stale = unifiedCache.peekAny<AxiosResponse<T>>(key);
+      if (stale && !stale.fresh) {
+        void this.refreshWithDedupe<T>(key, method, url, undefined, config, cacheCfg.ttl);
+        return stale.value;
       }
-    );
+    }
+
+    // 3) Red con deduplicación
+    return this.refreshWithDedupe<T>(key, method, url, undefined, config, cacheCfg.ttl);
+  }
+
+  private refreshWithDedupe<T>(
+    cacheKey: string,
+    method: "GET",
+    url: string,
+    body: unknown,
+    config?: CachedRequestConfig,
+    ttl?: number
+  ): Promise<AxiosResponse<T>> {
+    const existing = this.inFlight.get(cacheKey);
+    if (existing) return existing as Promise<AxiosResponse<T>>;
+
+    const p = this.makeRequest<T>(method, url, body, config)
+      .then((res) => {
+        if (ttl != null) unifiedCache.set(cacheKey, res, ttl);
+        return res;
+      })
+      .finally(() => this.inFlight.delete(cacheKey));
+
+    this.inFlight.set(cacheKey, p);
+    return p;
   }
 
   private async makeRequest<T>(
@@ -213,57 +133,16 @@ export class OptimizedApiClient {
     body?: unknown,
     config?: CachedRequestConfig
   ): Promise<AxiosResponse<T>> {
-    // exactOptionalPropertyTypes: true
     const axiosConfig: AxiosRequestConfig<T> = {
-      url,
-      method,
-      data: body as any,
+      url, method, data: body as any,
       params: config?.params,
-      // ⬇️ credenciales desactivadas por defecto (clave para CORS al ir directo a 8080)
       withCredentials: config?.withCredentials ?? false,
     };
-
-    if (config?.headers) {
-      axiosConfig.headers = config.headers as AxiosRequestHeaders;
-    }
-    if (config?.signal) {
-      axiosConfig.signal = config.signal;
-    }
+    if (config?.headers) axiosConfig.headers = config.headers as AxiosRequestHeaders;
+    if (config?.signal) axiosConfig.signal = config.signal;
 
     return this.axiosInstance.request<T>(axiosConfig);
   }
-
-  private getCachedResponse<T>(key: string): AxiosResponse<T> | null {
-    const res =
-      (apiCache.get(key) as AxiosResponse<T> | undefined | null) ??
-      (globalCache.get(key) as AxiosResponse<T> | undefined | null);
-    return res ?? null;
-  }
-
-  private setCachedResponse<T>(
-    key: string,
-    response: AxiosResponse<T>,
-    ttl?: number
-  ): void {
-    apiCache.set(key, response, ttl);
-  }
-
-  private recordResponseTime(ms: number): void {
-    this.responseTimes.push(ms);
-    const sum = this.responseTimes.reduce((a, b) => a + b, 0);
-    this.metrics.averageResponseTime =
-      this.responseTimes.length > 0 ? sum / this.responseTimes.length : 0;
-  }
-
-  private generateCacheKey(
-    method: string,
-    url: string,
-    params?: Record<string, unknown>
-  ): string {
-    const q = params ? JSON.stringify(params) : "";
-    return `${method}:${url}?${q}`;
-  }
 }
 
-// ⬅️ BaseURL directo a 8080 (o el valor exacto de su .env)
 export const optimizedApiClient = new OptimizedApiClient(BASE_URL);

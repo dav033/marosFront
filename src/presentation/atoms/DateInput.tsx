@@ -1,4 +1,3 @@
-// src/presentation/atoms/DateInput.tsx
 import React from "react";
 
 import Icon from "./Icon";
@@ -6,17 +5,12 @@ import Input, { type InputProps } from "./Input";
 
 export interface DateInputProps
   extends Omit<InputProps, "type" | "value" | "onChange"> {
-  /** Valor en formato YYYY-MM-DD (vacío para sin fecha) */
-  value?: string;
-  /** Devuelve el valor en formato YYYY-MM-DD (o "" si limpias) */
-  onChange: (value: string) => void;
-  /** Límites nativos del input date (YYYY-MM-DD) */
-  min?: string;
+    value?: string;
+    onChange: (value: string) => void;
+    min?: string;
   max?: string;
-  /** Muestra un botón para limpiar el valor */
-  withClear?: boolean;
-  /** Permite cambiar el icono izquierdo por defecto */
-  leftIconName?: string;
+    withClear?: boolean;
+    leftIconName?: string;
 }
 
 export default function DateInput({

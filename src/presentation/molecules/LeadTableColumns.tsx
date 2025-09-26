@@ -1,4 +1,3 @@
-// src/presentation/molecules/leads/LeadTableColumns.tsx
 import React from "react";
 
 import type { Lead } from "@/features/leads/domain/models/Lead";
@@ -49,8 +48,6 @@ export const leadTableColumns: Column<Lead>[] = [
     type: "text",
     cellRenderer: (value, lead) => {
       if (!lead.status) return <span>—</span>;
-      
-      // Aplicar el mismo mapeo que en buildSections para consistencia
       const statusMapping: Record<string, string> = {
         "TO_DO": "Pending",
         "NEW": "Pending", // Ambos se mapean a Pending

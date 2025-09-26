@@ -1,4 +1,3 @@
-// maros-app/src/features/leads/domain/services/leadNumberPolicy.ts
 
 import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
 
@@ -13,7 +12,6 @@ export const DEFAULT_LEAD_NUMBER_RULES: LeadNumberRules = {
   maxLength: 0,
 };
 
-/** Normalización básica según reglas. */
 export function normalizeLeadNumber(
   raw: string,
   rules: LeadNumberRules = DEFAULT_LEAD_NUMBER_RULES
@@ -26,10 +24,6 @@ export function normalizeLeadNumber(
   return v;
 }
 
-/**
- * Valida el formato (longitud/patrón) del número de lead ya normalizado.
- * Lanza BusinessRuleError si no cumple.
- */
 export function validateLeadNumberFormat(
   value: string,
   rules: LeadNumberRules = DEFAULT_LEAD_NUMBER_RULES
@@ -70,12 +64,6 @@ export function validateLeadNumberFormat(
   }
 }
 
-/**
- * Construye un número de lead normalizado y válido a partir de la entrada.
- * - `null`/`undefined` → retorna `null` (campo ausente).
- * - `""` → permitido si `allowEmpty=true` (limpieza del número).
- * - Otro string → normaliza + valida (longitud/patrón).
- */
 export function makeLeadNumber(
   input: string | null | undefined,
   rules: LeadNumberRules = DEFAULT_LEAD_NUMBER_RULES
@@ -86,13 +74,6 @@ export function makeLeadNumber(
   return normalized;
 }
 
-/**
- * Política de unicidad. No hace IO por sí misma: recibe un "checker" provisto
- * por la capa de aplicación/infrastructura (repositorio/servicio).
- *
- * Ejemplo de uso en Application:
- *   await ensureLeadNumberAvailable(n, repo.existsLeadNumber);
- */
 export async function ensureLeadNumberAvailable(
   value: string,
   exists: (n: string) => Promise<boolean>

@@ -1,4 +1,3 @@
-// src/presentation/components/lead/StatusBadge.tsx
 import React from "react";
 import { LeadStatus } from "@/features/leads/domain"; // ajuste la ruta si su enum vive en otro módulo
 
@@ -9,10 +8,6 @@ const SIZE_CLASS: Record<Size, string> = {
   md: "text-sm px-2.5 py-1 rounded-lg",
 };
 
-/**
- * Estilos por estado: claves EXACTAS del enum.
- * Si agrega/quita un estado en LeadStatus, TypeScript exigirá actualizar aquí.
- */
 const STATUS_STYLES: Record<LeadStatus, string> = {
   [LeadStatus.NEW]:
     "bg-indigo-100 text-indigo-800 ring-1 ring-inset ring-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-200 dark:ring-indigo-900",
@@ -31,14 +26,10 @@ const STATUS_STYLES: Record<LeadStatus, string> = {
 };
 
 export type StatusBadgeProps = Readonly<{
-  /** Estado EXACTO del enum de dominio. */
-  status: LeadStatus;
-  /** Tamaño visual del badge. */
-  size?: Size;
-  /** Clases extra para personalización. */
-  className?: string;
-  /** Si true, oculta el texto y deja solo el chip de color. */
-  hideLabel?: boolean;
+    status: LeadStatus;
+    size?: Size;
+    className?: string;
+    hideLabel?: boolean;
 }>;
 
 export function StatusBadge({
@@ -55,8 +46,6 @@ export function StatusBadge({
   ]
     .filter(Boolean)
     .join(" ");
-
-  // Muestra exactamente el valor del enum (p.ej., "IN_PROGRESS")
   return <span className={cls}>{hideLabel ? null : status}</span>;
 }
 

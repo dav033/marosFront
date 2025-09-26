@@ -1,4 +1,3 @@
-// src/types/components/sidebar.ts
 import type { ReactNode } from "react";
 
 export interface SidebarWrapperProps {

@@ -1,4 +1,3 @@
-// src/features/contact/domain/services/contactQueries.ts
 
 import type { Contact } from "../models/Contact";
 
@@ -10,17 +9,11 @@ function normLower(s: unknown): string {
   return norm(s).toLowerCase();
 }
 
-/**
- * Filtra contactos "activos".
- * Si tu backend define un flag específico, ajusta esta regla.
- * Aquí consideramos activo si tiene al menos un medio de contacto (email o phone).
- */
 export function filterActive(contacts: readonly Contact[]): Contact[] {
   const src = Array.isArray(contacts) ? contacts : [];
   return src.filter((c) => !!norm(c.email) || !!norm(c.phone));
 }
 
-/** Ordena por nombre ascendente (A→Z), estable y defensivo. */
 export function sortByNameAsc(contacts: readonly Contact[]): Contact[] {
   const src = Array.isArray(contacts) ? contacts : [];
   return [...src].sort((a, b) => {
@@ -28,12 +21,10 @@ export function sortByNameAsc(contacts: readonly Contact[]): Contact[] {
     const bn = normLower(b.name);
     if (an < bn) return -1;
     if (an > bn) return 1;
-    // desempate por id para orden estable
     return (a.id ?? 0) - (b.id ?? 0);
   });
 }
 
-/** Ordena por empresa ascendente (A→Z). */
 export function sortByCompanyAsc(contacts: readonly Contact[]): Contact[] {
   const src = Array.isArray(contacts) ? contacts : [];
   return [...src].sort((a, b) => {
@@ -45,11 +36,6 @@ export function sortByCompanyAsc(contacts: readonly Contact[]): Contact[] {
   });
 }
 
-/**
- * Búsqueda por texto sobre varios campos (companyName, name, email, phone).
- * - Insensible a mayúsculas/minúsculas.
- * - Coincidencia por inclusión (contains).
- */
 export function searchByText(
   contacts: readonly Contact[],
   query: string
@@ -67,7 +53,6 @@ export function searchByText(
   });
 }
 
-/** Paginación simple en memoria (1-based). */
 export function paginate<T>(
   items: readonly T[] = [],
   page: number,
@@ -87,7 +72,6 @@ export function paginate<T>(
   };
 }
 
-/** Agrupa por empresa. */
 export function groupByCompany(
   contacts: readonly Contact[]
 ): Record<string, Contact[]> {

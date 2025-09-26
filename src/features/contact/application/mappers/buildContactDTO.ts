@@ -1,12 +1,7 @@
-// src/features/contacts/application/mappers/buildContactDTO.ts
 
 import type { ContactPatch } from "../../domain/services/applyContactPatch";
 import type { ContactDraft } from "../../domain/services/buildContactDraft";
 
-/**
- * DTO esperado por la API/infra para crear un contacto.
- * Ajuste los nombres si su capa HTTP requiere otras claves.
- */
 export interface CreateContactRequestDTO {
   name: string;
   companyName?: string;
@@ -18,9 +13,6 @@ export interface CreateContactRequestDTO {
   lastContact?: string;
 }
 
-/**
- * DTO para actualizar un contacto (solo campos provistos).
- */
 export type UpdateContactRequestDTO = Partial<CreateContactRequestDTO>;
 
 /* ============================================================
@@ -54,12 +46,6 @@ function pickDefined<T extends object>(obj: T): Partial<T> {
 
 /* ===================== Builders públicos ===================== */
 
-/**
- * Builder único para crear Contact.
- * - Normaliza strings vacíos → undefined.
- * - Exige `name` no vacío.
- * - Omite campos undefined del payload final (compatible con exactOptionalPropertyTypes).
- */
 export function buildCreateContactDTO(draft: ContactDraft): CreateContactRequestDTO {
   const loose: LooseCreateContactRequestDTO = {
     name: (draft.name ?? "").trim(),
@@ -75,17 +61,9 @@ export function buildCreateContactDTO(draft: ContactDraft): CreateContactRequest
   if (!loose.name) {
     throw new Error("Contact name is required");
   }
-
-  // Eliminamos claves con undefined y casteamos al DTO exacto
   return pickDefined(loose) as CreateContactRequestDTO;
 }
 
-/**
- * Builder único para actualizar Contact.
- * - Normaliza strings vacíos → undefined (se omiten).
- * - NO impone `name` (en update puede no venir).
- * - Omite campos undefined del payload final.
- */
 export function buildUpdateContactDTO(
   patch: ContactPatch
 ): UpdateContactRequestDTO {

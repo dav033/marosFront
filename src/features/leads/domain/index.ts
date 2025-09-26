@@ -1,13 +1,6 @@
-// src/features/leads/domain/index.ts
-
-// Models
 export type { Lead } from "./models/Lead";
 export type { ProjectType } from "./models/ProjectType";
-
-// Enums (re-export)
 export { LeadStatus, LeadType } from "../enums";
-
-// Tipos de dominio
 export type {
   ApplyLeadPatchResult,
   Clock,
@@ -27,11 +20,7 @@ export type {
   Result,
 } from "../types";
 export { err,ok, SystemClock } from "../types";
-
-// Errors
 export { BusinessRuleError } from "./errors/BusinessRuleError";
-
-// Services / Policies
 export { applyLeadPatch } from "./services/applyLeadPatch";
 export {
   buildLeadDraftForExistingContact,
@@ -73,7 +62,5 @@ export {
   mapLeadPatchToUpdatePayload,
   type UpdateLeadPayload,
 } from "./services/leadUpdateMapper";
-
-// Ports (solo Leads, como acordamos)
 export type { LeadNumberAvailabilityPort } from "./ports/LeadNumberAvailabilityPort";
 export type { LeadRepositoryPort } from "./ports/LeadRepositoryPort";

@@ -1,12 +1,7 @@
-// src/features/contact/domain/services/mapContactDTO.ts
 
 import type { ContactPatch } from "../services/applyContactPatch";
 import type { ContactDraft } from "../services/buildContactDraft";
 
-/**
- * DTO esperado por la API/infra para crear un contacto.
- * (Opcionales: si la clave existe, debe ser string; con EOPT=true no puede ser undefined.)
- */
 export interface CreateContactRequestDTO {
   name: string;
   companyName?: string;
@@ -18,7 +13,6 @@ export interface CreateContactRequestDTO {
   lastContact?: string;
 }
 
-/** DTO para actualizar un contacto (solo campos provistos). */
 export type UpdateContactRequestDTO = Partial<CreateContactRequestDTO>;
 
 /* Tipos “loose” para construir y luego filtrar (EOPT=true compatible) */

@@ -1,4 +1,3 @@
-// src/shared/infra/http/axiosLoadingInterceptors.ts
 import type { AxiosInstance } from "axios";
 import { loadingBus } from "@/presentation/context/loading/loadingBus";
 
@@ -7,9 +6,6 @@ const matchForSkeleton = (url?: string) =>
 
 let pendingTracked = 0;
 
-/**
- * Instala interceptores de "loading" sobre una **instancia** de Axios.
- */
 export function attachLoadingInterceptors(instance: AxiosInstance) {
   instance.interceptors.request.use((config) => {
     if (matchForSkeleton(config.url)) {

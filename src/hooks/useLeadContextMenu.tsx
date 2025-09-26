@@ -1,4 +1,3 @@
-// src/hooks/useLeadContextMenu.tsx
 
 import type { Lead } from "@/features/leads/domain/models/Lead";
 import { type ContextMenuOption,useContextMenu } from "@/presentation/molecules/ContextMenu";

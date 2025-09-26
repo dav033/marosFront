@@ -1,4 +1,3 @@
-// maros-app/src/features/leads/domain/services/leadStatusPolicy.ts
 
 import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
 
@@ -6,10 +5,6 @@ import { LeadStatus } from "../../enums";
 import type { Clock, DomainEvent } from "../../types";
 import type { Lead } from "../models/Lead";
 
-/**
- * Matriz de transiciones por defecto.
- * Ajuste según sus reglas reales de negocio.
- */
 export const DEFAULT_TRANSITIONS: Readonly<
   Record<LeadStatus, readonly LeadStatus[]>
 > = {
@@ -22,7 +17,6 @@ export const DEFAULT_TRANSITIONS: Readonly<
   [LeadStatus.NOT_EXECUTED]:  [LeadStatus.TO_DO],                       // reprogramado/retomado
 };
 
-/** Verifica si la transición es válida según la matriz proporcionada (o la por defecto). */
 export function canTransition(
   from: LeadStatus,
   to: LeadStatus,
@@ -31,7 +25,6 @@ export function canTransition(
   return from === to || (transitions[from] ?? []).includes(to);
 }
 
-/** Lanza BusinessRuleError si la transición no está permitida. */
 export function ensureTransition(
   from: LeadStatus,
   to: LeadStatus,
@@ -46,10 +39,6 @@ export function ensureTransition(
   }
 }
 
-/**
- * Aplica el cambio de estado sobre el Lead de forma PURA y emite evento si procede.
- * No persiste ni llama red; solo actualiza el agregado y devuelve el/los eventos.
- */
 export function applyStatus(
   clock: Clock,
   lead: Lead,
@@ -57,8 +46,6 @@ export function applyStatus(
   transitions: Readonly<Record<LeadStatus, readonly LeadStatus[]>> = DEFAULT_TRANSITIONS
 ): { lead: Lead; events: DomainEvent[] } {
   const from: LeadStatus = lead.status;
-
-  // Si no cambia, no hay evento
   if (to === from) return { lead, events: [] };
 
   ensureTransition(from, to, transitions);

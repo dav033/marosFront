@@ -1,4 +1,3 @@
-// src/presentation/molecules/ContactModeSwitch.tsx
 import React from "react";
 
 import type { GenericSwitchProps } from "@/presentation/atoms/GenericSwitch";

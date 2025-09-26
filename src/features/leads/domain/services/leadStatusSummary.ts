@@ -1,30 +1,22 @@
-// maros-app/src/features/leads/domain/services/leadStatusSummary.ts
 
 import type { LeadType } from "../../enums";
 import { LeadStatus } from "../../enums";
 import type { Lead } from "../models/Lead";
 
-/** Estado efectivo: mapea null/undefined a UNDETERMINED (defensivo). */
 function toEffectiveStatus(s: LeadStatus | null | undefined): LeadStatus {
   return s ?? LeadStatus.UNDETERMINED;
 }
 
-/** Contadores por estado (interfaz pública readonly). */
 export type StatusCounts = Readonly<Record<LeadStatus, number>>;
-/** Versión interna mutable para el cómputo. */
 type MutableStatusCounts = Record<LeadStatus, number>;
 
-/** Resumen general con métricas derivadas. */
 export type LeadStatusSummary = Readonly<{
   total: number;
   counts: StatusCounts;
-  /** Leads “activos” (no DONE/NOT_EXECUTED/LOST). Ajuste a su negocio si cambia. */
-  active: number;
-  /** Tasa de completados sobre total (0..1). */
-  completionRate: number;
+    active: number;
+    completionRate: number;
 }>;
 
-/** Inicializa contadores en 0 (mutable). */
 function zeroCounts(): MutableStatusCounts {
   return {
     [LeadStatus.NEW]: 0,
@@ -37,13 +29,7 @@ function zeroCounts(): MutableStatusCounts {
   };
 }
 
-/** Regla de “activo”: pendientes/en progreso/por hacer/indeterminados/nuevos. */
-// `isActive` helper was unused; remove to satisfy lint. Keep logic in callers if needed.
 
-/**
- * Calcula contadores por estado y métricas básicas.
- * Puro; NO muta el arreglo recibido.
- */
 export function summarizeLeads(leads: readonly Lead[]): LeadStatusSummary {
   const counts = zeroCounts(); // <- mutable durante el cómputo
   const src = Array.isArray(leads) ? leads : [];
@@ -72,12 +58,9 @@ export function summarizeLeads(leads: readonly Lead[]): LeadStatusSummary {
   ).reduce((acc, k) => acc + counts[k], 0);
 
   const completionRate = total > 0 ? counts[LeadStatus.DONE] / total : 0;
-
-  // Exponer como readonly
   return { total, counts: counts as StatusCounts, active, completionRate };
 }
 
-/** Variante que filtra por tipo de lead antes de resumir. */
 export function summarizeLeadsByType(
   leads: readonly Lead[],
   type: LeadType
@@ -86,7 +69,6 @@ export function summarizeLeadsByType(
   return summarizeLeads(filtered);
 }
 
-/** Devuelve pares {key, count} en un orden dado (ideal para badges/leyendas). */
 export function countsInOrder(
   counts: StatusCounts,
   order: readonly LeadStatus[]

@@ -1,4 +1,3 @@
-// Capa: Presentation — Contacts VM (lista para UI)
 import * as React from "react";
 
 import type { ContactsAppContext } from "@/features/contact/application";

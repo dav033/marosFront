@@ -1,4 +1,3 @@
-// src/presentation/hooks/useCreateLocalLeadController.tsx
 
 import { useState } from "react";
 
@@ -42,7 +41,6 @@ export function useCreateLocalLeadController({
     clock: SystemClock,
     repos: {
       lead: new LocalLeadRepository(),
-      // ✅ ahora sí: cumplimos el contrato del contexto de Leads
       contact: new ContactRepositoryAdapterForLeads(),
     },
     services: {
@@ -59,16 +57,10 @@ export function useCreateLocalLeadController({
     try {
       setIsLoading(true);
       setError(null);
-
-      // En creación local, exigimos leadNumber
       if (!formData.leadNumber) {
         throw new Error("Lead Number is required for local-only creation");
       }
-
-      // Validación de unicidad
       await validateLeadNumberAvailability(ctx, formData.leadNumber);
-
-      // Construcción de input para createLead (unión discriminada)
       const common = {
         leadName: formData.leadName ?? "",
         leadNumber: formData.leadNumber, // string requerido
@@ -85,7 +77,6 @@ export function useCreateLocalLeadController({
             } as const)
           : ({
               ...common,
-              // NewContact espera strings, no undefined
               contact: {
                 companyName:
                   formData.companyName || formData.customerName || "",

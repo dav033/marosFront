@@ -1,6 +1,3 @@
-/**
- * Utility hooks types
- */
 
 import type { VisibilityIntervalOptions } from "../index";
 

@@ -1,4 +1,3 @@
-// src/features/leads/application/usecases/commands/changeLeadStatus.ts
 import type { Lead, LeadId, LeadStatus } from "@/features/leads/domain";
 import { applyStatus, DEFAULT_TRANSITIONS } from "@/features/leads/domain";
 

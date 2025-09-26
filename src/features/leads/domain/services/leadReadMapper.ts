@@ -1,24 +1,12 @@
-// src/features/leads/domain/services/leadReadMapper.ts
 import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
 
 import type { LeadType } from "../../enums";
 import { LeadStatus } from "../../enums";
 import type { Lead } from "../models/Lead";
-
-// =====================
-// Config de lectura
-// =====================
-// 1) Validación estricta en lectura (dejar en false para no romper la UI).
 const STRICT_READ_VALIDATION = false;
-// 2) Permitir contacto placeholder si falta contactId:
 const ALLOW_PLACEHOLDER_CONTACT = true;
-// 3) ID/NOMBRE del contacto placeholder (debe ser un número positivo para no romper tipados).
 const PLACEHOLDER_CONTACT_ID = 999999;
 const PLACEHOLDER_CONTACT_NAME = "Unassigned";
-
-// =====================
-// Tipos DTO (tolerantes)
-// =====================
 export type ApiContactDTO = Readonly<{
   id?: number | null;
   companyName?: string | null;
@@ -44,14 +32,9 @@ export type ApiLeadDTO = Readonly<{
   contactId?: number | null;
   projectType?: ApiProjectTypeDTO | null;
   projectTypeId?: number | null;
-  // legacy
   type?: number | null;
   leadType: LeadType;
 }>;
-
-// =====================
-// Utils
-// =====================
 function normalizeText(s: unknown): string {
   return String(s ?? "").replace(/\s+/g, " ").trim();
 }
@@ -65,7 +48,6 @@ function asNumber(v: unknown): number | undefined {
   }
   return undefined;
 }
-/** Devuelve YYYY-MM-DD aceptando ISO con hora u otros strings parseables. Si falta, usa “hoy”. */
 function coerceIsoLocalDate(input: unknown): string {
   const raw = normalizeText(input);
   if (raw && isIsoLocalDate(raw)) return raw;
@@ -74,32 +56,23 @@ function coerceIsoLocalDate(input: unknown): string {
     const d = new Date(raw);
     if (!Number.isNaN(d.getTime())) return d.toISOString().slice(0, 10);
   }
-  // fallback: hoy (no rompemos la UI por fecha vacía legacy)
   return new Date().toISOString().slice(0, 10);
 }
-/** Busca un projectTypeId válido en múltiples campos del DTO. */
 function resolveProjectTypeId(dto: ApiLeadDTO): number {
   const id =
     asNumber(dto.projectType?.id) ??
     asNumber(dto.projectTypeId) ??
   asNumber((dto as unknown as Record<string, unknown>)["project_type_id"]) ??
     asNumber(dto.type);
-  // Fallback “Unclassified”: id positivo para no romper render
   return id && id > 0 ? id : 9999;
 }
 function effectiveStatus(s: LeadStatus | null | undefined): LeadStatus {
   return s ?? LeadStatus.UNDETERMINED;
 }
-
-// =====================
-// Mapper unitario
-// =====================
 export function mapLeadFromDTO(dto: ApiLeadDTO): Lead {
   if (!dto) {
     throw new BusinessRuleError("NOT_FOUND", "Lead payload is empty");
   }
-
-  // contactId: aceptar objeto embebido o campo suelto; si falta, usar placeholder (si está habilitado)
   let contactId =
     asNumber(dto.contact?.id) ??
     asNumber(dto.contactId);
@@ -139,19 +112,11 @@ export function mapLeadFromDTO(dto: ApiLeadDTO): Lead {
     },
     leadType: dto.leadType,
   };
-
-  // En lectura masiva no ejecutamos la validación estricta para no romper la UI
   if (STRICT_READ_VALIDATION) {
-    // import { ensureLeadIntegrity } from "./ensureLeadIntegrity";
-    // ensureLeadIntegrity(lead);
   }
 
   return lead;
 }
-
-// =====================
-// Mapper de LISTA (tolerante)
-// =====================
 export function mapLeadsFromDTO(list: readonly ApiLeadDTO[] | null | undefined): Lead[] {
   const src = Array.isArray(list) ? list : [];
   const out: Lead[] = [];
@@ -165,8 +130,6 @@ export function mapLeadsFromDTO(list: readonly ApiLeadDTO[] | null | undefined):
       dropped.push({ id: (dto as Partial<ApiLeadDTO>)?.id, reason });
     }
   }
-
-  // Log resumido (una sola línea) para no ensuciar consola en producción
   if (dropped.length) {
     const grouped = dropped.reduce<Record<string, number>>((acc, it) => {
       acc[it.reason] = (acc[it.reason] ?? 0) + 1;

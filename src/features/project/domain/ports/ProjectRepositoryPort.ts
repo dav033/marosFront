@@ -3,7 +3,6 @@ import type { LeadId,ProjectDraft, ProjectId, ProjectPatch } from "@/features/pr
 
 import type { Project } from "../models/Project";
 
-/** Puerto/contrato del repositorio de Projects. */
 export interface ProjectRepositoryPort {
   findById(id: ProjectId): Promise<Project | null>;
   findAll(): Promise<Project[]>;

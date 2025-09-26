@@ -3,8 +3,6 @@ import React from "react";
 import type { Contact } from "@/features/contact/domain/models/Contact";
 import { useContactContextMenu } from "@/hooks/useContactContextMenu";
 import type { Column } from "@/types";
-
-// ⬇️ Usa la DataTable nueva (ajusta la ruta si es distinta en tu repo)
 import DataTable from "./DataTable.tsx";
 
 export type ContactSectionProps = {
@@ -28,9 +26,6 @@ export default function ContactSection({
 
   const { getContactContextOptions } = useContactContextMenu(contactMenuOpts);
 
-  // (Opcional) Si definiste anchos por columna en tus Column<Contact>, DataTable los respeta.
-  // Si prefieres forzar anchos por id/clave, puedes pasar `columnWidths={{ companyName:"18%", ... }}`.
-
   return (
     <section className="space-y-2">
       <h2 className="text-xl font-semibold">
@@ -42,7 +37,6 @@ export default function ContactSection({
         data={data}
         contextMenuOptions={getContactContextOptions}
         showRowSeparators
-        // columnWidths={...} // ← solo si quieres forzar anchos por clave
       />
     </section>
   );

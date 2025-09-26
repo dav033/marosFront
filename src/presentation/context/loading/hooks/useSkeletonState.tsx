@@ -1,4 +1,3 @@
-// src/presentation/context/loading/hooks/useSkeletonState.tsx
 
 import { useMemo } from "react";
 import { type LoadingState, useLoadingState } from "../LoadingContext";

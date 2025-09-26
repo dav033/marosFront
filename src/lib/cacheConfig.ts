@@ -1,4 +1,3 @@
-// src/lib/cacheConfig.ts
 
 export type CacheResourceKey = string;
 
@@ -8,12 +7,9 @@ export interface CacheResourceConfig {
 }
 
 export interface CacheDebugConfig {
-  /** Log general de eventos de cache */
-  log?: boolean;
-  /** Log específico de aciertos de cache */
-  logCacheHits?: boolean;
-  /** Log específico de fallos de cache */
-  logCacheMisses?: boolean;
+    log?: boolean;
+    logCacheHits?: boolean;
+    logCacheMisses?: boolean;
 }
 
 export interface CacheConfigShape {
@@ -36,7 +32,6 @@ function readPersisted(): CacheConfigShape | null {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Partial<CacheConfigShape>;
-    // Validación básica para evitar estados corruptos
     if (typeof parsed?.enabled === "boolean" && parsed.resources) {
       const parsedDebug = (parsed.debug ?? {}) as Partial<CacheDebugConfig>;
       return {
@@ -63,7 +58,6 @@ function persist(config: CacheConfigShape) {
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
   } catch {
-    // ignore
   }
 }
 

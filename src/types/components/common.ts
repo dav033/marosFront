@@ -1,4 +1,3 @@
-// src/types/components/common.ts
 /* eslint-disable simple-import-sort/imports */
 
 import type React from "react";
@@ -18,15 +17,6 @@ export interface SearchBoxWithDropdownProps {
   resultCount?: number;
   totalCount?: number;
 }
-
-export interface CacheDiagnosticsProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-// ===========================================
-// FORM COMPONENTS
-// ===========================================
 
 export interface Option {
   value: string;
@@ -54,10 +44,6 @@ export interface GenericSwitchProps {
   size?: "sm" | "md" | "lg";
 }
 
-// ===========================================
-// CONTEXT MENU
-// ===========================================
-
 export interface ContextMenuProps {
   options: ContextMenuOption[];
   isVisible: boolean;
@@ -65,25 +51,8 @@ export interface ContextMenuProps {
   onClose: () => void;
 }
 
-// ===========================================
-// CACHE COMPONENTS
-// ===========================================
-
-export interface CacheInspectorInitProps {
-  enabled?: boolean;
-}
-
-export interface CacheInitializerProps {
-  enabled?: boolean;
-  debug?: boolean;
-  autoPreload?: boolean;
-}
-
-// ===========================================
-// INPUT COMPONENTS
-// ===========================================
-
-export interface GenericInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface GenericInputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
   className?: string;
   type?: string;
   icon?: string;

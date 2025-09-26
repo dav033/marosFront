@@ -2,7 +2,6 @@ import type { Contact } from "@/features/contact/domain/models/Contact";
 import type { Lead } from "@/features/leads/domain/models/Lead";
 import type { Project } from "@/features/project/domain/models/Project";
 
-/** (Opcional) Estados usados en UI de tablas/etiquetas del reporte */
 export type ActivityStatus =
   | "COMPLETED"
   | "IN_PROGRESS"
@@ -75,8 +74,6 @@ export function selectLocationFromLead(p?: Project | null): string | undefined {
 /* Getters SEGUROS (SIEMPRE devuelven string/array, nunca rompen)     */
 /* Úsalos en UI para evitar crashes por undefined                     */
 /* ------------------------------------------------------------------ */
-
-// Proyecto
 export function getProjectName(p?: Project | null): string {
   return s(p?.projectName);
 }
@@ -92,16 +89,12 @@ export function getProjectEndDate(p?: Project | null): string {
 export function getProjectPeriod(p?: Project | null): string {
   return joinNonEmpty([getProjectStartDate(p), getProjectEndDate(p)]);
 }
-
-// Lead
 export function getLeadNumber(p?: Project | null): string {
   return s(p?.lead?.leadNumber);
 }
 export function getLeadLocation(p?: Project | null): string {
   return s(p?.lead?.location);
 }
-
-// Contact
 export function getClientCompany(p?: Project | null): string {
   return s(p?.lead?.contact?.companyName);
 }
@@ -135,7 +128,6 @@ export type HeaderView = {
   leadNumber: string;
 };
 
-/** Agrega todos los campos de cabecera, siempre como strings seguros. */
 export function getHeaderView(p?: Project | null): HeaderView {
   return {
     projectName: getProjectName(p),

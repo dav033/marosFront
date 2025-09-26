@@ -1,9 +1,7 @@
-// src/features/contact/domain/services/contactUniquenessPolicy.ts
 
 import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
 
 import type { Contact } from "../models/Contact";
-// Si prefieres aislar errores por feature, mueve BusinessRuleError a contact/domain/errors.
 import {
   areContactsPotentialDuplicates,
   type DuplicateCheckOptions,
@@ -48,9 +46,6 @@ function toLike(c: Contact | ContactLike): ContactLike {
 
 /* ----------------- API pública ----------------- */
 
-/**
- * Construye un índice (identity key → contactos).
- */
 export function buildIdentityIndex(
   contacts: readonly Contact[],
   opts: UniquenessOptions = {}
@@ -73,10 +68,6 @@ export function buildIdentityIndex(
   return index;
 }
 
-/**
- * Devuelve true si `candidate` es potencial duplicado de alguno en `existing`.
- * Retorna además la primera coincidencia y la identity key evaluada.
- */
 export function isDuplicateContact(
   candidate: Contact | ContactLike,
   existing: readonly Contact[],
@@ -93,21 +84,15 @@ export function isDuplicateContact(
     },
     opts
   );
-
-  // Búsqueda por identidad directa
   const index = buildIdentityIndex(existing, opts);
   const bucket = index.get(key);
   if (bucket && bucket.length > 0) {
-    // Validación extra por heurística de duplicados (email/phone/name[-company])
     for (const item of bucket) {
       if (areContactsPotentialDuplicates(like, item, opts)) {
         return { duplicate: true, key, match: item };
       }
     }
   }
-
-  // Búsqueda defensiva: si el key cayó en "name[-company]" puede haber colisiones.
-  // Recorremos toda la colección aplicando la heurística completa.
   for (const item of existing ?? []) {
     if (areContactsPotentialDuplicates(like, item, opts)) {
       return { duplicate: true, key, match: item };
@@ -117,9 +102,6 @@ export function isDuplicateContact(
   return { duplicate: false, key };
 }
 
-/**
- * Lista TODOS los posibles duplicados de un candidato dentro de `existing`.
- */
 export function listPotentialDuplicates(
   candidate: Contact | ContactLike,
   existing: readonly Contact[],
@@ -135,9 +117,6 @@ export function listPotentialDuplicates(
   return out;
 }
 
-/**
- * Agrupa la colección completa por identity key, devolviendo sólo grupos con colisión (size > 1).
- */
 export function findDuplicateGroups(
   contacts: readonly Contact[],
   opts: UniquenessOptions = {}
@@ -152,9 +131,6 @@ export function findDuplicateGroups(
   return result;
 }
 
-/**
- * Lanza si `candidate` colisiona con un contacto existente (según políticas).
- */
 export function assertUniqueContact(
   candidate: Contact | ContactLike,
   existing: readonly Contact[],

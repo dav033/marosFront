@@ -1,4 +1,3 @@
-// src/presentation/atoms/Button.tsx
 import cn from "classnames";
 import React from "react";
 

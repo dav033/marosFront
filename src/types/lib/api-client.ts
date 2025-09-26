@@ -1,18 +1,16 @@
-// src/types/lib/api-client.ts
-
 import type { AxiosRequestConfig } from "axios";
 
 export interface CachedRequestConfig extends AxiosRequestConfig {
   cache?: {
     enabled?: boolean;
-    ttl?: number; // Time to live en milliseconds
-    key?: string; // Clave personalizada para el cache
+    ttl?: number;
+    key?: string;
     strategy?: "cache-first" | "network-first" | "cache-only" | "network-only";
   };
   prefetch?: {
     enabled?: boolean;
     priority?: "low" | "medium" | "high";
-    dependencies?: string[]; // Otras requests que deberían prefetched junto con esta
+    dependencies?: string[];
   };
   retry?: {
     enabled?: boolean;

@@ -103,8 +103,6 @@ export function useCreateLeadVM({
       if (leadNumber) {
         await validateLeadNumberAvailability(ctx, leadNumber);
       }
-
-      // ✅ Llamada unificada a createLead
       const common = {
         leadName: (form.leadName || form.name || "").trim(),
         leadNumber: leadNumber || null,

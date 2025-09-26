@@ -15,8 +15,6 @@ export const useCreateLead = ({
   onLeadCreated,
 }: UseCreateLeadOptions) => {
   const ctx = useLeadsApp();
-
-  // Map the string leadType to the actual LeadType enum
   const getLeadType = useCallback(() => {
     switch (leadType) {
       case "new-contact":

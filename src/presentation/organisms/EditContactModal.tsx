@@ -1,9 +1,10 @@
 // src/presentation/organisms/EditContactModal.tsx
 import React from "react";
-import type { Contact } from "../../types";
-import { useEditContactController } from "../hooks/useEditContactController";
-import ContactForm from "../molecules/ContactForm";
-import BaseContactModal from "./BaseContactModal";
+
+import type { Contact } from "@/features/contact/domain/models/Contact";
+import { useEditContactController } from "@/presentation/hooks/useEditContactController";
+import ContactForm from "@/presentation/molecules/ContactForm";
+import BaseFormModal from "@/presentation/organisms/BaseFormModal";
 
 export type EditContactModalProps = {
   isOpen: boolean;
@@ -56,14 +57,14 @@ function EditContactModalInner({
   };
 
   return (
-    <BaseContactModal
+    <BaseFormModal
       isOpen={isOpen}
       onClose={() => onClose(false)}
       title="Edit Contact"
       error={err}
       onSubmit={handleModalSubmit}
       submitText="Update Contact"
-      loadingText="Updating..."
+      loadingText="Updating."
       isLoading={loading}
     >
       <ContactForm
@@ -74,6 +75,6 @@ function EditContactModalInner({
         }}
         disabled={loading}
       />
-    </BaseContactModal>
+    </BaseFormModal>
   );
 }

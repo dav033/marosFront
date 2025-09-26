@@ -1,4 +1,3 @@
-// src/presentation/molecules/TableSkeleton.tsx
 import React from "react";
 
 import CardRowSkeleton from "./CardRowSkeleton";
@@ -6,12 +5,9 @@ import SectionHeaderSkeleton from "./SectionHeaderSkeleton";
 
 
 export type TableSkeletonProps = {
-  /** Cantidad de filas (cuando no hay secciones) */
-  rows?: number;
-  /** Muestra secciones (Pending/In Progress/...) */
-  showSections?: boolean;
-  /** Títulos de secciones (si no se proveen, se usa un set por defecto) */
-  sectionTitles?: string[];
+    rows?: number;
+    showSections?: boolean;
+    sectionTitles?: string[];
   className?: string;
 };
 
@@ -27,13 +23,8 @@ const TableSkeleton: React.FC<TableSkeletonProps> = ({
     sectionTitles && sectionTitles.length > 0
       ? sectionTitles
       : ["Pending", "In Progress", "Completed", "Undetermined", "Lost"];
-
-  // Header superior (título + CTA fantasma)
   const Header = () => (
     <SectionHeaderSkeleton
-      // si quieres tamaños específicos, puedes pasarlos:
-      // titleH={32} subtitleH={16} ctaH={40}
-      // titleW="w-48" subtitleW="w-32" ctaW="w-32"
     />
   );
 

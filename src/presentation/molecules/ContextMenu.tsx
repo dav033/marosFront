@@ -1,4 +1,3 @@
-// src/presentation/molecules/ContextMenu.tsx
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -119,8 +118,6 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
       })}
     </div>
   );
-
-  // SSR-safe + portal fuera de <tbody>
   return typeof document !== "undefined"
     ? createPortal(menu, document.body)
     : null;
@@ -141,8 +138,6 @@ export const useContextMenu = () => {
     event.stopPropagation();
 
     const { clientX, clientY } = event;
-
-    // Mantener consistencia con min-w-[180px]
     const menuWidth = 180;
     const menuHeight = 100;
 

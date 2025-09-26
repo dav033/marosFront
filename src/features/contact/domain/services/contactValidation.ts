@@ -1,7 +1,5 @@
-// src/features/contact/domain/services/contactValidation.ts
 
 import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
-// Si desea aislar por feature, cree contact/domain/errors/BusinessRuleError.ts y ajuste este import.
 
 /* =========================
  *   Tipos y configuración
@@ -60,19 +58,16 @@ export function normLower(s: unknown): string {
   return normText(s).toLowerCase();
 }
 
-/** Regex pragmático para email (suficiente para UI). */
 export function isValidEmail(email?: string): boolean {
   if (!email) return true; // vacío permitido salvo política superior
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-/** Cuenta dígitos de un teléfono ya normalizado (o crudo). */
 export function countPhoneDigits(p?: string): number {
   if (!p) return 0;
   return String(p).replace(/\D+/g, "").length;
 }
 
-/** YYYY-MM-DD o ISO 8601 con hora. */
 export function isISODateOrDateTime(s: string): boolean {
   return /^\d{4}-\d{2}-\d{2}([T ]\d{2}:\d{2}(:\d{2}(\.\d{1,3})?)?(Z|[+\-]\d{2}:\d{2})?)?$/.test(
     s
@@ -83,10 +78,6 @@ export function isISODateOrDateTime(s: string): boolean {
  *   API de validación
  * ========================= */
 
-/**
- * Valida campos de contacto (draft o patch ya normalizado).
- * Devuelve la lista de issues sin lanzar.
- */
 export function collectContactValidationIssues(
   input: Partial<Record<ContactField, unknown>>,
   policies: ContactValidationPolicies = {}
@@ -99,8 +90,6 @@ export function collectContactValidationIssues(
   const email = normText(input.email as string);
   const phone = normText(input.phone as string);
   const lastContact = normText(input.lastContact as string);
-
-  // Requeridos
   if ("companyName" in input && !companyName) {
     issues.push({
       field: "companyName",
@@ -115,8 +104,6 @@ export function collectContactValidationIssues(
       message: "Contact name must not be empty",
     });
   }
-
-  // Longitudes
   if (companyName && companyName.length > cfg.maxCompanyLength) {
     issues.push({
       field: "companyName",
@@ -133,8 +120,6 @@ export function collectContactValidationIssues(
       details: { length: name.length },
     });
   }
-
-  // Políticas de contacto
   if (cfg.requireAtLeastOneReach) {
     const hasEmail = !!email;
     const hasPhone = !!phone;
@@ -147,8 +132,6 @@ export function collectContactValidationIssues(
       });
     }
   }
-
-  // Email si existe
   if (email && !isValidEmail(email)) {
     issues.push({
       field: "email",
@@ -157,8 +140,6 @@ export function collectContactValidationIssues(
       details: { value: email },
     });
   }
-
-  // Teléfono si existe
   if (phone && countPhoneDigits(phone) < cfg.minPhoneDigits) {
     issues.push({
       field: "phone",
@@ -167,8 +148,6 @@ export function collectContactValidationIssues(
       details: { value: phone },
     });
   }
-
-  // lastContact ISO (opcional)
   if (cfg.validateLastContactISO && lastContact && !isISODateOrDateTime(lastContact)) {
     issues.push({
       field: "lastContact",
@@ -181,10 +160,6 @@ export function collectContactValidationIssues(
   return issues;
 }
 
-/**
- * Lanza BusinessRuleError si existe al menos un issue.
- * Útil para endpoints de caso de uso que prefieren fail-fast.
- */
 export function assertNoValidationIssues(
   issues: readonly ValidationIssue[]
 ): void {
@@ -194,10 +169,6 @@ export function assertNoValidationIssues(
   });
 }
 
-/**
- * Atajo: valida y lanza si hay errores.
- * Útil desde servicios como ensureContactDraftIntegrity/applyContactPatch.
- */
 export function validateOrThrow(
   input: Partial<Record<ContactField, unknown>>,
   policies: ContactValidationPolicies = {}

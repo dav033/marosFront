@@ -1,4 +1,3 @@
-// src/presentation/organisms/ContactsIsland.tsx
 /* eslint-disable simple-import-sort/imports */
 import React from "react";
 import { useInstantContacts } from "@/hooks/useInstantContacts";
@@ -27,13 +26,9 @@ function ContactsIslandInner() {
     hook.refetch ?? (hook.reload ? (() => hook.reload!(true)) : (async () => {}));
 
   const { setSkeleton, showLoading, hideLoading } = useLoading();
-
-  // ⚙️ Configura tipo de skeleton: SIN overlay
   React.useEffect(() => {
     setSkeleton("contactsTable", { rows: 15 /* overlay: false por defecto */ });
   }, [setSkeleton]);
-
-  // 🔁 Refleja la carga real al contexto global (sin overlay)
   React.useEffect(() => {
     if (isLoading) {
       showLoading("contactsTable", { rows: 15 }); // ← sin overlay
@@ -54,7 +49,6 @@ function ContactsIslandInner() {
   return (
     <div className="space-y-6">
       {isLoading ? (
-        // 🧱 Skeleton ocupa el mismo espacio que la tabla
         <SkeletonRenderer />
       ) : (
   <ContactsTable contacts={contacts as unknown as Contact[]} onRefetch={refetch} />

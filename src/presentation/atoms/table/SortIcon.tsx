@@ -1,4 +1,3 @@
-// src/presentation/atoms/table/SortIcon.tsx
 import React from "react";
 
 export default function SortIcon({ dir }: { dir: "asc" | "desc" }) {

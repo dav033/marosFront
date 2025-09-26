@@ -1,10 +1,8 @@
-// src/types/system/config.ts
-
 export type CacheResourceKey = "contacts" | "leads" | "projectTypes";
 
 export interface CacheResourceConfig {
   enabled: boolean;
-  ttl: number; // ms
+  ttl: number; 
 }
 
 export interface DebugConfig {

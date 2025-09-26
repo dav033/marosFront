@@ -1,4 +1,3 @@
-// src/features/leads/infra/http/LeadNumberAvailabilityHttpService.ts
 
 import type { LeadNumberAvailabilityPort } from "@/features/leads/domain/ports/LeadNumberAvailabilityPort";
 import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";

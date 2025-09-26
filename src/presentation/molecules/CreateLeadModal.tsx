@@ -1,4 +1,3 @@
-// src/presentation/organisms/leads/CreateLeadModal.tsx
 import React from "react";
 
 import type { Lead } from "@/features/leads/domain";
@@ -11,8 +10,8 @@ import type { LeadFormData } from "@/types/components/form";
 import {FormMode } from "@/types/enums";
 
 import { useCreateLeadVM } from "../hooks/useCreateLeadVM";
-import BaseLeadModal from "../organisms/BaseLeadModal";
 import LeadFormFields, { type LeadFormFieldsProps } from "./LeadFormFields";
+import BaseFormModal from "../organisms/BaseFormModal";
 
 export type CreateLeadModalProps = {
   isOpen: boolean;
@@ -58,8 +57,6 @@ export default function CreateLeadModal({
     if (error) setError(null);
     setField(name, value);
   };
-
-  // ---------- Adaptador para ContactModeSelector ----------
   const newContactForm: NewContactForm = {
     customerName: form.customerName ?? "",
     contactName: form.contactName ?? "",
@@ -71,8 +68,6 @@ export default function CreateLeadModal({
     const v = (value ?? "") as string; // normaliza undefined → ""
     handleSafeChange(key as keyof LeadFormData, v);
   };
-
-  // ---------- Adaptador para LeadFormFields ----------
   const leadFields: LeadFormFieldsProps["form"] = {
     leadNumber: form.leadNumber ?? "",
     leadName: form.leadName ?? "",
@@ -88,12 +83,10 @@ export default function CreateLeadModal({
     value
   ) => {
     if (error) setError(null);
-    // numéricos opcionales → se permiten undefined
     if (field === "projectTypeId" || field === "contactId") {
       handleSafeChange(field as keyof LeadFormData, value as number | undefined);
       return;
     }
-    // strings: normalizar undefined → ""
     const normalized = (value ?? "") as string;
     handleSafeChange(field as keyof LeadFormData, normalized);
   };
@@ -104,7 +97,7 @@ export default function CreateLeadModal({
   };
 
   return (
-    <BaseLeadModal
+    <BaseFormModal
       isOpen={isOpen}
       onClose={onClose}
       title="Crear Lead"
@@ -133,6 +126,6 @@ export default function CreateLeadModal({
         contactMode={contactMode}          // ✅ enum unificado
         showLeadNumber={showLeadNumber}
       />
-    </BaseLeadModal>
+    </BaseFormModal>
   );
 }

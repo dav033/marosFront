@@ -1,4 +1,3 @@
-// src/features/leads/application/usecases/commands/patchLead.ts
 import type {
   ISODate,
   Lead,
@@ -11,7 +10,6 @@ import type { LeadPatchPolicies } from "@/features/leads/types";
 import type { LeadsAppContext } from "../../context";
 import { getLeadById } from "../queries/getLeadById";
 
-/** Construye un LeadPatch SOLO con los cambios (sin mutar, para respetar readonly). */
 function diffToPatch(current: Lead, updated: Lead): LeadPatch {
   return {
     ...(updated.name !== current.name ? { name: updated.name } : {}),
@@ -34,10 +32,6 @@ function diffToPatch(current: Lead, updated: Lead): LeadPatch {
   };
 }
 
-/**
- * Aplica un patch de dominio (normalización + validación + transición) y persiste.
- * Retorna el Lead actualizado desde el repositorio.
- */
 export async function patchLead(
   ctx: LeadsAppContext,
   id: LeadId,
@@ -45,19 +39,13 @@ export async function patchLead(
   policies: LeadPatchPolicies = {}
 ): Promise<Lead> {
   const current = await getLeadById(ctx, id);
-
-  // Normaliza/valida en dominio
   const { lead: updated /*, events*/ } = applyLeadPatch(
     ctx.clock,
     current,
     patch,
     policies
   );
-
-  // Genera un patch “limpio” con los cambios efectivos
   const normalizedPatch = diffToPatch(current, updated);
-
-  // Persistencia vía repo (el adapter mapeará a DTO de API)
   const saved = await ctx.repos.lead.update(id, normalizedPatch);
 
   return saved;

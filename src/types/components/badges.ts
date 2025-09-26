@@ -1,4 +1,3 @@
-// src/types/components/badges.ts
 
 import type { LeadStatus } from "../enums";
 

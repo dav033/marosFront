@@ -1,12 +1,7 @@
-// src/types/hooks/context-menu.ts
 
 import type { ReactNode } from "react";
 
 import type { Lead } from "@/features/leads/domain";
-
-// ===========================================
-// CONTEXT MENU HOOK TYPES
-// ===========================================
 
 export interface ContextMenuPosition {
   x: number;
@@ -37,8 +32,6 @@ export interface UseContextMenuResult {
   show: (event: React.MouseEvent, options: ContextMenuOption[]) => void;
   hide: () => void;
 }
-
-// Specific context menu types
 export interface ContactContextMenuOptions {
   onView: () => void;
   onEdit: () => void;

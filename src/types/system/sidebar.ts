@@ -1,5 +1,3 @@
-// src/types/system/sidebar.ts
-
 export interface SidebarContextType {
   isOpen: boolean;
   toggle: () => void;

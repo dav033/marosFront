@@ -1,4 +1,3 @@
-// maros-app/src/features/contact/domain/index.ts
 export type { Contact } from "./models/Contact";
 export type { ContactRepositoryPort } from "./ports/ContactRepositoryPort";
 export type { ContactUniquenessPort } from "./ports/ContactUniquenessPort";

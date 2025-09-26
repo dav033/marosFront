@@ -1,4 +1,3 @@
-// src/presentation/molecules/ModalActions.tsx
 import React from "react";
 
 import { Button } from "@/presentation/atoms";
@@ -10,8 +9,7 @@ type ModalActionsProps = {
   isLoading?: boolean;
   loadingText?: string;
   isSubmitDisabled?: boolean;
-  /** Id del <form> a disparar con el botón submit */
-  formId?: string;
+    formId?: string;
 };
 
 export default function ModalActions({

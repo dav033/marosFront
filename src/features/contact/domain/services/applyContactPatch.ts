@@ -1,9 +1,7 @@
-// src/features/contact/domain/services/applyContactPatch.ts
 
 import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
 
 import type { Contact } from "../models/Contact";
-// Si prefieres no cruzar features, define BusinessRuleError en contact/domain/errors y ajusta el import.
 import type { ContactDraftPolicies } from "./ensureContactDraftIntegrity";
 
 /* ----------------- Tipos ----------------- */
@@ -16,8 +14,7 @@ export type ContactPatch = Readonly<{
   occupation?: string | undefined;
   product?: string | undefined;
   address?: string | undefined;
-  /** ISO 8601 (YYYY-MM-DD o datetime). */
-  lastContact?: string | undefined;
+    lastContact?: string | undefined;
 }>;
 
 export type ApplyContactPatchResult = Readonly<{
@@ -83,12 +80,6 @@ function isISODateOrDateTime(s: string): boolean {
 
 /* ----------------- Servicio principal ----------------- */
 
-/**
- * Aplica un patch de forma PURA sobre un Contact:
- * - Normaliza campos de texto/email/teléfono.
- * - Valida formatos y longitudes configurables.
- * - Devuelve el contacto actualizado y un evento con la lista de campos cambiados.
- */
 export function applyContactPatch(
   current: Contact,
   patch: ContactPatch,
@@ -98,8 +89,6 @@ export function applyContactPatch(
 
   let updated: Contact = { ...current };
   const changed: string[] = [];
-
-  // companyName
   if (patch.companyName !== undefined) {
     const v = normText(patch.companyName);
     if (!v) {
@@ -121,8 +110,6 @@ export function applyContactPatch(
       changed.push("companyName");
     }
   }
-
-  // name
   if (patch.name !== undefined) {
     const v = normText(patch.name);
     if (!v) {
@@ -144,8 +131,6 @@ export function applyContactPatch(
       changed.push("name");
     }
   }
-
-  // email
   if (patch.email !== undefined) {
     const v = normEmail(patch.email);
     if (v && !isValidEmail(v)) {
@@ -159,8 +144,6 @@ export function applyContactPatch(
       changed.push("email");
     }
   }
-
-  // phone
   if (patch.phone !== undefined) {
     const v = normPhone(patch.phone);
     if (v && countDigits(v) < cfg.phoneMinDigits) {
@@ -176,8 +159,6 @@ export function applyContactPatch(
       changed.push("phone");
     }
   }
-
-  // occupation
   if (patch.occupation !== undefined) {
     const v = normText(patch.occupation);
     if (v !== normText(updated.occupation)) {
@@ -185,8 +166,6 @@ export function applyContactPatch(
       changed.push("occupation");
     }
   }
-
-  // product
   if (patch.product !== undefined) {
     const v = normText(patch.product);
     if (v !== normText(updated.product)) {
@@ -194,8 +173,6 @@ export function applyContactPatch(
       changed.push("product");
     }
   }
-
-  // address
   if (patch.address !== undefined) {
     const v = normText(patch.address);
     if (v !== normText(updated.address)) {
@@ -203,8 +180,6 @@ export function applyContactPatch(
       changed.push("address");
     }
   }
-
-  // lastContact
   if (patch.lastContact !== undefined) {
     const v = normText(patch.lastContact) || undefined;
     if (v && cfg.validateLastContactISO && !isISODateOrDateTime(v)) {
@@ -220,8 +195,6 @@ export function applyContactPatch(
       changed.push("lastContact");
     }
   }
-
-  // (opcional) política: al menos un medio de contacto
   if (cfg.requireAtLeastOneReach) {
     const hasEmail = !!updated.email;
     const hasPhone = !!updated.phone;

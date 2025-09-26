@@ -10,8 +10,6 @@ const SidebarItem = memo(function SidebarItem({
   currentPath,
 }: SidebarItemProps) {
   const isActive = currentPath === to;
-
-  // Clases calculadas una sola vez
   const className = [
     "w-full h-[30px] text-center hover:bg-gray-800 transition-colors duration-200",
     "flex items-center justify-start py-5 pl-4 pr-2",

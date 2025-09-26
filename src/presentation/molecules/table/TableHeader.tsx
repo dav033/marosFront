@@ -1,4 +1,3 @@
-// src/presentation/molecules/table/TableHeader.tsx
 import React, { memo } from "react";
 
 import SortIcon from "@/presentation/atoms/table/SortIcon";

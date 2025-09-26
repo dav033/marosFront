@@ -1,4 +1,3 @@
-// src/features/project/infra/ProjectHttpGateway.ts
 import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
 
 export type ProjectsDto = {
@@ -11,7 +10,6 @@ export type ProjectsDto = {
   quickbooks?: boolean;
   startDate?: string | null; // ISO (LocalDate → "YYYY-MM-DD")
   endDate?: string | null;
-  // Datos del lead/contact:
   leadId: number;
   leadName: string;
   leadNumber: string;

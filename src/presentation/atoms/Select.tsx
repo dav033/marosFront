@@ -45,8 +45,6 @@ export default function Select({
   });
   const containerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // Cerrar al hacer click fuera (container o dropdown)
   useEffect(() => {
     const onClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
@@ -56,8 +54,6 @@ export default function Select({
     window.addEventListener("mousedown", onClickOutside);
     return () => window.removeEventListener("mousedown", onClickOutside);
   }, []);
-
-  // Calcular posición del portal
   useEffect(() => {
     if (isOpen && containerRef.current) {
       const rect = containerRef.current.getBoundingClientRect();

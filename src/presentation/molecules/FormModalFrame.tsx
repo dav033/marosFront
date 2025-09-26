@@ -1,4 +1,3 @@
-// src/presentation/molecules/FormModalFrame.tsx
 import React, { useId } from "react";
 
 import Modal from "@/presentation/organisms/Modal";
@@ -9,18 +8,13 @@ type FormModalFrameProps = {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  /** id del <h2> para aria-labelledby */
-  titleId?: string;
-  /** id del bloque descriptivo para aria-describedby */
-  descriptionId?: string;
+    titleId?: string;
+    descriptionId?: string;
   size?: "sm" | "md" | "lg" | "xl";
   className?: string;
-  /** Slot opcional (acciones a la derecha del header) */
-  headerRightSlot?: React.ReactNode;
-  /** Contenido de body (puede incluir el <form>) */
-  body: React.ReactNode;
-  /** Contenido del footer (botones) */
-  footer: React.ReactNode;
+    headerRightSlot?: React.ReactNode;
+    body: React.ReactNode;
+    footer: React.ReactNode;
 };
 
 const SIZE_MAP: Record<NonNullable<FormModalFrameProps["size"]>, string> = {

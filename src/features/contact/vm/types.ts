@@ -1,4 +1,3 @@
-// Capa: Presentation — Contacts VM (tipos)
 import type { Contact } from "@/features/contact/domain/models/Contact";
 
 export interface ContactsVM {

@@ -35,8 +35,7 @@ export const useLeadsApp = (): LeadsAppContext => {
 };
 
 export const DiProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
-  /** CONTACTS — DI crea las dependencias y se las pasa a la fábrica (como en Leads). */
-  const contactsCtx = useMemo<ContactsAppContext>(() => {
+    const contactsCtx = useMemo<ContactsAppContext>(() => {
     return makeContactsAppContext({
       repos: {
         contact: new ContactHttpRepository(),
@@ -44,8 +43,7 @@ export const DiProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     });
   }, []);
 
-  /** LEADS — DI con repos contacto (adaptador), lead y projectType + servicio de disponibilidad. */
-  const leadsCtx = useMemo<LeadsAppContext>(() => {
+    const leadsCtx = useMemo<LeadsAppContext>(() => {
     return makeLeadsAppContext({
       clock: SystemClock,
       repos: {

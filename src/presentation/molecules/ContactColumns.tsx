@@ -1,8 +1,5 @@
-// src/presentation/molecules/contact/ContactColumns.tsx
 import type { Contact } from "@/features/contact/domain/models/Contact";
 import type { Column } from "@/types";
-
-// Anchos (la tabla usa style.width)
 export const contactColumnWidths: Record<
   | "companyName"
   | "name"
@@ -23,8 +20,6 @@ export const contactColumnWidths: Record<
   address: "15%",
   lastContact: "12%",
 };
-
-// Helper para definir columnas sin repetir label/header
 const col = <K extends keyof Contact>(
   key: K,
   header: string,

@@ -1,4 +1,3 @@
-// src/presentation/molecules/CardRowSkeleton.tsx
 import React from "react";
 
 import SkeletonBlock from "@/presentation/atoms/SkeletonBlock";
@@ -6,22 +5,14 @@ import SkeletonBlock from "@/presentation/atoms/SkeletonBlock";
 export type LineItem = { w: string; h?: number };
 
 export type CardRowSkeletonProps = {
-  /** Ítems (ancho/alto) de la primera línea */
-  line1?: ReadonlyArray<LineItem>;
-  /** Ítems (ancho/alto) de la segunda línea */
-  line2?: ReadonlyArray<LineItem>;
-  /** Cantidad de “acciones” a la derecha (botones fantasma) */
-  actions?: number;
-  /** Alto de cada acción en px */
-  actionH?: number;
-  /** Clase de ancho Tailwind para cada acción (ej: "w-8") */
-  actionWClass?: string;
-  /** Clases extra */
-  className?: string;
-  /** Clases del contenedor “card” */
-  containerClassName?: string;
-  /** Desactiva el pulso */
-  pulse?: boolean;
+    line1?: ReadonlyArray<LineItem>;
+    line2?: ReadonlyArray<LineItem>;
+    actions?: number;
+    actionH?: number;
+    actionWClass?: string;
+    className?: string;
+    containerClassName?: string;
+    pulse?: boolean;
 };
 
 const DEFAULT_LINE1: LineItem[] = [

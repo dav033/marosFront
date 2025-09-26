@@ -1,4 +1,3 @@
-// maros-app/src/features/leads/domain/services/leadCreateMapper.ts
 
 import type { LeadStatus,LeadType } from "../../enums";
 import type {
@@ -45,11 +44,9 @@ export type CreateLeadPayload =
 /* ----------------- Mapper principal ----------------- */
 
 function toProjectTypeDTO(id: number) {
-  // El backend actual acepta name/color vacíos.
   return { id, name: "", color: "" } as const;
 }
 
-/** Mapear draft con contacto nuevo → payload de creación */
 export function mapDraftWithNewContactToPayload(
   draft: LeadDraftWithNewContact
 ): CreateLeadWithNewContactPayload {
@@ -74,7 +71,6 @@ export function mapDraftWithNewContactToPayload(
   return { lead, contact };
 }
 
-/** Mapear draft con contacto existente → payload de creación */
 export function mapDraftWithExistingContactToPayload(
   draft: LeadDraftWithExistingContact
 ): CreateLeadWithExistingContactPayload {
@@ -92,14 +88,9 @@ export function mapDraftWithExistingContactToPayload(
   return { lead, contactId: draft.contactId };
 }
 
-/**
- * Dispatcher conveniente: recibe cualquier LeadDraft y devuelve el payload correcto.
- * Útil para casos de uso que aceptan ambas variantes.
- */
 export function mapLeadDraftToCreatePayload(draft: LeadDraft): CreateLeadPayload {
   if ("contact" in draft) {
     return mapDraftWithNewContactToPayload(draft);
   }
-  // por descarte, es ExistingContact
   return mapDraftWithExistingContactToPayload(draft as LeadDraftWithExistingContact);
 }

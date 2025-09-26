@@ -32,10 +32,8 @@ export function useCreateContactController({ onSubmit }: UseCreateContactControl
   const validate = (f: ContactFormData): string | null => {
     if (!f.companyName?.trim()) return "Company is required";
     if (!f.name?.trim()) return "Contact name is required";
-    // opcional: validar email
     if (f.email && !/^\S+@\S+\.\S+$/.test(f.email)) return "Invalid email format";
     return null;
-    // (si lastContact es date opcional, no bloqueamos)
   };
 
   const submit = useCallback(async () => {

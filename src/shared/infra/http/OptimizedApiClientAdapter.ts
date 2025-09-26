@@ -1,4 +1,3 @@
-// src/shared/infra/http/OptimizedApiClientAdapter.ts
 import type { HttpClient, HttpResponse } from "./HttpClient";
 import type { OptimizedApiClient} from "./OptimizedApiClient";
 import {optimizedApiClient } from "./OptimizedApiClient";
@@ -45,8 +44,7 @@ export class OptimizedApiClientAdapter implements HttpClient {
     return { data: res.data, status: res.status };
   }
 
-  /** Cliente “scoped” a un base path con defaults por método. */
-  withBase(
+    withBase(
     base: string,
     defaults?: {
       get?: CachedRequestConfig;

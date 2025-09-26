@@ -1,4 +1,3 @@
-// src/features/leads/application/usecases/queries/listLeadsByTypeAndStatus.ts
 import type { Lead, LeadStatus,LeadType } from "@/features/leads/domain";
 import { filterByStatus, sortByStartDateDesc } from "@/features/leads/domain";
 

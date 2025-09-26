@@ -1,4 +1,3 @@
-// src/types/components/table.ts
 
 import type { ReactElement, ReactNode } from "react";
 
@@ -10,10 +9,6 @@ export interface TableSkeletonProps {
   rows?: number;
   showSections?: boolean;
 }
-
-// ===========================================
-// TABLE COMPONENT TYPES
-// ===========================================
 
 export interface TableCellProps {
   value: string | number;
@@ -52,8 +47,6 @@ export interface Column<T> {
   sortable?: boolean;
   render?: (value: unknown, item: T) => ReactElement | string;
   align?: "left" | "center" | "right";
-  
-  // Legacy properties for compatibility
   id?: string;
   header?: string; // Alias for label
   accessor?: (item: T) => unknown;
@@ -70,8 +63,6 @@ export interface TableProps<T> {
   className?: string;
   emptyMessage?: string;
   emptyIcon?: ReactNode;
-  
-  // Legacy properties for compatibility
   contextMenuOptions?: (item: T) => ContextMenuOption[];
   showRowSeparators?: boolean;
   columnWidths?: Record<string, string>;
@@ -81,8 +72,6 @@ export interface SortConfig<T> {
   key: keyof T;
   direction: "asc" | "desc";
 }
-
-// Specialized table interfaces
 export interface LeadsTableProps {
   data: Lead[];
   onContactView?: (contactId: number) => void;
@@ -97,6 +86,4 @@ export interface LeadsTableProps {
   };
   onSort?: (key: keyof Lead) => void;
 }
-
-// Specialized contacts table props are declared in ./contacts.ts and re-exported
 export type { ContactsTableProps } from "./contacts";

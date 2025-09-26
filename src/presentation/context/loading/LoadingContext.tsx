@@ -152,8 +152,6 @@ export const LoadingProvider: React.FC<React.PropsWithChildren> = ({
     </LoadingStateContext.Provider>
   );
 };
-
-// Hooks de acceso
 export function useLoadingState(): LoadingState {
   const ctx = useContext(LoadingStateContext);
   if (!ctx) {

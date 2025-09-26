@@ -1,4 +1,3 @@
-// src/features/leads/application/index.ts
 export type { LeadsAppContext } from "./context";
 export { makeLeadsAppContext } from "./context";
 export { UseCaseError } from "./errors/UseCaseError";

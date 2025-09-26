@@ -1,5 +1,3 @@
-// src/types/hooks/index.ts
-
 export * from "./cache-diagnostics";
 export * from "./context-menu";
 export * from "./fetch";

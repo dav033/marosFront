@@ -1,4 +1,3 @@
-// src/presentation/components/ui/Radio.tsx
 import React, { forwardRef } from "react";
 
 export type RadioSize = "sm" | "md" | "lg";
@@ -8,18 +7,12 @@ export interface RadioProps
     React.InputHTMLAttributes<HTMLInputElement>,
     "type" | "size" | "onChange" | "checked"
   > {
-  /** Texto de etiqueta mostrado a la derecha del punto. */
-  label?: React.ReactNode;
-  /** Texto auxiliar (ayuda). */
-  hint?: string;
-  /** Mensaje de error (pinta borde rojo y aria-invalid). */
-  error?: string;
-  /** Valor seleccionado (controlado). */
-  checked: boolean;
-  /** Callback al cambiar. */
-  onChange: (checked: boolean) => void;
-  /** Tamaño visual del control. */
-  size?: RadioSize;
+    label?: React.ReactNode;
+    hint?: string;
+    error?: string;
+    checked: boolean;
+    onChange: (checked: boolean) => void;
+    size?: RadioSize;
 }
 
 const outerBySize: Record<RadioSize, string> = {
@@ -97,7 +90,6 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
             "transition-colors",
             "peer-focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-theme-primary",
             "peer-disabled:opacity-50 peer-disabled:cursor-not-allowed",
-            // Estado seleccionado
             "peer-checked:border-theme-primary",
             error ? "border-red-500" : "",
             outerBySize[size],

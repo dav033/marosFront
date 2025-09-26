@@ -1,5 +1,3 @@
-// src/types/hooks/optimized-fetch.ts
-
 import type { StorageLayer } from "../system/cache";
 
 export interface OptimizedFetchConfig {

@@ -2,14 +2,10 @@ import cn from "classnames";
 import React from "react";
 
 export type SkeletonBlockProps = {
-  /** Alto en px (por defecto 16) */
-  h?: number;
-  /** Clases extra: usa aquí w-*, grid/flex utils, etc. */
-  className?: string;
-  /** Radio del borde */
-  rounded?: "none" | "sm" | "md" | "lg" | "xl" | "full";
-  /** Accesibilidad opcional */
-  "aria-label"?: string;
+    h?: number;
+    className?: string;
+    rounded?: "none" | "sm" | "md" | "lg" | "xl" | "full";
+    "aria-label"?: string;
 };
 
 const roundedMap: Record<NonNullable<SkeletonBlockProps["rounded"]>, string> = {
@@ -32,7 +28,6 @@ export default function SkeletonBlock({
       aria-hidden="true"
       {...rest}
       className={cn(
-        // Gradiente neutro (modo claro/oscuro)
         "bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600",
         roundedMap[rounded],
         className

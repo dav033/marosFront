@@ -1,7 +1,6 @@
 ---
 import Sidebar from "@components/sidebar/Sidebar.tsx";
 import CacheInitializer from "@components/common/CacheInitializer.tsx";
-import CacheInspectorInit from "@components/common/CacheInspectorInit.tsx";
 import "../styles/global.css";
 import { ViewTransitions } from 'astro:transitions';
 
@@ -31,15 +30,12 @@ const {
     <!-- Cache System Initialization -->
     {enableCache && (
       <script is:inline define:vars={{ isDev: import.meta.env.DEV }}>
-        // Initialize cache system
         window.CACHE_CONFIG = {
           enabled: true,
           debug: isDev,
           maxSize: 100,
           defaultTTL: 900000, // 15 minutos
         };
-
-        // Simple prefetch for critical routes
         document.addEventListener('DOMContentLoaded', () => {
           const criticalRoutes = ['/contacts', '/leads/construction', '/leads/plumbing', '/leads/roofing'];
           
@@ -52,8 +48,6 @@ const {
 
           console.log('🚀 Critical routes prefetched');
         });
-
-        // Navigation performance tracking
         document.addEventListener('astro:before-preparation', (event) => {
           console.log('🚀 Navigating to:', event.to?.pathname || 'unknown');
         });
@@ -64,20 +58,6 @@ const {
       </script>
     )}
 
-    <!-- Performance Monitoring -->
-    {enableDiagnostics && import.meta.env.DEV && (
-      <script is:inline>
-        // Performance monitoring
-        window.addEventListener('load', () => {
-          console.log('🚀 Cache System Ready');
-          console.log('📋 Comandos disponibles:');
-          console.log('  - cacheInspector.inspectGlobalCache() - Ver contenido del cache');
-          console.log('  - cacheInspector.getCacheSize() - Ver tamaño del cache');
-          console.log('  - cacheInspector.clearAllCache() - Limpiar todo el cache');
-          console.log('  - cacheInspector.watchCache() - Monitorear cambios');
-        });
-      </script>
-    )}
 
     <ViewTransitions />
     <title>{title}</title>
@@ -95,10 +75,7 @@ const {
       />
     )}
 
-    <!-- Cache Inspector for Development -->
-    {enableDiagnostics && import.meta.env.DEV && (
-      <CacheInspectorInit client:only="react" enabled={true} />
-    )}
+  
 
     <Sidebar client:only="react" transition:persist />
     <main class="w-full ml-80 p-4"><slot /></main>

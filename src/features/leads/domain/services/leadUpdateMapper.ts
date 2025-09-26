@@ -1,11 +1,8 @@
-// maros-app/src/features/leads/domain/services/leadUpdateMapper.ts
 
 import type { LeadStatus } from "../../enums";
 import type { ISODate, LeadPatch } from "../../types";
 
-/** DTO mínimo esperado por el backend para actualización (PUT /leads/{id}) */
 export type UpdateLeadDTO = Readonly<{
-  // Todos opcionales porque es un patch
   name?: string;
   location?: string;
   status?: LeadStatus | null; // el backend acepta null
@@ -18,36 +15,21 @@ export type UpdateLeadDTO = Readonly<{
     phone?: string;
     email?: string;
   }>;
-  /**
-   * Si su backend soporta actualizar el leadNumber vía PUT,
-   * habilítelo con la opción 'includeLeadNumber'.
-   */
-  leadNumber?: string;
+    leadNumber?: string;
 }>;
 
 export type UpdateLeadPayload = Readonly<{
   lead: Partial<UpdateLeadDTO>;
 }>;
 
-/** Construye el objeto projectType del backend (name/color vacíos por compatibilidad). */
 function toProjectTypeDTO(id: number) {
   return { id, name: "", color: "" } as const;
 }
 
 export type MapLeadPatchOptions = Readonly<{
-  /**
-   * Por defecto 'false' para respetar el servicio actual que NO envía leadNumber en update.
-   * Póngalo en 'true' si el endpoint soporta actualizar el número.
-   */
-  includeLeadNumber?: boolean;
+    includeLeadNumber?: boolean;
 }>;
 
-/**
- * Mapea un LeadPatch de dominio al payload de actualización para la API.
- * - No normaliza valores (eso ya lo hace 'applyLeadPatch' en dominio).
- * - Mapea projectTypeId/contactId a las estructuras esperadas por el backend.
- * - Se construye en un único literal para evitar asignar sobre propiedades readonly.
- */
 export function mapLeadPatchToUpdatePayload(
   patch: LeadPatch,
   { includeLeadNumber = false }: MapLeadPatchOptions = {}

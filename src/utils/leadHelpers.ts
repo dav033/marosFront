@@ -18,13 +18,9 @@ import type {
   ValidateNewContactLeadData,
 } from "@/types/utils/validation";
 
-// ✅ nuevo: usamos el caso de uso unificado
 import { createLead } from "@/features/leads/application";
 import type { LeadsAppContext } from "@/features/leads/application";
 
-// -------------------------
-// Validaciones y formateos
-// -------------------------
 export const validateEmail = (email: string): boolean => {
   if (!email) return true;
   return /\S+@\S+\.\S+/.test(email);
@@ -91,14 +87,6 @@ export const formatProjectTypeOptions = (
 ): SelectOption[] =>
   projectTypes.map((pt) => ({ value: String(pt.id), label: pt.name }));
 
-// -------------------------
-// Creación de lead (vía createLead unificado)
-// -------------------------
-
-/**
- * Crea un Lead con contacto NUEVO usando el caso de uso unificado.
- * Mantiene la firma compatible con el VM (data + options), pero ignora p0/p1 legacy.
- */
 export const createLeadWithNewContact = async (
   ctx: LeadsAppContext,
   data: CreateLeadByNewContactData,
@@ -126,9 +114,6 @@ export const createLeadWithNewContact = async (
   ) as unknown as Lead;
 };
 
-/**
- * Crea un Lead con contacto EXISTENTE usando el caso de uso unificado.
- */
 export const createLeadWithExistingContact = async (
   ctx: LeadsAppContext,
   data: CreateLeadByExistingContactData,
@@ -151,9 +136,6 @@ export const createLeadWithExistingContact = async (
   ) as unknown as Lead;
 };
 
-// -------------------------
-// Update (se mantiene HTTP directo)
-// -------------------------
 export const updateLead = async (
   leadId: number,
   data: UpdateLeadData

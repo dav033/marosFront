@@ -1,15 +1,4 @@
-// src/features/contact/domain/services/contactIdentityPolicy.ts
 
-/**
- * Política de identidad para contactos:
- * - Normalización de email y teléfono (puras, determinísticas).
- * - Generación de una clave de identidad estable (identity key).
- * - Utilidades de comparación/detección de duplicados.
- *
- * NOTAS:
- * - No se aplican heurísticas específicas por proveedor (p.ej., Gmail ignora puntos).
- *   Si necesitas reglas por dominio, extiende normalizeEmail con una whitelist.
- */
 
 /* ----------------- Utils base ----------------- */
 
@@ -23,17 +12,12 @@ function normLower(s: unknown): string {
 
 /* ----------------- Normalización de campos ----------------- */
 
-/** Lowercase + trim. No reescribe dominios ni aplica heurísticas de proveedor. */
 export function normalizeEmail(e?: string): string | undefined {
   if (!e) return undefined;
   const v = normLower(e);
   return v || undefined;
 }
 
-/**
- * Mantiene opcionalmente el '+' inicial y remueve todo lo que no sea dígito en el resto.
- * No valida longitud ni país; eso se define por políticas aguas arriba.
- */
 export function normalizePhone(
   p?: string,
   opts: { keepPlus?: boolean } = { keepPlus: true }
@@ -50,7 +34,6 @@ export function normalizePhone(
   return digits || undefined;
 }
 
-/** Nombre y compañía normalizados (trim + colapso de espacios, en minúscula para comparación). */
 export function normalizeName(name?: string): string | undefined {
   const v = normLower(name);
   return v || undefined;
@@ -71,11 +54,6 @@ export type MakeIdentityKeyOptions = Readonly<{
   minPhoneDigits?: number; // mínimo para considerar phone como identidad (default 7)
 }>;
 
-/**
- * Genera una clave de identidad estable siguiendo una estrategia:
- * - email>phone>name-company (default)
- * - email>phone>name
- */
 export function makeContactIdentityKey(
   input: { name?: string | undefined; companyName?: string | undefined; email?: string | undefined; phone?: string | undefined },
   options: MakeIdentityKeyOptions = {}
@@ -94,13 +72,10 @@ export function makeContactIdentityKey(
   if (strategy === "email>phone>name") {
     return `name:${name}`;
   }
-
-  // nombre + empresa (fallback más preciso)
   const company = normalizeCompany(input.companyName) ?? "";
   return `name-company:${name}|${company}`;
 }
 
-/** Comparación de claves de identidad (case-insensitive). */
 export function areIdentityKeysEqual(a?: string, b?: string): boolean {
   if (!a || !b) return false;
   return a.toLowerCase() === b.toLowerCase();
@@ -116,20 +91,9 @@ export type ContactLike = Readonly<{
 }>;
 
 export type DuplicateCheckOptions = MakeIdentityKeyOptions & {
-  /**
-   * Si ambas entidades carecen de email/phone, comparar por:
-   * - "name-company" (default) o
-   * - "name" (más laxo; puede generar falsos positivos si hay muchos homónimos).
-   */
-  fallback?: "name-company" | "name";
+    fallback?: "name-company" | "name";
 };
 
-/**
- * Heurística pura para detectar duplicados:
- * - Si comparten email normalizado → duplicado.
- * - Sino, si comparten teléfono normalizado con min dígitos → duplicado.
- * - Si no hay email/phone válidos, cae al fallback configurado.
- */
 export function areContactsPotentialDuplicates(
   a: ContactLike,
   b: ContactLike,
@@ -158,15 +122,11 @@ export function areContactsPotentialDuplicates(
   if (fallback === "name") {
     return !!nameA && nameA === nameB;
   }
-
-  // default: name-company o según la estrategia elegida
   const companyA = normalizeCompany(a.companyName) ?? "";
   const companyB = normalizeCompany(b.companyName) ?? "";
   if (strategy === "email>phone>name") {
-    // si estrategia indica 'name' solo, obedecer
     return !!nameA && nameA === nameB;
   }
-  // name-company
   return !!nameA && nameA === nameB && companyA === companyB;
 }
 

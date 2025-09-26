@@ -1,4 +1,3 @@
-// src/presentation/context/loading/hooks/useIsLoading.ts
 import { useMemo } from "react";
 
 import useLoadingState from "./useLoadingState";

@@ -1,4 +1,3 @@
-// src/presentation/atoms/table/TableRoot.tsx
 import React from "react";
 
 type Props = React.HTMLAttributes<HTMLDivElement> & { children: React.ReactNode };

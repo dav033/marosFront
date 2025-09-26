@@ -1,4 +1,3 @@
-// src/presentation/atoms/Input.tsx
 import cn from "classnames";
 import React, { forwardRef } from "react";
 
@@ -11,16 +10,12 @@ export interface InputProps
   hint?: string;
 }
 
-// (removed unused 'field' constant) - styles are applied inline where needed
-
 export default forwardRef<HTMLInputElement, InputProps>(function Input(
   { className, label, error, leftAddon, rightAddon, hint, id, ...props },
   ref
 ) {
   const inputId = id || props.name;
   const hasAddons = leftAddon || rightAddon;
-
-  // Si no hay addons, el input maneja su propio borde
   if (!hasAddons) {
     return (
       <label className="w-full text-sm text-theme-light">
@@ -44,8 +39,6 @@ export default forwardRef<HTMLInputElement, InputProps>(function Input(
       </label>
     );
   }
-
-  // Si hay addons, el contenedor maneja el borde
   return (
     <label className="w-full text-sm text-theme-light">
       {label && <span className="mb-1 inline-block">{label}</span>}

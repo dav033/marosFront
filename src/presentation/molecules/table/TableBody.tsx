@@ -1,4 +1,3 @@
-// src/presentation/molecules/table/TableBody.tsx
 import React, { memo } from "react";
 
 import SeparatorRow from "@/presentation/atoms/table/SeparatorRow";

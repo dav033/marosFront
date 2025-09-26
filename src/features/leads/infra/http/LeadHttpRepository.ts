@@ -1,8 +1,6 @@
-// src/features/leads/infra/http/LeadHttpRepository.ts
 
 import type { Lead } from "@/features/leads/domain/models/Lead";
 import type { LeadRepositoryPort } from "@/features/leads/domain/ports/LeadRepositoryPort";
-// Mappers de dominio (DTO <-> Domain)
 import {
   type ApiLeadDTO,
   mapLeadFromDTO,
@@ -16,9 +14,6 @@ import type { HttpClientLike } from "@/shared/infra/http/types"; // ← usamos l
 
 import { endpoints } from "./endpoints";
 
-/**
- * Adapter HTTP que implementa el puerto de repositorio de Leads.
- */
 export class LeadHttpRepository implements LeadRepositoryPort {
   constructor(private readonly api: HttpClientLike = optimizedApiClient) {}
 
@@ -39,7 +34,6 @@ export class LeadHttpRepository implements LeadRepositoryPort {
   }
 
   async saveNew(draft: LeadDraft): Promise<Lead> {
-    // Branch 1: crear contacto nuevo + lead
     if ("contact" in draft) {
       const contact = {
         companyName: draft.contact.companyName,
@@ -79,8 +73,6 @@ export class LeadHttpRepository implements LeadRepositoryPort {
 
       return mapLeadFromDTO(data);
     }
-
-    // Branch 2: usar contacto existente + lead
 
     const lead = {
       leadNumber: draft.leadNumber ?? "",

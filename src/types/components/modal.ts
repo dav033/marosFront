@@ -1,10 +1,5 @@
-// src/types/components/modal.ts
 
 import type { ReactNode } from "react";
-
-// ===========================================
-// MODAL COMPONENT TYPES
-// ===========================================
 
 export interface ModalProps {
   isOpen: boolean;
@@ -46,10 +41,6 @@ export interface FormModalProps extends Omit<ModalProps, 'children'> {
   loading?: boolean;
   submitDisabled?: boolean;
 }
-
-// ===========================================
-// MODAL SUBCOMPONENT TYPES
-// ===========================================
 
 export interface ModalHeaderProps {
   title: string;

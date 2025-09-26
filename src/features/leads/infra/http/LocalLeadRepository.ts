@@ -4,11 +4,6 @@ import type { LeadType } from "@/features/leads/enums";
 import type { LeadDraft, LeadId } from "@/features/leads/types";
 import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
 
-/**
- * Adaptador HTTP para creaciones "local-only" (sin sincronizar con ClickUp).
- * - Implementa únicamente saveNew (lo que necesita el modal local).
- * - El resto lanza error explícito para no usarlos accidentalmente.
- */
 export class LocalLeadRepository implements LeadRepositoryPort {
   async findById(_id: LeadId): Promise<Lead | null> {
     throw new Error("LocalLeadRepository.findById not implemented");
@@ -18,7 +13,6 @@ export class LocalLeadRepository implements LeadRepositoryPort {
   }
 
   async saveNew(draft: LeadDraft): Promise<Lead> {
-    // Branch 1: crear contacto nuevo + lead
     if ("contact" in draft) {
       const contact = {
         companyName: draft.contact.companyName,
@@ -50,8 +44,6 @@ export class LocalLeadRepository implements LeadRepositoryPort {
       );
       return response.data as Lead;
     }
-
-    // Branch 2: usar contacto existente + lead
     const lead = {
       leadNumber: draft.leadNumber ?? "",
       name: draft.name,

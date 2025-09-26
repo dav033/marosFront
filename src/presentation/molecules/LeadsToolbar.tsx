@@ -1,4 +1,3 @@
-// src/presentation/molecules/leads/LeadsToolbar.tsx
 import React from "react";
 
 import Button from "../atoms/Button"; 

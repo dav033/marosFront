@@ -3,8 +3,6 @@ import React from "react";
 import { useSidebarNavigation } from "../../hooks/useSidebarNavigation.tsx";
 import SidebarDropdown from "./SidebarDropdown.tsx";
 import SidebarItem from "./SidebarItem.tsx";
-
-// Configuración de navegación como constante
 const SIDEBAR_CONFIG = {
   leads: {
     trigger: {
@@ -59,13 +57,9 @@ const SIDEBAR_CONFIG = {
 
 export default function Sidebar() {
   const { currentPath } = useSidebarNavigation();
-
-  // Función para determinar si un dropdown debe estar abierto por defecto
   const shouldBeOpen = (routes: string[]) => {
     return routes.some(route => currentPath.startsWith(route));
   };
-
-  // Determinar si los dropdowns deben estar abiertos
   const isLeadsOpen = shouldBeOpen(['/leads']);
   const isReportsOpen = shouldBeOpen(['/reports']);
 

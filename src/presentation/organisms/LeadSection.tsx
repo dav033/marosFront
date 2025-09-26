@@ -1,4 +1,3 @@
-// src/presentation/organisms/leads/LeadSection.tsx
 /* eslint-disable simple-import-sort/imports */
 import React from "react";
 import type { ReactNode } from "react";
@@ -15,9 +14,6 @@ export type LeadSectionProps = {
   onDeleteLead?: (lead: Lead) => void;
   className?: string;
 };
-
-// Adaptador → convierte opciones provenientes de la UI (que usan id: string | number)
-// al tipo canónico de la app (id: string) definido en src/types/hooks/context-menu
 function toCMOption(option: unknown): any {
   const o = (option as Record<string, unknown>) ?? {};
   return {

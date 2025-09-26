@@ -1,6 +1,4 @@
-// maros-app/src/shared/domain/BusinessRuleError.ts
 
-/** Tipos de errores de negocio. */
 export type BusinessErrorKind =
   | "VALIDATION_ERROR" // Datos inválidos (VOs, campos requeridos, formato)
   | "FORMAT_ERROR" // Formato específico (ej. leadNumber/email)
@@ -10,10 +8,6 @@ export type BusinessErrorKind =
   | "CONFLICT" // Conflicto de negocio (p.ej., duplicado)
   | "NOT_FOUND"; // Entidad o relación no existe (en negocio)
 
-/**
- * Error de negocio (dominio) descriptivo y tipado.
- * Es independiente de UI/HTTP/infraestructura.
- */
 export class BusinessRuleError extends Error {
   readonly kind: BusinessErrorKind;
   readonly details?: Record<string, unknown> | undefined;
@@ -27,10 +21,7 @@ export class BusinessRuleError extends Error {
     this.name = "BusinessRuleError";
     this.kind = kind;
     this.details = options?.details;
-
-    // Soporte nativo para 'cause' (TS/Node modernos) sin romper navegadores antiguos
     if (options?.cause !== undefined) {
-      // assign cause in a typed-safe manner without using `any`
       (this as unknown as { cause?: unknown }).cause = options.cause;
     }
   }
@@ -49,7 +40,6 @@ export class BusinessRuleError extends Error {
   }
 }
 
-/** Helper corto para crear errores de negocio con detalles opcionales. */
 export const businessError = (
   kind: BusinessErrorKind,
   message: string,
@@ -59,7 +49,6 @@ export const businessError = (
     ? new BusinessRuleError(kind, message, { details })
     : new BusinessRuleError(kind, message);
 
-/** Asserts de dominio: lanzan BusinessRuleError si la condición no se cumple. */
 export function assertBusiness(
   condition: unknown,
   kind: BusinessErrorKind,

@@ -1,6 +1,3 @@
-/**
- * Lead and Contact component types
- */
 
 import type { Contact } from "@/features/contact/domain/models/Contact";
 import type { Lead } from "@/features/leads/domain/models/Lead";
@@ -11,10 +8,6 @@ import type { Column } from "@/types/components/table";
 import type { ContactMode,FormMode } from "../enums";
 import type { LeadFormData } from "./form";
 
-// ===========================================
-// LEAD COMPONENTS
-// ===========================================
-
 export interface LeadFormFieldsProps {
   form: LeadFormData;
   onChange: (field: keyof LeadFormData, value: string) => void;
@@ -22,13 +15,8 @@ export interface LeadFormFieldsProps {
   contacts?: Contact[] | undefined;
   mode?: FormMode;
   contactMode?: ContactMode;
-  // Optional override to explicitly show/hide the Lead Number field
   showLeadNumber?: boolean;
 }
-
-// ===========================================
-// CONTACT COMPONENTS
-// ===========================================
 
 export interface EditContactModalProps {
   isOpen: boolean;

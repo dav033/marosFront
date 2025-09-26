@@ -1,4 +1,3 @@
-// src/presentation/molecules/leads/ErrorBanner.tsx
 import React from "react";
 export const ErrorBanner: React.FC<{ message: string }> = ({ message }) => (
   <div className="flex flex-col items-center justify-center min-h-64 space-y-4">

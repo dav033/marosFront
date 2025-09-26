@@ -1,6 +1,3 @@
-/**
- * Loading Context types
- */
 
 
 export type SkeletonType =

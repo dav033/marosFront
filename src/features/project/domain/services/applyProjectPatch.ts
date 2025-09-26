@@ -3,7 +3,6 @@ import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
 
 import type { Project } from "../models/Project";
 
-/** Aplica un patch a un Project existente, con validaciones mínimas. */
 export function applyProjectPatch(project: Project, patch: ProjectPatch): ApplyProjectPatchResult {
   let hasChanges = false;
   const updatedProject: Project = { ...project }; // ✅ corregido
@@ -54,7 +53,5 @@ export function applyProjectPatch(project: Project, patch: ProjectPatch): ApplyP
     updatedProject.endDate = patch.endDate;
     hasChanges = true;
   }
-
-  // Nota: el cambio de leadId lo resuelve el repositorio/servicio de aplicación
   return { project: updatedProject, hasChanges };
 }

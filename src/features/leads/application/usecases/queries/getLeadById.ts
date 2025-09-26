@@ -1,4 +1,3 @@
-// src/features/leads/application/usecases/queries/getLeadById.ts
 import type { Lead, LeadId } from "@/features/leads/domain";
 import { BusinessRuleError } from "@/features/leads/domain";
 

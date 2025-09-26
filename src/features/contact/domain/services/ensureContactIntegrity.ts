@@ -1,10 +1,7 @@
-// src/features/contact/domain/services/ensureContactIntegrity.ts
 
 import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
 
 import type { Contact } from "../models/Contact";
-// Si prefieres aislar errores por feature, mueve BusinessRuleError a
-// src/features/contact/domain/errors/BusinessRuleError.ts y ajusta este import.
 
 export type ContactIntegrityPolicies = Readonly<{
   maxNameLength?: number; // default 140
@@ -39,7 +36,6 @@ function countDigits(s?: string): number {
 }
 
 function isISODateOrDateTime(s: string): boolean {
-  // YYYY-MM-DD o ISO 8601 con tiempo
   return /^\d{4}-\d{2}-\d{2}([T ]\d{2}:\d{2}(:\d{2}(\.\d{1,3})?)?(Z|[+\-]\d{2}:\d{2})?)?$/.test(
     s
   );
@@ -47,17 +43,11 @@ function isISODateOrDateTime(s: string): boolean {
 
 /* ----------------- servicio ----------------- */
 
-/**
- * Valida la integridad del agregado Contact (post-lectura o post-patch).
- * Lanza BusinessRuleError si alguna regla no se cumple.
- */
 export function ensureContactIntegrity(
   contact: Contact,
   policies: ContactIntegrityPolicies = {}
 ): void {
   const cfg = { ...DEFAULTS, ...policies };
-
-  // id
   if (
     typeof contact.id !== "number" ||
     !Number.isFinite(contact.id) ||
@@ -67,8 +57,6 @@ export function ensureContactIntegrity(
       details: { field: "id", value: contact.id },
     });
   }
-
-  // companyName
   const companyName = normText(contact.companyName);
   if (!companyName) {
     throw new BusinessRuleError(
@@ -84,8 +72,6 @@ export function ensureContactIntegrity(
       { details: { field: "companyName", length: companyName.length } }
     );
   }
-
-  // name
   const name = normText(contact.name);
   if (!name) {
     throw new BusinessRuleError(
@@ -101,15 +87,11 @@ export function ensureContactIntegrity(
       { details: { field: "name", length: name.length } }
     );
   }
-
-  // email (si existe)
   if (contact.email && !isValidEmail(contact.email)) {
     throw new BusinessRuleError("FORMAT_ERROR", "Invalid email format", {
       details: { field: "email", value: contact.email },
     });
   }
-
-  // phone (si existe)
   if (contact.phone && countDigits(contact.phone) < cfg.phoneMinDigits) {
     throw new BusinessRuleError(
       "FORMAT_ERROR",
@@ -117,8 +99,6 @@ export function ensureContactIntegrity(
       { details: { field: "phone", value: contact.phone } }
     );
   }
-
-  // lastContact (opcional ISO-8601)
   if (
     cfg.validateLastContactISO &&
     contact.lastContact &&
@@ -132,7 +112,6 @@ export function ensureContactIntegrity(
   }
 }
 
-/** Variante que devuelve boolean en lugar de lanzar. */
 export function isContactIntegrityOK(
   contact: Contact,
   policies: ContactIntegrityPolicies = {}

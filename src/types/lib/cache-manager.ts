@@ -1,17 +1,13 @@
-/**
- * Cache Manager types
- */
-
 export interface CacheEntry<T> {
   data: T;
   timestamp: number;
-  ttl: number; // Time to live en milliseconds
+  ttl: number;
   key: string;
 }
 
 export interface CacheConfig {
   maxSize: number;
-  defaultTTL: number; // 5 minutos por defecto
+  defaultTTL: number;
   storage: "memory" | "sessionStorage" | "localStorage";
 }
 

@@ -8,10 +8,8 @@ export type FormActionsProps = {
   submitLabel: string;
   isLoading?: boolean;
   submitDisabled?: boolean;
-  // estilos extra por si algún modal usa variantes
   cancelClassName?: string;
   submitClassName?: string;
-  // si lo usas dentro de <form>, deja por defecto "submit"
   submitType?: "submit" | "button";
 };
 

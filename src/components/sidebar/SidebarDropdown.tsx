@@ -8,15 +8,6 @@ import React, {
 
 import type { SidebarDropdownProps } from "@/types";
 
-/**
- * SidebarDropdown
- *  – trigger: { title: string, icon?: string | IconifyIcon, className?: string }
- *  – width:   Tailwind w-* class (ej. "w-full", "w-60")
- *  – children: elementos React; se permite anidar SidebarDropdown dentro de otro
- *  – duration: duración de la transición en milisegundos
- *  – indentLevel: desplazamiento horizontal en px (se incrementa automáticamente en los anidados)
- *  – defaultOpen: si el dropdown debe estar abierto por defecto
- */
 export default function SidebarDropdown({
   trigger,
   width = "w-full",
@@ -33,14 +24,12 @@ export default function SidebarDropdown({
   /* ---------- utilidades ---------- */
   const readHeight = () => containerRef.current?.scrollHeight ?? 0;
 
-  /** Abre: fija la altura al scrollHeight para animar */
-  const open = () => {
+    const open = () => {
     const fullHeight = readHeight();
     setInlineHeight(`${fullHeight}px`);
   };
 
-  /** Cierra: (1) fija altura actual, (2) anima a 0 */
-  const close = () => {
+    const close = () => {
     const fullHeight = readHeight();
     setInlineHeight(`${fullHeight}px`);
     requestAnimationFrame(() => setInlineHeight("0px"));

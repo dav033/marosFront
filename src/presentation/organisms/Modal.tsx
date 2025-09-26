@@ -30,8 +30,6 @@ export default function Modal({
   const titleId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
   const prevFocusRef = useRef<HTMLElement | null>(null);
-
-  // lock scroll
   useEffect(() => {
     if (!isOpen) return;
     const { overflow } = document.body.style;
@@ -40,16 +38,12 @@ export default function Modal({
       document.body.style.overflow = overflow;
     };
   }, [isOpen]);
-
-  // restore focus & focus trap
   useEffect(() => {
     if (!isOpen) return;
     prevFocusRef.current = document.activeElement as HTMLElement | null;
     panelRef.current?.focus();
     return () => prevFocusRef.current?.focus?.();
   }, [isOpen]);
-
-  // esc to close
   useEffect(() => {
     if (!isOpen || !closeOnEscape) return;
     const onKey = (e: KeyboardEvent) => {
@@ -58,8 +52,6 @@ export default function Modal({
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [isOpen, closeOnEscape, onClose]);
-
-  // basic focus trap (Tab)
   useEffect(() => {
     if (!isOpen) return;
     const onKeyDown = (e: KeyboardEvent) => {

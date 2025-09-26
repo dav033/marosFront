@@ -2,7 +2,7 @@ import React from "react";
 
 import { useCreateContactController } from "@/presentation/hooks/useCreateContactController";
 import ContactForm from "@/presentation/molecules/ContactForm";
-import BaseContactModal from "@/presentation/organisms/BaseContactModal";
+import BaseFormModal from "@/presentation/organisms/BaseFormModal";
 import type { ContactFormData } from "@/types";
 
 export type CreateContactModalProps = {
@@ -21,14 +21,8 @@ export default function CreateContactModal({
   submitting,
   serverError,
 }: CreateContactModalProps) {
-  const {
-    form,
-    setField,
-    submit,
-    isLoading,
-    error,
-    setError,
-  } = useCreateContactController({ onSubmit });
+  const { form, setField, submit, isLoading, error, setError } =
+    useCreateContactController({ onSubmit });
 
   const loading = submitting ?? isLoading;
   const err = serverError ?? error;
@@ -40,13 +34,13 @@ export default function CreateContactModal({
   };
 
   return (
-    <BaseContactModal
+    <BaseFormModal
       isOpen={isOpen}
       onClose={() => onClose(false)}
       title="Create Contact"
       error={err}
       onSubmit={handleModalSubmit}
-      submitText={loading ? "Saving..." : "Save"}
+      submitText={loading ? "Saving." : "Save"}
       isLoading={loading}
     >
       <ContactForm
@@ -57,6 +51,6 @@ export default function CreateContactModal({
         }}
         disabled={loading}
       />
-    </BaseContactModal>
+    </BaseFormModal>
   );
 }

@@ -1,4 +1,3 @@
-// src/shared/infra/http/types.ts
 import type { AxiosRequestHeaders } from "axios";
 
 export type CacheStrategy =
@@ -8,39 +7,21 @@ export type CacheStrategy =
   | "network-only";
 
 export interface CachedRequestConfig {
-  /**
-   * Parámetros de consulta (usados para generar la cacheKey también)
-   */
-  params?: Record<string, unknown>;
+    params?: Record<string, unknown>;
 
-  /**
-   * Headers a enviar. Puede usar un objeto plano; se castea a AxiosRequestHeaders al construir la request.
-   */
-  headers?: AxiosRequestHeaders | Record<string, string>;
+    headers?: AxiosRequestHeaders | Record<string, string>;
 
-  /**
-   * Control de credenciales; por defecto true.
-   */
-  withCredentials?: boolean;
+    withCredentials?: boolean;
 
-  /**
-   * AbortSignal opcional para cancelar la petición.
-   */
-  signal?: AbortSignal;
+    signal?: AbortSignal;
 
-  /**
-   * Configuración de cache para la request.
-   */
-  cache?: {
+    cache?: {
     enabled?: boolean;
     strategy?: CacheStrategy;
     ttl?: number; // milisegundos
   };
 
-  /**
-   * Sugerencias de prefetch de recursos dependientes
-   */
-  prefetch?: {
+    prefetch?: {
     dependencies?: string[];
   };
 }

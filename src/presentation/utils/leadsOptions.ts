@@ -1,4 +1,3 @@
-// src/presentation/utils/leadsOptions.ts
 import { LeadStatus } from "@/features/leads/enums";
 import type { SelectOption } from "@/presentation/atoms/Select"; // usa el tipo exacto del Select
 
@@ -15,8 +14,6 @@ export function getLeadStatusOptions(): ReadonlyArray<SelectOption> {
     [LeadStatus.LOST]: "Lost",
     [LeadStatus.NOT_EXECUTED]: "Not executed",
   };
-
-  // ⬇️ IMPORTANTE: devolver el array (return explícito)
   return (Object.keys(LeadStatus) as Array<keyof typeof LeadStatus>)
     .map((k) => LeadStatus[k])
     .map((value) => ({ value, label: labels[value] || value }));

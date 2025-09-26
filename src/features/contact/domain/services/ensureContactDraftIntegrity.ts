@@ -1,9 +1,5 @@
-// src/features/contact/domain/services/ensureContactDraftIntegrity.ts
 
 import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
-
-// Si prefieres aislar errores por feature, mueve BusinessRuleError a
-// src/features/contact/domain/errors/BusinessRuleError.ts y ajusta este import.
 import type { ContactDraft } from "./buildContactDraft";
 
 export type ContactDraftPolicies = Readonly<{
@@ -26,7 +22,6 @@ const DEFAULTS: Required<ContactDraftPolicies> = {
 
 function isValidEmail(email?: string): boolean {
   if (!email) return true; // vacío es permitido a menos que la política diga lo contrario
-  // Regex pragmático (no perfecto, pero suficiente para UI):
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
@@ -37,7 +32,6 @@ function countDigits(s?: string): number {
 }
 
 function isISODateOrDateTime(s: string): boolean {
-  // Permitimos YYYY-MM-DD o ISO 8601 con tiempo
   return /^\d{4}-\d{2}-\d{2}([T ]\d{2}:\d{2}(:\d{2}(\.\d{1,3})?)?(Z|[+\-]\d{2}:\d{2})?)?$/.test(
     s
   );
@@ -45,22 +39,11 @@ function isISODateOrDateTime(s: string): boolean {
 
 /* ----------------- servicio ----------------- */
 
-/**
- * Valida la integridad de un ContactDraft.
- * - companyName y name obligatorios y con longitudes máximas.
- * - email con formato válido si existe.
- * - phone con mínimo de dígitos si existe.
- * - (opcional) exigir al menos un medio de contacto (email o phone).
- * - (opcional) validar que lastContact tenga formato ISO válido.
- * Lanza BusinessRuleError si alguna regla no se cumple.
- */
 export function ensureContactDraftIntegrity(
   draft: ContactDraft,
   policies: ContactDraftPolicies = {}
 ): void {
   const cfg = { ...DEFAULTS, ...policies };
-
-  // Requeridos
   if (!draft.companyName) {
     throw new BusinessRuleError(
       "VALIDATION_ERROR",
@@ -79,8 +62,6 @@ export function ensureContactDraftIntegrity(
       }
     );
   }
-
-  // Longitudes máximas
   if (draft.name.length > cfg.maxNameLength) {
     throw new BusinessRuleError(
       "FORMAT_ERROR",
@@ -95,8 +76,6 @@ export function ensureContactDraftIntegrity(
       { details: { field: "companyName", length: draft.companyName.length } }
     );
   }
-
-  // Medios de contacto (opcional)
   if (cfg.requireAtLeastOneReach && !draft.email && !draft.phone) {
     throw new BusinessRuleError(
       "VALIDATION_ERROR",
@@ -104,15 +83,11 @@ export function ensureContactDraftIntegrity(
       { details: { fields: ["email", "phone"] } }
     );
   }
-
-  // Email si existe
   if (draft.email && !isValidEmail(draft.email)) {
     throw new BusinessRuleError("FORMAT_ERROR", "Invalid email format", {
       details: { field: "email", value: draft.email },
     });
   }
-
-  // Teléfono si existe
   if (draft.phone && countDigits(draft.phone) < cfg.phoneMinDigits) {
     throw new BusinessRuleError(
       "FORMAT_ERROR",
@@ -120,8 +95,6 @@ export function ensureContactDraftIntegrity(
       { details: { field: "phone", value: draft.phone } }
     );
   }
-
-  // lastContact ISO (opcional)
   if (
     cfg.validateLastContactISO &&
     draft.lastContact &&
@@ -135,6 +108,4 @@ export function ensureContactDraftIntegrity(
       }
     );
   }
-
-  // Si llegamos aquí, el borrador es consistente según políticas.
 }

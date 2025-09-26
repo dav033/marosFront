@@ -1,4 +1,3 @@
-// src/presentation/hooks/useEditLeadController.ts
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useLeadsApp } from "@/di/DiProvider";
@@ -7,32 +6,25 @@ import type { Lead } from "@/features/leads/domain";
 import { LeadStatus, LeadType } from "@/features/leads/enums";
 import type { LeadFormData } from "@/types/components/form";
 
-/** Opciones del controlador */
 type UseEditLeadControllerOptions = {
   lead: Lead | null;
   onSaved?: (lead: Lead) => void;
 };
 
-/** Controlador de edición (lógica de orquestación) */
 export function useEditLeadController({ lead, onSaved }: UseEditLeadControllerOptions) {
   const app = useLeadsApp();
 
   const initialForm: LeadFormData = useMemo(
     () => ({
-      // Campos requeridos por LeadFormData
       name: lead?.name ?? "",
       leadType: lead?.leadType ?? LeadType.CONSTRUCTION,
       startDate: lead?.startDate ?? "",
       status: (lead?.status as LeadStatus | null) ?? LeadStatus.NEW,
-
-      // Campos opcionales / compatibilidad con LeadFormFields
       leadNumber: lead?.leadNumber ?? "",
       leadName: lead?.name ?? "",
       location: lead?.location ?? "",
       projectTypeId: lead?.projectType?.id,
       contactId: lead?.contact?.id,
-
-      // Datos de contacto opcionales para el formulario
       customerName: "",
       contactName: "",
       phone: "",
@@ -48,8 +40,6 @@ export function useEditLeadController({ lead, onSaved }: UseEditLeadControllerOp
   const [form, setForm] = useState<LeadFormData>(initialForm);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // Sincroniza cuando cambia el lead a editar
   useEffect(() => {
     setForm(initialForm);
     setError(null);
@@ -58,7 +48,6 @@ export function useEditLeadController({ lead, onSaved }: UseEditLeadControllerOp
   const handleChange = useCallback((field: keyof LeadFormData, value: string | number) => {
     setError(null);
     setForm(prev => {
-      // Normaliza numéricos conocidos
       if (field === "projectTypeId" || field === "contactId") {
         return {
           ...prev,
@@ -68,19 +57,13 @@ export function useEditLeadController({ lead, onSaved }: UseEditLeadControllerOp
               : Number(value),
         };
       }
-
-      // Normaliza status: "" -> null; otro valor -> LeadStatus
       if (field === "status") {
         return {
           ...prev,
           status: value === "" ? null : (value as LeadStatus),
         };
       }
-
-      // Resto: a string
       const next = { ...prev, [field]: String(value ?? "") };
-
-      // Conveniencia: si se escribe leadName y name está vacío, sincroniza name
       if (field === "leadName" && !next.name) {
         (next as LeadFormData).name = String(value ?? "");
       }
@@ -95,7 +78,6 @@ export function useEditLeadController({ lead, onSaved }: UseEditLeadControllerOp
     setError(null);
     const l = lead as unknown as Record<string, unknown>;
     try {
-      // Construye patch SOLO con cambios relevantes
       const patch: Record<string, unknown> = {};
       const newName = form.leadName || form.name || lead.name;
 

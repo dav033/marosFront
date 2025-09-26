@@ -8,12 +8,10 @@ import { SearchBoxWithDropdown } from "./SearchBoxWithDropdown";
 export type TableToolbarProps = {
   onCreate?: () => void;
   createLabel?: string;
-  // Search props
   searchTerm: string;
   onSearchChange: (v: string) => void;
   selectedField: string;
   onFieldChange: (v: string) => void;
-  // OJO: aquí seguimos aceptando { value, label }
   searchFields: Array<{ value: string; label: string }>;
   onClearSearch: () => void;
   placeholder?: string;
@@ -38,7 +36,6 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
   totalCount,
   rightSlot,
 }) => {
-  // 🔧 Normalizar { value, label } -> { key, label } para SearchBoxWithDropdown
   const normalizedFields: SearchFieldOption[] = useMemo(
     () => searchFields.map((f) => ({ key: f.value, label: f.label })),
     [searchFields]

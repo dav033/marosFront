@@ -31,12 +31,10 @@ export default function ContactsTable({
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
-  // Memoized wrapper for create to keep stable reference for callbacks
   const create = React.useCallback(
     (draft: ContactFormData) => app.create(draft),
     [app]
   );
-  // creación
   const [isCreating, setIsCreating] = useState(false);
   const [createError, setCreateError] = useState<string | undefined>(undefined);
 
@@ -81,22 +79,16 @@ export default function ContactsTable({
 
   const handleDeleteContact = useCallback(
     async (_contactId: number) => {
-      // TODO: deleteContact(_contactId)
       await onRefetch();
     },
     [onRefetch]
   );
-
-  // ⬇️ faltaba onSubmit para crear
   const handleCreateSubmit = useCallback(
     async (_values: ContactFormData) => {
       try {
         setIsCreating(true);
         setCreateError(undefined);
-        // Llamada al caso de uso de creación via Presentation API
         await create(_values);
-
-        // Refrescar lista y cerrar modal
         await onRefetch();
         setIsCreateOpen(false);
       } catch (err: unknown) {
@@ -115,11 +107,8 @@ export default function ContactsTable({
     },
     [onRefetch, create]
   );
-
-  // ⬇️ NUEVO: handler requerido por EditContactModal
   const handleContactUpdated = useCallback(
     async (_updated: Contact) => {
-      // puedes hacer optimista aquí si quieres
       await onRefetch();
       setIsEditOpen(false);
       setEditingContact(null);

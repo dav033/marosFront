@@ -1,4 +1,3 @@
-// src/types/components/leads.ts
 
 import type React from "react";
 
@@ -7,8 +6,6 @@ import type { Lead } from "@/features/leads/domain/models/Lead";
 import type { LeadType } from "@/features/leads/enums";
 
 import type { LeadFormData } from "./form";
-
-// Types for basic data entities
 export interface ProjectType {
   id: number;
   name: string;
@@ -70,13 +67,10 @@ export interface BaseLeadModalProps {
   children: React.ReactNode;
   isLoading?: boolean;
   loadingText?: string;
-
-  // Extras que tu implementación ya usa:
   cancelText?: string;
   isSubmitDisabled?: boolean;
   size?: "sm" | "md" | "lg" | "xl";
   className?: string;
-  /** Si lo pasas, el botón submit del footer referenciará este form */
-  formId?: string;
+    formId?: string;
 }
 

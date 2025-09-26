@@ -1,4 +1,3 @@
-// src/presentation/atoms/Icon.tsx
 import { Icon as Iconify } from "@iconify/react";
 import type { ComponentProps } from "react";
 

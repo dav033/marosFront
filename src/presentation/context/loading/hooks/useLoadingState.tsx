@@ -1,4 +1,3 @@
-// src/presentation/context/loading/hooks/useLoadingState.ts
 import { useContext } from "react";
 
 import { type LoadingState,LoadingStateContext } from "../LoadingContext.tsx";

@@ -1,4 +1,3 @@
-// Capa: Infrastructure — Repo HTTP para ProjectType
 import type { ProjectType } from "@/features/leads/domain/models/ProjectType";
 import type { ProjectTypeRepositoryPort } from "@/features/leads/domain/ports/ProjectTypeRepositoryPort";
 import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";

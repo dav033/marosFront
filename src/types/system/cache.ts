@@ -1,9 +1,3 @@
-// src/types/system/cache.ts
-
-// ===========================================
-// CACHE SYSTEM TYPES
-// ===========================================
-
 export type StorageLayer = "memory" | "localStorage" | "sessionStorage" | "indexedDB";
 
 export interface CacheEntry<T = unknown> {
@@ -76,7 +70,6 @@ export interface CacheManager {
   delete(key: string): Promise<boolean>;
   clear(): Promise<void>;
   invalidatePattern(pattern: string): Promise<number>;
-  getMetrics(): Promise<CacheMetrics>;
   updateConfig(config: Partial<CacheConfig>): void;
   enableDebug(config: CacheDebugConfig): void;
   export(): Promise<Record<string, unknown>>;

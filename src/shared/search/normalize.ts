@@ -3,6 +3,5 @@ export const defaultNormalize = (s: string) =>
     .toString()
     .trim()
     .toLowerCase()
-    // elimina acentos/diacríticos
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '');

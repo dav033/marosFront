@@ -1,11 +1,9 @@
-// src/presentation/molecules/skeletons/ListSkeleton.tsx
 import React from "react";
 
 export type ListSkeletonProps = {
   rows?: number;
 };
 
-/** Skeleton tipo lista (misma UI del origen) */
 export function ListSkeleton({ rows = 8 }: ListSkeletonProps) {
   return (
     <div className="space-y-3 animate-pulse">

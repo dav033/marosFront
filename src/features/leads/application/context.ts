@@ -1,4 +1,3 @@
-// Capa: Application — Contexto de Leads (se agrega projectType repo)
 import type {
   Clock,
   LeadNumberAvailabilityPort,
@@ -11,15 +10,13 @@ export type LeadsAppContext = Readonly<{
   repos: {
     contact: any;
     lead: LeadRepositoryPort;
-    /** Nuevo: repositorio de tipos de proyecto */
-    projectType?: ProjectTypeRepositoryPort; // opcional para compatibilidad
+        projectType?: ProjectTypeRepositoryPort; // opcional para compatibilidad
   };
   services: {
     leadNumberAvailability: LeadNumberAvailabilityPort;
   };
 }>;
 
-/** Factory tipado (permite extender sin romper) */
 export function makeLeadsAppContext(deps: LeadsAppContext): LeadsAppContext {
   return deps;
 }

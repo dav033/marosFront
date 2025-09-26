@@ -3,21 +3,13 @@ import { isDuplicateContact } from "@/features/contact/domain/services/contactUn
 
 import type { ContactsAppContext } from "../../context";
 
-/**
- * Consulta de unicidad/duplicados:
- * - Si existe puerto de unicidad → lo usa.
- * - Si no, cae a política pura comparando contra todos los contactos (repo.getAll()).
- */
 export async function validateContactUniqueness(
   ctx: ContactsAppContext,
   candidate: ContactUniquenessCheck
 ): Promise<{ duplicate: boolean; conflictId?: number }> {
-  // 1) Backend (si está disponible)
   if (ctx.ports?.uniqueness) {
     return ctx.ports.uniqueness.isDuplicate(candidate);
   }
-
-  // 2) Fallback local (política pura)
   const all = await ctx.repos.contact.findAll();
   const { duplicate, match } = isDuplicateContact(candidate, all, {});
   if (!duplicate) return { duplicate: false };

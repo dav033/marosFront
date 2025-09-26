@@ -1,4 +1,3 @@
-// Application context for Project feature
 import type { ProjectRepositoryPort } from "@/features/project/domain/ports/ProjectRepositoryPort";
 
 export function makeProjectsAppContext(deps: ProjectsAppContext): ProjectsAppContext {

@@ -16,13 +16,10 @@ export function useContactsApplication() {
   const ctx = useContactsApp();
 
   return {
-    // Legacy names (kept for compatibility)
     list: () => listContacts(ctx),
     getById: (id: number) => getContactById(ctx, id),
     patch: (id: number, patch: ContactPatch) => patchContact(ctx, id, patch),
     remove: (id: number) => deleteContact(ctx, id),
-
-    // Preferred standardized API
     findAll: () => listContacts(ctx),
     findById: (id: number) => getContactById(ctx, id),
     create: (draft: ContactDraft) => createContact(ctx, draft),

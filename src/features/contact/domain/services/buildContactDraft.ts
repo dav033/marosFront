@@ -1,7 +1,5 @@
-// src/features/contact/domain/services/buildContactDraft.ts
 
 import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
-// Si prefieres no cruzar features, duplica BusinessRuleError en contact/domain/errors y cambia este import.
 
 export type ContactDraft = Readonly<{
   companyName: string;
@@ -11,8 +9,7 @@ export type ContactDraft = Readonly<{
   occupation?: string | undefined;
   product?: string | undefined;
   address?: string | undefined;
-  /** ISO 8601 (ej. "2025-09-12T10:30:00Z"), opcional */
-  lastContact?: string | undefined;
+    lastContact?: string | undefined;
 }>;
 
 /* ----------------- Utils puras ----------------- */
@@ -22,11 +19,9 @@ function normText(s: unknown): string {
     .trim();
 }
 
-/** Normalización mínima: deja sólo dígitos y un posible '+' inicial. NO valida. */
 function normPhone(p?: string): string | undefined {
   if (!p) return undefined;
   const trimmed = String(p).trim();
-  // conserva '+' inicial si existe y remueve no dígitos del resto
   if (trimmed.startsWith("+")) {
     const rest = trimmed.slice(1).replace(/\D+/g, "");
     return rest ? `+${rest}` : undefined;
@@ -35,7 +30,6 @@ function normPhone(p?: string): string | undefined {
   return digits || undefined;
 }
 
-/** Normalización simple de email (lowercase + trim). Validación va en ensureContactDraftIntegrity. */
 function normEmail(e?: string): string | undefined {
   if (!e) return undefined;
   const v = String(e).trim().toLowerCase();
@@ -44,12 +38,6 @@ function normEmail(e?: string): string | undefined {
 
 /* ----------------- Servicio principal ----------------- */
 
-/**
- * Construye un borrador de Contacto listo para validación/persistencia.
- * - Normaliza textos (trim/colapsa espacios)
- * - Normaliza teléfono/email (sin validar formato aquí)
- * - Verifica mínimos duros: companyName y name no vacíos
- */
 export function buildContactDraft(input: {
   companyName: string;
   name: string;

@@ -1,4 +1,3 @@
-// maros-app/src/features/leads/domain/services/applyLeadPatch.ts
 
 import { LeadStatus } from "../../enums";
 import type {
@@ -41,12 +40,10 @@ function validateLeadName(raw: string): string {
   return v;
 }
 
-/** Mapea `null`/`undefined` al estado de negocio UNDETERMINED */
 function toEffectiveStatus(s: LeadStatus | null | undefined): LeadStatus {
   return s ?? LeadStatus.UNDETERMINED;
 }
 
-/** Convierte un Partial<Record<...>> en un Record completo y readonly */
 function resolveTransitions(
   overrides?: Partial<Record<LeadStatus, LeadStatus[]>>
 ): Readonly<Record<LeadStatus, readonly LeadStatus[]>> {
@@ -79,13 +76,6 @@ function resolveTransitions(
 
 /* ----------------- Servicio principal ----------------- */
 
-/**
- * Aplica un parche de edición de manera PURA sobre el Lead.
- * - Valida/normaliza `name`, `leadNumber`, `startDate`.
- * - Valida y aplica cambio de estado delegando en `leadStatusPolicy.applyStatus`.
- * - Valida integridad del agregado resultante con `ensureLeadIntegrity`.
- * - Emite evento si cambia el status.
- */
 export function applyLeadPatch(
   clock: Clock,
   current: Lead,
@@ -94,19 +84,13 @@ export function applyLeadPatch(
 ): ApplyLeadPatchResult {
   let updated: Lead = { ...current };
   const events: ApplyLeadPatchResult["events"] = [];
-
-  // name
   if (patch.name !== undefined) {
     updated = { ...updated, name: validateLeadName(patch.name) };
   }
-
-  // location
   if (patch.location !== undefined) {
     const v = normalizeText(patch.location);
     updated = { ...updated, location: v || undefined };
   }
-
-  // leadNumber (null ⇒ vaciar; string ⇒ normalizar/validar con leadNumberPolicy)
   if (patch.leadNumber !== undefined) {
     const rules = policies.leadNumberPattern
       ? { pattern: policies.leadNumberPattern }
@@ -114,8 +98,6 @@ export function applyLeadPatch(
     const normalized = makeLeadNumber(patch.leadNumber, rules);
     updated = { ...updated, leadNumber: normalized ?? "" };
   }
-
-  // startDate (YYYY-MM-DD)
   if (patch.startDate !== undefined) {
     const d = normalizeText(patch.startDate);
     if (d && !isIsoLocalDate(d)) {
@@ -127,8 +109,6 @@ export function applyLeadPatch(
     }
     updated = { ...updated, startDate: d as ISODate };
   }
-
-  // projectTypeId ⇒ actualiza solo el id
   if (patch.projectTypeId !== undefined) {
     updated = {
       ...updated,
@@ -138,8 +118,6 @@ export function applyLeadPatch(
       },
     };
   }
-
-  // contactId ⇒ actualiza solo el id
   if (patch.contactId !== undefined) {
     updated = {
       ...updated,
@@ -149,8 +127,6 @@ export function applyLeadPatch(
       },
     };
   }
-
-  // status ⇒ mapear null a UNDETERMINED, resolver transiciones y delegar
   if (patch.status !== undefined) {
     const to = toEffectiveStatus(patch.status);
 
@@ -165,8 +141,6 @@ export function applyLeadPatch(
     updated = withStatus;
     events.push(...statusEvents);
   }
-
-  // ✔ Validación final de integridad del agregado (NO del draft)
   const integrityPolicies = policies.leadNumberPattern
     ? { leadNumberRules: { pattern: policies.leadNumberPattern } }
     : undefined;

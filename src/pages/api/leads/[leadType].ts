@@ -1,4 +1,3 @@
-// Make this dynamic API route inert for static builds
 import type { APIRoute } from 'astro';
 
 export const prerender = true;

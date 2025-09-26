@@ -1,6 +1,3 @@
-/**
- * Panel de configuración de cache para debugging
- */
 
 import React from "react";
 import { cacheConfig } from "src/lib/cacheConfig";
@@ -72,8 +69,6 @@ const CacheConfigPanel: React.FC = () => {
       );
     }
   );
-
-  // Valores seguros para debug cuando es undefined
   const dbg = {
     log: config.debug?.log ?? false,
     logCacheHits: config.debug?.logCacheHits ?? false,

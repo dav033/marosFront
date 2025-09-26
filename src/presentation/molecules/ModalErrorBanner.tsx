@@ -1,4 +1,3 @@
-// src/presentation/molecules/ModalErrorBanner.tsx
 import React from "react";
 
 type ModalErrorBannerProps = {

@@ -1,10 +1,4 @@
-// src/types/system/api.ts
-
 import type { AxiosRequestConfig, AxiosResponse } from "axios";
-
-// ===========================================
-// API CLIENT TYPES
-// ===========================================
 
 export interface ApiClientConfig {
   baseURL: string;
@@ -26,8 +20,12 @@ export interface ApiError {
 }
 
 export interface ApiInterceptors {
-  onRequest?: (config: AxiosRequestConfig) => AxiosRequestConfig | Promise<AxiosRequestConfig>;
-  onResponse?: (response: AxiosResponse) => AxiosResponse | Promise<AxiosResponse>;
+  onRequest?: (
+    config: AxiosRequestConfig
+  ) => AxiosRequestConfig | Promise<AxiosRequestConfig>;
+  onResponse?: (
+    response: AxiosResponse
+  ) => AxiosResponse | Promise<AxiosResponse>;
   onError?: (error: ApiError) => Promise<ApiError>;
 }
 

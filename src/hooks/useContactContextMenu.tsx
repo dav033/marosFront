@@ -1,5 +1,3 @@
-// src/presentation/organisms/contacts/hooks/useContactContextMenu.ts
-// ✅ Usar Clean Architecture: Application + Infra (sin carpeta services)
 import type { ContactsAppContext } from "@/features/contact/application";
 import { deleteContact as ucDeleteContact } from "@/features/contact/application";
 import type { Contact } from "@/features/contact/domain/models/Contact";
@@ -7,9 +5,6 @@ import { ContactHttpRepository } from "@/features/contact/infra";
 import { useContextMenu } from "@/presentation/molecules/ContextMenu";
 import type { ContextMenuOption, UseContactContextMenuProps } from "@/types";
 import { getErrorMessage } from "@/utils/errors";
-
-// Factory mínimo de contexto (Contact). Si ya expones un makeContactsAppContext desde Application,
-// puedes reemplazar esta función por ese factory y mantener la misma firma.
 function makeContactsAppContext(): ContactsAppContext {
   return {
     repos: { contact: new ContactHttpRepository() },
@@ -31,7 +26,6 @@ export const useContactContextMenu = ({
 
     try {
       const ctx = makeContactsAppContext();
-      // En Clean Architecture, delete no retorna boolean; si no lanza error, se asume éxito.
       await ucDeleteContact(ctx, contact.id);
       onDelete?.(contact.id);
     } catch (error: unknown) {
@@ -56,7 +50,6 @@ export const useContactContextMenu = ({
       label: "Duplicate Contact",
       icon: "material-symbols:content-copy",
       action: () => {
-        // TODO: Implement duplicate functionality
         hideContextMenu();
       },
     },
@@ -65,7 +58,6 @@ export const useContactContextMenu = ({
       label: "View Details",
       icon: "material-symbols:visibility",
       action: () => {
-        // TODO: Implement view details functionality
         hideContextMenu();
       },
     },

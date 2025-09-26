@@ -1,4 +1,3 @@
-// src/presentation/atoms/table/SeparatorRow.tsx
 import React from "react";
 
 export default function SeparatorRow({ colSpan }: { colSpan: number }) {

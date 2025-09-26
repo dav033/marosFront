@@ -1,4 +1,3 @@
-// src/hooks/useSort.ts
 import { useCallback, useMemo, useState } from "react";
 
 import type { Column, SortDirection } from "@/types/components/table";
@@ -44,8 +43,6 @@ export default function useSort<T>(data: T[], columns: Column<T>[]) {
     copy.sort((a, b) => {
       const va = getValue(a);
       const vb = getValue(b);
-
-      // normaliza a string para comparación robusta
       const sa = va === null || va === undefined ? "" : String(va);
       const sb = vb === null || vb === undefined ? "" : String(vb);
 

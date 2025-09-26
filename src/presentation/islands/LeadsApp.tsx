@@ -9,8 +9,6 @@ import { useContactsVM } from "../hooks/useContactsVM";
 import { useProjectTypesVM } from "../hooks/useProjectTypesVM";
 import LeadsBoard from "../organisms/LeadsBoard";
 
-// ⬇️ Reemplazo del servicio obsoleto por VMs
-
 
 type Props = {
   leadType: LeadType;
@@ -43,24 +41,15 @@ function LeadsInner({
   resolvedCreateButtonText: string;
 }) {
   const { setSkeleton, showLoading, hideLoading } = useLoading();
-
-  // ⚙️ Configuración del skeleton (sin overlay). Se mantiene igual.
   React.useEffect(() => {
      
     
     setSkeleton("leadsTable", { rows: 12, showSections: true });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // Contextos para los VMs
   const leadsCtx = useLeadsApp();
   const contactsCtx = useContactsApp();
-
-  // ✅ Carga de datos auxiliares con VMs (sin tocar el loading global)
   const { projectTypes = [] } = useProjectTypesVM(leadsCtx);
   const { contacts = [] } = useContactsVM(contactsCtx);
-
-  // Señal de carga proveniente del board (mantiene comportamiento original)
   const handleLoadingChange = React.useCallback(
     (loading: boolean) => {
        
@@ -70,8 +59,6 @@ function LeadsInner({
     },
     [showLoading, hideLoading]
   );
-
-  // Log informativo (opcional, puede quitarse)
    
   
 

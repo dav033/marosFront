@@ -1,4 +1,3 @@
-// Capa: Presentation — Tipos del ViewModel
 import type { Dispatch, SetStateAction } from "react";
 
 import type { Lead } from "@/features/leads/domain/models/Lead";

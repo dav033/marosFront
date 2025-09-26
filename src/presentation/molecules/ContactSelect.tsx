@@ -12,22 +12,14 @@ export type ContactLite = {
 };
 
 export type ContactSelectProps = {
-  /** Lista de contactos en formato liviano */
-  contacts: ReadonlyArray<ContactLite>;
-  /** ID seleccionado (o undefined si no hay selección) */
-  value: number | "" | undefined;
-  /** Emite el ID (number) o undefined cuando se limpia */
-  onChange: (contactId: number | undefined) => void;
-  /** Placeholder del control */
-  placeholder?: string;
-  /** Activa el modo searchable del átomo Select */
-  searchable?: boolean;
-  /** Icono (Iconify name) mostrado a la izquierda */
-  icon?: string;
-  /** Deshabilitar input */
-  disabled?: boolean;
-  /** Clases extra */
-  className?: string;
+    contacts: ReadonlyArray<ContactLite>;
+    value: number | "" | undefined;
+    onChange: (contactId: number | undefined) => void;
+    placeholder?: string;
+    searchable?: boolean;
+    icon?: string;
+    disabled?: boolean;
+    className?: string;
 };
 
 const ContactSelect: React.FC<ContactSelectProps> = ({

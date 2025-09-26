@@ -1,4 +1,3 @@
-// src/shared/infra/http/HttpClient.ts
 import type { CachedRequestConfig } from "./types";
 
 export interface HttpResponse<T> {

@@ -36,16 +36,11 @@ export function useLeadsByType(type: LeadType) {
     {
       cacheKey: `leads-by-type-${type}`,
       ttl: 300_000,
-      // storage, showSkeletonOnlyOnFirstLoad y backgroundRefreshThreshold ya tienen defaults adecuados
-      // refetchInterval no se necesita, omitir mantiene el comportamiento actual
     }
   );
-
-  // Solo mostramos "cargando inicial" si no viene de caché y aún no hay datos
   const initialLoading = loading && !fromCache && (leads?.length === 0);
 
   const sections: Section[] = useMemo(() => {
-    // Agrupación en una pasada
     const buckets: Record<BucketKey, Lead[]> = {
       [LeadStatus.NEW]: [],
       UNDETERMINED: [],
@@ -60,8 +55,6 @@ export function useLeadsByType(type: LeadType) {
       const status = (lead.status ?? "UNDETERMINED") as BucketKey;
       (buckets[status] ?? buckets.UNDETERMINED).push(lead);
     }
-
-    // Construimos las secciones en el orden deseado
     return SECTION_ORDER.map(({ key, title }) => ({
       name: title,
       data: buckets[key],

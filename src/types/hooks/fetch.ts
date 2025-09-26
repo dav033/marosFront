@@ -1,12 +1,5 @@
-// src/types/hooks/fetch.ts
-/* eslint-disable simple-import-sort/imports */
-
 import type { AxiosRequestConfig } from "axios";
 import type { RequestMetrics } from "../lib/api-client";
-
-// ===========================================
-// FETCH HOOK TYPES
-// ===========================================
 
 export interface FetchState<T> {
   data: T | null;
@@ -34,7 +27,6 @@ export interface UseFetchResult<T> {
   reset: () => void;
 }
 
-// Optimized fetch types
 export interface OptimizedFetchConfig {
   enableCache?: boolean;
   enableRetry?: boolean;

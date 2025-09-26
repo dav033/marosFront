@@ -1,12 +1,5 @@
-// src/types/components/ui.ts
 
 import type { ButtonHTMLAttributes, HTMLAttributes,ReactNode } from "react";
-
-// ===========================================
-// UI COMPONENT TYPES
-// ===========================================
-
-// Button component interfaces
 export interface BaseButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "success" | "warning" | "danger" | "ghost" | "link";
   size?: "sm" | "md" | "lg";
@@ -29,8 +22,6 @@ export interface GenericButtonProps extends ButtonHTMLAttributes<HTMLButtonEleme
   loading?: boolean;
   className?: string;
 }
-
-// Card component interfaces
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
   variant?: "default" | "outlined" | "elevated";
@@ -55,8 +46,6 @@ export interface CardFooterProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
   className?: string;
 }
-
-// Loading component interfaces
 export interface LoadingSpinnerProps {
   size?: "sm" | "md" | "lg";
   color?: string;
@@ -69,16 +58,12 @@ export interface LoadingOverlayProps {
   spinner?: ReactNode | undefined;
   className?: string | undefined;
 }
-
-// Badge component interfaces
 export interface BadgeProps {
   children: ReactNode;
   variant?: "default" | "primary" | "secondary" | "success" | "warning" | "danger";
   size?: "sm" | "md" | "lg";
   className?: string;
 }
-
-// Sidebar component interfaces
 export interface SidebarItemProps {
   title: string;
   to: string;

@@ -25,25 +25,6 @@ export default defineConfig({
       },
       dedupe: ["react", "react-dom"],
     },
-    // server: {
-    //   proxy: {
-    //     // Redirige /contacts/* al backend (http://localhost:8080)
-    //     "/contacts": {
-    //       target: "http://localhost:8080",
-    //       changeOrigin: true,
-    //       secure: false,
-    //     },
-    //     // Si tiene más prefijos de API, actívelos aquí también:
-    //     "/api": {
-    //       target: "http://localhost:8080",
-    //       changeOrigin: true,
-    //       secure: false,
-    //     },
-    //     // Ejemplos adicionales, descomente si aplica:
-    //     // "/auth": { target: "http://localhost:8080", changeOrigin: true, secure: false },
-    //     // "/uploads": { target: "http://localhost:8080", changeOrigin: true, secure: false },
-    //   },
-    // },
   },
   integrations: [icon(), react()],
 });

@@ -1,4 +1,3 @@
-// src/presentation/molecules/ContactForm.tsx
 import React from "react";
 
 import { Icon,Input } from "@/presentation/atoms";
@@ -14,10 +13,6 @@ export type ContactFormProps = {
   className?: string;
 };
 
-/**
- * Molécula: ContactForm
- * (sin campo lastContact)
- */
 const ContactForm: React.FC<ContactFormProps> = ({
   form,
   onChange,

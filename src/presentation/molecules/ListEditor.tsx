@@ -1,4 +1,3 @@
-// src/features/reports/presentation/molecules/restoration-visit/ListEditor.tsx
 import * as React from "react";
 
 type ListEditorProps = {

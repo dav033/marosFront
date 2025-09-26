@@ -1,4 +1,3 @@
-// Capa: Presentation — ProjectType VM
 import * as React from "react";
 
 import type { LeadsAppContext } from "@/features/leads/application";

@@ -18,8 +18,6 @@ export function useSidebarNavigation() {
 
     setCurrentPath((prevPath) => {
       if (prevPath === path) return prevPath;
-
-      // Auto-abrir dropdowns relevantes
       setOpenDropdowns((prevOpen) => {
         const newOpenDropdowns = new Set(prevOpen);
 
@@ -41,10 +39,7 @@ export function useSidebarNavigation() {
 
   useEffect(() => {
     updateCurrentPath();
-
-    // MutationObserver más eficiente
     const observer = new MutationObserver((mutations) => {
-      // Solo verificar si hay cambios relevantes
       const hasRelevantChanges = mutations.some(
         (mutation) =>
           mutation.type === "attributes" &&
@@ -64,8 +59,6 @@ export function useSidebarNavigation() {
       attributeFilter: ["data-astro-transition-scope"],
       subtree: false, // Reducir el scope
     });
-
-    // Agregar event listeners
     NAVIGATION_EVENTS.forEach((event) => {
       document.addEventListener(
         event as keyof DocumentEventMap,

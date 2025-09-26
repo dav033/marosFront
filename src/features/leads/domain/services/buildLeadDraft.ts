@@ -1,4 +1,3 @@
-// maros-app/src/features/leads/domain/services/buildLeadDraft.ts
 
 import type { LeadStatus,LeadType } from "../../enums";
 import type {
@@ -19,7 +18,6 @@ import {
 } from "./leadContactLinkPolicy";
 import { makeLeadNumber } from "./leadNumberPolicy";
 
-/** Entradas comunes para construir un LeadDraft. */
 type CommonInput = Readonly<{
   leadNumber?: string | null;
   leadName: string;
@@ -28,12 +26,10 @@ type CommonInput = Readonly<{
   leadType: LeadType;
 }>;
 
-/** Normaliza string (trim + colapsa espacios internos). */
 function normalizeText(s: string): string {
   return String(s ?? "").replace(/\s+/g, " ").trim();
 }
 
-/** Valida nombre del lead. */
 function validateLeadName(raw: string): string {
   const v = normalizeText(raw);
   if (!v) {
@@ -51,9 +47,6 @@ function validateLeadName(raw: string): string {
   return v;
 }
 
-/**
- * Construye un LeadDraft cuando el contacto es NUEVO (sin ID).
- */
 export function buildLeadDraftForNewContact(
   clock: Clock,
   input: CommonInput & { contact: NewContact },
@@ -84,9 +77,6 @@ export function buildLeadDraftForNewContact(
   return draft;
 }
 
-/**
- * Construye un LeadDraft cuando el contacto YA EXISTE (contactId).
- */
 export function buildLeadDraftForExistingContact(
   clock: Clock,
   input: CommonInput & { contactId: ContactId },

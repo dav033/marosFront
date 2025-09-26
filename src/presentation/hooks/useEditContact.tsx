@@ -17,7 +17,6 @@ export function useEditContact(initial?: Contact | null) {
     phone: initial?.phone ?? "",
     email: initial?.email ?? "",
     address: initial?.address ?? "",
-    // ⛔️ lastContact eliminado
   }));
 
   const [isLoading, setIsLoading] = useState(false);
@@ -41,8 +40,6 @@ export function useEditContact(initial?: Contact | null) {
           contact: new ContactHttpRepository(),
         },
       };
-
-      // ⛔️ No enviamos lastContact
       const patch = {
         companyName: form.companyName,
         name: form.name,

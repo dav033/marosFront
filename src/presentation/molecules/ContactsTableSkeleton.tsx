@@ -1,9 +1,6 @@
 import React from "react";
 import type { ContactsTableSkeletonProps } from "../../types/components/contacts";
 
-/**
- * Skeleton para la tabla de contactos que coincide con el diseño real
- */
 export function ContactsTableSkeleton({
   rows = 15,
 }: ContactsTableSkeletonProps) {

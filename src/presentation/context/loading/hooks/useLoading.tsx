@@ -9,7 +9,5 @@ export default function useLoading() {
     throw new Error("useLoadingState must be used within a LoadingProvider");
   }
 
-  // Log ligero para cada consumo del hook
-
   return { ...state, ...actions };
 }

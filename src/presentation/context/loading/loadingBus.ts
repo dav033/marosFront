@@ -1,4 +1,3 @@
-// src/presentation/context/loading/loadingBus.ts
 import type { SkeletonOptions } from "@/types/contexts/loading";
 
 type Actions = {

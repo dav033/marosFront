@@ -12,21 +12,17 @@ import HeaderBlock from "./HeaderBlock";
 export type RestorationFinalProps = {
   project: Project;
 
-  /** Texto del cierre y fecha. Si no se pasan, se derivan del proyecto. */
-  finalEvaluation?: string;
+    finalEvaluation?: string;
   completionDate?: string;
 
-  /** Estado interno de UI (actividades y evidencias del informe final) */
-  initialCompletedActivities?: string[];
+    initialCompletedActivities?: string[];
   initialEvidences?: EvidenceItem[];
 
-  /** Branding */
-  logoUrl?: string | null;
+    logoUrl?: string | null;
   editableLogo?: boolean;
   onLogoChange?: (file: File | null, dataUrl?: string | null) => void;
 
-  /** Acciones */
-  onExportPdf?: () => void | Promise<void>;
+    onExportPdf?: () => void | Promise<void>;
   className?: string;
 };
 

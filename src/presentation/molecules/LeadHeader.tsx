@@ -1,4 +1,3 @@
-// src/presentation/molecules/leads/LeadHeader.tsx
 import React from "react";
 
 export const LeadHeader: React.FC<{ title: string; total: number; right?: React.ReactNode }> = ({ title, total, right }) => (

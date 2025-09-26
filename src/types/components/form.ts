@@ -1,4 +1,3 @@
-// src/types/components/form.ts
 
 import type { ReactNode } from "react";
 
@@ -7,11 +6,6 @@ import type { ProjectType } from "@/features/leads/domain/models/ProjectType";
 import type { LeadStatus, LeadType } from "@/features/leads/enums";
 
 import type { FormMode } from "../enums";
-
-
-// ===========================================
-// FORM COMPONENT TYPES
-// ===========================================
 
 export interface FormFieldProps {
   label: string;
@@ -42,8 +36,6 @@ export interface FormProps {
   className?: string | undefined;
   loading?: boolean | undefined;
 }
-
-// Lead-specific form interfaces
 export interface LeadFormData {
   leadNumber?: string | undefined;
   name: string;
@@ -54,8 +46,6 @@ export interface LeadFormData {
   projectTypeId?: number | undefined;
   leadType: LeadType;
   contactId?: number | undefined;
-
-  // For new contact creation
   companyName?: string | undefined;
   contactName?: string | undefined;
   customerName?: string | undefined; // compatibility
@@ -64,7 +54,6 @@ export interface LeadFormData {
   phone?: string | undefined;
   email?: string | undefined;
   address?: string | undefined;
-  // ⛔️ lastContact eliminado
 }
 
 export interface LeadFormProps {
@@ -85,7 +74,6 @@ export interface ContactFormData {
   phone?: string | undefined;
   email?: string | undefined;
   address?: string | undefined;
-  // ⛔️ lastContact eliminado
 }
 
 export interface ContactFormProps {

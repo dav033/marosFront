@@ -1,5 +1,3 @@
-// src/types/hooks/leads.ts
-
 import type { LeadFormData } from "../components/form";
 
 export interface UseCreateLeadOptions {

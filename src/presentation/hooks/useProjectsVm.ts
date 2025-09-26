@@ -23,7 +23,6 @@ type State = {
 
 const ctx = ProjectApplicationContextFactory.createHttpContext();
 
-/** ViewModel para Listado/CRUD de Projects. */
 export function useProjectsVm(initialStatus?: ProjectStatus) {
   const [state, setState] = React.useState<State>({ data: [], loading: false, error: null });
 
@@ -53,8 +52,7 @@ export function useProjectsVm(initialStatus?: ProjectStatus) {
     }
   }, []);
 
-  /** ⬇️ Nuevo: carga projects con sus leads */
- const loadWithLeads = React.useCallback(async () => {
+   const loadWithLeads = React.useCallback(async () => {
   setState((s) => ({ ...s, loading: true, error: null }));
     try {
   const data = await getProjectsWithLeads(ctx); // ProjectWithLeadView[]

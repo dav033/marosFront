@@ -1,12 +1,5 @@
-// src/types/hooks/search.ts
-
 import type { Contact } from "@/features/contact/domain/models/Contact";
 import type { Lead } from "@/features/leads/domain";
-
-
-// ===========================================
-// SEARCH HOOK TYPES
-// ===========================================
 
 export interface SearchFieldOption {
   key: string;
@@ -17,12 +10,12 @@ export interface SearchFieldOption {
 
 export interface SearchConfig<T> {
   fields: SearchFieldOption[];
-  searchableFields?: SearchFieldOption[]; // Legacy property for compatibility
+  searchableFields?: SearchFieldOption[];
   defaultField?: string;
   placeholder?: string;
   debounceMs?: number;
   caseSensitive?: boolean;
-  searchType?: string; // Add this for compatibility
+  searchType?: string;
   searchFunction?: (items: T[], query: string, field: string) => T[];
 }
 
@@ -47,8 +40,7 @@ export interface UseSearchResult<T> {
   actions: SearchActions;
   hasResults: boolean;
   totalResults: number;
-  
-  // Legacy properties for compatibility
+
   searchTerm: string;
   selectedField: string;
   filteredData: T[];
@@ -59,7 +51,6 @@ export interface UseSearchResult<T> {
   clearSearch: () => void;
 }
 
-// Specific search configurations
 export interface ContactSearchConfig extends SearchConfig<Contact> {
   includeInactive?: boolean;
 }

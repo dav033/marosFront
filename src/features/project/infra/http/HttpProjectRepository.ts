@@ -12,7 +12,6 @@ import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
 
 import { PROJECTS_API } from "./endpoints";
 
-/** Implementación HTTP del repositorio de Projects. */
 export class HttpProjectRepository implements ProjectRepositoryPort {
   constructor(private readonly http = optimizedApiClient) {}
 
@@ -33,7 +32,6 @@ export class HttpProjectRepository implements ProjectRepositoryPort {
   }
 
   async findByName(projectName: string): Promise<Project | null> {
-    // No hay endpoint dedicado: filtramos cliente (OK para datasets pequeños)
     const all = await this.findAll();
     return all.find((p) => p.projectName === projectName) ?? null;
   }
@@ -82,7 +80,6 @@ export class HttpProjectRepository implements ProjectRepositoryPort {
 
   async getWithLeads(): Promise<ProjectWithLeadView[]> {
     const { data } = await optimizedApiClient.get("/api/projects/with-leads");
-    // Normaliza fechas a string (por si vienen como ISO/generadas por Jackson)
     return (Array.isArray(data) ? data : []).map((it: unknown) => {
       const asObj = it as Record<string, unknown>;
       return {
