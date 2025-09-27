@@ -1,9 +1,0 @@
----
-import Layout from "@/layouts/Layout.astro";
-import LeadsApp from "@/presentation/islands/LeadsApp";
-import { LeadType } from "@/features/leads/enums";
----
-
-<Layout title="Plumbing Leads - Maros Construction">
-  <LeadsApp client:load leadType={LeadType.PLUMBING} />
-</Layout>

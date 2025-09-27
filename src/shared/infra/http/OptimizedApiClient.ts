@@ -7,8 +7,7 @@ import axios, {
   type AxiosRequestHeaders,
   type AxiosResponse,
 } from "axios";
-import { unifiedCache } from "./cache/cacheManager";
-import type { CachedRequestConfig } from "./types";
+// ⚠️ Eliminamos el uso de CachedRequestConfig (cache legacy).
 // (Opcional) mantenga sus interceptores de loading si los usa:
 import { attachLoadingInterceptors } from "./axiosLoadingInterceptors";
 
@@ -16,35 +15,53 @@ const { VITE_API_BASE_URL } = import.meta.env;
 const BASE_URL = VITE_API_BASE_URL || "http://localhost:8080";
 
 /**
- * stableKey: serializa objetos/arrays/fechas de forma determinística
- * para construir claves de caché estables e independientes del orden
- * de las propiedades.
+ * Normaliza objetos/arrays/fechas de forma determinística.
+ * Útil para construir claves estables de consultas (Query Keys).
  */
-function stableKey(input: unknown): string {
-  const normalize = (v: unknown): unknown => {
-    if (v === null || v === undefined) return v;
-    if (v instanceof Date) return v.toISOString();
-    if (Array.isArray(v)) return v.map(normalize);
-    if (typeof v === "object") {
-      const o = v as Record<string, unknown>;
-      const out: Record<string, unknown> = {};
-      for (const k of Object.keys(o).sort()) {
-        out[k] = normalize(o[k]);
-      }
-      return out;
+function normalizeStable(input: unknown): unknown {
+  if (input === null || input === undefined) return input;
+  if (input instanceof Date) return input.toISOString();
+  if (Array.isArray(input)) return input.map(normalizeStable);
+  if (typeof input === "object") {
+    const o = input as Record<string, unknown>;
+    const out: Record<string, unknown> = {};
+    for (const k of Object.keys(o).sort()) {
+      out[k] = normalizeStable(o[k]);
     }
-    return v;
-  };
+    return out;
+  }
+  return input;
+}
+
+/** Serializa de forma estable (si desea usar string como parte del queryKey) */
+export function stableKey(input: unknown): string {
   try {
-    return JSON.stringify(normalize(input));
+    return JSON.stringify(normalizeStable(input));
   } catch {
     return String(input);
   }
 }
 
+/**
+ * Construye un queryKey estable para TanStack Query:
+ * - Convierte los objetos en su representación estable (string) para evitar
+ *   claves distintas por orden de propiedades.
+ * - Puede usarlo así: queryKey: buildQueryKey(['leads', leadType, { params }])
+ */
+export function buildQueryKey(parts: ReadonlyArray<unknown>): ReadonlyArray<unknown> {
+  return ["api", ...parts.map((p) => (typeof p === "object" ? stableKey(p) : p))];
+}
+
+/** Configuración de petición sin campos de caché legacy */
+export type RequestOptions = {
+  params?: Record<string, unknown>;
+  headers?: AxiosRequestHeaders;
+  signal?: AbortSignal;
+  withCredentials?: boolean;
+};
+
 export class OptimizedApiClient {
   private axiosInstance: AxiosInstance;
-  private inFlight = new Map<string, Promise<AxiosResponse<any>>>();
 
   constructor(baseURL: string = BASE_URL) {
     this.axiosInstance = axios.create({
@@ -55,91 +72,43 @@ export class OptimizedApiClient {
     attachLoadingInterceptors?.(this.axiosInstance);
   }
 
-  // ========= API pública =========
-  get<T = unknown>(url: string, config?: CachedRequestConfig) {
-    return this.cachedRequest<T>("GET", url, undefined, config);
-  }
-  post<T = unknown>(url: string, body?: unknown, config?: CachedRequestConfig) {
-    return this.makeRequest<T>("POST", url, body, config);
-  }
-  put<T = unknown>(url: string, body?: unknown, config?: CachedRequestConfig) {
-    return this.makeRequest<T>("PUT", url, body, config);
-  }
-  delete<T = unknown>(url: string, config?: CachedRequestConfig) {
-    return this.makeRequest<T>("DELETE", url, undefined, config);
+  // ========= API pública (sin caché propia; TanStack Query la gestiona) =========
+  get<T = unknown>(url: string, options?: RequestOptions): Promise<AxiosResponse<T>> {
+    return this.makeRequest<T>("GET", url, undefined, options);
   }
 
-  clearCache() { unifiedCache.clear(); }
+  post<T = unknown>(url: string, body?: unknown, options?: RequestOptions): Promise<AxiosResponse<T>> {
+    return this.makeRequest<T>("POST", url, body, options);
+  }
+
+  put<T = unknown>(url: string, body?: unknown, options?: RequestOptions): Promise<AxiosResponse<T>> {
+    return this.makeRequest<T>("PUT", url, body, options);
+  }
+
+  delete<T = unknown>(url: string, options?: RequestOptions): Promise<AxiosResponse<T>> {
+    return this.makeRequest<T>("DELETE", url, undefined, options);
+  }
+
+  /** Método sin efecto, por compatibilidad con llamadas antiguas */
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  clearCache() {
+    // No-op: la invalidación ahora se maneja con React Query (queryClient.invalidateQueries)
+  }
 
   // ========= Internos =========
-  private generateCacheKey(method: string, url: string, params?: Record<string, unknown>) {
-    const q = params ? stableKey(params) : "";
-    return `${method}:${url}?${q}`;
-  }
-
-  private async cachedRequest<T>(
-    method: "GET",
-    url: string,
-    _body?: unknown,
-    config?: CachedRequestConfig
-  ): Promise<AxiosResponse<T>> {
-    const cacheCfg = { enabled: true, strategy: "cache-first" as const, ttl: 5 * 60_000, ...(config?.cache ?? {}) };
-    const key = this.generateCacheKey(method, url, config?.params);
-
-    // 1) Intento "fresh"
-    if (cacheCfg.enabled && cacheCfg.strategy !== "network-only") {
-      const hit = unifiedCache.getFresh<AxiosResponse<T>>(key);
-      if (hit) return hit.value;
-    }
-
-    // 2) SWR: devolver STALE y revalidar en background
-    if (cacheCfg.enabled && cacheCfg.strategy === "cache-first") {
-      const stale = unifiedCache.peekAny<AxiosResponse<T>>(key);
-      if (stale && !stale.fresh) {
-        void this.refreshWithDedupe<T>(key, method, url, undefined, config, cacheCfg.ttl);
-        return stale.value;
-      }
-    }
-
-    // 3) Red con deduplicación
-    return this.refreshWithDedupe<T>(key, method, url, undefined, config, cacheCfg.ttl);
-  }
-
-  private refreshWithDedupe<T>(
-    cacheKey: string,
-    method: "GET",
-    url: string,
-    body: unknown,
-    config?: CachedRequestConfig,
-    ttl?: number
-  ): Promise<AxiosResponse<T>> {
-    const existing = this.inFlight.get(cacheKey);
-    if (existing) return existing as Promise<AxiosResponse<T>>;
-
-    const p = this.makeRequest<T>(method, url, body, config)
-      .then((res) => {
-        if (ttl != null) unifiedCache.set(cacheKey, res, ttl);
-        return res;
-      })
-      .finally(() => this.inFlight.delete(cacheKey));
-
-    this.inFlight.set(cacheKey, p);
-    return p;
-  }
-
   private async makeRequest<T>(
     method: "GET" | "POST" | "PUT" | "DELETE",
     url: string,
     body?: unknown,
-    config?: CachedRequestConfig
+    options?: RequestOptions
   ): Promise<AxiosResponse<T>> {
-    const axiosConfig: AxiosRequestConfig<T> = {
-      url, method, data: body as any,
-      params: config?.params,
-      withCredentials: config?.withCredentials ?? false,
-    };
-    if (config?.headers) axiosConfig.headers = config.headers as AxiosRequestHeaders;
-    if (config?.signal) axiosConfig.signal = config.signal;
+    // Con exactOptionalPropertyTypes, sólo pasamos props definidas
+    const axiosConfig: AxiosRequestConfig<T> = { url, method };
+    if (body !== undefined) axiosConfig.data = body as any;
+    if (options?.params !== undefined) axiosConfig.params = options.params;
+    if (options?.withCredentials !== undefined) axiosConfig.withCredentials = options.withCredentials;
+    if (options?.headers !== undefined) axiosConfig.headers = options.headers as AxiosRequestHeaders;
+    if (options?.signal !== undefined) axiosConfig.signal = options.signal;
 
     return this.axiosInstance.request<T>(axiosConfig);
   }

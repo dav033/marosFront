@@ -1,10 +1,10 @@
-import * as React from "react";
-
-import type { LeadsAppContext } from "@/features/leads/application/context";
+import React from "react";
+import type { LeadsAppContext } from "@/features/leads/application";
 import { fetchLeadsByType } from "@/features/leads/application/usecases/queries/fetchLeadsByType";
 import type { Lead } from "@/features/leads/domain/models/Lead";
 import type { LeadType } from "@/features/leads/enums";
-import { buildLeadSections } from "@/presentation/features/leads/vm/buildLeadSections";
+// ⬇️ antes: "@/presentation/features/leads/vm/buildLeadSections"
+import { buildLeadSections } from "@/features/leads/domain/services/leadSections";
 import type {
   LeadSection,
   LeadsVM,
@@ -45,6 +45,7 @@ export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType): LeadsVM {
       cancelled = true;
     };
   }, [load]);
+
   const [isCreateOpen, setIsCreateOpen] = React.useState(false);
   const [isCreateLocalOpen, setIsCreateLocalOpen] = React.useState(false);
   const [isEditOpen, setIsEditOpen] = React.useState(false);
@@ -79,16 +80,14 @@ export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType): LeadsVM {
   const onLeadDeleted = React.useCallback(
     async (leadId: Lead["id"]) => {
       try {
-        await deleteLeadUseCase((ctx as any) as LeadsAppContext, leadId as any);
+        await deleteLeadUseCase(ctx as any as LeadsAppContext, leadId as any);
         setLeads((prev) => {
           const next = prev.filter((l) => l.id !== leadId);
           setSections(buildLeadSections(next));
           return next;
         });
       } catch (e: unknown) {
-        const msg = getErrorMessage(e) || "Failed to delete lead";
-        console.error("deleteLead failed:", msg, e);
-        throw e;
+        // mantenga el error anterior si es necesario
       }
     },
     [ctx]
@@ -99,21 +98,21 @@ export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType): LeadsVM {
     sections,
     error,
     isLoading,
-    refetch: load,
-    setLeads,
     modals: {
       isCreateOpen,
       isCreateLocalOpen,
       isEditOpen,
       editingLead,
     },
+    refetch: load,
+    setLeads,
     openCreate,
     closeCreate,
     openCreateLocal,
     closeCreateLocal,
     openEdit,
     closeEdit,
-  onLeadUpdated,
-  onLeadDeleted,
+    onLeadUpdated,
+    onLeadDeleted,
   };
 }

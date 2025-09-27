@@ -8,7 +8,7 @@ import { LoadingProvider } from "@/presentation/context/loading/LoadingContext";
 import { useContactsVM } from "../hooks/useContactsVM";
 import { useProjectTypesVM } from "../hooks/useProjectTypesVM";
 import LeadsBoard from "../organisms/LeadsBoard";
-
+import QueryProvider from "@/components/common/QueryProvider";
 
 type Props = {
   leadType: LeadType;
@@ -16,20 +16,21 @@ type Props = {
   createButtonText?: string;
 };
 
-const DEFAULTS: Record<LeadType, { title: string; createButtonText: string }> = {
-  [LeadType.CONSTRUCTION]: {
-    title: "Construction Leads",
-    createButtonText: "Create Construction Lead",
-  },
-  [LeadType.PLUMBING]: {
-    title: "Plumbing Leads",
-    createButtonText: "Create Plumbing Lead",
-  },
-  [LeadType.ROOFING]: {
-    title: "Roofing Leads",
-    createButtonText: "Create Roofing Lead",
-  },
-};
+const DEFAULTS: Record<LeadType, { title: string; createButtonText: string }> =
+  {
+    [LeadType.CONSTRUCTION]: {
+      title: "Construction Leads",
+      createButtonText: "Create Construction Lead",
+    },
+    [LeadType.PLUMBING]: {
+      title: "Plumbing Leads",
+      createButtonText: "Create Plumbing Lead",
+    },
+    [LeadType.ROOFING]: {
+      title: "Roofing Leads",
+      createButtonText: "Create Roofing Lead",
+    },
+  };
 
 function LeadsInner({
   leadType,
@@ -42,8 +43,6 @@ function LeadsInner({
 }) {
   const { setSkeleton, showLoading, hideLoading } = useLoading();
   React.useEffect(() => {
-     
-    
     setSkeleton("leadsTable", { rows: 12, showSections: true });
   }, []);
   const leadsCtx = useLeadsApp();
@@ -52,15 +51,11 @@ function LeadsInner({
   const { contacts = [] } = useContactsVM(contactsCtx);
   const handleLoadingChange = React.useCallback(
     (loading: boolean) => {
-       
-      
       if (loading) showLoading("leadsTable");
       else hideLoading();
     },
     [showLoading, hideLoading]
   );
-   
-  
 
   return (
     <>
@@ -84,20 +79,20 @@ export default function LeadsApp(props: Props) {
   };
 
   const resolvedTitle = props.title ?? fallback.title;
-  const resolvedCreateButtonText = props.createButtonText ?? fallback.createButtonText;
-
-   
-  
+  const resolvedCreateButtonText =
+    props.createButtonText ?? fallback.createButtonText;
 
   return (
-    <DiProvider>
-      <LoadingProvider>
-        <LeadsInner
-          leadType={props.leadType}
-          resolvedTitle={resolvedTitle}
-          resolvedCreateButtonText={resolvedCreateButtonText}
-        />
-      </LoadingProvider>
-    </DiProvider>
+    <QueryProvider>
+      <DiProvider>
+        <LoadingProvider>
+          <LeadsInner
+            leadType={props.leadType}
+            resolvedTitle={resolvedTitle}
+            resolvedCreateButtonText={resolvedCreateButtonText}
+          />
+        </LoadingProvider>
+      </DiProvider>
+    </QueryProvider>
   );
 }

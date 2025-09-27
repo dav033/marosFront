@@ -1,6 +1,5 @@
 ---
 import Sidebar from "@components/sidebar/Sidebar.tsx";
-import CacheInitializer from "@components/common/CacheInitializer.tsx";
 import "../styles/global.css";
 import { ViewTransitions } from 'astro:transitions';
 
@@ -30,12 +29,7 @@ const {
     <!-- Cache System Initialization -->
     {enableCache && (
       <script is:inline define:vars={{ isDev: import.meta.env.DEV }}>
-        window.CACHE_CONFIG = {
-          enabled: true,
-          debug: isDev,
-          maxSize: 100,
-          defaultTTL: 900000, // 15 minutos
-        };
+     
         document.addEventListener('DOMContentLoaded', () => {
           const criticalRoutes = ['/contacts', '/leads/construction', '/leads/plumbing', '/leads/roofing'];
           
@@ -65,15 +59,7 @@ const {
   <body
     class="relative flex flex-row h-screen bg-theme-dark text-theme-light"
   >
-    <!-- Cache System Initializer -->
-    {enableCache && (
-      <CacheInitializer 
-        client:only="react"
-        enabled={enableCache}
-        debug={enableDiagnostics && import.meta.env.DEV}
-        autoPreload={true}
-      />
-    )}
+
 
   
 

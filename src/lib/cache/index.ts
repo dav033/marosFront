@@ -1,5 +1,5 @@
-export { cacheClient, CacheClient } from "./CacheClient";
-export { useCacheQuery } from "./useCacheQuery";
-export { serializeKey } from "./key";
-export type { QueryKey } from "./key";
-export type { Fetcher, QueryOptions, Status } from "./types";
+// src/lib/cache/index.ts
+export { useCacheQuery } from './useCacheQuery';
+export { serializeKey } from './key';
+export type { QueryKey } from './key';
+export type { Fetcher, QueryOptions, Status } from './types';

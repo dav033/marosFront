@@ -1,0 +1,30 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import LeadsApp from "@/presentation/islands/LeadsApp";
+import { LeadType } from "@/features/leads/enums";
+
+// 1) Declarar los slugs que quieres prerender
+export async function getStaticPaths() {
+  const leadTypes = ["construction", "plumbing", "roofing"] as const;
+  return leadTypes.map((leadType) => ({
+    params: { leadType },
+    props: { leadType }, // opcional: pasa el slug como prop tipada
+  }));
+}
+
+// 2) Usar el slug tipado desde props (evita valores inválidos)
+type LeadSlug = "construction" | "plumbing" | "roofing";
+const { leadType } = Astro.props as { leadType: LeadSlug };
+
+const mapping = {
+  construction: { type: LeadType.CONSTRUCTION, title: "Construction Leads" },
+  plumbing:     { type: LeadType.PLUMBING,     title: "Plumbing Leads" },
+  roofing:      { type: LeadType.ROOFING,      title: "Roofing Leads" },
+} as const;
+
+const cfg = mapping[leadType];
+---
+
+<Layout title={`${cfg.title} - Maros Construction`}>
+  <LeadsApp client:load leadType={cfg.type} title={cfg.title} />
+</Layout>

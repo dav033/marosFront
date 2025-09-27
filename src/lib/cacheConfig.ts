@@ -1,4 +1,3 @@
-
 export type CacheResourceKey = string;
 
 export interface CacheResourceConfig {
@@ -7,9 +6,9 @@ export interface CacheResourceConfig {
 }
 
 export interface CacheDebugConfig {
-    log?: boolean;
-    logCacheHits?: boolean;
-    logCacheMisses?: boolean;
+  log?: boolean;
+  logCacheHits?: boolean;
+  logCacheMisses?: boolean;
 }
 
 export interface CacheConfigShape {
@@ -57,8 +56,7 @@ function persist(config: CacheConfigShape) {
   if (typeof window === "undefined") return;
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-  } catch {
-  }
+  } catch {}
 }
 
 let state: CacheConfigShape = readPersisted() || DEFAULT_CONFIG;

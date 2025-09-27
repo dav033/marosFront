@@ -32,28 +32,7 @@ export type {
   ProjectTypesResponse,
 } from "./domain/responses";
 export * from "./lib";
-export type {
-  ApiClient,
-  ApiClientConfig,
-  ApiError,
-  ApiInterceptors,
-  RequestConfig,
-} from "./system/api";
-export type {
-  CacheConfig,
-  CacheEntry,
-  CacheManager,
-  CacheMetrics,
-  CacheStorage,
-  StorageLayer,
-} from "./system/cache";
-export type {
-  CacheConfigShape,
-  CacheDebugConfig,
-  CacheResourceConfig,
-  CacheResourceKey,
-  DebugConfig,
-} from "./system/config";
+
 export type {
   ContactsContextType,
   ContactsProviderProps,
@@ -65,15 +44,7 @@ export type {
   NotificationContextValue,
   NotificationProviderProps,
 } from "./system/contexts";
-export type {
-  PrefetchCondition,
-  PrefetchConfig,
-  PrefetchManager,
-  PrefetchPriority,
-  PrefetchStats,
-  PrefetchTask,
-  PrefetchTrigger,
-} from "./system/prefetch";
+
 export type {
   SidebarContextType,
   SidebarDropdownProps,
@@ -173,15 +144,7 @@ export type {
   LoadingOverlayProps,
   LoadingSpinnerProps,
 } from "./components/ui";
-export type { CachedResult } from "./utils/cache";
-export type {
-  LeadForEdit,
-  SelectOption,
-  StatusOption,
-  ValidateEditLeadData,
-  ValidateExistingContactLeadData,
-  ValidateNewContactLeadData,
-} from "./utils/validation";
+
 export type {
   CachedRequestConfig,
   OptimizedApiClientMetrics,
@@ -190,27 +153,6 @@ export type {
 export interface UseCreateLeadOptions {
   leadType: "new-contact" | "existing-contact";
   onLeadCreated?: (lead: unknown) => void;
-}
-
-export interface UseInstantDataConfig<T = unknown> {
-  cacheKey: string;
-  fetchFn: () => Promise<T>;
-  initialValue?: T;
-  ttl?: number;
-  enableCache?: boolean;
-  strategy?: "cache-first" | "network-first" | "cache-only";
-  onCacheHit?: (data: T) => void;
-  onCacheMiss?: () => void;
-}
-
-export interface UseInstantDataResult<T = unknown> {
-  data: T;
-  loading: boolean;
-  error: Error | null;
-  fromCache: boolean;
-  refresh: () => Promise<void>;
-  clearCache: () => void;
-  mutate: (updater: (prev: T) => T) => void;
 }
 
 export interface Section {
