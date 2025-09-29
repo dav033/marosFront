@@ -18,7 +18,6 @@ export type {
   Result,
 } from "../types";
 export { err, ok, SystemClock } from "../types";
-export { BusinessRuleError } from "./errors/BusinessRuleError";
 export type { Lead } from "./models/Lead";
 export type { ProjectType } from "./models/ProjectType";
 export type { LeadNumberAvailabilityPort } from "./ports/LeadNumberAvailabilityPort";

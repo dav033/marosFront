@@ -1,5 +1,5 @@
-
-import type { LeadStatus,LeadType } from "../../enums";
+import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
+import type { LeadStatus, LeadType } from "../../enums";
 import type {
   Clock,
   ContactId,
@@ -10,7 +10,6 @@ import type {
   NewContact,
   ProjectTypeId,
 } from "../../types";
-import { BusinessRuleError } from "../errors/BusinessRuleError";
 import { ensureLeadDraftIntegrity } from "./ensureLeadDraftIntegrity";
 import {
   ensureNewContactMinimums,
@@ -27,7 +26,9 @@ type CommonInput = Readonly<{
 }>;
 
 function normalizeText(s: string): string {
-  return String(s ?? "").replace(/\s+/g, " ").trim();
+  return String(s ?? "")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function validateLeadName(raw: string): string {

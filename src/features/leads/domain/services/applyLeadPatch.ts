@@ -1,4 +1,5 @@
 
+import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
 import { LeadStatus } from "../../enums";
 import type {
   ApplyLeadPatchResult,
@@ -7,7 +8,6 @@ import type {
   LeadPatch,
   LeadPatchPolicies,
 } from "../../types";
-import { BusinessRuleError } from "../errors/BusinessRuleError";
 import type { Lead } from "../models/Lead";
 import { ensureLeadIntegrity } from "./ensureLeadIntegrity";
 import { makeLeadNumber } from "./leadNumberPolicy";

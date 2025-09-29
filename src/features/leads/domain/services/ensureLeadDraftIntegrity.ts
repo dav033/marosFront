@@ -1,11 +1,11 @@
 
+import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
 import type {
   LeadDraft,
   LeadDraftWithExistingContact,
   LeadDraftWithNewContact,
   LeadPolicies,
 } from "../../types";
-import { BusinessRuleError } from "../errors/BusinessRuleError";
 import { ensureNewContactMinimums } from "./leadContactLinkPolicy";
 
 /* Utils */
