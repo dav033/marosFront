@@ -13,7 +13,6 @@ import { ensureLeadIntegrity } from "./ensureLeadIntegrity";
 import { makeLeadNumber } from "./leadNumberPolicy";
 import { applyStatus, DEFAULT_TRANSITIONS } from "./leadStatusPolicy";
 
-/* ----------------- Utils puras ----------------- */
 
 function normalizeText(s: string): string {
   return String(s ?? "").replace(/\s+/g, " ").trim();
@@ -74,7 +73,6 @@ function resolveTransitions(
   } as const;
 }
 
-/* ----------------- Servicio principal ----------------- */
 
 export function applyLeadPatch(
   clock: Clock,

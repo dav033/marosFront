@@ -1,5 +1,5 @@
 import React from "react";
-import { LeadStatus } from "@/features/leads/domain"; // ajuste la ruta si su enum vive en otro módulo
+import { LeadStatus } from "@/features/leads/domain"; 
 
 type Size = "sm" | "md";
 

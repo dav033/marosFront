@@ -18,7 +18,7 @@ export interface CachedRequestConfig {
     cache?: {
     enabled?: boolean;
     strategy?: CacheStrategy;
-    ttl?: number; // milisegundos
+    ttl?: number; 
   };
 
     prefetch?: {

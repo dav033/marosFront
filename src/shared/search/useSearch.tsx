@@ -4,14 +4,14 @@ export type SearchField<T> = {
   key: keyof T | string;
   label: string;
     accessor?: (row: T) => string | number | null | undefined;
-    searchable?: boolean; // default: true
+    searchable?: boolean; 
 };
 
 export type SearchConfig<T> = {
   fields: Array<SearchField<T>>;
     defaultField?: keyof T | string;
     placeholder?: string;
-    debounceMs?: number; // default: 200
+    debounceMs?: number; 
     normalize?: (s: string) => string;
 };
 
@@ -31,9 +31,6 @@ export type UseSearchState<T> = {
   clearSearch: () => void;
 };
 
-/* ========================================= */
-/* Utilidades internas                       */
-/* ========================================= */
 
 function defaultNormalize(s: string) {
   return (s ?? "")
@@ -61,9 +58,6 @@ function useDebouncedValue<T>(value: T, delay = 200) {
   return debounced;
 }
 
-/* ========================================= */
-/* Hook principal                            */
-/* ========================================= */
 
 export function useSearch<T>(items: T[], config: SearchConfig<T>): UseSearchState<T> {
   const [searchTerm, setSearchTerm] = useState("");

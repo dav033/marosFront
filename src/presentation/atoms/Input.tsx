@@ -5,8 +5,8 @@ export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
-  leftAddon?: React.ReactNode; // icono o texto
-  rightAddon?: React.ReactNode; // botón, icono, etc.
+  leftAddon?: React.ReactNode; 
+  rightAddon?: React.ReactNode; 
   hint?: string;
 }
 

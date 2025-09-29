@@ -10,8 +10,8 @@ export type ContactModeSwitchProps = {
   disabled?: boolean;
   className?: string;
   size?: GenericSwitchProps["size"];
-  leftLabel?: React.ReactNode;   // default: "New Contact"
-  rightLabel?: React.ReactNode;  // default: "Existing Contact"
+  leftLabel?: React.ReactNode;   
+  rightLabel?: React.ReactNode;  
 };
 
 export default function ContactModeSwitch({

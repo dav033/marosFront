@@ -2,7 +2,6 @@ import type { Lead } from "../models/Lead";
 import { LeadStatus } from "../../enums";
 import { DEFAULT_STATUS_ORDER, partitionByStatus } from "./leadsQueries";
 
-/** Estados auxiliares que existen en datos/UX además del enum explícito */
 export type AuxStatus = "UNDETERMINED" | "NOT_EXECUTED";
 export type SectionKey = LeadStatus | AuxStatus;
 
@@ -22,12 +21,6 @@ export type LeadSection = Readonly<{
   data: Lead[];
 }>;
 
-/**
- * Construye secciones de Leads en el orden por defecto, con etiquetas canónicas.
- * - Si no hay datos → sección "All" vacía.
- * - Si ningún lead tiene status → sección "All" con todos los items.
- * - Caso normal → secciones por status con orden DEFAULT_STATUS_ORDER; agrega desconocidos al final.
- */
 export function buildLeadSections(data: readonly Lead[]): LeadSection[] {
   if (!Array.isArray(data) || data.length === 0) {
     return [{ title: "All", data: [] }];
@@ -39,7 +32,7 @@ export function buildLeadSections(data: readonly Lead[]): LeadSection[] {
   const buckets = partitionByStatus(data);
   const sections: LeadSection[] = [];
 
-  // Secciones en el orden canónico
+  
   for (const status of DEFAULT_STATUS_ORDER) {
     const list = buckets[status] ?? [];
     if (list.length) {
@@ -51,7 +44,7 @@ export function buildLeadSections(data: readonly Lead[]): LeadSection[] {
     }
   }
 
-  // Cualquier clave residual no contemplada explícitamente (robustez futura)
+  
   const known = new Set(DEFAULT_STATUS_ORDER.map(String));
   (Object.keys(buckets) as Array<keyof typeof buckets>).forEach((k) => {
     const keyStr = String(k);

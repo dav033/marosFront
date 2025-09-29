@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Input } from "../atoms"; // se asume que acepta name, value, onChange, label
+import { Input } from "../atoms"; 
 
 export interface RestorationVisitFormValues {
   projectNumber: string;
@@ -10,7 +10,7 @@ export interface RestorationVisitFormValues {
   contactName: string;
   email?: string;
   phone?: string;
-  startDate?: string; // YYYY-MM-DD
+  startDate?: string; 
   overview: string;
 }
 

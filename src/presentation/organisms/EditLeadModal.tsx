@@ -35,7 +35,7 @@ const EditLeadModal: React.FC<Props> = ({
       },
     });
 
-  // Adaptamos el shape EXACTO que requiere <LeadFormFields />
+  
   const formForFields = {
     leadNumber: form.leadNumber ?? "",
     leadName: form.leadName ?? form.name ?? "",
@@ -51,7 +51,7 @@ const EditLeadModal: React.FC<Props> = ({
     try {
       await submit();
     } catch {
-      // El error ya se maneja en el controlador
+      
     }
   };
 
@@ -69,7 +69,7 @@ const EditLeadModal: React.FC<Props> = ({
       <LeadFormFields
         form={formForFields}
         onChange={(field: string, value: any) => {
-          // Garantizamos string para cumplir la firma del controlador
+          
           const asString = value == null ? "" : String(value);
           handleChange(field as keyof typeof form, asString);
           if (error) setError(null);

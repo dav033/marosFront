@@ -16,13 +16,11 @@ export default function SidebarDropdown({
   indentLevel = 0,
   defaultOpen = false,
 }: SidebarDropdownProps) {
-  /* ---------- estado y refs ---------- */
-  const [isOpen, setIsOpen] = useState(defaultOpen);
-  const [inlineHeight, setInlineHeight] = useState(defaultOpen ? "auto" : "0px"); // '0px' | '<n>px' | 'auto'
+    const [isOpen, setIsOpen] = useState(defaultOpen);
+  const [inlineHeight, setInlineHeight] = useState(defaultOpen ? "auto" : "0px"); 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  /* ---------- utilidades ---------- */
-  const readHeight = () => containerRef.current?.scrollHeight ?? 0;
+    const readHeight = () => containerRef.current?.scrollHeight ?? 0;
 
     const open = () => {
     const fullHeight = readHeight();
@@ -35,29 +33,24 @@ export default function SidebarDropdown({
     requestAnimationFrame(() => setInlineHeight("0px"));
   };
 
-  /* ---------- reaccionar a isOpen ---------- */
-  useLayoutEffect(() => {
+    useLayoutEffect(() => {
     if (isOpen) open();
     else close();
-  }, [isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isOpen]); 
 
-  /* ---------- al finalizar la transición ---------- */
-  const handleTransitionEnd = (e: React.TransitionEvent<HTMLDivElement>) => {
+    const handleTransitionEnd = (e: React.TransitionEvent<HTMLDivElement>) => {
     if (e.propertyName !== "height") return;
-    if (isOpen) setInlineHeight("auto"); // permite crecimiento libre mientras está abierto
+    if (isOpen) setInlineHeight("auto"); 
   };
 
-  /* ---------- interacción ---------- */
-  const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     setIsOpen((prev) => !prev);
   };
 
-  /* ---------- estilos ---------- */
-  const paddingLeft = indentLevel ? `${indentLevel}px` : "16px";
+    const paddingLeft = indentLevel ? `${indentLevel}px` : "16px";
 
-  /* ---------- render ---------- */
-  return (
+    return (
     <div className={classNames("relative", width)}>
       {/* ----- disparador ----- */}
       <button

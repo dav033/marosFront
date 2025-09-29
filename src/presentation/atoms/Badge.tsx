@@ -131,10 +131,3 @@ Badge.displayName = "Badge";
 
 export default Badge;
 
-/*
-Uso sugerido:
-  <Badge label="In Progress" color="warning" />
-  <Badge label="Done" color="success" />
-  <Badge label="N/A" color="gray" rounded="sm" uppercase />
-  <Badge variant="outline" color="primary" leftIcon="material-symbols:info-outline" >Info</Badge>
-*/

@@ -1,4 +1,4 @@
-// src/lib/cache/useCacheQuery.tsx
+
 import { useQuery } from '@tanstack/react-query';
 import type { Fetcher, QueryOptions } from './types';
 import type { QueryKey } from './key';
@@ -8,7 +8,7 @@ export function useCacheQuery<TData>(
   fetcher: Fetcher<TData>,
   options: QueryOptions<TData> = {}
 ) {
-  // Construimos las opciones sin incluir props "undefined" (requisito con exactOptionalPropertyTypes)
+  
   const rqOptions: Record<string, unknown> = {
     queryKey,
     queryFn: fetcher,
@@ -16,12 +16,12 @@ export function useCacheQuery<TData>(
 
   if (options.staleTime !== undefined) rqOptions['staleTime'] = options.staleTime;
 
-  // Compatibilidad v5 (gcTime) y v4 (cacheTime). Solo incluimos una, y solo si viene definida.
+  
   if (options.gcTime !== undefined) {
     rqOptions['gcTime'] = options.gcTime;
   } else if (options.cacheTime !== undefined) {
-    // Para proyectos en React Query v4
-    // Para proyectos en React Query v4
+    
+    
     rqOptions['cacheTime'] = options.cacheTime;
   }
 
@@ -29,11 +29,11 @@ export function useCacheQuery<TData>(
   if (options.refetchOnWindowFocus !== undefined) rqOptions['refetchOnWindowFocus'] = options.refetchOnWindowFocus;
   if (options.enabled !== undefined) rqOptions['enabled'] = options.enabled;
 
-  // Tipado laxo aquí para convivir con v4/v5 sin bifurcar código
+  
   const q: any = useQuery<TData>(rqOptions as any);
 
-  // v5: status 'pending' | 'success' | 'error'
-  // v4: status 'loading' | 'success' | 'error'
+  
+  
   const status: string | undefined = q.status;
   const mappedStatus: 'loading' | 'success' | 'error' =
     status === 'pending'
@@ -51,7 +51,7 @@ export function useCacheQuery<TData>(
     updatedAt: (q.dataUpdatedAt as number) ?? 0,
     isStale: !!q.isStale,
     isFetching: !!q.isFetching,
-    // v4 usa isLoading; v5 usa isPending; soportamos ambos
+    
     isLoading: typeof q.isLoading === 'boolean' ? q.isLoading : !!q.isPending,
     isSuccess: !!q.isSuccess,
     isError: !!q.isError,

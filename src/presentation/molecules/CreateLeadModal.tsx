@@ -41,8 +41,8 @@ export default function CreateLeadModal({
   const {
     form,
     setField,
-    contactMode,     // ✅ enum unificado
-    setContactMode,  // ✅ (m: ContactMode) => void
+    contactMode,     
+    setContactMode,  
     isLoading,
     error,
     setError,
@@ -65,7 +65,7 @@ export default function CreateLeadModal({
   };
 
   const handleNewContactChange: NewContactChangeHandler = (key, value) => {
-    const v = (value ?? "") as string; // normaliza undefined → ""
+    const v = (value ?? "") as string; 
     handleSafeChange(key as keyof LeadFormData, v);
   };
   const leadFields: LeadFormFieldsProps["form"] = {
@@ -101,7 +101,7 @@ export default function CreateLeadModal({
       isOpen={isOpen}
       onClose={onClose}
       title="Crear Lead"
-      error={error ?? null}                // ✅ nunca undefined
+      error={error ?? null}                
       onSubmit={handleSubmit}
       submitText="Crear"
       loadingText="Creando..."
@@ -109,7 +109,7 @@ export default function CreateLeadModal({
       isSubmitDisabled={!canSubmit || isLoading}
     >
       <ContactModeSelector
-        contactMode={contactMode}          // ✅ enum unificado
+        contactMode={contactMode}          
         onContactModeChange={setContactMode}
         form={newContactForm}
         onChange={handleNewContactChange}
@@ -123,7 +123,7 @@ export default function CreateLeadModal({
         projectTypes={projectTypes}
         contacts={contacts ?? []}
         mode={FormMode.CREATE}
-        contactMode={contactMode}          // ✅ enum unificado
+        contactMode={contactMode}          
         showLeadNumber={showLeadNumber}
       />
     </BaseFormModal>

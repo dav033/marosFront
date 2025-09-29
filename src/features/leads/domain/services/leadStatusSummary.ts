@@ -31,7 +31,7 @@ function zeroCounts(): MutableStatusCounts {
 
 
 export function summarizeLeads(leads: readonly Lead[]): LeadStatusSummary {
-  const counts = zeroCounts(); // <- mutable durante el cómputo
+  const counts = zeroCounts(); 
   const src = Array.isArray(leads) ? leads : [];
 
   for (const lead of src) {

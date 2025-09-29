@@ -1,7 +1,6 @@
 
 import type { Contact } from "../models/Contact";
 
-/* Utils puras */
 function norm(s: unknown): string {
   return String(s ?? "").trim();
 }

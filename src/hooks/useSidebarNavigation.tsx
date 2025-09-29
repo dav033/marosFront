@@ -57,7 +57,7 @@ export function useSidebarNavigation() {
     observer.observe(document.body, {
       attributes: true,
       attributeFilter: ["data-astro-transition-scope"],
-      subtree: false, // Reducir el scope
+      subtree: false, 
     });
     NAVIGATION_EVENTS.forEach((event) => {
       document.addEventListener(

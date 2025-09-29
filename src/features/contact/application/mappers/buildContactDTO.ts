@@ -15,10 +15,6 @@ export interface CreateContactRequestDTO {
 
 export type UpdateContactRequestDTO = Partial<CreateContactRequestDTO>;
 
-/* ============================================================
-   Tipos "loose" para poder asignar undefined temporalmente
-   cuando exactOptionalPropertyTypes = true
-   ============================================================ */
 
 type LooseCreateContactRequestDTO = {
   name: string;
@@ -30,7 +26,6 @@ type LooseUpdateContactRequestDTO = {
   [K in keyof UpdateContactRequestDTO]?: string | undefined;
 };
 
-/* ===================== Utils internas ===================== */
 
 function normalizeEmptyToUndefined(v?: string | null): string | undefined {
   if (v == null) return undefined;
@@ -44,7 +39,6 @@ function pickDefined<T extends object>(obj: T): Partial<T> {
   ) as Partial<T>;
 }
 
-/* ===================== Builders públicos ===================== */
 
 export function buildCreateContactDTO(draft: ContactDraft): CreateContactRequestDTO {
   const loose: LooseCreateContactRequestDTO = {

@@ -81,7 +81,6 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
           {...rest}
         />
 
-        {/* Círculo visual */}
         <span
           aria-hidden
           className={[

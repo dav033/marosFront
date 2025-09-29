@@ -3,8 +3,8 @@ import type { InvoiceStatus,ProjectStatus } from "./enums";
 
 export type ProjectId = number;
 export type LeadId = number;
-export type ISODate = string;      // "YYYY-MM-DD"
-export type ISODateTime = string;  // ISO 8601
+export type ISODate = string;      
+export type ISODateTime = string;  
 
 export interface Clock {
   now(): number;
@@ -70,7 +70,7 @@ export interface ProjectWithLeadView {
   projectStatus?: string;
   invoiceStatus?: string;
   quickbooks?: boolean;
-  startDate?: string; // ISO (LocalDate → string)
+  startDate?: string; 
   endDate?: string;
 
   leadId?: number;

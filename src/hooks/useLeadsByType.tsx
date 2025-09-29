@@ -7,7 +7,7 @@ import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
 import type { Section } from "@/types";
 
 import { useOptimizedFetch } from "./useOptimizedFetch";
-// ⬇️ nuevo: servicio unificado
+
 import { buildLeadSections } from "@/features/leads/domain/services/leadSections";
 
 const leadRepo = new LeadHttpRepository(optimizedApiClient);
@@ -27,7 +27,7 @@ export function useLeadsByType(type: LeadType) {
 
   const initialLoading = loading && !fromCache && leads?.length === 0;
 
-  // Adaptamos LeadSection (domain) → Section (UI genérica { name, data })
+  
   const sections: Section[] = useMemo(() => {
     return buildLeadSections(leads ?? []).map((s) => ({
       name: s.title,

@@ -8,7 +8,6 @@ import type {
 } from "../../types";
 import { ensureNewContactMinimums } from "./leadContactLinkPolicy";
 
-/* Utils */
 function normalizeText(s: unknown): string {
   return String(s ?? "").replace(/\s+/g, " ").trim();
 }

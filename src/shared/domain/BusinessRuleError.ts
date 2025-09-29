@@ -1,12 +1,12 @@
 
 export type BusinessErrorKind =
-  | "VALIDATION_ERROR" // Datos inválidos (VOs, campos requeridos, formato)
-  | "FORMAT_ERROR" // Formato específico (ej. leadNumber/email)
-  | "POLICY_VIOLATION" // Incumple una política (p.ej., límites/reglas internas)
-  | "INVALID_TRANSITION" // Transición de estado no permitida
-  | "INTEGRITY_VIOLATION" // Inconsistencia del agregado/relación
-  | "CONFLICT" // Conflicto de negocio (p.ej., duplicado)
-  | "NOT_FOUND"; // Entidad o relación no existe (en negocio)
+  | "VALIDATION_ERROR" 
+  | "FORMAT_ERROR" 
+  | "POLICY_VIOLATION" 
+  | "INVALID_TRANSITION" 
+  | "INTEGRITY_VIOLATION" 
+  | "CONFLICT" 
+  | "NOT_FOUND"; 
 
 export class BusinessRuleError extends Error {
   readonly kind: BusinessErrorKind;

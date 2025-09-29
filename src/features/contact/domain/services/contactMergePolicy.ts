@@ -2,7 +2,6 @@
 import type { Contact } from "../models/Contact";
 
 
-/* ----------------- helpers ----------------- */
 
 function isDefined<T>(v: T | undefined | null): v is T {
   return v !== undefined && v !== null;
@@ -14,7 +13,7 @@ export function mergeContact(
 ): Contact {
   if (!api) return { ...local };
   const merged: Contact = {
-    id: local.id, // defensivo
+    id: local.id, 
     companyName: isDefined(api.companyName)
       ? api.companyName
       : local.companyName,

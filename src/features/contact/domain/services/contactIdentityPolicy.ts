@@ -1,6 +1,5 @@
 
 
-/* ----------------- Utils base ----------------- */
 
 function normText(s: unknown): string {
   return String(s ?? "").replace(/\s+/g, " ").trim();
@@ -10,7 +9,6 @@ function normLower(s: unknown): string {
   return normText(s).toLowerCase();
 }
 
-/* ----------------- Normalización de campos ----------------- */
 
 export function normalizeEmail(e?: string): string | undefined {
   if (!e) return undefined;
@@ -43,15 +41,14 @@ export function normalizeCompany(company?: string): string | undefined {
   return v || undefined;
 }
 
-/* ----------------- Clave de identidad ----------------- */
 
 export type IdentityKeyStrategy =
-  | "email>phone>name-company" // por defecto
-  | "email>phone>name";        // variante si la compañía no es relevante
+  | "email>phone>name-company" 
+  | "email>phone>name";        
 
 export type MakeIdentityKeyOptions = Readonly<{
   strategy?: IdentityKeyStrategy;
-  minPhoneDigits?: number; // mínimo para considerar phone como identidad (default 7)
+  minPhoneDigits?: number; 
 }>;
 
 export function makeContactIdentityKey(
@@ -81,7 +78,6 @@ export function areIdentityKeysEqual(a?: string, b?: string): boolean {
   return a.toLowerCase() === b.toLowerCase();
 }
 
-/* ----------------- Duplicados ----------------- */
 
 export type ContactLike = Readonly<{
   name?: string | undefined;
@@ -130,7 +126,6 @@ export function areContactsPotentialDuplicates(
   return !!nameA && nameA === nameB && companyA === companyB;
 }
 
-/* ----------------- Paquete de normalización para UI/Tests ----------------- */
 
 export function computeIdentityFields(input: ContactLike): Readonly<{
   email?: string | undefined;

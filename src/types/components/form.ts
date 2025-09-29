@@ -39,7 +39,7 @@ export interface FormProps {
 export interface LeadFormData {
   leadNumber?: string | undefined;
   name: string;
-  leadName?: string | undefined; // Alias for compatibility
+  leadName?: string | undefined; 
   startDate: string;
   location?: string | undefined;
   status: LeadStatus | null;
@@ -48,7 +48,7 @@ export interface LeadFormData {
   contactId?: number | undefined;
   companyName?: string | undefined;
   contactName?: string | undefined;
-  customerName?: string | undefined; // compatibility
+  customerName?: string | undefined; 
   occupation?: string | undefined;
   product?: string | undefined;
   phone?: string | undefined;

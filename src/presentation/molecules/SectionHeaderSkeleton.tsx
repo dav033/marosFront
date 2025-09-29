@@ -4,9 +4,9 @@ import SkeletonBlock from "@/presentation/atoms/SkeletonBlock";
 
 export type SectionHeaderSkeletonProps = {
     leftHeight?: number;
-  leftWidthClass?: string; // Tailwind width (w-*)
+  leftWidthClass?: string; 
     rightHeight?: number;
-  rightWidthClass?: string; // Tailwind width (w-*)
+  rightWidthClass?: string; 
     showRight?: boolean;
     className?: string;
   containerClassName?: string;

@@ -25,7 +25,7 @@ export type ApiLeadDTO = Readonly<{
   id: number;
   leadNumber?: string | null;
   name: string;
-  startDate?: string | null; // puede venir YYYY-MM-DD o ISO con hora
+  startDate?: string | null; 
   location?: string | null;
   status?: LeadStatus | null;
   contact?: ApiContactDTO | null;

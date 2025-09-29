@@ -1,16 +1,13 @@
 
 import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
 
-/* =========================
- *   Tipos y configuración
- * ========================= */
 
 export type ContactValidationPolicies = Readonly<{
-  maxNameLength?: number;        // default 140
-  maxCompanyLength?: number;     // default 140
-  minPhoneDigits?: number;       // default 7
-  requireAtLeastOneReach?: boolean; // exigir email o phone (default false)
-  validateLastContactISO?: boolean; // validar ISO-8601 si viene (default false)
+  maxNameLength?: number;        
+  maxCompanyLength?: number;     
+  minPhoneDigits?: number;       
+  requireAtLeastOneReach?: boolean; 
+  validateLastContactISO?: boolean; 
 }>;
 
 export const DEFAULT_POLICIES: Required<ContactValidationPolicies> = {
@@ -37,7 +34,7 @@ export type ValidationCode =
   | "FORMAT"
   | "MIN_DIGITS"
   | "NOT_ISO"
-  | "AT_LEAST_ONE"; // email o phone requerido(s)
+  | "AT_LEAST_ONE"; 
 
 export type ValidationIssue = Readonly<{
   field: ContactField | "global";
@@ -46,9 +43,6 @@ export type ValidationIssue = Readonly<{
   details?: Record<string, unknown>;
 }>;
 
-/* =========================
- *   Utilidades puras
- * ========================= */
 
 export function normText(s: unknown): string {
   return String(s ?? "").replace(/\s+/g, " ").trim();
@@ -59,7 +53,7 @@ export function normLower(s: unknown): string {
 }
 
 export function isValidEmail(email?: string): boolean {
-  if (!email) return true; // vacío permitido salvo política superior
+  if (!email) return true; 
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
@@ -74,9 +68,6 @@ export function isISODateOrDateTime(s: string): boolean {
   );
 }
 
-/* =========================
- *   API de validación
- * ========================= */
 
 export function collectContactValidationIssues(
   input: Partial<Record<ContactField, unknown>>,

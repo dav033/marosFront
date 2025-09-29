@@ -8,12 +8,12 @@ import type { ContactRepositoryPort } from "../../domain";
 export class ContactHttpRepository implements ContactRepositoryPort {
   async create(payload: CreateContactRequestDTO): Promise<Contact> {
     const res = await optimizedApiClient.post("/contacts", payload);
-    return res.data as Contact; // o mapContactFromDTO(res.data)
+    return res.data as Contact; 
   }
 
   async update(id: number, payload: UpdateContactRequestDTO): Promise<Contact> {
     const res = await optimizedApiClient.put(`/contacts/${id}`, payload);
-    return res.data as Contact; // o mapContactFromDTO(res.data)
+    return res.data as Contact; 
   }
 
   async delete(id: number): Promise<void> {
@@ -22,7 +22,7 @@ export class ContactHttpRepository implements ContactRepositoryPort {
 
   async findById(id: number): Promise<Contact | null> {
     const res = await optimizedApiClient.get(`/contacts/${id}`);
-    return (res.data ?? null) as Contact; // o mapContactFromDTO(res.data)
+    return (res.data ?? null) as Contact; 
   }
 
   async findAll(): Promise<Contact[]> {

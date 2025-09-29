@@ -56,9 +56,9 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
         <SearchBoxWithDropdown
           searchTerm={searchTerm}
           onSearchChange={onSearchChange}
-          selectedField={selectedField}         // usa el mismo string (value) como key
+          selectedField={selectedField}         
           onFieldChange={onFieldChange}
-          searchFields={normalizedFields}       // 👈 ya con { key, label }
+          searchFields={normalizedFields}       
           onClearSearch={onClearSearch}
           {...(placeholder ? { placeholder } : {})}
           hasActiveSearch={hasActiveSearch}

@@ -1,6 +1,6 @@
 import type { LeadType } from "@/features/leads/domain";
 import {
-  summarizeLeadsByType as summarizeLeadsByTypeDomain, // ← alias para evitar conflicto
+  summarizeLeadsByType as summarizeLeadsByTypeDomain, 
 } from "@/features/leads/domain";
 import type { LeadStatusSummary } from "@/features/leads/domain/services/leadStatusSummary";
 

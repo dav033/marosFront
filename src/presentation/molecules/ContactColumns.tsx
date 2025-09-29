@@ -26,9 +26,9 @@ const col = <K extends keyof Contact>(
   width: string,
   accessor?: (r: Contact) => unknown
 ): Column<Contact> => ({
-  key, // mantiene keyof Contacts si tu Column lo soporta
-  label: header, // ✅ requerido por el tipo Column
-  header, // tu TableHeader usa header || label
+  key, 
+  label: header, 
+  header, 
   width,
   ...(accessor ? { accessor } : {}),
 });

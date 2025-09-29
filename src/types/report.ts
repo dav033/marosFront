@@ -13,20 +13,20 @@ export type ActivityStatus =
 export type CompletedActivity = {
   activity: string;
   status?: ActivityStatus;
-  date?: string;   // ISO o legible
+  date?: string;   
   notes?: string;
 };
 
 export type ReportImage = {
-  src: string;      // URL (o dataURL si aplica)
+  src: string;      
   caption?: string;
   alt?: string;
 };
 
 export type EvidenceItem = {
   description: string;
-  imageFiles?: File[];    // imágenes locales (UI)
-  imageIds?: Array<string | number | { id: string | number }>; // IDs/objetos devueltos por Make (server)
+  imageFiles?: File[];    
+  imageIds?: Array<string | number | { id: string | number }>; 
 };
 
 export type ReportData = {
@@ -38,9 +38,6 @@ export type ReportData = {
   photos?: ReportImage[];
 };
 
-/* ------------------------------------------------------------------ */
-/* Utilidades internas                                                */
-/* ------------------------------------------------------------------ */
 
 function s(v: unknown, fallback = ""): string {
   if (v == null) return fallback;
@@ -54,9 +51,6 @@ function joinNonEmpty(parts: Array<string | undefined>, sep = " — "): string {
   return parts.filter((p) => !!p && p.trim().length > 0).join(sep);
 }
 
-/* ------------------------------------------------------------------ */
-/* Selectores OPCIONALES (pueden devolver undefined)                   */
-/* ------------------------------------------------------------------ */
 
 export function selectLead(p?: Project | null): Lead | undefined {
   return p?.lead;
@@ -70,10 +64,6 @@ export function selectLocationFromLead(p?: Project | null): string | undefined {
   return p?.lead?.location || undefined;
 }
 
-/* ------------------------------------------------------------------ */
-/* Getters SEGUROS (SIEMPRE devuelven string/array, nunca rompen)     */
-/* Úsalos en UI para evitar crashes por undefined                     */
-/* ------------------------------------------------------------------ */
 export function getProjectName(p?: Project | null): string {
   return s(p?.projectName);
 }
@@ -111,16 +101,13 @@ export function getContactAddress(p?: Project | null): string {
   return s(p?.lead?.contact?.address);
 }
 
-/* ------------------------------------------------------------------ */
-/* View helpers                                                        */
-/* ------------------------------------------------------------------ */
 
 export type HeaderView = {
   projectName: string;
   overview: string;
-  period: string;        // startDate — endDate
-  location: string;      // desde lead.location
-  clientCompany: string; // contact.companyName
+  period: string;        
+  location: string;      
+  clientCompany: string; 
   contactName: string;
   email: string;
   phone: string;
@@ -143,9 +130,6 @@ export function getHeaderView(p?: Project | null): HeaderView {
   };
 }
 
-/* ------------------------------------------------------------------ */
-/* (Opcional) Require helpers: fallan con mensaje claro si faltan      */
-/* ------------------------------------------------------------------ */
 
 export function requireProject(p?: Project | null): asserts p is Project {
   if (!p) throw new Error("report.ts: Project es undefined/null en runtime.");

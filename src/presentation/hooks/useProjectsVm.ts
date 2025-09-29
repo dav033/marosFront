@@ -55,7 +55,7 @@ export function useProjectsVm(initialStatus?: ProjectStatus) {
    const loadWithLeads = React.useCallback(async () => {
   setState((s) => ({ ...s, loading: true, error: null }));
     try {
-  const data = await getProjectsWithLeads(ctx); // ProjectWithLeadView[]
+  const data = await getProjectsWithLeads(ctx); 
   setState({ data, loading: false, error: null });
       return data as ProjectWithLeadView[];
     } catch (e: unknown) {
@@ -124,7 +124,7 @@ export function useProjectsVm(initialStatus?: ProjectStatus) {
     reload: initialStatus ? () => loadByStatus(initialStatus) : loadAll,
     loadAll,
     loadByStatus,
-    loadWithLeads, // ⬅️ expuesto para consumo desde la UI
+    loadWithLeads, 
     create,
     update,
     remove,

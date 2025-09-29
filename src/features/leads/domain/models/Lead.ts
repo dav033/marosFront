@@ -7,7 +7,7 @@ export interface Lead {
   id: number;
   leadNumber: string;
   name: string;
-  startDate: string; // LocalDate from backend, received as ISO string
+  startDate: string; 
   location?: string | undefined;
   status: LeadStatus;
   contact: Contact;

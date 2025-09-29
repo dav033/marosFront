@@ -2,12 +2,6 @@ import { Icon } from "@iconify/react";
 import React, { useEffect,useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-/*
- * Atom: Select (estilos y comportamiento equivalentes a tu GenericSelect)
- * - Soporta modo nativo y modo "searchable" con portal al body.
- * - Mantiene el mismo set de clases Tailwind (bg-theme-dark, border-theme-gray, etc.).
- * - API compatible: options, value, onChange, placeholder, searchable, icon, disabled, className.
- */
 
 export type SelectOption = {
   value: string | number;
@@ -18,10 +12,10 @@ export type SelectOption = {
 export interface SelectProps {
   options: ReadonlyArray<SelectOption>;
   value: string | number | undefined;
-  onChange: (value: string) => void; // se entrega como string, igual que en <select>
+  onChange: (value: string) => void; 
   placeholder?: string;
   searchable?: boolean;
-  icon?: string; // nombre Iconify
+  icon?: string; 
   disabled?: boolean;
   className?: string;
 }

@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useMemo } from "react";
 
-/* CONTACTS (singular) */
 import type { ContactsAppContext } from "@/features/contact/application";
 import { makeContactsAppContext } from "@/features/contact/application/context";
 import {
@@ -8,7 +7,6 @@ import {
   ContactUniquenessHttpService,
 } from "@/features/contact/infra";
 
-/* LEADS */
 import type { LeadsAppContext } from "@/features/leads/application";
 import { makeLeadsAppContext } from "@/features/leads/application";
 import { SystemClock } from "@/features/leads/domain";

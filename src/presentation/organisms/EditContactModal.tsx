@@ -1,4 +1,4 @@
-// src/presentation/organisms/EditContactModal.tsx
+
 import React from "react";
 
 import type { Contact } from "@/features/contact/domain/models/Contact";
@@ -15,10 +15,6 @@ export type EditContactModalProps = {
   serverError?: string;
 };
 
-/**
- * Wrapper SIN hooks: filtra el caso `contact === null`.
- * Así evitamos un hook condicional.
- */
 export default function EditContactModal(props: EditContactModalProps) {
   if (!props.contact) return null;
   return (
@@ -30,12 +26,9 @@ export default function EditContactModal(props: EditContactModalProps) {
 }
 
 type EditContactModalInnerProps = Omit<EditContactModalProps, "contact"> & {
-  contact: Contact; // aquí ya garantizamos non-null
+  contact: Contact; 
 };
 
-/**
- * Componente interno con hooks: siempre se montan en el mismo orden.
- */
 function EditContactModalInner({
   isOpen,
   onClose,
@@ -53,7 +46,7 @@ function EditContactModalInner({
   const handleModalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const ok = await submit();
-    if (ok) onClose(true); // refetch
+    if (ok) onClose(true); 
   };
 
   return (

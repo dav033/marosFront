@@ -69,7 +69,7 @@ export class HttpProjectRepository implements ProjectRepositoryPort {
 
   async leadExists(leadId: LeadId): Promise<boolean> {
     try {
-      const r = await this.http.get(`/api/leads/${leadId}`); // controlador de Leads existe
+      const r = await this.http.get(`/api/leads/${leadId}`); 
       return r.status === 200;
     } catch (e: unknown) {
       const maybe = e as { response?: { status?: number } } | undefined;

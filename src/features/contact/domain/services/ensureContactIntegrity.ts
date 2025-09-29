@@ -4,10 +4,10 @@ import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
 import type { Contact } from "../models/Contact";
 
 export type ContactIntegrityPolicies = Readonly<{
-  maxNameLength?: number; // default 140
-  maxCompanyLength?: number; // default 140
-  phoneMinDigits?: number; // default 7
-  validateLastContactISO?: boolean; // default false (si true, exige ISO-8601)
+  maxNameLength?: number; 
+  maxCompanyLength?: number; 
+  phoneMinDigits?: number; 
+  validateLastContactISO?: boolean; 
 }>;
 
 const DEFAULTS: Required<ContactIntegrityPolicies> = {
@@ -17,7 +17,6 @@ const DEFAULTS: Required<ContactIntegrityPolicies> = {
   validateLastContactISO: false,
 };
 
-/* ----------------- helpers ----------------- */
 
 function normText(s: unknown): string {
   return String(s ?? "")
@@ -26,7 +25,7 @@ function normText(s: unknown): string {
 }
 
 function isValidEmail(email?: string): boolean {
-  if (!email) return true; // vacío permitido
+  if (!email) return true; 
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
@@ -41,7 +40,6 @@ function isISODateOrDateTime(s: string): boolean {
   );
 }
 
-/* ----------------- servicio ----------------- */
 
 export function ensureContactIntegrity(
   contact: Contact,

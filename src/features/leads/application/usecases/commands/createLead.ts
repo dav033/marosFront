@@ -52,17 +52,12 @@ export async function createLead(
     await ensureLeadNumberAvailable(draft.leadNumber, async (n) => {
       const available =
         await ctx.services.leadNumberAvailability.isAvailable(n);
-      return !available; // exists? = !isAvailable
+      return !available; 
     });
   }
   return ctx.repos.lead.saveNew(draft);
 }
 
-/* ============================================================
-   Aliases de tipos SOLO para compatibilidad de compilación.
-   (Útiles si algún archivo referenciaba los tipos antiguos.)
-   Puede eliminarlos más adelante si lo desea.
-   ============================================================ */
 
 export type CreateLeadWithExistingContactInput = Extract<
   CreateLeadInput,

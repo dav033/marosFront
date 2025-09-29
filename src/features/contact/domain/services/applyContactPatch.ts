@@ -4,7 +4,6 @@ import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
 import type { Contact } from "../models/Contact";
 import type { ContactDraftPolicies } from "./ensureContactDraftIntegrity";
 
-/* ----------------- Tipos ----------------- */
 
 export type ContactPatch = Readonly<{
   companyName?: string;
@@ -27,7 +26,6 @@ export type ApplyContactPatchResult = Readonly<{
   >;
 }>;
 
-/* Puedes reutilizar la misma configuración de políticas que el draft */
 const DEFAULTS: Required<ContactDraftPolicies> = {
   maxNameLength: 140,
   maxCompanyLength: 140,
@@ -36,7 +34,6 @@ const DEFAULTS: Required<ContactDraftPolicies> = {
   validateLastContactISO: false,
 };
 
-/* ----------------- Utils puras ----------------- */
 
 function normText(s: unknown): string {
   return String(s ?? "")
@@ -78,7 +75,6 @@ function isISODateOrDateTime(s: string): boolean {
   );
 }
 
-/* ----------------- Servicio principal ----------------- */
 
 export function applyContactPatch(
   current: Contact,

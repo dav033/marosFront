@@ -4,8 +4,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 60_000,           // 1 min “fresco”
-      gcTime: 5 * 60_000,          // 5 min en memoria
+      staleTime: 60_000,           
+      gcTime: 5 * 60_000,          
       retry: 1,
       refetchOnWindowFocus: false,
     },

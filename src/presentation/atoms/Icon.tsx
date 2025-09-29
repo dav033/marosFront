@@ -5,7 +5,7 @@ type Props = {
   name: string;
   className?: string;
   inline?: boolean;
-  size?: number; // px
+  size?: number; 
 } & Omit<ComponentProps<"span">, "children">;
 
 export default function Icon({

@@ -6,12 +6,12 @@ import type { LeadStatus, LeadType } from "./enums";
 export type LeadId = number;
 export type ContactId = number;
 export type ProjectTypeId = number;
-export type ISODate = string; // "YYYY-MM-DD"
-export type ISODateTime = string; // ISO 8601 completo (si lo necesitara)
+export type ISODate = string; 
+export type ISODateTime = string; 
 
 export interface Clock {
-  now(): number; // ms desde epoch
-  todayISO(): ISODate; // "YYYY-MM-DD"
+  now(): number; 
+  todayISO(): ISODate; 
 }
 
 export const SystemClock: Clock = {
@@ -38,7 +38,7 @@ export type LeadPolicies = Readonly<{
 }>;
 
 export type LeadDraftBase = Readonly<{
-  leadNumber: string | null; // string simple para compatibilidad actual
+  leadNumber: string | null; 
   name: string;
   startDate: ISODate;
   location: string;
@@ -65,7 +65,7 @@ export type LeadStatusChangedEvent = Readonly<{
     id: LeadId;
     from: LeadStatus;
     to: LeadStatus;
-    at: number; // timestamp ms (use Clock.now())
+    at: number; 
   };
 }>;
 
@@ -74,7 +74,7 @@ export type DomainEvent = LeadStatusChangedEvent;
 export type LeadPatch = Readonly<{
   name?: string;
   location?: string;
-  status?: LeadStatus | null; // permitir null desde UI → se mapeará a UNDETERMINED
+  status?: LeadStatus | null; 
   contactId?: number;
   projectTypeId?: number;
   startDate?: ISODate;

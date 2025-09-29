@@ -8,6 +8,6 @@ export async function validateLeadNumberAvailability(
 ): Promise<void> {
   await ensureLeadNumberAvailable(leadNumber, async (n) => {
     const available = await ctx.services.leadNumberAvailability.isAvailable(n);
-    return !available; // exists → !isAvailable
+    return !available; 
   });
 }

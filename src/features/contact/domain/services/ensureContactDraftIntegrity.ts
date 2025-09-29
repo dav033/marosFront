@@ -3,11 +3,11 @@ import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
 import type { ContactDraft } from "./buildContactDraft";
 
 export type ContactDraftPolicies = Readonly<{
-  maxNameLength?: number; // default 140
-  maxCompanyLength?: number; // default 140
-  requireAtLeastOneReach?: boolean; // exigir phone o email (default false)
-  phoneMinDigits?: number; // default 7
-  validateLastContactISO?: boolean; // default false (si true, exige ISO-8601 parseable)
+  maxNameLength?: number; 
+  maxCompanyLength?: number; 
+  requireAtLeastOneReach?: boolean; 
+  phoneMinDigits?: number; 
+  validateLastContactISO?: boolean; 
 }>;
 
 const DEFAULTS: Required<ContactDraftPolicies> = {
@@ -18,10 +18,9 @@ const DEFAULTS: Required<ContactDraftPolicies> = {
   validateLastContactISO: false,
 };
 
-/* ----------------- helpers ----------------- */
 
 function isValidEmail(email?: string): boolean {
-  if (!email) return true; // vacío es permitido a menos que la política diga lo contrario
+  if (!email) return true; 
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
@@ -37,7 +36,6 @@ function isISODateOrDateTime(s: string): boolean {
   );
 }
 
-/* ----------------- servicio ----------------- */
 
 export function ensureContactDraftIntegrity(
   draft: ContactDraft,

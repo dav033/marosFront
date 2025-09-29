@@ -1,4 +1,3 @@
-/* eslint-disable simple-import-sort/imports */
 
 import type React from "react";
 import type { SearchFieldOption } from "../hooks";

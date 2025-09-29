@@ -5,7 +5,7 @@ import type { Project } from "../models/Project";
 
 export function applyProjectPatch(project: Project, patch: ProjectPatch): ApplyProjectPatchResult {
   let hasChanges = false;
-  const updatedProject: Project = { ...project }; // ✅ corregido
+  const updatedProject: Project = { ...project }; 
 
   if (patch.projectName !== undefined && patch.projectName !== project.projectName) {
     const normalizedName = patch.projectName.trim();

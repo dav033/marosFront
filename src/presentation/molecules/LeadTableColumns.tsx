@@ -50,7 +50,7 @@ export const leadTableColumns: Column<Lead>[] = [
       if (!lead.status) return <span>—</span>;
       const statusMapping: Record<string, string> = {
         "TO_DO": "Pending",
-        "NEW": "Pending", // Ambos se mapean a Pending
+        "NEW": "Pending", 
         "IN_PROGRESS": "In Progress", 
         "DONE": "Completed",
         "LOST": "Lost",

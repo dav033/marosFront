@@ -1,4 +1,3 @@
-/* eslint-disable simple-import-sort/imports */
 
 import type React from "react";
 import { type ReactNode } from "react";

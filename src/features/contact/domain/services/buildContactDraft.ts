@@ -12,7 +12,6 @@ export type ContactDraft = Readonly<{
     lastContact?: string | undefined;
 }>;
 
-/* ----------------- Utils puras ----------------- */
 function normText(s: unknown): string {
   return String(s ?? "")
     .replace(/\s+/g, " ")
@@ -36,7 +35,6 @@ function normEmail(e?: string): string | undefined {
   return v || undefined;
 }
 
-/* ----------------- Servicio principal ----------------- */
 
 export function buildContactDraft(input: {
   companyName: string;

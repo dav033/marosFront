@@ -14,7 +14,7 @@ export type LeadFormFieldsProps = {
     contactId?: number | undefined;
     location: string;
     status?: LeadStatus | "";
-    startDate?: string | undefined; // YYYY-MM-DD
+    startDate?: string | undefined; 
   };
   onChange: (
     field:

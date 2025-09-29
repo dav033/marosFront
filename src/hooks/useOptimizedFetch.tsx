@@ -3,10 +3,6 @@ import type { OptimizedFetchConfig, UseOptimizedFetchReturn } from "@/types";
 import { cacheConfig } from "@/lib/cacheConfig";
 import { type Fetcher, useCacheQuery } from "@/lib/cache";
 
-/**
- * Unificado sobre el cliente de caché.
- * Mantiene la firma y los helpers (useCachedList, useLiveData).
- */
 export function useOptimizedFetch<T, P extends unknown[]>(
   requestFn: (...args: P) => Promise<T>,
   params: P,
@@ -19,7 +15,7 @@ export function useOptimizedFetch<T, P extends unknown[]>(
     showSkeletonOnlyOnFirstLoad = true,
   } = config;
 
-  // Respeta toggles globales de cache
+  
   const cfg = cacheConfig.get();
   const cachingEnabled = cfg.enabled !== false;
 
@@ -36,10 +32,10 @@ export function useOptimizedFetch<T, P extends unknown[]>(
   const cacheAge = updatedAt ? now - updatedAt : 0;
   const hasData = data != null;
 
-  // Evita skeleton cuando ya hay data y se está revalidando en background
+  
   const loading = isLoading && !(showSkeletonOnlyOnFirstLoad && hasData);
 
-  // Heurística de "fromCache": data válida dentro de TTL y no está stale
+  
   const fromCache = hasData && !isStale;
 
   const forceRefresh = async () => {

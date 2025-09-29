@@ -58,7 +58,7 @@ export function buildLeadDraftForNewContact(
   const numberRules = policies.leadNumberPattern
     ? { pattern: policies.leadNumberPattern }
     : undefined;
-  const leadNumber = makeLeadNumber(input.leadNumber, numberRules); // string | null
+  const leadNumber = makeLeadNumber(input.leadNumber, numberRules); 
 
   const normalizedContact = normalizeNewContact(input.contact);
   ensureNewContactMinimums(normalizedContact);
@@ -88,7 +88,7 @@ export function buildLeadDraftForExistingContact(
   const numberRules = policies.leadNumberPattern
     ? { pattern: policies.leadNumberPattern }
     : undefined;
-  const leadNumber = makeLeadNumber(input.leadNumber, numberRules); // string | null
+  const leadNumber = makeLeadNumber(input.leadNumber, numberRules); 
 
   const draft: LeadDraftWithExistingContact = {
     leadNumber,

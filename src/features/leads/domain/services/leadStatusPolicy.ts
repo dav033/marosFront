@@ -12,9 +12,9 @@ export const DEFAULT_TRANSITIONS: Readonly<
   [LeadStatus.UNDETERMINED]:  [LeadStatus.NEW, LeadStatus.TO_DO, LeadStatus.IN_PROGRESS, LeadStatus.LOST],
   [LeadStatus.TO_DO]:         [LeadStatus.IN_PROGRESS, LeadStatus.DONE, LeadStatus.LOST, LeadStatus.NOT_EXECUTED],
   [LeadStatus.IN_PROGRESS]:   [LeadStatus.DONE, LeadStatus.LOST, LeadStatus.NOT_EXECUTED],
-  [LeadStatus.DONE]:          [LeadStatus.IN_PROGRESS],                 // reabrir trabajo si aplica
-  [LeadStatus.LOST]:          [LeadStatus.TO_DO, LeadStatus.IN_PROGRESS], // reactivar oportunidad
-  [LeadStatus.NOT_EXECUTED]:  [LeadStatus.TO_DO],                       // reprogramado/retomado
+  [LeadStatus.DONE]:          [LeadStatus.IN_PROGRESS],                 
+  [LeadStatus.LOST]:          [LeadStatus.TO_DO, LeadStatus.IN_PROGRESS], 
+  [LeadStatus.NOT_EXECUTED]:  [LeadStatus.TO_DO],                       
 };
 
 export function canTransition(

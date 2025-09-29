@@ -38,7 +38,7 @@ export function validateLeadNumberFormat(
         { details: { field: "leadNumber" } }
       );
     }
-    return; // vacío permitido → válido
+    return; 
   }
 
   if (r.minLength && r.minLength > 0 && value.length < r.minLength) {
@@ -68,7 +68,7 @@ export function makeLeadNumber(
   input: string | null | undefined,
   rules: LeadNumberRules = DEFAULT_LEAD_NUMBER_RULES
 ): string | null {
-  if (input == null) return null; // no suministrado → null
+  if (input == null) return null; 
   const normalized = normalizeLeadNumber(input, rules);
   validateLeadNumberFormat(normalized, rules);
   return normalized;
@@ -78,7 +78,7 @@ export async function ensureLeadNumberAvailable(
   value: string,
   exists: (n: string) => Promise<boolean>
 ): Promise<void> {
-  if (!value) return; // vacío o null no se valida por unicidad
+  if (!value) return; 
   const taken = await exists(value);
   if (taken) {
     throw new BusinessRuleError("CONFLICT", "Lead number already in use", {

@@ -8,8 +8,7 @@ export type BaseFormModalProps = {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  /** Acepta null/undefined para compatibilidad con llamadas existentes */
-  error?: string | null;
+    error?: string | null;
   onSubmit: (e: React.FormEvent) => void | Promise<void>;
   submitText: string;
   cancelText?: string;
@@ -19,16 +18,9 @@ export type BaseFormModalProps = {
   isSubmitDisabled?: boolean;
   size?: "sm" | "md" | "lg" | "xl";
   className?: string;
-  /** Si se pasa, el botón submit del footer dispara este form */
-  formId?: string;
+    formId?: string;
 };
 
-/**
- * Modal base genérico para formularios:
- * - Renderiza un <form> en el body (controlado por formId).
- * - El botón Submit del footer dispara ese form vía form={formId}.
- * - Error accesible vía aria-describedby cuando existe.
- */
 export default function BaseFormModal({
   isOpen,
   onClose,

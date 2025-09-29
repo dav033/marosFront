@@ -10,7 +10,7 @@ import { mapLeadPatchToUpdatePayload } from "@/features/leads/domain/services/le
 import type { LeadType } from "@/features/leads/enums";
 import type { LeadDraft, LeadId, LeadPatch } from "@/features/leads/types";
 import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
-import type { HttpClientLike } from "@/shared/infra/http/types"; // ← usamos la interfaz mínima
+import type { HttpClientLike } from "@/shared/infra/http/types"; 
 
 import { endpoints } from "./endpoints";
 
@@ -44,12 +44,12 @@ export class LeadHttpRepository implements LeadRepositoryPort {
       const lead = {
         leadNumber: draft.leadNumber ?? "",
         name: draft.name,
-        startDate: new Date().toISOString().split("T")[0], // YYYY-MM-DD format for LocalDate
+        startDate: new Date().toISOString().split("T")[0], 
         location: draft.location,
         status: null,
-        contact: null, // Debe ser null
+        contact: null, 
         projectType: {
-          id: Number(draft.projectTypeId), // Asegurar que es número
+          id: Number(draft.projectTypeId), 
           name: "",
           color: "",
         },
@@ -77,12 +77,12 @@ export class LeadHttpRepository implements LeadRepositoryPort {
     const lead = {
       leadNumber: draft.leadNumber ?? "",
       name: draft.name,
-      startDate: new Date().toISOString().split("T")[0], // YYYY-MM-DD format for LocalDate
+      startDate: new Date().toISOString().split("T")[0], 
       location: draft.location,
       status: null,
-      contact: null, // Debe ser null, no undefined
+      contact: null, 
       projectType: {
-        id: Number(draft.projectTypeId), // Asegurar que es número
+        id: Number(draft.projectTypeId), 
         name: "",
         color: "",
       },
@@ -90,7 +90,7 @@ export class LeadHttpRepository implements LeadRepositoryPort {
     };
     const request = {
       lead,
-      contactId: Number(draft.contactId), // Asegurar que es número
+      contactId: Number(draft.contactId), 
     };
 
     const { data } = await this.api.post<ApiLeadDTO>(

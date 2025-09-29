@@ -13,7 +13,7 @@ export class LeadNumberAvailabilityHttpService
   constructor(private readonly api: HttpClientLike = optimizedApiClient) {}
 
   async isAvailable(leadNumber: string): Promise<boolean> {
-    if (!leadNumber) return true; // vacío = no forzamos validación de unicidad
+    if (!leadNumber) return true; 
     const { data } = await this.api.get<ValidateLeadNumberDTO>(
       endpoints.validateLeadNumber(leadNumber),
       { cache: { enabled: true, strategy: "network-first", ttl: 30_000 } }

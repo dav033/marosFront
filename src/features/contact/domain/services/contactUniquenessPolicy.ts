@@ -12,7 +12,6 @@ import {
   normalizePhone,
 } from "./contactIdentityPolicy";
 
-/* ----------------- Tipos ----------------- */
 
 export type ContactLike = Readonly<{
   name?: string | undefined;
@@ -24,16 +23,15 @@ export type ContactLike = Readonly<{
 export type UniquenessOptions = DuplicateCheckOptions;
 
 export type DuplicateMatch = Readonly<{
-  key: string; // identity key evaluada
-  match: Contact; // primer contacto que colisiona
+  key: string; 
+  match: Contact; 
 }>;
 
 export type DuplicateGroup = Readonly<{
-  key: string; // identity key compartida
-  items: Contact[]; // contactos agrupados por la misma identidad
+  key: string; 
+  items: Contact[]; 
 }>;
 
-/* ----------------- Helpers ----------------- */
 
 function toLike(c: Contact | ContactLike): ContactLike {
   return {
@@ -44,7 +42,6 @@ function toLike(c: Contact | ContactLike): ContactLike {
   };
 }
 
-/* ----------------- API pública ----------------- */
 
 export function buildIdentityIndex(
   contacts: readonly Contact[],

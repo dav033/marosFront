@@ -9,8 +9,7 @@ export type CreateContactModalProps = {
   isOpen: boolean;
   onClose: (shouldRefetch?: boolean) => void;
   onSubmit: (values: ContactFormData) => Promise<void> | void;
-  /** opcionales si quieres forzar estado desde arriba (legacy compat) */
-  submitting?: boolean;
+    submitting?: boolean;
   serverError?: string;
 };
 

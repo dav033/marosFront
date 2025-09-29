@@ -19,7 +19,7 @@ export const useCreateLead = ({
     switch (leadType) {
       case "new-contact":
       case "existing-contact":
-        return LeadType.CONSTRUCTION; // Ajuste si su enum requiere otro valor
+        return LeadType.CONSTRUCTION; 
       default:
         return LeadType.CONSTRUCTION;
     }
@@ -59,7 +59,7 @@ export const useCreateLead = ({
       } as const;
 
       const newLead = await createLead(ctx, input, {
-        checkNumberAvailability: true, // cámbielo si ya valida antes
+        checkNumberAvailability: true, 
         policies: {},
       });
 

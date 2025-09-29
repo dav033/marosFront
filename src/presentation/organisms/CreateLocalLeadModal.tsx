@@ -1,4 +1,4 @@
-// src/presentation/organisms/CreateLocalLeadModal.tsx
+
 import React from "react";
 
 import type { LeadStatus } from "@/features/leads/domain";
@@ -15,7 +15,6 @@ import LeadFormFields, {
 } from "../molecules/LeadFormFields";
 import BaseFormModal from "./BaseFormModal";
 
-/** Convierte string | number | null | undefined → number | undefined */
 function toNumberOrUndefined(v: unknown): number | undefined {
   if (v === null || v === undefined || v === "") return undefined;
   if (typeof v === "number") return Number.isFinite(v) ? v : undefined;
@@ -26,8 +25,8 @@ function toNumberOrUndefined(v: unknown): number | undefined {
 type LeadFieldsForUI = {
   leadNumber: string;
   leadName: string;
-  projectTypeId?: number; // números para <LeadFormFields />
-  contactId?: number;     // números para <LeadFormFields />
+  projectTypeId?: number; 
+  contactId?: number;     
   location: string;
   status?: "" | LeadStatus;
   startDate?: string;
@@ -44,14 +43,14 @@ export default function CreateLocalLeadModal({
   const {
     contactMode,
     handleContactModeChange,
-    form,         // estado del controlador (puede tener strings)
+    form,         
     isLoading,
     error,
-    handleChange, // típicamente: (k: keyof LeadFormData, v: string) => void
-    submit,       // requiere formData
+    handleChange, 
+    submit,       
   } = useCreateLocalLeadController({ leadType, onCreated: onLeadCreated });
 
-  // Adaptador para ContactModeSelector (inputs controlados con string)
+  
   const newContactForm: NewContactForm = {
     customerName: form.customerName ?? "",
     contactName:  form.contactName  ?? "",
@@ -60,16 +59,16 @@ export default function CreateLocalLeadModal({
   };
 
   const handleNewContactChange: NewContactChangeHandler = (key, value) => {
-    const v = value ?? ""; // normaliza undefined → ""
+    const v = value ?? ""; 
     handleChange(key as keyof typeof form, v);
   };
 
-  // Normalizamos IDs a number para <LeadFormFields />, sin incluir propiedades undefined
+  
   const projectTypeIdNum = toNumberOrUndefined(form.projectTypeId);
   const contactIdNum     = toNumberOrUndefined(form.contactId);
 
-  // Adaptador para LeadFormFields respetando exactOptionalPropertyTypes:
-  // solo incluimos la propiedad si hay valor definido.
+  
+  
   const leadFields: LeadFieldsForUI = {
     leadNumber: form.leadNumber ?? "",
     leadName:   form.leadName   ?? "",
@@ -80,9 +79,9 @@ export default function CreateLocalLeadModal({
     ...(form.startDate  ? { startDate: form.startDate } : {}),
   };
 
-  // Firma EXACTA que expone <LeadFormFields />
+  
   const handleLeadFieldsChange: LeadFormFieldsProps["onChange"] = (field, value) => {
-    // El componente puede pasar number | string | undefined → el controller espera string
+    
     if (field === "projectTypeId" || field === "contactId") {
       const vString = value == null ? "" : String(value);
       handleChange(field as keyof typeof form, vString);
@@ -94,7 +93,7 @@ export default function CreateLocalLeadModal({
 
   const handleModalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await submit(form); // <-- el hook exige 'formData'
+    await submit(form); 
     onClose();
   };
 
@@ -119,8 +118,8 @@ export default function CreateLocalLeadModal({
       />
 
       <LeadFormFields
-        form={leadFields}                 // ids como number (solo si existen)
-        onChange={handleLeadFieldsChange} // devuelve string al controller
+        form={leadFields}                 
+        onChange={handleLeadFieldsChange} 
         projectTypes={projectTypes}
         contacts={contacts}
         mode={FormMode.CREATE}

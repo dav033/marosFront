@@ -1,4 +1,4 @@
-// src/lib/cache/index.ts
+
 export { useCacheQuery } from './useCacheQuery';
 export { serializeKey } from './key';
 export type { QueryKey } from './key';

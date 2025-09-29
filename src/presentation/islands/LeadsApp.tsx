@@ -5,10 +5,10 @@ import { LeadType } from "@/features/leads/enums";
 import useLoading from "@/presentation/context/loading/hooks/useLoading";
 import { LoadingProvider } from "@/presentation/context/loading/LoadingContext";
 
-import { useContactsVM } from "../hooks/useContactsVM";
 import { useProjectTypesVM } from "../hooks/useProjectTypesVM";
 import LeadsBoard from "../organisms/LeadsBoard";
 import QueryProvider from "@/components/common/QueryProvider";
+import { useContacts } from "../hooks/useContact";
 
 type Props = {
   leadType: LeadType;
@@ -48,7 +48,10 @@ function LeadsInner({
   const leadsCtx = useLeadsApp();
   const contactsCtx = useContactsApp();
   const { projectTypes = [] } = useProjectTypesVM(leadsCtx);
-  const { contacts = [] } = useContactsVM(contactsCtx);
+  const { contacts = [] } = useContacts({
+    ctx: contactsCtx,
+    cache: true,
+  });
   const handleLoadingChange = React.useCallback(
     (loading: boolean) => {
       if (loading) showLoading("leadsTable");

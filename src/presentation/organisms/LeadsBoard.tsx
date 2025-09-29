@@ -43,11 +43,11 @@ export default function LeadsBoard({
   const columns = useMemo(() => leadTableColumns, []);
   const { setSkeleton, showLoading, hideLoading } = useLoading();
   useEffect(() => {
-    setSkeleton("leadsTable", { rows: 12, showSections: true }); // overlay: false por defecto
+    setSkeleton("leadsTable", { rows: 12, showSections: true }); 
   }, [setSkeleton]);
   useEffect(() => {
     if (vm.isLoading) {
-      showLoading("leadsTable", { rows: 12, showSections: true }); // inline
+      showLoading("leadsTable", { rows: 12, showSections: true }); 
     } else {
       hideLoading();
     }

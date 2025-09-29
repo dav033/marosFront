@@ -1,5 +1,5 @@
 import { LeadStatus } from "@/features/leads/enums";
-import type { SelectOption } from "@/presentation/atoms/Select"; // usa el tipo exacto del Select
+import type { SelectOption } from "@/presentation/atoms/Select"; 
 
 type ContactLite = { id: number; name: string; companyName?: string; phone?: string | undefined; email?: string | undefined };
 type ProjectTypeLite = { id: number; name: string; color?: string };

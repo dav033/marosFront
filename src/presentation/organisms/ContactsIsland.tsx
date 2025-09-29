@@ -1,16 +1,15 @@
-/* eslint-disable simple-import-sort/imports */
 import React from "react";
-import { useInstantContacts } from "@/hooks/useInstantContacts";
 import useLoading from "@/presentation/context/loading/hooks/useLoading";
 import { LoadingProvider } from "@/presentation/context/loading/LoadingContext";
 import SkeletonRenderer from "@/presentation/organisms/SkeletonRenderer";
 import type { Contact } from "@/features/contact/domain/models/Contact";
 import ContactsTable from "./ContactsTable";
+import { useContacts } from "../hooks/useContact";
 
 function ContactsIslandInner() {
   type ContactLite = { id: number; name?: string; companyName?: string; email?: string; phone?: string };
 
-  const hook = useInstantContacts() as unknown as {
+  const hook = useContacts() as unknown as {
     contacts?: ContactLite[] | undefined;
     isLoading?: boolean | undefined;
     loading?: boolean | undefined;
@@ -31,7 +30,7 @@ function ContactsIslandInner() {
   }, [setSkeleton]);
   React.useEffect(() => {
     if (isLoading) {
-      showLoading("contactsTable", { rows: 15 }); // ← sin overlay
+      showLoading("contactsTable", { rows: 15 }); 
     } else {
       hideLoading();
     }

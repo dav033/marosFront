@@ -1,4 +1,3 @@
-/* eslint-disable simple-import-sort/imports */
 
 import type { Contact } from "@/features/contact/domain/models/Contact";
 import type { Column } from "../components/table";

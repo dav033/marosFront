@@ -10,7 +10,7 @@ export type LeadsAppContext = Readonly<{
   repos: {
     contact: any;
     lead: LeadRepositoryPort;
-        projectType?: ProjectTypeRepositoryPort; // opcional para compatibilidad
+        projectType?: ProjectTypeRepositoryPort; 
   };
   services: {
     leadNumberAvailability: LeadNumberAvailabilityPort;

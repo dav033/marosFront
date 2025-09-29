@@ -4,15 +4,15 @@ import * as React from "react";
 
 export type ImageInputProps = {
   label?: string;
-  value?: string | null; // Data URL o URL remota existente
-  accept?: string;       // por defecto "image/*"
-  maxSizeMB?: number;    // por defecto 5MB
+  value?: string | null; 
+  accept?: string;       
+  maxSizeMB?: number;    
   onChange: (file: File | null, dataUrl?: string | null) => void;
   helperText?: string;
   required?: boolean;
   disabled?: boolean;
   className?: string;
-  squarePreview?: boolean; // true => recuadro cuadrado, false => 4:3
+  squarePreview?: boolean; 
 };
 
 export default function ImageInput({

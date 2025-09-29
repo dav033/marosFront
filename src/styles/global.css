@@ -1,7 +1,5 @@
-/* src/styles/global.css */
 @import "tailwindcss";
 
-/* Variables CSS del tema personalizado */
 :root {
   --color-dark: #000000;
   --color-gray: #273f4f;
@@ -13,7 +11,6 @@
   --color-light: #efeeea;
 }
 
-/* Tema oscuro global */
 * {
   box-sizing: border-box;
 }
@@ -32,7 +29,6 @@ body {
   min-height: 100vh;
 }
 
-/* Scrollbar personalizada para tema oscuro */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -51,7 +47,6 @@ body {
   background: var(--color-gray-alt);
 }
 
-/* Clases de utilidad personalizadas */
 .bg-theme-dark {
   background-color: var(--color-dark);
 }
@@ -137,7 +132,6 @@ table.custom-table td {
   border-bottom: none;
 }
 
-/* Override to ensure there are no white borders */
 table.custom-table * {
   border-color: var(--color-gray-subtle) !important;
 }

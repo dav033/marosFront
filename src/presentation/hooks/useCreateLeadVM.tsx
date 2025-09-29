@@ -16,8 +16,8 @@ export type UseCreateLeadVMOptions = Readonly<{
 const EMPTY_FORM: LeadFormData = {
   leadNumber: "",
   leadName: "",
-  name: "", // compat
-  startDate: "", // lo setea backend o caso de uso si aplica
+  name: "", 
+  startDate: "", 
   location: "",
   status: null,
   projectTypeId: undefined,
@@ -131,7 +131,7 @@ export function useCreateLeadVM({
             };
 
       const created = (await createLead(ctx, input, {
-        checkNumberAvailability: false, // ya se validó arriba
+        checkNumberAvailability: false, 
         policies: {},
       })) as unknown as Lead;
 

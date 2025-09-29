@@ -15,7 +15,6 @@ export interface CreateContactRequestDTO {
 
 export type UpdateContactRequestDTO = Partial<CreateContactRequestDTO>;
 
-/* Tipos “loose” para construir y luego filtrar (EOPT=true compatible) */
 type LooseCreateContactRequestDTO = {
   name: string;
 } & {
@@ -26,7 +25,6 @@ type LooseUpdateContactRequestDTO = {
   [K in keyof UpdateContactRequestDTO]?: string | undefined;
 };
 
-/* Utils */
 function normalizeEmptyToUndefined(v?: string | null): string | undefined {
   if (v == null) return undefined;
   const t = `${v}`.trim();
@@ -39,7 +37,6 @@ function pickDefined<T extends object>(obj: T): Partial<T> {
   ) as Partial<T>;
 }
 
-/* Builder unificado */
 export function buildCreateContactDTO(draft: ContactDraft): CreateContactRequestDTO {
   const loose: LooseCreateContactRequestDTO = {
     name: (draft.name ?? "").trim(),

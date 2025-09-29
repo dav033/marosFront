@@ -7,7 +7,6 @@ import type {
   LeadDraftWithNewContact,
 } from "../../types";
 
-/* ----------------- Tipos DTO (payload hacia backend) ----------------- */
 
 export type CreateContactDTO = Readonly<{
   companyName: string;
@@ -17,12 +16,12 @@ export type CreateContactDTO = Readonly<{
 }>;
 
 export type CreateLeadDTO = Readonly<{
-  leadNumber: string;           // backend espera string ("" si vacío)
+  leadNumber: string;           
   name: string;
   startDate: ISODate;
   location: string;
-  status: LeadStatus | null;    // compatible con backend actual
-  contact?: CreateContactDTO;   // sólo en flujo "new contact"
+  status: LeadStatus | null;    
+  contact?: CreateContactDTO;   
   projectType: Readonly<{ id: number; name: string; color: string }>;
   leadType: LeadType;
 }>;
@@ -41,7 +40,6 @@ export type CreateLeadPayload =
   | CreateLeadWithNewContactPayload
   | CreateLeadWithExistingContactPayload;
 
-/* ----------------- Mapper principal ----------------- */
 
 function toProjectTypeDTO(id: number) {
   return { id, name: "", color: "" } as const;
@@ -58,12 +56,12 @@ export function mapDraftWithNewContactToPayload(
   };
 
   const lead: CreateLeadDTO = {
-    leadNumber: draft.leadNumber ?? "", // compat: "" cuando el usuario borra el número
+    leadNumber: draft.leadNumber ?? "", 
     name: draft.name,
     startDate: draft.startDate,
     location: draft.location,
     status: draft.status ?? null,
-    contact, // también anidado (como hace el servicio actual)
+    contact, 
     projectType: toProjectTypeDTO(draft.projectTypeId),
     leadType: draft.leadType,
   };

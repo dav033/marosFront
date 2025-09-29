@@ -7,7 +7,7 @@ type IconButtonProps = {
   onClick?: () => void;
   disabled?: boolean;
   className?: string;
-  size?: number; // px
+  size?: number; 
 };
 
 export default function IconButton({

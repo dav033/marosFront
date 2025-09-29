@@ -1,18 +1,14 @@
 import React from "react";
 import type { LeadsAppContext } from "@/features/leads/application";
-import { fetchLeadsByType } from "@/features/leads/application/usecases/queries/fetchLeadsByType";
 import type { Lead } from "@/features/leads/domain/models/Lead";
 import type { LeadType } from "@/features/leads/enums";
-// ⬇️ antes: "@/presentation/features/leads/vm/buildLeadSections"
-import { buildLeadSections } from "@/features/leads/domain/services/leadSections";
-import type {
-  LeadSection,
-  LeadsVM,
-} from "@/presentation/features/leads/vm/types";
-import { getErrorMessage } from "@/utils/errors";
-import { deleteLead as deleteLeadUseCase } from "@/features/leads/application";
 
-export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType): LeadsVM {
+import { buildLeadSections, type LeadSection } from "@/features/leads/domain/services/leadSections";
+
+import { getErrorMessage } from "@/utils/errors";
+import { deleteLead as deleteLeadUseCase, listLeadsByType } from "@/features/leads/application";
+
+export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType): any {
   const [leads, setLeads] = React.useState<Lead[]>([]);
   const [sections, setSections] = React.useState<LeadSection[]>([
     { title: "All", data: [] },
@@ -23,7 +19,7 @@ export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType): LeadsVM {
   const load = React.useCallback(async () => {
     setIsLoading(true);
     try {
-      const items = await fetchLeadsByType(ctx, leadType);
+      const items = await listLeadsByType(ctx, leadType);
       setLeads(items);
       setSections(buildLeadSections(items));
       setError(null);
@@ -87,7 +83,7 @@ export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType): LeadsVM {
           return next;
         });
       } catch (e: unknown) {
-        // mantenga el error anterior si es necesario
+        
       }
     },
     [ctx]

@@ -16,7 +16,6 @@ export type ApiContactDTO = Readonly<{
     lastContact?: string | null;
 }>;
 
-/* Utils */
 function norm(s: unknown): string {
   return String(s ?? "")
     .replace(/\s+/g, " ")

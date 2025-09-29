@@ -1,3 +1,4 @@
+import { useContactsApp } from "@/di/DiProvider";
 import {
   createContact,
   deleteContact,
@@ -10,7 +11,6 @@ import type { ContactUniquenessCheck } from "@/features/contact/domain/ports/Con
 import type { ContactPatch } from "@/features/contact/domain/services/applyContactPatch";
 import type { ContactDraft } from "@/features/contact/domain/services/buildContactDraft";
 
-import { useContactsApp } from "../../di/DiProvider.tsx";
 
 export function useContactsApplication() {
   const ctx = useContactsApp();

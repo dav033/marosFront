@@ -11,7 +11,6 @@ export type TableSkeletonProps = {
   className?: string;
 };
 
-/* -------------------- componente principal -------------------- */
 
 const TableSkeleton: React.FC<TableSkeletonProps> = ({
   rows = 6,

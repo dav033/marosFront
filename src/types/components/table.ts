@@ -48,7 +48,7 @@ export interface Column<T> {
   render?: (value: unknown, item: T) => ReactElement | string;
   align?: "left" | "center" | "right";
   id?: string;
-  header?: string; // Alias for label
+  header?: string; 
   accessor?: (item: T) => unknown;
   type?: string;
   cellRenderer?: (value: unknown, item: T) => ReactElement | string | null;

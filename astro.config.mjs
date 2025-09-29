@@ -5,7 +5,7 @@ import react from "@astrojs/react";
 
 export default defineConfig({
   prefetch: {
-    prefetchAll: false, // Desactivado globalmente para evitar saturar red
+    prefetchAll: false, 
     defaultStrategy: "hover",
   },
   vite: {

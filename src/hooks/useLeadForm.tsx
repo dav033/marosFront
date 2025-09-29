@@ -14,7 +14,7 @@ export function useLeadForm(options: UseLeadFormOptions) {
     leadName: "",
     leadNumber: "",
     location: "",
-    projectTypeId: "" as unknown as number, // se castea a number en el submit
+    projectTypeId: "" as unknown as number, 
     contactId: "" as unknown as number,
     companyName: "",
     customerName: "",

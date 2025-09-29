@@ -1,4 +1,3 @@
-/* eslint-disable simple-import-sort/imports */
 import React from "react";
 import type { ReactNode } from "react";
 import type { Lead } from "../../features/leads/domain/models/Lead";

@@ -5,7 +5,7 @@ import type { ISODate, LeadPatch } from "../../types";
 export type UpdateLeadDTO = Readonly<{
   name?: string;
   location?: string;
-  status?: LeadStatus | null; // el backend acepta null
+  status?: LeadStatus | null; 
   startDate?: ISODate;
   projectType?: Readonly<{ id: number; name: string; color: string }>;
   contact?: Readonly<{

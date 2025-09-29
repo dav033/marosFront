@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 import {
-  createLead, // ✅ único punto de entrada
+  createLead, 
   makeLeadsAppContext,
   validateLeadNumberAvailability,
 } from "@/features/leads/application";
@@ -63,7 +63,7 @@ export function useCreateLocalLeadController({
       await validateLeadNumberAvailability(ctx, formData.leadNumber);
       const common = {
         leadName: formData.leadName ?? "",
-        leadNumber: formData.leadNumber, // string requerido
+        leadNumber: formData.leadNumber, 
         location: formData.location ?? "",
         projectTypeId: Number(formData.projectTypeId) as ProjectTypeId,
         leadType,

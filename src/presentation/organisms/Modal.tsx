@@ -22,7 +22,7 @@ export default function Modal({
   size = "md",
   closeOnOverlayClick = true,
   closeOnEscape = true,
-  showCloseButton: _showCloseButton = false, // header ya trae close por defecto; este flag es por compat
+  showCloseButton: _showCloseButton = false, 
   className = "",
   overlayClassName = "",
   contentClassName = "",

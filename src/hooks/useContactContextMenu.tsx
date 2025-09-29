@@ -8,7 +8,7 @@ import { getErrorMessage } from "@/utils/errors";
 function makeContactsAppContext(): ContactsAppContext {
   return {
     repos: { contact: new ContactHttpRepository() },
-    ports: {}, // no se requiere unicidad para delete
+    ports: {}, 
   };
 }
 
