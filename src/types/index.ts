@@ -31,7 +31,6 @@ export type {
   ProjectTypeResponse,
   ProjectTypesResponse,
 } from "./domain/responses";
-export * from "./lib";
 
 export type {
   ContactsContextType,
@@ -63,20 +62,9 @@ export type {
   UseContextMenuResult,
   UseLeadContextMenuProps,
 } from "./hooks/context-menu";
-export type {
-  FetchContextValue,
-  FetchOptions,
-  FetchState,
-  UseFetchResult,
-} from "./hooks/fetch";
+
 export type { UseCreateLeadResult } from "./hooks/leads";
-export type {
-  LeadsByTypeConfig,
-  OptimizedFetchConfig,
-  Undetermined,
-  UseOptimizedFetchReturn,
-  VisibilityIntervalOptions,
-} from "./hooks/optimized-fetch";
+
 export type {
   ContactSearchConfig,
   LeadSearchConfig,
@@ -145,11 +133,6 @@ export type {
   LoadingSpinnerProps,
 } from "./components/ui";
 
-export type {
-  CachedRequestConfig,
-  OptimizedApiClientMetrics,
-  RequestMetrics,
-} from "./lib/api-client";
 export interface UseCreateLeadOptions {
   leadType: "new-contact" | "existing-contact";
   onLeadCreated?: (lead: unknown) => void;

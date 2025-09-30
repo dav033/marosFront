@@ -1,18 +1,15 @@
-
-
 import axios, {
   type AxiosInstance,
   type AxiosRequestConfig,
   type AxiosRequestHeaders,
   type AxiosResponse,
 } from "axios";
-
-
 import { attachLoadingInterceptors } from "./axiosLoadingInterceptors";
 
 const { VITE_API_BASE_URL } = import.meta.env;
 const BASE_URL = VITE_API_BASE_URL || "http://localhost:8080";
 
+/** Normaliza objetos para construir keys estables (opcional, útil para claves de React Query). */
 function normalizeStable(input: unknown): unknown {
   if (input === null || input === undefined) return input;
   if (input instanceof Date) return input.toISOString();
@@ -20,9 +17,7 @@ function normalizeStable(input: unknown): unknown {
   if (typeof input === "object") {
     const o = input as Record<string, unknown>;
     const out: Record<string, unknown> = {};
-    for (const k of Object.keys(o).sort()) {
-      out[k] = normalizeStable(o[k]);
-    }
+    for (const k of Object.keys(o).sort()) out[k] = normalizeStable(o[k]);
     return out;
   }
   return input;
@@ -59,7 +54,6 @@ export class OptimizedApiClient {
     attachLoadingInterceptors?.(this.axiosInstance);
   }
 
-  
   get<T = unknown>(url: string, options?: RequestOptions): Promise<AxiosResponse<T>> {
     return this.makeRequest<T>("GET", url, undefined, options);
   }
@@ -76,19 +70,17 @@ export class OptimizedApiClient {
     return this.makeRequest<T>("DELETE", url, undefined, options);
   }
 
-    
+  // Conservamos la firma por compatibilidad; ahora no hace nada.
   clearCache() {
-    
+    // sin-op
   }
 
-  
   private async makeRequest<T>(
     method: "GET" | "POST" | "PUT" | "DELETE",
     url: string,
     body?: unknown,
     options?: RequestOptions
   ): Promise<AxiosResponse<T>> {
-    
     const axiosConfig: AxiosRequestConfig<T> = { url, method };
     if (body !== undefined) axiosConfig.data = body as any;
     if (options?.params !== undefined) axiosConfig.params = options.params;

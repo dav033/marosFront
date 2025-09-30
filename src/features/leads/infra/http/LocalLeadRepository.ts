@@ -33,14 +33,7 @@ export class LocalLeadRepository implements LeadRepositoryPort {
       const request = { lead, contact };
       const response = await optimizedApiClient.post(
         "/leads/new-contact?skipClickUpSync=true",
-        request,
-        {
-          prefetch: {
-            enabled: true,
-            priority: "high",
-            dependencies: ["/leads/type"],
-          },
-        }
+        request
       );
       return response.data as Lead;
     }
@@ -57,14 +50,7 @@ export class LocalLeadRepository implements LeadRepositoryPort {
     const request = { lead, contactId: draft.contactId };
     const response = await optimizedApiClient.post(
       "/leads/existing-contact?skipClickUpSync=true",
-      request,
-      {
-        prefetch: {
-          enabled: true,
-          priority: "high",
-          dependencies: ["/leads/type"],
-        },
-      }
+      request
     );
     return response.data as Lead;
   }

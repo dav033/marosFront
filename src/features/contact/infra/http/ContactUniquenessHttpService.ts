@@ -1,4 +1,3 @@
-
 import type { Contact } from "@/features/contact/domain/models/Contact";
 import type {
   ContactUniquenessCheck,
@@ -30,15 +29,12 @@ export class ContactUniquenessHttpService implements ContactUniquenessPort {
         email: candidate.email,
         phone: candidate.phone,
       },
-      cache: { enabled: true, strategy: "network-first", ttl: 10_000 },
     });
     return data ?? { duplicate: false };
   }
 
-    async findDuplicates(candidate: ContactUniquenessCheck): Promise<Contact[]> {
-    const { data } = await this.api.get<ApiContactDTO[]>(endpoints.list(), {
-      cache: { enabled: true, strategy: "network-first", ttl: 10_000 },
-    });
+  async findDuplicates(candidate: ContactUniquenessCheck): Promise<Contact[]> {
+    const { data } = await this.api.get<ApiContactDTO[]>(endpoints.list());
     const all = mapContactsFromDTO(data ?? []);
     return listPotentialDuplicates(candidate as unknown as Contact, all);
   }
