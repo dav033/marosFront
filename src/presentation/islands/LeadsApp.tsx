@@ -44,8 +44,7 @@ function LeadsInner({
   const { projectTypes = [] } = useProjectTypesVM(leadsCtx);
   const { contacts = [] } = useContacts({ ctx: contactsCtx, cache: true });
 
-  // onLoadingChange ya no controla skeleton global
-  const noopLoadingChange = React.useCallback((_loading: boolean) => {}, []);
+    const noopLoadingChange = React.useCallback((_loading: boolean) => {}, []);
 
   return (
     <LoadingProvider>

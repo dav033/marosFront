@@ -1,4 +1,3 @@
-// src/presentation/hooks/useCreateLocalLeadController.tsx
 import { useState } from "react";
 
 import {
@@ -40,8 +39,7 @@ export function useCreateLocalLeadController({
   const ctx = makeLeadsAppContext({
     clock: SystemClock,
     repos: {
-      // Sustituimos el repo local por el HTTP con la opción de "skip sync"
-      lead: new LeadHttpRepository(undefined, { skipClickUpSync: true }),
+            lead: new LeadHttpRepository(undefined, { skipClickUpSync: true }),
       contact: new ContactRepositoryAdapterForLeads(),
     },
     services: {
@@ -59,8 +57,7 @@ export function useCreateLocalLeadController({
       setIsLoading(true);
       setError(null);
 
-      // En el flujo "local" ya se exigía leadNumber; conservamos la regla
-      if (!formData.leadNumber) {
+            if (!formData.leadNumber) {
         throw new Error("Lead Number is required for local-only creation");
       }
 

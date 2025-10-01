@@ -1,4 +1,3 @@
-// src/features/contact/infra/http/endpoints.ts
 import { buildCrudEndpoints } from "@/shared/infra/rest/buildCrudEndpoints";
 
 const BASE = "/contacts";
@@ -13,7 +12,6 @@ const BASE = "/contacts";
 export const contactEndpoints = {
   ...buildCrudEndpoints<number>(BASE, {
     listPath: "/all",
-    // createPath === undefined → create() => /contacts (igual que antes)
-  }),
+      }),
   uniquenessCheck: () => `${BASE}/validate`,
 } as const;

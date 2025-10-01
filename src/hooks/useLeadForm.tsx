@@ -1,4 +1,3 @@
-// src/hooks/useLeadForm.tsx
 import { useState } from "react";
 import type { LeadFormData } from "@/types/components/form";
 import { LeadStatus, LeadType } from "@/features/leads/enums";
@@ -10,15 +9,13 @@ export interface UseLeadFormOptions {
 export function useLeadForm(options: UseLeadFormOptions) {
   const { initialData } = options;
 
-  // Campos requeridos por LeadFormData: name, startDate, status, leadType (según tus tipos)
-  const base: LeadFormData = {
+    const base: LeadFormData = {
     name: "",
     startDate: "",
     status: LeadStatus.NEW,
     leadType: LeadType.CONSTRUCTION,
 
-    // Opcionales
-    leadNumber: "",
+        leadNumber: "",
     leadName: "",
     location: "",
     projectTypeId: undefined,

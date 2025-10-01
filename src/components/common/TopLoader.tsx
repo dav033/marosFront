@@ -6,8 +6,7 @@ import { useIsFetching } from "@tanstack/react-query";
  * No requiere configuración: basta con renderizarla una vez en la app.
  */
 export default function TopLoader() {
-  const fetching = useIsFetching(); // número de queries/mutations activas
-  const visible = fetching > 0;
+  const fetching = useIsFetching();   const visible = fetching > 0;
 
   return (
     <div

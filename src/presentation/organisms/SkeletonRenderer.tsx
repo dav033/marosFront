@@ -28,8 +28,7 @@ const SkeletonRenderer: React.FC<Props> = ({
   showSections = true,
   overlay = false,
 }) => {
-  // Estado global (React Query); queda como fallback cuando no se pasa "loading"
-  const { isLoading } = useLoading();
+    const { isLoading } = useLoading();
   const visible = loading ?? isLoading;
 
   if (!visible) return null;

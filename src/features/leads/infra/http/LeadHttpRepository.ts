@@ -1,52 +1,47 @@
-// src/features/leads/infra/http/LeadHttpRepository.ts
 import type { Lead } from "@/features/leads/domain/models/Lead";
 import type { LeadRepositoryPort } from "@/features/leads/domain/ports/LeadRepositoryPort";
 import type { LeadType } from "@/features/leads/enums";
 
-// DTOs / mappers de dominio (existentes en tu código)
 import {
   type ApiLeadDTO,
   mapLeadFromDTO,
   mapLeadsFromDTO,
 } from "@/features/leads/domain/services/leadReadMapper";
+
 import {
-  mapLeadPatchToUpdatePayload,
   type UpdateLeadPayload,
+  mapLeadPatchToUpdatePayload,
 } from "@/features/leads/domain/services/leadUpdateMapper";
+
 import {
-  mapLeadDraftToCreatePayload,
   type CreateLeadPayload,
+  mapLeadDraftToCreatePayload,
 } from "@/features/leads/domain/services/leadCreateMapper";
 
 import type { LeadDraft, LeadId, LeadPatch } from "@/features/leads/types";
 
 import type { HttpClientLike } from "@/shared/infra/http/types";
 import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
-import { makeResource, type Resource } from "@/shared/infra/rest/makeResource";
-import { endpoints, BASE } from "./endpoints";
+import { makeResource } from "@/shared/infra/rest/makeResource";
 
-type LeadHttpRepositoryOptions = Readonly<{ skipClickUpSync?: boolean }>;
+import { endpoints as leadEndpoints } from "./endpoints";
 
+/**
+ * Implementación del puerto con factory CRUD para las operaciones base,
+ * y endpoints específicos para creación por contacto nuevo/existente.
+ * Se preserva nombre de clase y firmas del LeadRepositoryPort.
+ */
 export class LeadHttpRepository implements LeadRepositoryPort {
-  private readonly skipClickUpSync: boolean;
+  private readonly api: HttpClientLike;
+  private readonly resource: ReturnType<
+    typeof makeResource<ApiLeadDTO, Lead, unknown, UpdateLeadPayload, LeadId>
+  >;
 
-  private readonly resource: Resource<LeadId, Lead, CreateLeadPayload, UpdateLeadPayload>;
+  constructor(api: HttpClientLike = optimizedApiClient) {
+    this.api = api;
 
-  constructor(
-    private readonly api: HttpClientLike = optimizedApiClient,
-    options?: LeadHttpRepositoryOptions
-  ) {
-    this.skipClickUpSync = !!options?.skipClickUpSync;
-
-    this.resource = makeResource<ApiLeadDTO, Lead, CreateLeadPayload, UpdateLeadPayload, LeadId>(
-      {
-        base: BASE,
-        getById: endpoints.getById,
-        ...(endpoints.list ? { list: endpoints.list } : {}),
-        create: endpoints.create, // definido por contrato del Resource; en Leads usamos las 2 variantes específicas abajo
-        update: endpoints.update,
-        remove: endpoints.remove,
-      },
+        this.resource = makeResource<ApiLeadDTO, Lead, unknown, UpdateLeadPayload, LeadId>(
+      leadEndpoints,
       {
         fromApi: mapLeadFromDTO,
         fromApiList: mapLeadsFromDTO,
@@ -55,39 +50,44 @@ export class LeadHttpRepository implements LeadRepositoryPort {
     );
   }
 
-  // ── Lecturas ─────────────────────────────────────────────────────────────────
-  async findById(id: LeadId): Promise<Lead | null> {
+  findById(id: LeadId): Promise<Lead | null> {
     return this.resource.findById(id);
   }
 
   async findByType(type: LeadType): Promise<Lead[]> {
-    const { data } = await this.api.get<ApiLeadDTO[]>(endpoints.listByType(String(type)));
-    return mapLeadsFromDTO(data ?? []);
+    const { data } = await this.api.get<ApiLeadDTO[]>(
+      leadEndpoints.listByType(String(type))
+    );
+    const list = Array.isArray(data) ? data : [];
+    return mapLeadsFromDTO(list);
   }
 
-  // ── Creación (dos flujos) ────────────────────────────────────────────────────
   async saveNew(draft: LeadDraft): Promise<Lead> {
-    const payload = mapLeadDraftToCreatePayload(draft);
-    const maybeSkip = this.skipClickUpSync ? "?skipClickUpSync=true" : "";
+    const payload: CreateLeadPayload = mapLeadDraftToCreatePayload(draft);
 
-    if ("contact" in payload) {
-      const { data } = await this.api.post<ApiLeadDTO>(`${endpoints.createWithNewContact()}${maybeSkip}`, payload);
+        if ("contact" in (payload as Record<string, unknown>)) {
+      const { data } = await this.api.post<ApiLeadDTO>(
+        leadEndpoints.createWithNewContact(),
+        payload
+      );
       if (!data) throw new Error("Empty response creating Lead with new contact");
       return mapLeadFromDTO(data);
     }
 
-    const { data } = await this.api.post<ApiLeadDTO>(`${endpoints.createWithExistingContact()}${maybeSkip}`, payload);
+        const { data } = await this.api.post<ApiLeadDTO>(
+      leadEndpoints.createWithExistingContact(),
+      payload
+    );
     if (!data) throw new Error("Empty response creating Lead with existing contact");
     return mapLeadFromDTO(data);
   }
 
-  // ── Actualización / borrado ─────────────────────────────────────────────────
   async update(id: LeadId, patch: LeadPatch): Promise<Lead> {
-    const dto = mapLeadPatchToUpdatePayload(patch);
+    const dto: UpdateLeadPayload = mapLeadPatchToUpdatePayload(patch);
     return this.resource.update(id, dto);
   }
 
-  async delete(id: LeadId): Promise<void> {
+  delete(id: LeadId): Promise<void> {
     return this.resource.delete(id);
   }
 }

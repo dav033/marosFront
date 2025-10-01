@@ -1,4 +1,3 @@
-// src/features/project/infra/http/HttpProjectRepository.ts
 import type { Project } from "@/features/project/domain/models/Project";
 import type { ProjectRepositoryPort } from "@/features/project/domain/ports/ProjectRepositoryPort";
 import type { ProjectId, ProjectDraft, ProjectPatch, LeadId } from "@/features/project/types";
@@ -46,8 +45,7 @@ export class HttpProjectRepository implements ProjectRepositoryPort {
     throw new Error("Method not implemented.");
   }
 
-  // CRUD
-  create(payload: ProjectDraft): Promise<Project> {
+    create(payload: ProjectDraft): Promise<Project> {
     return this.resource.create(payload);
   }
   update(id: ProjectId, patch: ProjectPatch): Promise<Project> {
@@ -63,8 +61,7 @@ export class HttpProjectRepository implements ProjectRepositoryPort {
     return this.resource.findAll();
   }
 
-  // Extras (rutas reales de tu endpoints.ts)
-  async listByStatus(status: string): Promise<Project[]> {
+    async listByStatus(status: string): Promise<Project[]> {
     const { data } = await this.api.get<Project[]>(projectEndpoints.listByStatus(status));
     return Array.isArray(data) ? data : [];
   }

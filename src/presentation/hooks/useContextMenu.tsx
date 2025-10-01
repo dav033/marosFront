@@ -1,4 +1,3 @@
-// src/presentation/hooks/useContextMenu.tsx
 import * as React from "react";
 
 export type ContextMenuOption = Readonly<{

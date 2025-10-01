@@ -1,4 +1,3 @@
-// src/features/leads/infra/http/endpoints.ts
 import { buildCrudEndpoints } from "@/shared/infra/rest/buildCrudEndpoints";
 
 export const BASE = "/leads";

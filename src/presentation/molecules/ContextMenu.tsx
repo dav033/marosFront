@@ -1,11 +1,8 @@
-// src/presentation/molecules/ContextMenu.tsx
 import * as React from "react";
 import { createPortal } from "react-dom";
 
-// Re-export del hook para mantener compatibilidad con imports existentes
 export { useContextMenu } from "@/presentation/hooks/useContextMenu";
 
-// Si ya tienes este tipo centralizado, puedes importar desde "@/types/hooks"
 export type ContextMenuOption = Readonly<{
   id: string | number;
   label?: string;
@@ -44,8 +41,7 @@ const ContextMenuComponent: React.FC<ContextMenuProps> = ({
 
     const handleDown = (ev: MouseEvent) => {
       const el = ev.target as HTMLElement | null;
-      // Si el clic no fue dentro del menú, cerramos
-      if (!el?.closest?.("[data-context-menu]")) onClose();
+            if (!el?.closest?.("[data-context-menu]")) onClose();
     };
     const handleEsc = (ev: KeyboardEvent) => {
       if (ev.key === "Escape") onClose();
@@ -108,7 +104,5 @@ const ContextMenuComponent: React.FC<ContextMenuProps> = ({
   return typeof document !== "undefined" ? createPortal(menu, document.body) : null;
 };
 
-// Export con nombre (para imports como { ContextMenu })
 export const ContextMenu = ContextMenuComponent;
-// Export por defecto (para imports como import ContextMenu from "…")
 export default ContextMenuComponent;

@@ -1,50 +1,62 @@
-// src/features/contact/infra/http/ContactHttpRepository.ts
 import type { Contact } from "@/features/contact/domain/models/Contact";
 import {
   type CreateContactRequestDTO,
   type UpdateContactRequestDTO,
 } from "@/features/contact/domain/services/mapContactDTO";
 import type { ContactRepositoryPort } from "@/features/contact/domain/ports/ContactRepositoryPort";
+
+import { makeCrudRepo } from "@/shared/infra/rest/makeCrudRepo";
+import type { HttpClientLike } from "@/shared/infra/http/types";
 import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
-import { makeResource } from "@/shared/infra/rest/makeResource";
-// (opcional) Si prefieres la factory:
-// import { makeCrudRepo } from "@/shared/infra/rest/makeCrudRepo";
+
 import { contactEndpoints } from "./endpoints";
 
+/**
+ * Implementación mínima basada en la factory CRUD.
+ * Mantiene el mismo nombre de clase y firma exigidos por ContactRepositoryPort.
+ */
 export class ContactHttpRepository implements ContactRepositoryPort {
-  private resource = makeResource<Contact, Contact, CreateContactRequestDTO, UpdateContactRequestDTO, number>(
-    contactEndpoints,
-    {
-      // El backend ya devuelve la forma de dominio para Contact.
-      fromApi: (dto) => dto,
-    }
-  );
+  private readonly api: HttpClientLike;
+  private readonly repo: ReturnType<
+    typeof makeCrudRepo<Contact, Contact, CreateContactRequestDTO, UpdateContactRequestDTO, number>
+  >;
+
+  constructor(api: HttpClientLike = optimizedApiClient) {
+    this.api = api;
+    this.repo = makeCrudRepo<Contact, Contact, CreateContactRequestDTO, UpdateContactRequestDTO, number>(
+      contactEndpoints,
+      {
+        fromApi: (dto) => dto,
+        fromApiList: (list) => list,
+      },
+      this.api
+    );
+  }
 
   create(payload: CreateContactRequestDTO): Promise<Contact> {
-    return this.resource.create(payload);
+    return this.repo.create(payload);
   }
 
   update(id: number, payload: UpdateContactRequestDTO): Promise<Contact> {
-    return this.resource.update(id, payload);
+    return this.repo.update(id, payload);
   }
 
   delete(id: number): Promise<void> {
-    return this.resource.delete(id);
+    return this.repo.delete(id);
   }
 
   findById(id: number): Promise<Contact | null> {
-    return this.resource.findById(id);
+    return this.repo.findById(id);
   }
 
   findAll(): Promise<Contact[]> {
-    return this.resource.findAll();
+    return this.repo.findAll();
   }
 
-  // Extensión fuera del CRUD estándar.
-  async search?(query: string): Promise<Contact[]> {
-    const res = await optimizedApiClient.get("/contacts/search", {
+    async search?(query: string): Promise<Contact[]> {
+    const { data } = await this.api.get<Contact[]>("/contacts/search", {
       params: { q: query },
     });
-    return (Array.isArray(res.data) ? res.data : []) as Contact[];
+    return Array.isArray(data) ? data : [];
   }
 }

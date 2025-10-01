@@ -50,8 +50,7 @@ export class OptimizedApiClient {
       headers: { "Content-Type": "application/json" },
       withCredentials: false,
     });
-    // 👇 OJO: sin attachLoadingInterceptors
-  }
+      }
 
   get<T = unknown>(url: string, options?: RequestOptions): Promise<AxiosResponse<T>> {
     return this.makeRequest<T>("GET", url, undefined, options);
@@ -70,8 +69,7 @@ export class OptimizedApiClient {
   }
 
   clearCache() {
-    // no-op (por compatibilidad)
-  }
+      }
 
   private async makeRequest<T>(
     method: "GET" | "POST" | "PUT" | "DELETE",

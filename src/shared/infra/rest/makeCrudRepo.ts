@@ -1,4 +1,3 @@
-// src/shared/infra/rest/makeCrudRepo.ts
 import type { HttpClientLike } from "@/shared/infra/http/types";
 import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
 import { makeResource, type Resource, type ResourceEndpoints, type ResourceMappers } from "@/shared/infra/rest/makeResource";

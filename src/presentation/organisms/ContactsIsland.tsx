@@ -13,8 +13,7 @@ export default function ContactsIsland() {
     phone?: string;
   };
 
-  // Compatibilidad con el hook existente
-  const hook = useContacts() as {
+    const hook = useContacts() as {
     contacts?: ContactLite[] | undefined;
     isLoading?: boolean | undefined;
     loading?: boolean | undefined;

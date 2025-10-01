@@ -1,4 +1,3 @@
-// src/presentation/atoms/table/Th.tsx
 import * as React from "react";
 
 type Props = React.ThHTMLAttributes<HTMLTableCellElement> & {

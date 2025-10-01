@@ -43,8 +43,7 @@ export function useContacts(
     },
     staleTime,
     refetchOnWindowFocus: options.refetchOnWindowFocus ?? true,
-    // Evita ejecutar el query hasta que el contexto esté disponible
-    enabled: !!ctx,
+        enabled: !!ctx,
   });
 
   const contacts = query.data ?? [];
@@ -52,8 +51,7 @@ export function useContacts(
   const isLoading = query.isLoading;
   const showSkeleton = isLoading && !hasData;
 
-  // Consideramos "fromCache" si hay datos y aún están dentro de la ventana de frescura (staleTime)
-  const fromCache =
+    const fromCache =
     hasData && Date.now() - (query.dataUpdatedAt ?? 0) <= staleTime;
 
   return {

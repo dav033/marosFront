@@ -1,4 +1,3 @@
-// src/features/project/infra/http/endpoints.ts
 import { buildCrudEndpoints } from "@/shared/infra/rest/buildCrudEndpoints";
 
 /** Export existente: se conserva tal cual para compatibilidad. */

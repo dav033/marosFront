@@ -17,8 +17,7 @@ export function useLeadsByType(type: LeadType) {
   const { data, isLoading, isFetching, error, refetch } = useQuery({
     queryKey: ["leads", "byType", type],
     queryFn: () => leadRepo.findByType(type),
-    staleTime: 300_000, // 5 min
-  });
+    staleTime: 300_000,   });
 
   const leads = data ?? [];
   const initialLoading = isLoading && leads.length === 0;

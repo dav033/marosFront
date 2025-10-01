@@ -1,4 +1,3 @@
-// src/presentation/molecules/table/TableRow.tsx
 import React, { memo } from "react";
 
 import { useContextMenu } from "@/presentation/hooks/useContextMenu";
@@ -23,8 +22,7 @@ function TableRowInner<T>({
         onContextMenu={
           contextMenuOptions
             ? (e) => {
-                // Calcula opciones para este row y pásalas al hook
-                const opts = contextMenuOptions(row);
+                                const opts = contextMenuOptions(row);
                 showContextMenu(e, opts);
               }
             : undefined

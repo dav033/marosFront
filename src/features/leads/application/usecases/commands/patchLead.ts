@@ -1,37 +1,15 @@
-import type {
-  ISODate,
-  Lead,
-  LeadId,
-  LeadPatch,
-} from "@/features/leads/domain";
+
+import type { Lead, LeadId, LeadPatch } from "@/features/leads/domain";
 import { applyLeadPatch } from "@/features/leads/domain";
 import type { LeadPatchPolicies } from "@/features/leads/types";
-
-import type { LeadsAppContext } from "../../context";
 import { getLeadById } from "../queries/getLeadById";
+import { diffToPatch } from "@/features/leads/domain/services/diffToPatch";
+import type { LeadsAppContext } from "../../context";
 
-function diffToPatch(current: Lead, updated: Lead): LeadPatch {
-  return {
-    ...(updated.name !== current.name ? { name: updated.name } : {}),
-    ...((updated.location ?? "") !== (current.location ?? "")
-      ? { location: updated.location ?? "" }
-      : {}),
-    ...(updated.status !== current.status ? { status: updated.status } : {}),
-    ...(updated.startDate !== current.startDate
-      ? { startDate: updated.startDate as ISODate }
-      : {}),
-    ...(updated.projectType.id !== current.projectType.id
-      ? { projectTypeId: updated.projectType.id }
-      : {}),
-    ...(updated.contact.id !== current.contact.id
-      ? { contactId: updated.contact.id }
-      : {}),
-    ...((updated.leadNumber ?? "") !== (current.leadNumber ?? "")
-      ? { leadNumber: updated.leadNumber ?? "" }
-      : {}),
-  };
-}
-
+/**
+ * Aplica patch de dominio (con validaciones/eventos),
+ * normaliza a un patch mínimo (diff) y persiste usando el repo.
+ */
 export async function patchLead(
   ctx: LeadsAppContext,
   id: LeadId,
@@ -39,12 +17,14 @@ export async function patchLead(
   policies: LeadPatchPolicies = {}
 ): Promise<Lead> {
   const current = await getLeadById(ctx, id);
+
   const { lead: updated /*, events*/ } = applyLeadPatch(
     ctx.clock,
     current,
     patch,
     policies
   );
+
   const normalizedPatch = diffToPatch(current, updated);
   const saved = await ctx.repos.lead.update(id, normalizedPatch);
 
