@@ -1,18 +1,17 @@
-
 import type { ContactsAppContext } from "@/features/contact/application";
 import type { Contact } from "@/features/contact/domain/models/Contact";
 import type { ContactPatch } from "@/features/contact/domain/services/applyContactPatch";
 import {
-  mapContactToUpdatePayload,
+  buildUpdateContactDTO,
   type UpdateContactRequestDTO,
-} from "@/features/contact/domain/services/mapContactToUpdatePayload";
+} from "@/features/contact/domain/services/mapContactDTO";
 
 export async function patchContact(
   ctx: ContactsAppContext,
   contactId: number,
   patch: ContactPatch
 ): Promise<Contact> {
-  const payload: UpdateContactRequestDTO = mapContactToUpdatePayload(patch);
+  const payload: UpdateContactRequestDTO = buildUpdateContactDTO(patch);
 
   if (Object.keys(payload).length === 0) {
     const current = await ctx.repos.contact.findById(contactId);

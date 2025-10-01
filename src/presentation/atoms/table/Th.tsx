@@ -1,27 +1,22 @@
-import React from "react";
+// src/presentation/atoms/table/Th.tsx
+import * as React from "react";
 
 type Props = React.ThHTMLAttributes<HTMLTableCellElement> & {
-  width?: string;
-  active?: boolean;
-  sortDirection?: "asc" | "desc";
+  align?: "left" | "center" | "right";
 };
 
-export default function Th({
-  children,
-  width,
-  active,
-  sortDirection,
-  className = "",
-  ...rest
-}: Props) {
+export default function Th({ align = "left", className = "", ...rest }: Props) {
+  const alignCls =
+    align === "center" ? "text-center" : align === "right" ? "text-right" : "text-left";
   return (
     <th
-      className={`px-4 py-3 text-left text-sm font-medium text-theme-light uppercase tracking-wider border-b border-theme-accent/20 cursor-pointer hover:bg-theme-accent/10 ${className}`}
-      style={{ width }}
-      aria-sort={active ? (sortDirection === "asc" ? "ascending" : "descending") : "none"}
+      className={[
+        "px-3 py-2 text-sm font-semibold text-base-content/80",
+        "bg-base-200 sticky top-0 z-10",
+        alignCls,
+        className,
+      ].join(" ")}
       {...rest}
-    >
-      {children}
-    </th>
+    />
   );
 }

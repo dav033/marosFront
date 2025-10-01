@@ -1,162 +1,114 @@
-import React, { useEffect, useRef, useState } from "react";
+// src/presentation/molecules/ContextMenu.tsx
+import * as React from "react";
 import { createPortal } from "react-dom";
 
-import { Icon } from "@/presentation/atoms"; // usa tu átomo Icon (Iconify wrapper)
+// Re-export del hook para mantener compatibilidad con imports existentes
+export { useContextMenu } from "@/presentation/hooks/useContextMenu";
 
-export type ContextMenuOption = {
+// Si ya tienes este tipo centralizado, puedes importar desde "@/types/hooks"
+export type ContextMenuOption = Readonly<{
   id: string | number;
-  label: string;
-  action: () => void;
+  label?: string;
+  icon?: React.ReactNode;
+  shortcut?: string;
+  action?: () => void;
   disabled?: boolean;
   danger?: boolean;
-  icon?: string | React.ReactNode; // string (Iconify) o nodo personalizado
   separator?: boolean;
-};
+}>;
 
-export type ContextMenuProps = {
+export type ContextMenuProps = Readonly<{
   options: ContextMenuOption[];
   isVisible: boolean;
-  position: { x: number; y: number };
+  position: Readonly<{ x: number; y: number }>;
+  /** ✅ NUEVO: requerido por TableRow */
   onClose: () => void;
-};
+}>;
 
-export const ContextMenu: React.FC<ContextMenuProps> = ({
+function getVariantClasses(danger?: boolean) {
+  return danger
+    ? "text-error hover:bg-error/10"
+    : "hover:bg-base-200";
+}
+
+const ContextMenuComponent: React.FC<ContextMenuProps> = ({
   options,
   isVisible,
   position,
   onClose,
 }) => {
-  const menuRef = useRef<HTMLDivElement>(null);
+  const ref = React.useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!isVisible) return;
 
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        onClose();
-      }
+    const handleDown = (ev: MouseEvent) => {
+      const el = ev.target as HTMLElement | null;
+      // Si el clic no fue dentro del menú, cerramos
+      if (!el?.closest?.("[data-context-menu]")) onClose();
     };
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
+    const handleEsc = (ev: KeyboardEvent) => {
+      if (ev.key === "Escape") onClose();
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleEscape);
+    document.addEventListener("mousedown", handleDown);
+    window.addEventListener("keydown", handleEsc);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleEscape);
+      document.removeEventListener("mousedown", handleDown);
+      window.removeEventListener("keydown", handleEsc);
     };
   }, [isVisible, onClose]);
 
   if (!isVisible) return null;
 
-  const getVariantClasses = (isDanger: boolean = false) => {
-    return isDanger
-      ? "text-red-400 hover:bg-red-500/20 hover:text-red-300"
-      : "text-theme-light hover:bg-theme-gray hover:text-theme-light";
-  };
-
   const menu = (
     <div
-      ref={menuRef}
-      className="fixed z-50 bg-theme-gray-darker border border-theme-gray rounded-lg shadow-xl py-1 min-w-[180px] backdrop-blur-sm"
+      ref={ref}
+      data-context-menu
+      className="fixed z-50 min-w-[200px] rounded-md border bg-base-100 shadow-lg py-1"
       style={{ left: position.x, top: position.y }}
       role="menu"
     >
-      {options.map((option, index) => {
-        if (option.separator) {
-          return (
-            <div
-              key={`${option.id}-${index}`}
-              className="mx-2 my-1 border-t border-theme-gray-subtle"
-              role="separator"
-            />
-          );
-        }
-
-        const disabled = !!option.disabled;
-        const base =
-          "w-full flex items-center px-3 py-2 text-sm text-left transition-all duration-150";
-        const state = disabled
-          ? "text-gray-500 cursor-not-allowed"
-          : `cursor-pointer ${getVariantClasses(!!option.danger)}`;
-
-        return (
-          <button
-            key={option.id}
-            type="button"
-            role="menuitem"
-            onClick={() => {
-              if (!disabled) {
-                option.action();
-                onClose();
-              }
-            }}
-            disabled={disabled}
-            aria-disabled={disabled || undefined}
-            className={`${base} ${state}`}
-          >
-            {/* Icono: string (Iconify) o nodo custom; placeholder cuando no hay */}
-            {typeof option.icon === "string" && (
-              <Icon
-                name={option.icon}
-                size={16}
-                className={`mr-3 ${disabled ? "text-gray-500" : ""}`}
-              />
-            )}
-            {option.icon && typeof option.icon !== "string" && (
-              <span
-                className={`w-4 h-4 mr-3 flex items-center ${disabled ? "text-gray-500" : ""}`}
+      <ul className="menu p-1">
+        {options.map((opt) =>
+          opt.separator ? (
+            <li key={`${opt.id}-sep`} className="my-1">
+              <div className="divider m-0" />
+            </li>
+          ) : (
+            <li key={opt.id}>
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => {
+                  if (!opt.disabled) {
+                    opt.action?.();
+                    onClose();
+                  }
+                }}
+                disabled={opt.disabled}
+                className={[
+                  "w-full justify-start px-3 py-2 text-sm text-left rounded",
+                  opt.disabled ? "opacity-50 pointer-events-none" : getVariantClasses(opt.danger),
+                ].join(" ")}
               >
-                {option.icon}
-              </span>
-            )}
-            {!option.icon && <span className="w-4 h-4 mr-3" />}
-            {option.label}
-          </button>
-        );
-      })}
+                {opt.icon && <span className="mr-2">{opt.icon}</span>}
+                <span>{opt.label}</span>
+                {opt.shortcut && (
+                  <span className="ml-auto text-xs opacity-70">{opt.shortcut}</span>
+                )}
+              </button>
+            </li>
+          )
+        )}
+      </ul>
     </div>
   );
-  return typeof document !== "undefined"
-    ? createPortal(menu, document.body)
-    : null;
+
+  return typeof document !== "undefined" ? createPortal(menu, document.body) : null;
 };
 
-/* Hook equivalente al original, conservando el cálculo de límites */
-export const useContextMenu = () => {
-  const [contextMenu, setContextMenu] = useState<{
-    isVisible: boolean;
-    position: { x: number; y: number };
-  }>({
-    isVisible: false,
-    position: { x: 0, y: 0 },
-  });
-
-  const showContextMenu = (event: React.MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
-
-    const { clientX, clientY } = event;
-    const menuWidth = 180;
-    const menuHeight = 100;
-
-    const adjustedX =
-      clientX + menuWidth > window.innerWidth ? clientX - menuWidth : clientX;
-    const adjustedY =
-      clientY + menuHeight > window.innerHeight
-        ? clientY - menuHeight
-        : clientY;
-
-    setContextMenu({
-      isVisible: true,
-      position: { x: adjustedX, y: adjustedY },
-    });
-  };
-
-  const hideContextMenu = () => {
-    setContextMenu((prev) => ({ ...prev, isVisible: false }));
-  };
-
-  return { contextMenu, showContextMenu, hideContextMenu };
-};
+// Export con nombre (para imports como { ContextMenu })
+export const ContextMenu = ContextMenuComponent;
+// Export por defecto (para imports como import ContextMenu from "…")
+export default ContextMenuComponent;

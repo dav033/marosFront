@@ -1,9 +1,9 @@
+// src/presentation/molecules/table/TableRow.tsx
 import React, { memo } from "react";
 
 import { useContextMenu } from "@/presentation/hooks/useContextMenu";
 import type { TableRowProps } from "@/types/components/table";
-
-import { ContextMenu } from "../ContextMenu";
+import ContextMenu from "../ContextMenu";
 
 function TableRowInner<T>({
   row,
@@ -20,7 +20,15 @@ function TableRowInner<T>({
     <>
       <tr
         className="hover:bg-theme-primary/10 h-auto"
-        onContextMenu={contextMenuOptions ? showContextMenu : undefined}
+        onContextMenu={
+          contextMenuOptions
+            ? (e) => {
+                // Calcula opciones para este row y pásalas al hook
+                const opts = contextMenuOptions(row);
+                showContextMenu(e, opts);
+              }
+            : undefined
+        }
       >
         <td colSpan={columns.length} style={{ padding: 0, border: "none" }}>
           <div

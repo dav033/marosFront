@@ -1,12 +1,15 @@
+// src/features/contact/infra/http/ContactHttpRepository.ts
 import type { Contact } from "@/features/contact/domain/models/Contact";
 import {
   type CreateContactRequestDTO,
   type UpdateContactRequestDTO,
 } from "@/features/contact/domain/services/mapContactDTO";
+import type { ContactRepositoryPort } from "@/features/contact/domain/ports/ContactRepositoryPort";
 import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
-import type { ContactRepositoryPort } from "../../domain/ports/ContactRepositoryPort";
-import { contactEndpoints } from "./endpoints";
 import { makeResource } from "@/shared/infra/rest/makeResource";
+// (opcional) Si prefieres la factory:
+// import { makeCrudRepo } from "@/shared/infra/rest/makeCrudRepo";
+import { contactEndpoints } from "./endpoints";
 
 export class ContactHttpRepository implements ContactRepositoryPort {
   private resource = makeResource<Contact, Contact, CreateContactRequestDTO, UpdateContactRequestDTO, number>(
@@ -37,9 +40,8 @@ export class ContactHttpRepository implements ContactRepositoryPort {
     return this.resource.findAll();
   }
 
-  // Extensión opcional fuera del CRUD estándar.
+  // Extensión fuera del CRUD estándar.
   async search?(query: string): Promise<Contact[]> {
-    // Nota: conservamos este endpoint específico sin generalizar.
     const res = await optimizedApiClient.get("/contacts/search", {
       params: { q: query },
     });

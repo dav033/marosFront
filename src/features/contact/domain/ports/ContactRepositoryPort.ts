@@ -1,5 +1,7 @@
-import type { CreateContactRequestDTO } from "@/features/contact/domain/services/mapContactDraftToCreatePayload";
-import type { UpdateContactRequestDTO } from "@/features/contact/domain/services/mapContactToUpdatePayload";
+import type {
+  CreateContactRequestDTO,
+  UpdateContactRequestDTO,
+} from "@/features/contact/domain/services/mapContactDTO";
 
 import type { Contact } from "../models/Contact";
 
@@ -11,5 +13,5 @@ export interface ContactRepositoryPort {
   findById(id: number): Promise<Contact | null>;
   findAll(): Promise<Contact[]>;
 
-    search?(query: string): Promise<Contact[]>;
+  search?(query: string): Promise<Contact[]>;
 }

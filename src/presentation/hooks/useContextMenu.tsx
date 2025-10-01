@@ -1,42 +1,63 @@
-import { useState } from "react";
+// src/presentation/hooks/useContextMenu.tsx
+import * as React from "react";
 
-export const useContextMenu = () => {
-  const [contextMenu, setContextMenu] = useState<{
-    isVisible: boolean;
-    position: { x: number; y: number };
-  }>({
-    isVisible: false,
-    position: { x: 0, y: 0 },
-  });
+export type ContextMenuOption = Readonly<{
+  id: string;
+  label?: string;
+  icon?: React.ReactNode;
+  shortcut?: string;
+  action?: () => void;
+  disabled?: boolean;
+  danger?: boolean;
+  separator?: boolean;
+}>;
+export type ContextMenuPosition = Readonly<{ x: number; y: number }>;
 
-  const showContextMenu = (event: React.MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
+type State = Readonly<{
+  isVisible: boolean;
+  position: ContextMenuPosition;
+  options: ContextMenuOption[];
+}>;
 
-    const { clientX, clientY } = event;
+const HIDDEN: State = { isVisible: false, position: { x: 0, y: 0 }, options: [] };
 
-    const menuWidth = 160;
-    const menuHeight = 100;
-    const adjustedX =
-      clientX + menuWidth > window.innerWidth ? clientX - menuWidth : clientX;
-    const adjustedY =
-      clientY + menuHeight > window.innerHeight
-        ? clientY - menuHeight
-        : clientY;
-
-    setContextMenu({
-      isVisible: true,
-      position: { x: adjustedX, y: adjustedY },
-    });
-  };
-
-  const hideContextMenu = () => {
-    setContextMenu((prev) => ({ ...prev, isVisible: false }));
-  };
-
+function clampToViewport(x: number, y: number, w = 200, h = 240) {
   return {
-    contextMenu,
-    showContextMenu,
-    hideContextMenu,
+    x: Math.max(0, Math.min(x, window.innerWidth - w)),
+    y: Math.max(0, Math.min(y, window.innerHeight - h)),
   };
-};
+}
+
+export function useContextMenu() {
+  const [state, setState] = React.useState<State>(HIDDEN);
+
+  const showContextMenu = React.useCallback((e: React.MouseEvent, options: ContextMenuOption[]) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const pos = clampToViewport(e.clientX, e.clientY);
+    setState({ isVisible: true, position: pos, options });
+  }, []);
+
+  const hideContextMenu = React.useCallback(() => {
+    setState((prev) => ({ ...prev, isVisible: false, options: [] }));
+  }, []);
+
+  React.useEffect(() => {
+    if (!state.isVisible) return;
+    const onDown = (ev: MouseEvent) => {
+      const el = ev.target as HTMLElement | null;
+      if (!el?.closest?.("[data-context-menu]")) hideContextMenu();
+    };
+    const onKey = (ev: KeyboardEvent) => {
+      if (ev.key === "Escape") hideContextMenu();
+    };
+    document.addEventListener("mousedown", onDown);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [state.isVisible, hideContextMenu]);
+
+  return { contextMenu: state, showContextMenu, hideContextMenu };
+}

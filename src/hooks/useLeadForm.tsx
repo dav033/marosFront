@@ -1,21 +1,28 @@
-
+// src/hooks/useLeadForm.tsx
 import { useState } from "react";
-import type { LeadType } from "@/features/leads/domain";
-import type { LeadFormData } from "@/types";
+import type { LeadFormData } from "@/types/components/form";
+import { LeadStatus, LeadType } from "@/features/leads/enums";
 
 export interface UseLeadFormOptions {
-  leadType: LeadType;
-  defaults?: Partial<LeadFormData>;
+  initialData?: Partial<LeadFormData>;
 }
 
 export function useLeadForm(options: UseLeadFormOptions) {
-  const { defaults } = options;
+  const { initialData } = options;
+
+  // Campos requeridos por LeadFormData: name, startDate, status, leadType (según tus tipos)
   const base: LeadFormData = {
-    leadName: "",
+    name: "",
+    startDate: "",
+    status: LeadStatus.NEW,
+    leadType: LeadType.CONSTRUCTION,
+
+    // Opcionales
     leadNumber: "",
+    leadName: "",
     location: "",
-    projectTypeId: "" as unknown as number, 
-    contactId: "" as unknown as number,
+    projectTypeId: undefined,
+    contactId: undefined,
     companyName: "",
     customerName: "",
     contactName: "",
@@ -24,19 +31,17 @@ export function useLeadForm(options: UseLeadFormOptions) {
     phone: "",
     email: "",
     address: "",
-    ...(defaults ?? {}),
-  } as LeadFormData;
+
+    ...(initialData ?? {}),
+  };
 
   const [form, setForm] = useState<LeadFormData>(base);
 
-  const handleChange = <K extends keyof LeadFormData>(
-    field: K,
-    value: LeadFormData[K]
-  ) => {
+  const handleChange = <K extends keyof LeadFormData>(field: K, value: LeadFormData[K]) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  return { form, handleChange };
+  return { form, handleChange, setForm };
 }
 
 export default useLeadForm;

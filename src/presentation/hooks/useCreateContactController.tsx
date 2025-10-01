@@ -1,6 +1,6 @@
+// src/presentation/hooks/useCreateContactController.tsx
 import { useCallback, useState } from "react";
-
-import type { ContactFormData } from "@/types";
+import type { ContactFormData } from "@/types/components/form";
 import { getErrorMessage } from "@/utils/errors";
 
 const EMPTY: ContactFormData = {
@@ -52,9 +52,9 @@ export function useCreateContactController({ onSubmit }: UseCreateContactControl
       });
       setForm(EMPTY);
       return true;
-      } catch (e: unknown) {
-        const msg = getErrorMessage(e) || "Failed to create contact";
-        setError(msg);
+    } catch (e: unknown) {
+      const msg = getErrorMessage(e) || "Failed to create contact";
+      setError(msg);
       return false;
     } finally {
       setLoading(false);
