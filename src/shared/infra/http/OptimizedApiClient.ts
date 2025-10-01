@@ -4,12 +4,11 @@ import axios, {
   type AxiosRequestHeaders,
   type AxiosResponse,
 } from "axios";
-import { attachLoadingInterceptors } from "./axiosLoadingInterceptors";
 
 const { VITE_API_BASE_URL } = import.meta.env;
 const BASE_URL = VITE_API_BASE_URL || "http://localhost:8080";
 
-/** Normaliza objetos para construir keys estables (opcional, útil para claves de React Query). */
+/** Normaliza objetos para construir keys estables (útil para claves de React Query). */
 function normalizeStable(input: unknown): unknown {
   if (input === null || input === undefined) return input;
   if (input instanceof Date) return input.toISOString();
@@ -51,7 +50,7 @@ export class OptimizedApiClient {
       headers: { "Content-Type": "application/json" },
       withCredentials: false,
     });
-    attachLoadingInterceptors?.(this.axiosInstance);
+    // 👇 OJO: sin attachLoadingInterceptors
   }
 
   get<T = unknown>(url: string, options?: RequestOptions): Promise<AxiosResponse<T>> {
@@ -70,9 +69,8 @@ export class OptimizedApiClient {
     return this.makeRequest<T>("DELETE", url, undefined, options);
   }
 
-  // Conservamos la firma por compatibilidad; ahora no hace nada.
   clearCache() {
-    // sin-op
+    // no-op (por compatibilidad)
   }
 
   private async makeRequest<T>(

@@ -4,72 +4,65 @@ import ContactsTableSkeleton from "../molecules/ContactsTableSkeleton";
 import FormSkeleton from "../molecules/FormSkeleton";
 import ListSkeleton from "../molecules/ListSkeleton";
 import TableSkeleton from "../molecules/TableSkeleton";
-import useLoading from "../context/loading/hooks/useLoading";
+import { useLoading } from "../context/loading/LoadingContext";
 
-type SkeletonType =
-  | "contactsTable"
-  | "genericTable"
-  | "leadsTable"
-  | "list"
-  | "form"
-  | string;
-type SkeletonOptions = {
+type SkeletonKind = "contactsTable" | "genericTable" | "leadsTable" | "list" | "form" | string;
+
+type Props = {
+  /** Fuerza la visibilidad del skeleton. Si no se pasa, usa el estado global (React Query). */
+  loading?: boolean;
+  /** Tipo de skeleton a mostrar (por defecto: tabla genérica). */
+  type?: SkeletonKind;
+  /** Número de filas a renderizar en el skeleton (si aplica). */
   rows?: number;
+  /** Muestra secciones en tablas (si aplica). */
   showSections?: boolean;
+  /** Renderiza el skeleton como overlay bloqueante. */
   overlay?: boolean;
 };
 
-const SkeletonRenderer: React.FC = () => {
-  const { isLoading, skeletonType, options } = useLoading() as {
-    isLoading: boolean;
-    skeletonType?: SkeletonType | null;
-    options: SkeletonOptions;
-  };
+const SkeletonRenderer: React.FC<Props> = ({
+  loading,
+  type = "genericTable",
+  rows,
+  showSections = true,
+  overlay = false,
+}) => {
+  // Estado global (React Query); queda como fallback cuando no se pasa "loading"
+  const { isLoading } = useLoading();
+  const visible = loading ?? isLoading;
 
-  if (!isLoading) {
-    return null;
-  }
-  if (!skeletonType) {
-    return null;
-  }
+  if (!visible) return null;
 
   let content: React.ReactNode;
-  switch (skeletonType) {
+
+  switch (type) {
     case "contactsTable":
-      content = (
-        <ContactsTableSkeleton
-          rows={options?.rows ?? 15}
-          data-testid="sk-contacts"
-        />
-      );
+      content = <ContactsTableSkeleton rows={rows ?? 15} data-testid="sk-contacts" />;
       break;
-    case "genericTable":
+
+    case "list":
+      content = <ListSkeleton rows={rows ?? 8} data-testid="sk-list" />;
+      break;
+
+    case "form":
+      content = <FormSkeleton rows={rows ?? 6} data-testid="sk-form" />;
+      break;
+
     case "leadsTable":
+    case "genericTable":
+    default:
       content = (
         <TableSkeleton
-          rows={options?.rows ?? 8}
-          showSections={options?.showSections ?? true}
+          rows={rows ?? 8}
+          showSections={showSections}
           data-testid="sk-table"
         />
       );
       break;
-    case "list":
-      content = (
-        <ListSkeleton rows={options?.rows ?? 8} data-testid="sk-list" />
-      );
-      break;
-    case "form":
-      content = (
-        <FormSkeleton rows={options?.rows ?? 6} data-testid="sk-form" />
-      );
-      break;
-    default:
-      content = (
-        <TableSkeleton rows={options?.rows ?? 8} data-testid="sk-default" />
-      );
   }
 
-  if (options?.overlay) {
+  if (overlay) {
     return (
       <div
         data-testid="sk-overlay"

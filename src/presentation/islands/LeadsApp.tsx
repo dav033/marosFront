@@ -1,14 +1,12 @@
 import React from "react";
-
 import { DiProvider, useContactsApp, useLeadsApp } from "@/di/DiProvider";
 import { LeadType } from "@/features/leads/enums";
-import useLoading from "@/presentation/context/loading/hooks/useLoading";
-import { LoadingProvider } from "@/presentation/context/loading/LoadingContext";
-
+import QueryProvider from "@/components/common/QueryProvider";
+import TopLoader from "@/components/common/TopLoader";
+import { useContacts } from "../hooks/useContact";
 import { useProjectTypesVM } from "../hooks/useProjectTypesVM";
 import LeadsBoard from "../organisms/LeadsBoard";
-import QueryProvider from "@/components/common/QueryProvider";
-import { useContacts } from "../hooks/useContact";
+import { LoadingProvider } from "../context/loading/LoadingContext";
 
 type Props = {
   leadType: LeadType;
@@ -16,21 +14,20 @@ type Props = {
   createButtonText?: string;
 };
 
-const DEFAULTS: Record<LeadType, { title: string; createButtonText: string }> =
-  {
-    [LeadType.CONSTRUCTION]: {
-      title: "Construction Leads",
-      createButtonText: "Create Construction Lead",
-    },
-    [LeadType.PLUMBING]: {
-      title: "Plumbing Leads",
-      createButtonText: "Create Plumbing Lead",
-    },
-    [LeadType.ROOFING]: {
-      title: "Roofing Leads",
-      createButtonText: "Create Roofing Lead",
-    },
-  };
+const DEFAULTS: Record<LeadType, { title: string; createButtonText: string }> = {
+  [LeadType.CONSTRUCTION]: {
+    title: "Construction Leads",
+    createButtonText: "Create Construction Lead",
+  },
+  [LeadType.PLUMBING]: {
+    title: "Plumbing Leads",
+    createButtonText: "Create Plumbing Lead",
+  },
+  [LeadType.ROOFING]: {
+    title: "Roofing Leads",
+    createButtonText: "Create Roofing Lead",
+  },
+};
 
 function LeadsInner({
   leadType,
@@ -41,37 +38,26 @@ function LeadsInner({
   resolvedTitle: string;
   resolvedCreateButtonText: string;
 }) {
-  const { setSkeleton, showLoading, hideLoading } = useLoading();
-  React.useEffect(() => {
-    setSkeleton("leadsTable", { rows: 12, showSections: true });
-  }, []);
   const leadsCtx = useLeadsApp();
   const contactsCtx = useContactsApp();
+
   const { projectTypes = [] } = useProjectTypesVM(leadsCtx);
-  const { contacts = [] } = useContacts({
-    ctx: contactsCtx,
-    cache: true,
-  });
-  const handleLoadingChange = React.useCallback(
-    (loading: boolean) => {
-      if (loading) showLoading("leadsTable");
-      else hideLoading();
-    },
-    [showLoading, hideLoading]
-  );
+  const { contacts = [] } = useContacts({ ctx: contactsCtx, cache: true });
+
+  // onLoadingChange ya no controla skeleton global
+  const noopLoadingChange = React.useCallback((_loading: boolean) => {}, []);
 
   return (
-    <>
+    <LoadingProvider>
       <LeadsBoard
         leadType={leadType}
         title={resolvedTitle}
         createButtonText={resolvedCreateButtonText}
         projectTypes={projectTypes}
         contacts={contacts}
-        onLoadingChange={handleLoadingChange}
       />
       <div id="modal-root" />
-    </>
+    </LoadingProvider>
   );
 }
 
@@ -82,19 +68,17 @@ export default function LeadsApp(props: Props) {
   };
 
   const resolvedTitle = props.title ?? fallback.title;
-  const resolvedCreateButtonText =
-    props.createButtonText ?? fallback.createButtonText;
+  const resolvedCreateButtonText = props.createButtonText ?? fallback.createButtonText;
 
   return (
     <QueryProvider>
+      <TopLoader />
       <DiProvider>
-        <LoadingProvider>
-          <LeadsInner
-            leadType={props.leadType}
-            resolvedTitle={resolvedTitle}
-            resolvedCreateButtonText={resolvedCreateButtonText}
-          />
-        </LoadingProvider>
+        <LeadsInner
+          leadType={props.leadType}
+          resolvedTitle={resolvedTitle}
+          resolvedCreateButtonText={resolvedCreateButtonText}
+        />
       </DiProvider>
     </QueryProvider>
   );

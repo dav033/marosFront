@@ -1,11 +1,10 @@
-import React, { Suspense, useEffect, useMemo, useRef } from "react";
+import React, { Suspense, useMemo } from "react";
 
 import CreateLocalLeadModal from "./CreateLocalLeadModal";
 import EditLeadModal from "./EditLeadModal";
 import LeadSection from "./LeadSection";
 import { useLeadsApp } from "../../di/DiProvider";
 import type { LeadType } from "../../types";
-import useLoading from "../context/loading/hooks/useLoading";
 import { useLeadsVM } from "../hooks/useLeadsVM";
 import CreateLeadModal from "../molecules/CreateLeadModal";
 import { EmptyState } from "../molecules/EmptyState";
@@ -27,7 +26,6 @@ export type LeadsBoardProps = {
     email?: string | undefined;
     phone?: string | undefined;
   }>;
-    onLoadingChange?: (loading: boolean) => void;
 };
 
 export default function LeadsBoard({
@@ -36,42 +34,13 @@ export default function LeadsBoard({
   createButtonText = "Create lead",
   projectTypes = [],
   contacts = [],
-  onLoadingChange,
 }: LeadsBoardProps) {
   const ctx = useLeadsApp();
   const vm = useLeadsVM(ctx, leadType);
   const columns = useMemo(() => leadTableColumns, []);
-  const { setSkeleton, showLoading, hideLoading } = useLoading();
-  useEffect(() => {
-    setSkeleton("leadsTable", { rows: 12, showSections: true }); 
-  }, [setSkeleton]);
-  useEffect(() => {
-    if (vm.isLoading) {
-      showLoading("leadsTable", { rows: 12, showSections: true }); 
-    } else {
-      hideLoading();
-    }
-    return () => {
-      hideLoading();
-    };
-  }, [vm.isLoading, showLoading, hideLoading]);
-  const prevLoadingRef = useRef<boolean>(vm.isLoading);
-  useEffect(() => {
-    if (vm.isLoading !== prevLoadingRef.current) {
-      onLoadingChange?.(vm.isLoading);
-      prevLoadingRef.current = vm.isLoading;
-    }
-  }, [vm.isLoading, onLoadingChange]);
-  useEffect(() => {
-    return () => {
-      if (prevLoadingRef.current) {
-        onLoadingChange?.(false);
-        prevLoadingRef.current = false;
-      }
-    };
-  }, []);
 
   if (vm.error) return <ErrorBanner message={vm.error} />;
+
   if (vm.isLoading) {
     return (
       <div className="space-y-8">
@@ -87,7 +56,7 @@ export default function LeadsBoard({
             />
           }
         />
-        <SkeletonRenderer />
+        <SkeletonRenderer type="leadsTable" rows={12} showSections loading={vm.isLoading} />
       </div>
     );
   }
@@ -120,6 +89,7 @@ export default function LeadsBoard({
             }
           />
         )}
+
         {vm.modals.isCreateLocalOpen && (
           <CreateLocalLeadModal
             isOpen={vm.modals.isCreateLocalOpen}
@@ -132,6 +102,7 @@ export default function LeadsBoard({
             }
           />
         )}
+
         {vm.modals.isEditOpen && vm.modals.editingLead && (
           <EditLeadModal
             isOpen={vm.modals.isEditOpen}

@@ -1,6 +1,6 @@
-
 import type { ContactPatch } from "../services/applyContactPatch";
 import type { ContactDraft } from "../services/buildContactDraft";
+import { normalizeEmptyToUndefined, pickDefined } from "@/shared/mappers/dto";
 
 export interface CreateContactRequestDTO {
   name: string;
@@ -24,18 +24,6 @@ type LooseCreateContactRequestDTO = {
 type LooseUpdateContactRequestDTO = {
   [K in keyof UpdateContactRequestDTO]?: string | undefined;
 };
-
-function normalizeEmptyToUndefined(v?: string | null): string | undefined {
-  if (v == null) return undefined;
-  const t = `${v}`.trim();
-  return t === "" ? undefined : t;
-}
-
-function pickDefined<T extends object>(obj: T): Partial<T> {
-  return Object.fromEntries(
-    Object.entries(obj).filter(([, v]) => v !== undefined)
-  ) as Partial<T>;
-}
 
 export function buildCreateContactDTO(draft: ContactDraft): CreateContactRequestDTO {
   const loose: LooseCreateContactRequestDTO = {

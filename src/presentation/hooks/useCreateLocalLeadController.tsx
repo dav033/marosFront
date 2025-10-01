@@ -1,8 +1,8 @@
-
+// src/presentation/hooks/useCreateLocalLeadController.tsx
 import { useState } from "react";
 
 import {
-  createLead, 
+  createLead,
   makeLeadsAppContext,
   validateLeadNumberAvailability,
 } from "@/features/leads/application";
@@ -14,7 +14,7 @@ import type {
 } from "@/features/leads/domain";
 import { SystemClock } from "@/features/leads/domain";
 import { LeadNumberAvailabilityHttpService } from "@/features/leads/infra/http/LeadNumberAvailabilityHttpService";
-import { LocalLeadRepository } from "@/features/leads/infra/http/LocalLeadRepository";
+import { LeadHttpRepository } from "@/features/leads/infra/http/LeadHttpRepository";
 import { useLeadForm } from "@/hooks/useLeadForm";
 import type { LeadFormData } from "@/types";
 import { ContactMode } from "@/types/enums";
@@ -40,7 +40,8 @@ export function useCreateLocalLeadController({
   const ctx = makeLeadsAppContext({
     clock: SystemClock,
     repos: {
-      lead: new LocalLeadRepository(),
+      // Sustituimos el repo local por el HTTP con la opción de "skip sync"
+      lead: new LeadHttpRepository(undefined, { skipClickUpSync: true }),
       contact: new ContactRepositoryAdapterForLeads(),
     },
     services: {
@@ -57,13 +58,17 @@ export function useCreateLocalLeadController({
     try {
       setIsLoading(true);
       setError(null);
+
+      // En el flujo "local" ya se exigía leadNumber; conservamos la regla
       if (!formData.leadNumber) {
         throw new Error("Lead Number is required for local-only creation");
       }
+
       await validateLeadNumberAvailability(ctx, formData.leadNumber);
+
       const common = {
-        leadName: formData.leadName ?? "",
-        leadNumber: formData.leadNumber, 
+        leadName: (formData.leadName ?? "").trim(),
+        leadNumber: formData.leadNumber,
         location: formData.location ?? "",
         projectTypeId: Number(formData.projectTypeId) as ProjectTypeId,
         leadType,
@@ -89,10 +94,10 @@ export function useCreateLocalLeadController({
               },
             } as const);
 
-      const created = await createLead(ctx, input, {
+      const created = (await createLead(ctx, input, {
         checkNumberAvailability: true,
         policies: {},
-      });
+      })) as unknown as Lead;
 
       onCreated?.(created);
       return created;

@@ -1,36 +1,45 @@
 import type { Contact } from "@/features/contact/domain/models/Contact";
-import type { CreateContactRequestDTO } from "@/features/contact/domain/services/mapContactDraftToCreatePayload";
-import type { UpdateContactRequestDTO } from "@/features/contact/domain/services/mapContactToUpdatePayload";
+import {
+  type CreateContactRequestDTO,
+  type UpdateContactRequestDTO,
+} from "@/features/contact/domain/services/mapContactDTO";
 import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
 import type { ContactRepositoryPort } from "../../domain/ports/ContactRepositoryPort";
-
+import { contactEndpoints } from "./endpoints";
+import { makeResource } from "@/shared/infra/rest/makeResource";
 
 export class ContactHttpRepository implements ContactRepositoryPort {
-  async create(payload: CreateContactRequestDTO): Promise<Contact> {
-    const res = await optimizedApiClient.post("/contacts", payload);
-    return res.data as Contact;
+  private resource = makeResource<Contact, Contact, CreateContactRequestDTO, UpdateContactRequestDTO, number>(
+    contactEndpoints,
+    {
+      // El backend ya devuelve la forma de dominio para Contact.
+      fromApi: (dto) => dto,
+    }
+  );
+
+  create(payload: CreateContactRequestDTO): Promise<Contact> {
+    return this.resource.create(payload);
   }
 
-  async update(id: number, payload: UpdateContactRequestDTO): Promise<Contact> {
-    const res = await optimizedApiClient.put(`/contacts/${id}`, payload);
-    return res.data as Contact;
+  update(id: number, payload: UpdateContactRequestDTO): Promise<Contact> {
+    return this.resource.update(id, payload);
   }
 
-  async delete(id: number): Promise<void> {
-    await optimizedApiClient.delete(`/contacts/${id}`);
+  delete(id: number): Promise<void> {
+    return this.resource.delete(id);
   }
 
-  async findById(id: number): Promise<Contact | null> {
-    const res = await optimizedApiClient.get(`/contacts/${id}`);
-    return (res.data ?? null) as Contact;
+  findById(id: number): Promise<Contact | null> {
+    return this.resource.findById(id);
   }
 
-  async findAll(): Promise<Contact[]> {
-    const res = await optimizedApiClient.get("/contacts/all");
-    return (Array.isArray(res.data) ? res.data : []) as Contact[];
+  findAll(): Promise<Contact[]> {
+    return this.resource.findAll();
   }
 
+  // Extensión opcional fuera del CRUD estándar.
   async search?(query: string): Promise<Contact[]> {
+    // Nota: conservamos este endpoint específico sin generalizar.
     const res = await optimizedApiClient.get("/contacts/search", {
       params: { q: query },
     });
