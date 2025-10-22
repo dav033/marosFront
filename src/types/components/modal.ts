@@ -1,4 +1,3 @@
-
 import type { ReactNode } from "react";
 
 export interface ModalProps {
@@ -36,7 +35,7 @@ export interface AlertModalProps {
   buttonText?: string;
 }
 
-export interface FormModalProps extends Omit<ModalProps, 'children'> {
+export interface FormModalProps extends Omit<ModalProps, "children"> {
   formComponent: ReactNode;
   loading?: boolean;
   submitDisabled?: boolean;
@@ -46,6 +45,8 @@ export interface ModalHeaderProps {
   title: string;
   onClose: () => void;
   id?: string;
+  /** Contenido opcional a la derecha del header (botones, acciones, etc.) */
+  rightSlot?: ReactNode;
 }
 
 export interface ModalBodyProps {

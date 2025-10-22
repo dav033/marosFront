@@ -2,13 +2,11 @@ import React from "react";
 import type { LeadsAppContext } from "@/features/leads/application";
 import type { Lead } from "@/features/leads/domain/models/Lead";
 import type { LeadType } from "@/features/leads/enums";
-
 import { buildLeadSections, type LeadSection } from "@/features/leads/domain/services/leadSections";
-
 import { getErrorMessage } from "@/utils/errors";
 import { deleteLead as deleteLeadUseCase, listLeadsByType } from "@/features/leads/application";
 
-export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType): any {
+export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType) {
   const [leads, setLeads] = React.useState<Lead[]>([]);
   const [sections, setSections] = React.useState<LeadSection[]>([
     { title: "All", data: [] },
@@ -49,14 +47,8 @@ export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType): any {
 
   const openCreate = React.useCallback(() => setIsCreateOpen(true), []);
   const closeCreate = React.useCallback(() => setIsCreateOpen(false), []);
-  const openCreateLocal = React.useCallback(
-    () => setIsCreateLocalOpen(true),
-    []
-  );
-  const closeCreateLocal = React.useCallback(
-    () => setIsCreateLocalOpen(false),
-    []
-  );
+  const openCreateLocal = React.useCallback(() => setIsCreateLocalOpen(true), []);
+  const closeCreateLocal = React.useCallback(() => setIsCreateLocalOpen(false), []);
   const openEdit = React.useCallback((lead: Lead) => {
     setEditingLead(lead);
     setIsEditOpen(true);
@@ -65,6 +57,16 @@ export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType): any {
     setIsEditOpen(false);
     setEditingLead(null);
   }, []);
+
+  // ✅ NUEVO: al crear, también recomputamos sections
+  const onLeadCreated = React.useCallback((created: Lead) => {
+    setLeads((prev) => {
+      const next = [created, ...prev];
+      setSections(buildLeadSections(next));
+      return next;
+    });
+  }, []);
+
   const onLeadUpdated = React.useCallback((lead: Lead) => {
     setLeads((prev) => {
       const next = prev.map((l) => (l.id === lead.id ? lead : l));
@@ -82,8 +84,8 @@ export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType): any {
           setSections(buildLeadSections(next));
           return next;
         });
-      } catch (e: unknown) {
-        
+      } catch (_e: unknown) {
+        // opcional: manejar error
       }
     },
     [ctx]
@@ -101,13 +103,14 @@ export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType): any {
       editingLead,
     },
     refetch: load,
-    setLeads,
+    setLeads,         // lo dejo por compatibilidad
     openCreate,
     closeCreate,
     openCreateLocal,
     closeCreateLocal,
     openEdit,
     closeEdit,
+    onLeadCreated,    // ✅ exportar
     onLeadUpdated,
     onLeadDeleted,
   };

@@ -26,11 +26,6 @@ import { makeResource } from "@/shared/infra/rest/makeResource";
 
 import { endpoints as leadEndpoints } from "./endpoints";
 
-/**
- * Implementación del puerto con factory CRUD para las operaciones base,
- * y endpoints específicos para creación por contacto nuevo/existente.
- * Se preserva nombre de clase y firmas del LeadRepositoryPort.
- */
 export class LeadHttpRepository implements LeadRepositoryPort {
   private readonly api: HttpClientLike;
   private readonly resource: ReturnType<
@@ -40,7 +35,7 @@ export class LeadHttpRepository implements LeadRepositoryPort {
   constructor(api: HttpClientLike = optimizedApiClient) {
     this.api = api;
 
-        this.resource = makeResource<ApiLeadDTO, Lead, unknown, UpdateLeadPayload, LeadId>(
+    this.resource = makeResource<ApiLeadDTO, Lead, unknown, UpdateLeadPayload, LeadId>(
       leadEndpoints,
       {
         fromApi: mapLeadFromDTO,
@@ -65,7 +60,7 @@ export class LeadHttpRepository implements LeadRepositoryPort {
   async saveNew(draft: LeadDraft): Promise<Lead> {
     const payload: CreateLeadPayload = mapLeadDraftToCreatePayload(draft);
 
-        if ("contact" in (payload as Record<string, unknown>)) {
+    if ("contact" in (payload as Record<string, unknown>)) {
       const { data } = await this.api.post<ApiLeadDTO>(
         leadEndpoints.createWithNewContact(),
         payload
@@ -74,7 +69,7 @@ export class LeadHttpRepository implements LeadRepositoryPort {
       return mapLeadFromDTO(data);
     }
 
-        const { data } = await this.api.post<ApiLeadDTO>(
+    const { data } = await this.api.post<ApiLeadDTO>(
       leadEndpoints.createWithExistingContact(),
       payload
     );
@@ -82,9 +77,25 @@ export class LeadHttpRepository implements LeadRepositoryPort {
     return mapLeadFromDTO(data);
   }
 
+  /**
+   * PUT sin GET de recarga:
+   * - Si el servidor devuelve body => se mapea y retorna.
+   * - Si responde 204/empty => NO se hace GET; se resuelve igualmente.
+   *   (Los casos de uso devuelven el objeto 'updated' de dominio.)
+   */
   async update(id: LeadId, patch: LeadPatch): Promise<Lead> {
     const dto: UpdateLeadPayload = mapLeadPatchToUpdatePayload(patch);
-    return this.resource.update(id, dto);
+    const { data /*, status */ } = await this.api.put<ApiLeadDTO | null>(
+      leadEndpoints.update(id),
+      dto
+    );
+
+    if (data) {
+      return mapLeadFromDTO(data);
+    }
+    // Sin body: no forzamos GET; devolvemos un stub para cumplir la firma.
+    // El caso de uso (patchLead / changeLeadStatus) devolverá el 'updated'.
+    return { id } as unknown as Lead;
   }
 
   delete(id: LeadId): Promise<void> {

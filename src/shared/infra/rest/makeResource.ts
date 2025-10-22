@@ -1,5 +1,5 @@
-import type { HttpClientLike } from "@/shared/infra/http/types";
-import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
+import type { HttpClientLike } from '@/shared/infra/http/types';
+import { optimizedApiClient } from '@/shared/infra/http/OptimizedApiClient';
 
 export type ResourceEndpoints<ID = number | string> = Readonly<{
   /** Base path, e.g. "/contacts" (used when list() is not provided). */
@@ -24,16 +24,24 @@ export interface Resource<ID, Domain, CreateDTO, UpdateDTO> {
   delete(id: ID): Promise<void>;
 }
 
-export function makeResource<Api, Domain, CreateDTO = unknown, UpdateDTO = unknown, ID = number | string>(
+// maros-app/src/shared/infra/rest/makeResource.ts
+// ...
+export function makeResource<
+  Api,
+  Domain,
+  CreateDTO = unknown,
+  UpdateDTO = unknown,
+  ID = number | string,
+>(
   endpoints: ResourceEndpoints<ID>,
   mappers: ResourceMappers<Api, Domain>,
-  api: HttpClientLike = optimizedApiClient
-): Resource<ID, Domain, CreateDTO, UpdateDTO> {
+  api: HttpClientLike = optimizedApiClient,
+) {
   const fromApi = mappers.fromApi;
   const fromApiList = mappers.fromApiList ?? ((arr: Api[]) => arr.map(fromApi));
 
   return {
-    async findById(id) {
+    async findById(id: ID) {
       const { data } = await api.get<Api>(endpoints.getById(id));
       return data ? fromApi(data) : null;
     },
@@ -44,19 +52,16 @@ export function makeResource<Api, Domain, CreateDTO = unknown, UpdateDTO = unkno
     },
     async create(dto: CreateDTO) {
       const { data } = await api.post<Api>(endpoints.create(), dto as unknown);
-      if (!data) throw new Error("Empty response on create");
+      if (!data) throw new Error('Empty response on create');
       return fromApi(data);
     },
-    async update(id, dto: UpdateDTO) {
+    async update(id: ID, dto: UpdateDTO) {
       const { data } = await api.put<Api>(endpoints.update(id), dto as unknown);
-      if (!data) {
-        const reloaded = await this.findById(id as ID);
-        if (!reloaded) throw new Error("Resource not found after update");
-        return reloaded;
-      }
+      // ❗ SIN GET de recarga: el backend debe devolver el recurso actualizado
+      if (!data) throw new Error('Empty response on update');
       return fromApi(data);
     },
-    async delete(id) {
+    async delete(id: ID) {
       await api.delete<void>(endpoints.remove(id));
     },
   };

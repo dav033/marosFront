@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import {
   createLead,
@@ -35,11 +36,12 @@ export function useCreateLocalLeadController({
   const [error, setError] = useState<string | null>(null);
 
   const { form, handleChange } = useLeadForm({ leadType });
+  const queryClient = useQueryClient();
 
   const ctx = makeLeadsAppContext({
     clock: SystemClock,
     repos: {
-            lead: new LeadHttpRepository(undefined, { skipClickUpSync: true }),
+      lead: new LeadHttpRepository(undefined, { skipClickUpSync: true }),
       contact: new ContactRepositoryAdapterForLeads(),
     },
     services: {
@@ -57,10 +59,9 @@ export function useCreateLocalLeadController({
       setIsLoading(true);
       setError(null);
 
-            if (!formData.leadNumber) {
+      if (!formData.leadNumber) {
         throw new Error("Lead Number is required for local-only creation");
       }
-
       await validateLeadNumberAvailability(ctx, formData.leadNumber);
 
       const common = {
@@ -95,6 +96,18 @@ export function useCreateLocalLeadController({
         checkNumberAvailability: true,
         policies: {},
       })) as unknown as Lead;
+
+      // Actualizar cache React Query
+      queryClient.setQueryData<Lead[] | undefined>(
+        ["leads", "byType", leadType],
+        (prev) => {
+          const list = Array.isArray(prev) ? prev : [];
+          const id = (created as any)?.id;
+          const withoutDup = id != null ? list.filter((l: any) => l?.id !== id) : list;
+          return [created, ...withoutDup];
+        }
+      );
+      queryClient.invalidateQueries({ queryKey: ["leads"] });
 
       onCreated?.(created);
       return created;

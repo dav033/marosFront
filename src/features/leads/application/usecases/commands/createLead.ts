@@ -4,9 +4,9 @@ import type { LeadsAppContext } from "../../context";
 import type {
   Lead,
   LeadPolicies,
-  LeadType,
   ProjectTypeId,
   ContactId,
+  LeadType,
 } from "@/features/leads/domain";
 import {
   buildLeadDraftForExistingContact,

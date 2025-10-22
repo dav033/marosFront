@@ -1,12 +1,14 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
+import Icon from "@/presentation/atoms/Icon";
 
 export { useContextMenu } from "@/presentation/hooks/useContextMenu";
 
 export type ContextMenuOption = Readonly<{
   id: string | number;
   label?: string;
-  icon?: React.ReactNode;
+  /** Acepta ReactNode o string "material-symbols:..." */
+  icon?: React.ReactNode | string;
   shortcut?: string;
   action?: () => void;
   disabled?: boolean;
@@ -18,14 +20,14 @@ export type ContextMenuProps = Readonly<{
   options: ContextMenuOption[];
   isVisible: boolean;
   position: Readonly<{ x: number; y: number }>;
-  /** ✅ NUEVO: requerido por TableRow */
+  /** requerido por TableRow */
   onClose: () => void;
 }>;
 
 function getVariantClasses(danger?: boolean) {
   return danger
-    ? "text-error hover:bg-error/10"
-    : "hover:bg-base-200";
+    ? "text-red-400 hover:bg-red-500/10"
+    : "hover:bg-theme-primary/10";
 }
 
 const ContextMenuComponent: React.FC<ContextMenuProps> = ({
@@ -41,7 +43,7 @@ const ContextMenuComponent: React.FC<ContextMenuProps> = ({
 
     const handleDown = (ev: MouseEvent) => {
       const el = ev.target as HTMLElement | null;
-            if (!el?.closest?.("[data-context-menu]")) onClose();
+      if (!el?.closest?.("[data-context-menu]")) onClose();
     };
     const handleEsc = (ev: KeyboardEvent) => {
       if (ev.key === "Escape") onClose();
@@ -57,19 +59,28 @@ const ContextMenuComponent: React.FC<ContextMenuProps> = ({
 
   if (!isVisible) return null;
 
+  const renderIcon = (icon?: React.ReactNode | string) => {
+    if (!icon) return null;
+    if (typeof icon === "string") {
+      return <Icon name={icon} className="mr-2" size={16} />;
+    }
+    return <span className="mr-2">{icon}</span>;
+  };
+
   const menu = (
     <div
       ref={ref}
       data-context-menu
-      className="fixed z-50 min-w-[200px] rounded-md border bg-base-100 shadow-lg py-1"
+      className="fixed z-50 min-w-[200px] rounded-md border border-gray-700 bg-theme-dark text-theme-light shadow-xl py-1"
       style={{ left: position.x, top: position.y }}
       role="menu"
+      aria-label="Context menu"
     >
-      <ul className="menu p-1">
-        {options.map((opt) =>
+      <ul className="list-none m-0 p-1 flex flex-col">
+        {options.map((opt, idx) =>
           opt.separator ? (
-            <li key={`${opt.id}-sep`} className="my-1">
-              <div className="divider m-0" />
+            <li key={`${opt.id}-${idx}`} role="separator" className="my-1">
+              <div className="h-px bg-gray-700" />
             </li>
           ) : (
             <li key={opt.id}>
@@ -84,18 +95,24 @@ const ContextMenuComponent: React.FC<ContextMenuProps> = ({
                 }}
                 disabled={opt.disabled}
                 className={[
-                  "w-full justify-start px-3 py-2 text-sm text-left rounded",
-                  opt.disabled ? "opacity-50 pointer-events-none" : getVariantClasses(opt.danger),
+                  "w-full inline-flex items-center justify-start gap-2",
+                  "px-3 py-2 text-sm text-left rounded",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-primary",
+                  opt.disabled
+                    ? "opacity-50 cursor-not-allowed"
+                    : getVariantClasses(opt.danger),
                 ].join(" ")}
               >
-                {opt.icon && <span className="mr-2">{opt.icon}</span>}
-                <span>{opt.label}</span>
+                {renderIcon(opt.icon)}
+                <span className="truncate">{opt.label}</span>
                 {opt.shortcut && (
-                  <span className="ml-auto text-xs opacity-70">{opt.shortcut}</span>
+                  <span className="ml-auto text-xs text-gray-400">
+                    {opt.shortcut}
+                  </span>
                 )}
               </button>
             </li>
-          )
+          ),
         )}
       </ul>
     </div>

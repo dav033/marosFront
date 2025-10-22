@@ -3,7 +3,6 @@ import type { Lead } from "@/features/leads/domain/models/Lead";
 
 import type { LeadStatus, LeadType } from "./enums";
 
-export type LeadId = number;
 export type ContactId = number;
 export type ProjectTypeId = number;
 export type ISODate = string; 
@@ -62,7 +61,7 @@ export type LeadDraft = LeadDraftWithNewContact | LeadDraftWithExistingContact;
 export type LeadStatusChangedEvent = Readonly<{
   type: "LeadStatusChanged";
   payload: {
-    id: LeadId;
+    id: number;
     from: LeadStatus;
     to: LeadStatus;
     at: number; 
@@ -78,7 +77,7 @@ export type LeadPatch = Readonly<{
   contactId?: number;
   projectTypeId?: number;
   startDate?: ISODate;
-  leadNumber?: string | null;
+  leadNumber?: number | null;
 }>;
 
 export type LeadPatchPolicies = Readonly<{

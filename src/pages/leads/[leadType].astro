@@ -26,5 +26,5 @@ const cfg = mapping[leadType];
 ---
 
 <Layout title={`${cfg.title} - Maros Construction`}>
-  <LeadsApp client:load leadType={cfg.type} title={cfg.title} />
+  <LeadsApp client:only="react" leadType={cfg.type} />
 </Layout>

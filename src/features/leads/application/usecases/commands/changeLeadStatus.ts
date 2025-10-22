@@ -1,4 +1,4 @@
-import type { Lead, LeadId, LeadStatus } from "@/features/leads/domain";
+import type { Lead,LeadStatus } from "@/features/leads/domain";
 import { applyStatus, DEFAULT_TRANSITIONS } from "@/features/leads/domain";
 
 import type { LeadsAppContext } from "../../context";
@@ -8,9 +8,12 @@ export type ChangeLeadStatusOptions = Readonly<{
   transitions?: Readonly<Record<LeadStatus, readonly LeadStatus[]>>;
 }>;
 
+/**
+ * Cambia estado en dominio, persiste con PUT y devuelve el "updated".
+ */
 export async function changeLeadStatus(
   ctx: LeadsAppContext,
-  id: LeadId,
+  id: number,
   to: LeadStatus,
   options: ChangeLeadStatusOptions = {}
 ): Promise<Lead> {
@@ -24,6 +27,6 @@ export async function changeLeadStatus(
     transitions
   );
 
-  const saved = await ctx.repos.lead.update(id, { status: updated.status });
-  return saved;
+  await ctx.repos.lead.update(id, { status: updated.status });
+  return updated;
 }

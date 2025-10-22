@@ -1,23 +1,24 @@
-import cn from "classnames";
-import React from "react";
+import * as React from "react";
 
 type Variant = "primary" | "secondary" | "ghost" | "danger" | "link";
 type Size = "sm" | "md" | "lg";
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: Variant;
   size?: Size;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
-}
+};
+
+const cn = (...classes: Array<string | false | null | undefined>) =>
+  classes.filter(Boolean).join(" ");
 
 const base =
-  "inline-flex items-center justify-center cursor-pointer rounded-2xl font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-theme-primary disabled:opacity-50 disabled:cursor-not-allowed";
+  "inline-flex items-center justify-center rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-theme-primary text-white hover:bg-theme-primary/80",
-  secondary: "bg-theme-gray text-white hover:bg-theme-gray-alt",
+  primary: "bg-theme-primary text-white hover:bg-theme-primary/90",
+  secondary: "bg-theme-gray text-white hover:bg-theme-gray/80",
   ghost: "bg-transparent text-theme-light hover:bg-theme-gray-subtle",
   danger: "bg-red-600 text-white hover:bg-red-600/80",
   link: "bg-transparent text-theme-primary hover:underline rounded-none px-0",
@@ -39,10 +40,7 @@ export default function Button({
   ...props
 }: ButtonProps) {
   return (
-    <button
-      className={cn(base, variants[variant], sizes[size], className)}
-      {...props}
-    >
+    <button className={cn(base, variants[variant], sizes[size], className)} {...props}>
       {leftIcon && <span className="mr-2 inline-flex">{leftIcon}</span>}
       {children}
       {rightIcon && <span className="ml-2 inline-flex">{rightIcon}</span>}

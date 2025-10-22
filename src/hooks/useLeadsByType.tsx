@@ -1,41 +1,37 @@
-import { useMemo } from "react";
+// src/presentation/hooks/useLeadsByType.ts
+import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
-
+import { useLeadsApp } from "@/di/DiProvider";
+import { listLeadsByType } from "@/features/leads/application";
 import type { Lead } from "@/features/leads/domain/models/Lead";
 import type { LeadType } from "@/features/leads/enums";
-import { LeadHttpRepository } from "@/features/leads/infra/http/LeadHttpRepository";
-import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
-import type { Section } from "@/types";
 import { buildLeadSections } from "@/features/leads/domain/services/leadSections";
 
-const leadRepo = new LeadHttpRepository(optimizedApiClient);
+type UiSection = Readonly<{
+  name: string;
+  data: Lead[];
+}>;
 
-/**
- * Capa fina sobre React Query (staleTime controla el cacheo a nivel de cliente).
- */
 export function useLeadsByType(type: LeadType) {
-  const { data, isLoading, isFetching, error, refetch } = useQuery({
+  const ctx = useLeadsApp();
+
+  const q = useQuery<Lead[], Error>({
     queryKey: ["leads", "byType", type],
-    queryFn: () => leadRepo.findByType(type),
-    staleTime: 300_000,   });
+    queryFn: () => listLeadsByType(ctx, type),
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: true,
+  });
 
-  const leads = data ?? [];
-  const initialLoading = isLoading && leads.length === 0;
-
-  const sections: Section[] = useMemo(
-    () =>
-      buildLeadSections(leads).map((s) => ({
-        name: s.title,
-        data: s.data,
-      })),
-    [leads]
-  );
+  const sections: UiSection[] = React.useMemo(() => {
+    const base = buildLeadSections(q.data ?? []);
+    return base.map((s) => ({ name: s.title, data: s.data }));
+  }, [q.data]);
 
   return {
     sections,
-    initialLoading,
-    isFetching,
-    error,
-    refetch,
-  };
+    initialLoading: q.isLoading,
+    isFetching: q.isFetching,
+    error: q.error,
+    refetch: q.refetch,
+  } as const;
 }

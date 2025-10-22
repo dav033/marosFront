@@ -4,6 +4,7 @@ import type { LeadStatus, LeadType } from "../../enums";
 import type { ProjectType } from "./ProjectType";
 
 export interface Lead {
+  type(type: any): unknown;
   id: number;
   leadNumber: string;
   name: string;

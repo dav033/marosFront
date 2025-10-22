@@ -35,7 +35,7 @@ export default [
       "import/order": "off",
       "simple-import-sort/imports": "warn",
       "simple-import-sort/exports": "warn",
-      "no-unused-vars": "off",
+      "no-unused-vars": "on",
     },
   },
 ];

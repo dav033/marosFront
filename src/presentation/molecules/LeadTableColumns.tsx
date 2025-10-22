@@ -12,7 +12,7 @@ export const leadTableColumns: Column<Lead>[] = [
     id: "name",
     header: "Name",
     label: "Name",
-    accessor: (lead) => lead.name,
+    accessor: (lead) => lead.name, // ← muestra exclusivamente el nombre del LEAD
     type: "text",
   },
   {
@@ -28,8 +28,9 @@ export const leadTableColumns: Column<Lead>[] = [
     id: "startDate",
     header: "Start Date",
     label: "Start Date",
-    accessor: (lead) => formatDate(lead.startDate, { format: "medium" }),
+    accessor: (lead) => lead.startDate, // ISO para ordenar bien
     type: "text",
+    cellRenderer: (v) => formatDate(String(v), { format: "medium" }),
   },
   {
     key: "location",
@@ -49,20 +50,19 @@ export const leadTableColumns: Column<Lead>[] = [
     cellRenderer: (value, lead) => {
       if (!lead.status) return <span>—</span>;
       const statusMapping: Record<string, string> = {
-        "TO_DO": "Pending",
-        "NEW": "Pending", 
-        "IN_PROGRESS": "In Progress", 
-        "DONE": "Completed",
-        "LOST": "Lost",
-        "UNDETERMINED": "Undetermined"
+        TO_DO: "Pending",
+        NEW: "Pending",
+        IN_PROGRESS: "In Progress",
+        DONE: "Completed",
+        LOST: "Lost",
+        UNDETERMINED: "Undetermined",
       };
-      
       const backendStatus = String(value);
+      console.log(lead)
       const displayStatus = statusMapping[backendStatus] || backendStatus;
-      
       return (
         <div className="flex justify-center">
-          <StatusBadge status={displayStatus} />
+          <StatusBadge status={displayStatus} size="md" />
         </div>
       );
     },
@@ -88,7 +88,7 @@ export const leadTableColumns: Column<Lead>[] = [
     id: "contact",
     header: "Contact Name",
     label: "Contact Name",
-    accessor: (lead) => lead.contact?.name ?? "N/A",
+    accessor: (lead) => lead.contact?.name ?? "—",
     type: "text",
   },
 ];

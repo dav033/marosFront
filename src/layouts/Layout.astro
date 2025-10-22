@@ -6,13 +6,11 @@ import { ViewTransitions } from 'astro:transitions';
 export interface Props {
   title?: string;
   enableCache?: boolean;
-  enableDiagnostics?: boolean;
 }
 
 const { 
   title = "Maros Construction", 
   enableCache = true,
-  enableDiagnostics = true
 } = Astro.props;
 ---
 
@@ -23,36 +21,6 @@ const {
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
-    <script is:inline src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    
-    <!-- Cache System Initialization -->
-    {enableCache && (
-      <script is:inline define:vars={{ isDev: import.meta.env.DEV }}>
-     
-        document.addEventListener('DOMContentLoaded', () => {
-          const criticalRoutes = ['/contacts', '/leads/construction', '/leads/plumbing', '/leads/roofing'];
-          
-          criticalRoutes.forEach(route => {
-            const link = document.createElement('link');
-            link.rel = 'prefetch';
-            link.href = route;
-            document.head.appendChild(link);
-          });
-
-          console.log('🚀 Critical routes prefetched');
-        });
-        document.addEventListener('astro:before-preparation', (event) => {
-          console.log('🚀 Navigating to:', event.to?.pathname || 'unknown');
-        });
-
-        document.addEventListener('astro:after-swap', () => {
-          console.log('✅ Navigation completed');
-        });
-      </script>
-    )}
-
-
     <ViewTransitions />
     <title>{title}</title>
   </head>

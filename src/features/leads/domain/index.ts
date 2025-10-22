@@ -10,7 +10,6 @@ export type {
   LeadDraft,
   LeadDraftWithExistingContact,
   LeadDraftWithNewContact,
-  LeadId,
   LeadPatch,
   LeadPolicies,
   Ok,

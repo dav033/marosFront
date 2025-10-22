@@ -1,14 +1,22 @@
-import type { ModalHeaderProps } from "@/types/components/modal";
+import type { ModalHeaderProps } from '@/types/components/modal';
+import CloseButton from '../atoms/CloseButton';
 
-import CloseButton from "../atoms/CloseButton.tsx";
-
-export default function ModalHeader({ title, onClose, id }: ModalHeaderProps) {
+export default function ModalHeader({
+  title,
+  onClose,
+  id,
+  rightSlot,
+}: ModalHeaderProps) {
   return (
-    <div className="flex justify-between items-center px-4 py-3 border-b border-gray-700">
-      <h3 className="text-lg font-semibold text-light-text" id={id}>
+    <div className="flex w-full items-center justify-between border-b border-gray-700 px-4 py-3">
+      <h3 className="text-light-text text-lg font-semibold" id={id}>
         {title}
       </h3>
-      <CloseButton onClick={onClose} className="ml-2" />
+
+      <div className="flex items-center gap-2">
+        {rightSlot ? <div>{rightSlot}</div> : null}
+        <CloseButton onClick={onClose} className="ml-2" />
+      </div>
     </div>
   );
 }

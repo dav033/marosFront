@@ -1,32 +1,34 @@
-
-import type { Lead, LeadId, LeadPatch } from "@/features/leads/domain";
-import { applyLeadPatch } from "@/features/leads/domain";
-import type { LeadPatchPolicies } from "@/features/leads/types";
-import { getLeadById } from "../queries/getLeadById";
-import { diffToPatch } from "@/features/leads/domain/services/diffToPatch";
-import type { LeadsAppContext } from "../../context";
+import { diffToPatch } from '@/features/leads/domain/services/diffToPatch';
+import type { LeadsAppContext } from '../../context';
+import { getLeadById } from '../queries/getLeadById';
+import type { Lead } from '@/features/leads/domain/models/Lead';
+import { applyLeadPatch } from '@/features/leads/domain/services/applyLeadPatch';
+import type { LeadPatch, LeadPatchPolicies } from '@/features/leads/types';
 
 /**
- * Aplica patch de dominio (con validaciones/eventos),
- * normaliza a un patch mínimo (diff) y persiste usando el repo.
+ * Aplica el patch en dominio y persiste.
+ * Si el PUT devuelve 204/empty, NO se recarga el recurso; devolvemos el "updated".
  */
 export async function patchLead(
   ctx: LeadsAppContext,
-  id: LeadId,
+  id: number,
   patch: LeadPatch,
-  policies: LeadPatchPolicies = {}
+  policies: LeadPatchPolicies = {},
 ): Promise<Lead> {
-  const current = await getLeadById(ctx, id);
+  const current = await getLeadById(ctx, Number(id));
 
   const { lead: updated /*, events*/ } = applyLeadPatch(
     ctx.clock,
     current,
     patch,
-    policies
+    policies,
   );
 
   const normalizedPatch = diffToPatch(current, updated);
-  const saved = await ctx.repos.lead.update(id, normalizedPatch);
 
-  return saved;
+  // Ejecuta el PUT; ignoramos si el servidor no envía body (204).
+  await ctx.repos.lead.update(Number(id), normalizedPatch);
+
+  // La UI se actualiza con el objeto de dominio "updated".
+  return updated;
 }

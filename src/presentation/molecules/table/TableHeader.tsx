@@ -2,7 +2,7 @@ import React, { memo } from "react";
 
 import SortIcon from "@/presentation/atoms/table/SortIcon";
 import Th from "@/presentation/atoms/table/Th";
-import type { Column,TableHeaderProps } from "@/types/components/table";
+import type { Column, TableHeaderProps } from "@/types/components/table";
 
 function TableHeaderInner<T extends object>({
   columns,
@@ -35,8 +35,9 @@ function TableHeaderInner<T extends object>({
             <Th
               key={key}
               {...(width ? { width } : {})}
-              {...(sortDirection ? { sortDirection } : {})}
-              active={active}
+              // Evitamos props no estándar en el DOM; usamos data-*
+              data-sort-direction={active ? sortDirection : undefined}
+              data-active={active || undefined}
               role="button"
               tabIndex={0}
               onClick={() => onHeaderClick(col)}

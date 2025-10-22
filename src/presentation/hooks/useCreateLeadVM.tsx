@@ -1,11 +1,18 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 
-import { useLeadsApp } from "@/di/DiProvider";
-import { createLead, validateLeadNumberAvailability } from "@/features/leads/application";
-import type { Lead } from "@/features/leads/domain";
-import type { LeadType } from "@/features/leads/enums";
-import type { LeadFormData } from "@/types/components/form";
-import { ContactMode } from "@/types/enums";
+import { useLeadsApp } from '@/di/DiProvider';
+import {
+  createLead,
+  validateLeadNumberAvailability,
+} from '@/features/leads/application';
+import type { Lead } from '@/features/leads/domain';
+import type { LeadType } from '@/features/leads/enums';
+import type { LeadFormData } from '@/types/components/form';
+import { ContactMode } from '@/types/enums';
+import { queryClient } from '@/lib/query/client';
+import type { Contact } from '@/features/contact/domain/models/Contact';
+import { mergeContactIntoCollection } from '@/features/contact/domain/services/contactMergePolicy';
 
 export type UseCreateLeadVMOptions = Readonly<{
   leadType: LeadType;
@@ -14,23 +21,23 @@ export type UseCreateLeadVMOptions = Readonly<{
 }>;
 
 const EMPTY_FORM: LeadFormData = {
-  leadNumber: "",
-  leadName: "",
-  name: "", 
-  startDate: "", 
-  location: "",
+  leadNumber: '',
+  leadName: '',
+  name: '',
+  startDate: '',
+  location: '',
   status: null,
   projectTypeId: undefined,
   leadType: undefined as unknown as LeadType,
   contactId: undefined,
-  companyName: "",
-  contactName: "",
-  customerName: "",
-  occupation: "",
-  product: "",
-  phone: "",
-  email: "",
-  address: "",
+  companyName: '',
+  contactName: '',
+  customerName: '',
+  occupation: '',
+  product: '',
+  phone: '',
+  email: '',
+  address: '',
 };
 
 export function useCreateLeadVM({
@@ -39,25 +46,28 @@ export function useCreateLeadVM({
   onClose,
 }: UseCreateLeadVMOptions) {
   const ctx = useLeadsApp();
+  const queryClient = useQueryClient();
 
   const [form, setForm] = useState<LeadFormData>(() => ({
     ...EMPTY_FORM,
     leadType,
   }));
-  const [contactMode, setContactMode] = useState<ContactMode>(ContactMode.NEW_CONTACT);
+  const [contactMode, setContactMode] = useState<ContactMode>(
+    ContactMode.NEW_CONTACT,
+  );
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const canSubmit = useMemo(() => {
-    const name = (form.leadName || form.name || "").trim();
+    const name = (form.leadName || form.name || '').trim();
     const projectOk = !!form.projectTypeId;
     if (contactMode === ContactMode.NEW_CONTACT) {
-      const contactName = (form.contactName || "").trim();
-      const email = (form.email || "").trim();
-      return name !== "" && projectOk && contactName !== "" && email !== "";
+      const contactName = (form.contactName || '').trim();
+      const email = (form.email || '').trim();
+      return name !== '' && projectOk && contactName !== '' && email !== '';
     }
     const contactIdOk = !!form.contactId;
-    return name !== "" && projectOk && contactIdOk;
+    return name !== '' && projectOk && contactIdOk;
   }, [form, contactMode]);
 
   const setField = useCallback(
@@ -65,7 +75,7 @@ export function useCreateLeadVM({
       setError(null);
       setForm((prev) => ({ ...prev, [k]: v }));
     },
-    []
+    [],
   );
 
   const changeContactMode = useCallback((mode: ContactMode) => {
@@ -77,12 +87,12 @@ export function useCreateLeadVM({
       }
       return {
         ...prev,
-        companyName: "",
-        customerName: "",
-        contactName: "",
-        phone: "",
-        email: "",
-        address: "",
+        companyName: '',
+        customerName: '',
+        contactName: '',
+        phone: '',
+        email: '',
+        address: '',
       };
     });
   }, []);
@@ -99,14 +109,14 @@ export function useCreateLeadVM({
     setLoading(true);
     setError(null);
     try {
-      const leadNumber = (form.leadNumber || "").trim();
+      const leadNumber = (form.leadNumber || '').trim();
       if (leadNumber) {
         await validateLeadNumberAvailability(ctx, leadNumber);
       }
       const common = {
-        leadName: (form.leadName || form.name || "").trim(),
+        leadName: (form.leadName || form.name || '').trim(),
         leadNumber: leadNumber || null,
-        location: form.location || "",
+        location: form.location || '',
         projectTypeId: Number(form.projectTypeId),
         leadType,
       } as const;
@@ -116,13 +126,17 @@ export function useCreateLeadVM({
           ? {
               ...common,
               contact: {
-                companyName: (form.companyName || form.customerName || "").trim(),
-                name: (form.contactName || "").trim(),
-                phone: (form.phone || "").trim(),
-                email: (form.email || "").trim(),
-                address: (form.address || "").trim(),
-                occupation: (form.occupation || "").trim(),
-                product: (form.product || "").trim(),
+                companyName: (
+                  form.companyName ||
+                  form.customerName ||
+                  ''
+                ).trim(),
+                name: (form.contactName || '').trim(),
+                phone: (form.phone || '').trim(),
+                email: (form.email || '').trim(),
+                address: (form.address || '').trim(),
+                occupation: (form.occupation || '').trim(),
+                product: (form.product || '').trim(),
               },
             }
           : {
@@ -131,9 +145,35 @@ export function useCreateLeadVM({
             };
 
       const created = (await createLead(ctx, input, {
-        checkNumberAvailability: false, 
+        checkNumberAvailability: false,
         policies: {},
       })) as unknown as Lead;
+
+      // ⬇️ Si el lead trae contacto (nuevo), lo subimos al caché de contactos
+      if (created?.contact) {
+        queryClient.setQueryData<Contact[]>(['contacts', 'list'], (prev) => {
+          const curr = Array.isArray(prev) ? prev : [];
+          return mergeContactIntoCollection(curr, created.contact as Contact);
+        });
+      }
+
+      onCreated?.(created);
+      reset();
+      onClose?.();
+
+      // ➊ Actualizar inmediatamente la lista cacheada de leads por tipo
+      queryClient.setQueryData<Lead[] | undefined>(
+        ['leads', 'byType', leadType],
+        (prev) => {
+          const list = Array.isArray(prev) ? prev : [];
+          const id = (created as any)?.id;
+          const withoutDup =
+            id != null ? list.filter((l: any) => l?.id !== id) : list;
+          return [created, ...withoutDup];
+        },
+      );
+      // ➋ Invalidación de seguridad para otros listados/resúmenes de leads
+      queryClient.invalidateQueries({ queryKey: ['leads'] });
 
       onCreated?.(created);
       reset();
@@ -141,8 +181,8 @@ export function useCreateLeadVM({
       return true;
     } catch (e: unknown) {
       const msg =
-        e && typeof e === "object" && "message" in e
-          ? String((e as { message?: unknown }).message ?? "Unexpected error")
+        e && typeof e === 'object' && 'message' in e
+          ? String((e as { message?: unknown }).message ?? 'Unexpected error')
           : String(e);
       setError(msg);
       return false;
@@ -159,6 +199,7 @@ export function useCreateLeadVM({
     onCreated,
     onClose,
     reset,
+    queryClient,
   ]);
 
   return {

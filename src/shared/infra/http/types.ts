@@ -1,10 +1,10 @@
-import type { AxiosRequestHeaders } from "axios";
+import type { AxiosRequestHeaders } from 'axios';
 
 export type CacheStrategy =
-  | "cache-first"
-  | "network-first"
-  | "cache-only"
-  | "network-only";
+  | 'cache-first'
+  | 'network-first'
+  | 'cache-only'
+  | 'network-only';
 
 export interface CachedRequestConfig {
   params?: Record<string, unknown>;
@@ -20,22 +20,8 @@ export interface CachedRequestConfig {
     strategy?: CacheStrategy;
     ttl?: number;
   };
-
-  prefetch?: {
-    dependencies?: string[];
-  };
 }
 
-export interface RequestMetrics {
-  cacheHits: number;
-  cacheMisses: number;
-  networkRequests: number;
-  failedRequests: number;
-  totalRequests: number;
-  averageResponseTime: number;
-  prefetchSuccess: number;
-  prefetchFailed: number;
-}
 export type RequestOptions = {
   params?: Record<string, unknown>;
   headers?: AxiosRequestHeaders | Record<string, string>;
@@ -49,20 +35,20 @@ export type RequestOptions = {
 export interface HttpClientLike {
   get<T = unknown>(
     url: string,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<{ data: T; status: number }>;
   post<T = unknown>(
     url: string,
     body?: unknown,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<{ data: T; status: number }>;
   put<T = unknown>(
     url: string,
     body?: unknown,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<{ data: T; status: number }>;
   delete<T = unknown>(
     url: string,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<{ data: T; status: number }>;
 }

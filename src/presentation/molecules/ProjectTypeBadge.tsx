@@ -1,5 +1,4 @@
 import React from "react";
-
 import Badge from "@/presentation/atoms/Badge";
 import type { ProjectTypeBadgeProps } from "@/types/components/badges";
 
@@ -24,8 +23,7 @@ function readableTextFor(bgHex: string): string {
   const b = parseInt(hex.slice(4, 6), 16) / 255;
   const lin = (v: number) => (v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
   const L = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
-
-  return L > 0.5 ? "#111827" /* slate-900 aprox */ : "#FFFFFF";
+  return L > 0.5 ? "#111827" : "#FFFFFF";
 }
 
 export default function ProjectTypeBadge({ projectType, className = "" }: ProjectTypeBadgeProps) {
@@ -35,7 +33,7 @@ export default function ProjectTypeBadge({ projectType, className = "" }: Projec
         label="N/A"
         rounded="sm"
         uppercase
-        className={`w-full justify-center ${className}`}
+        className={`w-full justify-center text-center truncate ${className}`}
         style={{ backgroundColor: "#BDBDBD", color: "#FFFFFF" }}
       />
     );
@@ -49,7 +47,7 @@ export default function ProjectTypeBadge({ projectType, className = "" }: Projec
       label={projectType.name}
       rounded="sm"
       uppercase
-      className={`w-full justify-center ${className}`}
+      className={`w-full justify-center text-center truncate ${className}`}
       style={{ backgroundColor: bg, color: fg }}
       title={projectType.name}
     />

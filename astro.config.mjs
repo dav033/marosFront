@@ -4,10 +4,6 @@ import icon from "astro-icon";
 import react from "@astrojs/react";
 
 export default defineConfig({
-  prefetch: {
-    prefetchAll: false, 
-    defaultStrategy: "hover",
-  },
   vite: {
     plugins: [tailwindcss()],
     resolve: {

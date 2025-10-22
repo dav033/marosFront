@@ -1,40 +1,53 @@
-import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
+/* eslint-disable @typescript-eslint/consistent-type-imports */
 
-import type { LeadType } from "../../enums";
-import { LeadStatus } from "../../enums";
-import type { Lead } from "../models/Lead";
+import type { Lead } from "@/features/leads/domain/models/Lead";
+import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
+import { LeadStatus } from "@/types";
+
+/** Flags y constantes de lectura */
 const STRICT_READ_VALIDATION = false;
 const ALLOW_PLACEHOLDER_CONTACT = true;
-const PLACEHOLDER_CONTACT_ID = 999999;
+const PLACEHOLDER_CONTACT_ID = -1 as const;
 const PLACEHOLDER_CONTACT_NAME = "Unassigned";
-export type ApiContactDTO = Readonly<{
-  id?: number | null;
+
+/** DTO mínimo esperado desde API (flexible a llaves históricas) */
+export type ApiProjectTypeDTO = {
+  id?: number | string | null;
+  name?: string | null;
+  color?: string | null;
+} | null;
+
+export type ApiContactDTO = {
+  id?: number | string | null;
   companyName?: string | null;
   name?: string | null;
   phone?: string | null;
   email?: string | null;
-}>;
-
-export type ApiProjectTypeDTO = Readonly<{
-  id?: number | null;
-  name?: string | null;
-  color?: string | null;
-}>;
+} | null;
 
 export type ApiLeadDTO = Readonly<{
   id: number;
   leadNumber?: string | null;
-  name: string;
-  startDate?: string | null; 
+
+  /** Algunos backends devuelven 'leadName' (preferir) y otros 'name' */
+  leadName?: string | null;
+  name?: string | null;
+
+  startDate?: string | null;
   location?: string | null;
   status?: LeadStatus | null;
-  contact?: ApiContactDTO | null;
-  contactId?: number | null;
-  projectType?: ApiProjectTypeDTO | null;
-  projectTypeId?: number | null;
-  type?: number | null;
-  leadType: LeadType;
+
+  contact?: ApiContactDTO;
+  contactId?: number | string | null;
+
+  projectType?: ApiProjectTypeDTO;
+  projectTypeId?: number | string | null;
+  /** compatibilidad */
+  type?: number | string | null;
+
+  leadType: number; // enum en el dominio
 }>;
+
 function normalizeText(s: unknown): string {
   return String(s ?? "").replace(/\s+/g, " ").trim();
 }
@@ -62,20 +75,25 @@ function resolveProjectTypeId(dto: ApiLeadDTO): number {
   const id =
     asNumber(dto.projectType?.id) ??
     asNumber(dto.projectTypeId) ??
-  asNumber((dto as unknown as Record<string, unknown>)["project_type_id"]) ??
+    asNumber((dto as unknown as Record<string, unknown>)["project_type_id"]) ??
     asNumber(dto.type);
   return id && id > 0 ? id : 9999;
 }
 function effectiveStatus(s: LeadStatus | null | undefined): LeadStatus {
   return s ?? LeadStatus.UNDETERMINED;
 }
+
+/**
+ * REGLAS:
+ * - 'lead.name' = dto.leadName ?? dto.name  ← (SIEMPRE el nombre del LEAD)
+ * - Si llega 'contact.name', NO lo pisamos por "Unassigned" aunque el id sea placeholder.
+ */
 export function mapLeadFromDTO(dto: ApiLeadDTO): Lead {
   if (!dto) {
     throw new BusinessRuleError("NOT_FOUND", "Lead payload is empty");
   }
-  let contactId =
-    asNumber(dto.contact?.id) ??
-    asNumber(dto.contactId);
+
+  let contactId = asNumber(dto.contact?.id) ?? asNumber(dto.contactId);
 
   if (!contactId || contactId <= 0) {
     if (!ALLOW_PLACEHOLDER_CONTACT) {
@@ -88,20 +106,25 @@ export function mapLeadFromDTO(dto: ApiLeadDTO): Lead {
 
   const projectTypeId = resolveProjectTypeId(dto);
   const startDate = coerceIsoLocalDate(dto.startDate);
-
   const isPlaceholderContact = contactId === PLACEHOLDER_CONTACT_ID;
+
+  // ⬇️ AQUÍ EL CAMBIO: SIEMPRE el nombre del LEAD
+  const rawLeadName = normalizeText((dto as any).leadName ?? dto.name ?? "");
+
+  // Si el backend trae nombre real del contacto, úsalo; si no, placeholder solo si aplica
+  const rawContactName = normalizeText(dto.contact?.name ?? "");
 
   const lead: Lead = {
     id: dto.id,
     leadNumber: normalizeText(dto.leadNumber ?? ""),
-    name: normalizeText(dto.name),
+    name: rawLeadName,                    // ← “Name” en la tabla saldrá de aquí
     startDate,
     location: normalizeText(dto.location) || undefined,
     status: effectiveStatus(dto.status),
     contact: {
       id: contactId,
       companyName: isPlaceholderContact ? "" : normalizeText(dto.contact?.companyName),
-      name: isPlaceholderContact ? PLACEHOLDER_CONTACT_NAME : normalizeText(dto.contact?.name),
+      name: rawContactName || (isPlaceholderContact ? PLACEHOLDER_CONTACT_NAME : ""),
       phone: isPlaceholderContact ? "" : normalizeText(dto.contact?.phone),
       email: isPlaceholderContact ? "" : normalizeText(dto.contact?.email),
     },
@@ -112,11 +135,14 @@ export function mapLeadFromDTO(dto: ApiLeadDTO): Lead {
     },
     leadType: dto.leadType,
   };
+
   if (STRICT_READ_VALIDATION) {
+    // ganchos de validación extra si se requieren
   }
 
   return lead;
 }
+
 export function mapLeadsFromDTO(list: readonly ApiLeadDTO[] | null | undefined): Lead[] {
   const src = Array.isArray(list) ? list : [];
   const out: Lead[] = [];

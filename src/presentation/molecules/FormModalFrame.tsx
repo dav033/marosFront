@@ -8,13 +8,13 @@ type FormModalFrameProps = {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-    titleId?: string;
-    descriptionId?: string;
+  titleId?: string;
+  descriptionId?: string;
   size?: "sm" | "md" | "lg" | "xl";
   className?: string;
-    headerRightSlot?: React.ReactNode;
-    body: React.ReactNode;
-    footer: React.ReactNode;
+  headerRightSlot?: React.ReactNode;
+  body: React.ReactNode;
+  footer: React.ReactNode;
 };
 
 const SIZE_MAP: Record<NonNullable<FormModalFrameProps["size"]>, string> = {
@@ -52,11 +52,13 @@ export default function FormModalFrame({
         aria-labelledby={modalTitleId}
         {...(modalDescId ? { "aria-describedby": modalDescId } : {})}
       >
-        {/* Header compuesto sin children en ModalHeader */}
-        <div className="flex items-center justify-between gap-3">
-          <ModalHeader id={modalTitleId} title={title} onClose={onClose} />
-          {headerRightSlot ? <div>{headerRightSlot}</div> : null}
-        </div>
+        {/* Header a ancho completo: el slot derecho vive dentro del propio header */}
+        <ModalHeader
+          id={modalTitleId}
+          title={title}
+          onClose={onClose}
+          rightSlot={headerRightSlot}
+        />
 
         <ModalBody>{body}</ModalBody>
 
