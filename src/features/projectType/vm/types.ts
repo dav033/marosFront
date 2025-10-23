@@ -1,4 +1,4 @@
-import type { ProjectType } from "@/features/leads/domain/models/ProjectType";
+import type { ProjectType } from "@/leads";
 
 export interface ProjectTypesVM {
   projectTypes: ProjectType[];

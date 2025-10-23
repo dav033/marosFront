@@ -7,4 +7,4 @@ export enum ContactMode {
   NEW_CONTACT = "left",
   EXISTING_CONTACT = "right",
 }
-export { LeadStatus, LeadType } from "@/features/leads/enums";
+export { LeadStatus, LeadType } from "@/leads";

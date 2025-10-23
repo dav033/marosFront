@@ -1,6 +1,4 @@
-
-import type { LeadStatus } from "../../enums";
-import type { ISODate, LeadPatch } from "../../types";
+import type { ISODate, LeadPatch,LeadStatus } from "@/leads";
 
 export type UpdateLeadDTO = Readonly<{
   name?: string;
@@ -48,7 +46,7 @@ export function mapLeadPatchToUpdatePayload(
     ...(projectType ? { projectType } : {}),
     ...(contact ? { contact } : {}),
     ...(includeLeadNumber && patch.leadNumber !== undefined
-      ? { leadNumber: patch.leadNumber ?? "" }
+      ? { leadNumber: String(patch.leadNumber ?? "") }
       : {}),
   };
 

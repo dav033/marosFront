@@ -1,9 +1,10 @@
+/* eslint-env browser */
+/* global document */
 import React, { useEffect, useId, useRef } from "react";
 import { createPortal } from "react-dom";
 
-
-import Overlay from "../atoms/Overlay";
-import type { ModalProps } from "../../types/components";
+import { Overlay } from "@/presentation";
+import type { ModalProps } from "@/types";
 
 const SIZE_MAP = {
   sm: "w-full max-w-sm",
@@ -31,7 +32,7 @@ export default function Modal({
   const panelRef = useRef<HTMLDivElement>(null);
   const prevFocusRef = useRef<HTMLElement | null>(null);
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || typeof document === "undefined") return;
     const { overflow } = document.body.style;
     document.body.style.overflow = "hidden";
     return () => {
@@ -39,13 +40,13 @@ export default function Modal({
     };
   }, [isOpen]);
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || typeof document === "undefined") return;
     prevFocusRef.current = document.activeElement as HTMLElement | null;
     panelRef.current?.focus();
     return () => prevFocusRef.current?.focus?.();
   }, [isOpen]);
   useEffect(() => {
-    if (!isOpen || !closeOnEscape) return;
+    if (!isOpen || !closeOnEscape || typeof document === "undefined") return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
@@ -53,7 +54,7 @@ export default function Modal({
     return () => document.removeEventListener("keydown", onKey);
   }, [isOpen, closeOnEscape, onClose]);
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || typeof document === "undefined") return;
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key !== "Tab") return;
       const root = panelRef.current;
@@ -77,6 +78,7 @@ export default function Modal({
   }, [isOpen]);
 
   if (!isOpen) return null;
+  if (typeof document === "undefined") return null;
 
   const sizeCls = SIZE_MAP[size] ?? SIZE_MAP.md;
   const basePanel = [

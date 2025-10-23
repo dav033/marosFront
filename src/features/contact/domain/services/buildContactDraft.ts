@@ -1,5 +1,4 @@
-
-import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
+import { BusinessRuleError } from "@/shared";
 
 export type ContactDraft = Readonly<{
   companyName: string;

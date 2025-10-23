@@ -1,11 +1,10 @@
 // src/presentation/hooks/useLeadsByType.ts
-import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useLeadsApp } from "@/di/DiProvider";
-import { listLeadsByType } from "@/features/leads/application";
-import type { Lead } from "@/features/leads/domain/models/Lead";
-import type { LeadType } from "@/features/leads/enums";
-import { buildLeadSections } from "@/features/leads/domain/services/leadSections";
+import * as React from "react";
+
+import { useLeadsApp } from "@/di";
+import type { Lead, LeadType } from "@/leads";
+import { buildLeadSections,listLeadsByType } from "@/leads";
 
 type UiSection = Readonly<{
   name: string;

@@ -1,5 +1,6 @@
 import React from "react";
-import { LeadStatus } from "@/features/leads/enums";
+
+import { LeadStatus } from "@/types";
 
 type Size = "sm" | "md";
 
@@ -8,7 +9,7 @@ const SIZE_CLASS: Record<Size, string> = {
   md: "text-xs leading-tight px-3 py-1.5 rounded-lg",
 };
 
-const STATUS_STYLES: Record<LeadStatus, string> = {
+const STATUS_STYLES: Partial<Record<LeadStatus, string>> = {
   [LeadStatus.NEW]:
     "bg-amber-100 text-amber-800 ring-1 ring-inset ring-amber-200 dark:bg-amber-900/30 dark:text-amber-200 dark:ring-amber-900",
   [LeadStatus.TO_DO]:
@@ -26,7 +27,7 @@ const STATUS_STYLES: Record<LeadStatus, string> = {
 };
 
 // Etiquetas UI
-const STATUS_LABEL: Record<LeadStatus, string> = {
+const STATUS_LABEL: Partial<Record<LeadStatus, string>> = {
   [LeadStatus.NEW]: "Pending",
   [LeadStatus.TO_DO]: "Pending",
   [LeadStatus.IN_PROGRESS]: "In Progress",

@@ -1,10 +1,14 @@
-import React, { lazy,Suspense } from "react";
+import React, { lazy, Suspense } from "react";
 
-import type { Contact } from "@/features/contact/domain/models/Contact";
+import type { Contact } from "@/contact";
 import type { ContactFormData } from "@/types";
 
-const CreateContactModal = lazy(() => import("../organisms/CreateContactModal.tsx"));
-const EditContactModal   = lazy(() => import("../organisms/EditContactModal.tsx"));
+const CreateContactModal = lazy(() =>
+  import("@/presentation").then((m) => ({ default: m.CreateContactModal }))
+);
+const EditContactModal = lazy(() =>
+  import("@/presentation").then((m) => ({ default: m.EditContactModal }))
+);
 
 export type ContactModalsLazyProps = {
   isCreateOpen: boolean;

@@ -1,7 +1,6 @@
-import type { Contact } from "@/features/contact/domain/models/Contact";
-import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
-
-import type { ContactsAppContext } from "../../context";
+import type { Contact } from "@/contact";
+import type { ContactsAppContext } from "@/contact";
+import { BusinessRuleError } from "@/shared";
 
 export async function getContactById(
   ctx: ContactsAppContext,

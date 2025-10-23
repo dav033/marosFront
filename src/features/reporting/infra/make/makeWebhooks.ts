@@ -1,4 +1,4 @@
-import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
+import { optimizedApiClient } from "@/shared";
 export const MAKE_HOOKS = {
   uploadImage: "/api/make/upload-image",
   restorationVisit: "/api/make/restoration-visit",

@@ -1,10 +1,8 @@
 import React from "react";
 
-
-import { useProjectsVm } from "../hooks/useProjectsVm";
-import ProjectPickerTable from "../molecules/ProjectPickerTable";
-import RestorationVisitForm, { type RestorationVisitFormValues } from "../molecules/RestorationVisitForm";
-import type { ProjectWithLeadView } from "../../features/project";
+import { useProjectsVm } from "@/presentation";
+import { ProjectPickerTable, RestorationVisitForm, type RestorationVisitFormValues } from "@/presentation";
+import type { ProjectWithLeadView } from "@/project";
 
 const initialValues: RestorationVisitFormValues = {
   projectNumber: "",
@@ -29,9 +27,8 @@ export default function RestorationVisit() {
 
   React.useEffect(() => {
     (async () => {
-      const list = await loadWithLeads();
-       
-      console.log("[RestorationVisit] projects with leads:", list);
+  const list = await loadWithLeads();
+  globalThis.console?.log?.("[RestorationVisit] projects with leads:", list);
     })();
   }, [loadWithLeads]);
 

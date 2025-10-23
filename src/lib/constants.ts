@@ -1,4 +1,4 @@
-import { LeadStatus } from "src/types/enums";
+import { LeadStatus } from "@/leads";
 
 export const LOADING_KEY = "leadsTable";
 

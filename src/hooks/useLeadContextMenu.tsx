@@ -1,7 +1,7 @@
 
-import type { Lead } from "@/features/leads/domain/models/Lead";
-import { type ContextMenuOption,useContextMenu } from "@/presentation/molecules/ContextMenu";
-import type { UseLeadContextMenuProps } from "@/types/hooks/context-menu";
+import type { Lead } from "@/leads";
+import { useContextMenu } from "@/presentation";
+import type { ContextMenuOption, UseLeadContextMenuProps } from "@/types";
 
 
 export const useLeadContextMenu = <
@@ -15,16 +15,17 @@ export const useLeadContextMenu = <
 
   const handleDeleteLead = async (lead: T) => {
   const display = (lead as unknown as Record<string, unknown>)["leadNumber"] ?? (lead as unknown as Record<string, unknown>)["id"] ?? "";
-    const confirmed = window.confirm(
-      `Are you sure you want to delete lead ${display}?`
-    );
+    const confirmed = typeof window !== "undefined" &&
+      globalThis.window?.confirm?.(
+        `Are you sure you want to delete lead ${display}?`
+      );
     if (!confirmed) return;
 
     try {
       await onDelete?.(lead);
       hideContextMenu();
     } catch (error) {
-      console.error("Error deleting lead:", error);
+      globalThis.console?.error?.("Error deleting lead:", error);
     }
   };
 
@@ -52,21 +53,21 @@ export const useLeadContextMenu = <
     {
       id: "view-details",
       label: "View Details",
-      icon: "material-symbols:visibility",
-  action: () => console.log("View lead details:", (lead as unknown as Record<string, unknown>)["id"]),
+    icon: "material-symbols:visibility",
+  action: () => globalThis.console?.log?.("View lead details:", (lead as unknown as Record<string, unknown>)["id"]),
     },
     {
       id: "view-contact",
       label: "View Contact",
-      icon: "material-symbols:person",
-  action: () => console.log("View lead contact:", (lead as unknown as Record<string, unknown>)["contact"]),
+    icon: "material-symbols:person",
+  action: () => globalThis.console?.log?.("View lead contact:", (lead as unknown as Record<string, unknown>)["contact"]),
     },
     { id: "divider-2", label: "─────────────", action: () => {}, disabled: true, separator: true },
     {
       id: "change-status",
       label: "Change Status",
-      icon: "material-symbols:swap-horiz",
-  action: () => console.log("Change lead status:", (lead as unknown as Record<string, unknown>)["id"]),
+    icon: "material-symbols:swap-horiz",
+  action: () => globalThis.console?.log?.("Change lead status:", (lead as unknown as Record<string, unknown>)["id"]),
     },
     {
       id: "delete",

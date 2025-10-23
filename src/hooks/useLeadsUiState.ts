@@ -1,5 +1,6 @@
-import type { Lead } from '@/features/leads/domain/models/Lead';
 import { useState } from 'react';
+
+import type { Lead } from '@/leads';
 
 export function useLeadsUiState() {
   const [isCreateOpen, setCreateOpen] = useState(false);

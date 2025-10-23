@@ -10,11 +10,11 @@ const NAVIGATION_EVENTS = [
 export function useSidebarNavigation() {
   const [openDropdowns, setOpenDropdowns] = useState<Set<string>>(new Set());
   const [currentPath, setCurrentPath] = useState(
-    () => window.location.pathname
+    () => (typeof window !== "undefined" ? globalThis.window?.location?.pathname ?? "" : "")
   );
 
   const updateCurrentPath = useCallback(() => {
-    const path = window.location.pathname;
+    const path = (typeof window !== "undefined" ? globalThis.window?.location?.pathname ?? "" : "");
 
     setCurrentPath((prevPath) => {
       if (prevPath === path) return prevPath;
@@ -38,6 +38,7 @@ export function useSidebarNavigation() {
   }, []);
 
   useEffect(() => {
+        if (typeof window === "undefined" || typeof document === "undefined") return;
     updateCurrentPath();
     const observer = new MutationObserver((mutations) => {
       const hasRelevantChanges = mutations.some(
@@ -47,20 +48,20 @@ export function useSidebarNavigation() {
       );
 
       if (hasRelevantChanges) {
-        const newPath = window.location.pathname;
+  const newPath = globalThis.window?.location?.pathname ?? "";
         if (newPath !== currentPath) {
           updateCurrentPath();
         }
       }
     });
 
-    observer.observe(document.body, {
+  observer.observe(globalThis.document!.body, {
       attributes: true,
       attributeFilter: ["data-astro-transition-scope"],
       subtree: false, 
     });
     NAVIGATION_EVENTS.forEach((event) => {
-      document.addEventListener(
+  globalThis.document!.addEventListener(
         event as keyof DocumentEventMap,
         updateCurrentPath
       );
@@ -69,7 +70,7 @@ export function useSidebarNavigation() {
     return () => {
       observer.disconnect();
       NAVIGATION_EVENTS.forEach((event) => {
-        document.removeEventListener(
+  globalThis.document!.removeEventListener(
           event as keyof DocumentEventMap,
           updateCurrentPath
         );

@@ -1,18 +1,13 @@
-import { useCallback, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { useCallback, useMemo, useState } from 'react';
 
-import { useLeadsApp } from '@/di/DiProvider';
-import {
-  createLead,
-  validateLeadNumberAvailability,
-} from '@/features/leads/application';
-import type { Lead } from '@/features/leads/domain';
-import type { LeadType } from '@/features/leads/enums';
-import type { LeadFormData } from '@/types/components/form';
-import { ContactMode } from '@/types/enums';
-import { queryClient } from '@/lib/query/client';
-import type { Contact } from '@/features/contact/domain/models/Contact';
-import { mergeContactIntoCollection } from '@/features/contact/domain/services/contactMergePolicy';
+import type { Contact } from '@/contact';
+import { mergeContactIntoCollection } from '@/contact';
+import { useLeadsApp } from '@/di';
+import type { Lead, LeadType } from '@/leads';
+import { createLead, validateLeadNumberAvailability } from '@/leads';
+import type { LeadFormData } from '@/types';
+import { ContactMode } from '@/types';
 
 export type UseCreateLeadVMOptions = Readonly<{
   leadType: LeadType;

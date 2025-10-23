@@ -1,6 +1,6 @@
-import type { LeadNumberAvailabilityPort } from "@/features/leads/domain/ports/LeadNumberAvailabilityPort";
-import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
-import type { HttpClientLike } from "@/shared/infra/http/types";
+import type { LeadNumberAvailabilityPort } from "@/leads";
+import type { HttpClientLike } from "@/shared";
+import { optimizedApiClient } from "@/shared";
 
 import { endpoints } from "./endpoints";
 

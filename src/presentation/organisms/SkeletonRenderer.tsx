@@ -1,10 +1,7 @@
 import React from "react";
 
-import ContactsTableSkeleton from "../molecules/ContactsTableSkeleton";
-import FormSkeleton from "../molecules/FormSkeleton";
-import ListSkeleton from "../molecules/ListSkeleton";
-import TableSkeleton from "../molecules/TableSkeleton";
-import { useLoading } from "../context/loading/LoadingContext";
+import { ContactsTableSkeleton, FormSkeleton, ListSkeleton, TableSkeleton } from "@/presentation";
+import { useLoading } from "@/presentation";
 
 type SkeletonKind = "contactsTable" | "genericTable" | "leadsTable" | "list" | "form" | string;
 

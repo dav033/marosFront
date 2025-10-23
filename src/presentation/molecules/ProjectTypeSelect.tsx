@@ -1,7 +1,6 @@
 import React from "react";
 
-import { Select } from "@/presentation/atoms";
-import { formatProjectTypeOptions } from "@/presentation/utils/leadsOptions";
+import { formatProjectTypeOptions,Select } from "@/presentation";
 
 export type ProjectTypeLite = { id: number; name: string; color?: string };
 

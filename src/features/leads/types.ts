@@ -1,8 +1,7 @@
-
-import type { Lead } from "@/features/leads/domain/models/Lead";
-
+import type { Lead } from "./domain";
 import type { LeadStatus, LeadType } from "./enums";
 
+export type LeadId = number;
 export type ContactId = number;
 export type ProjectTypeId = number;
 export type ISODate = string; 
@@ -99,3 +98,5 @@ export type LeadNumberRules = Readonly<{
     pattern?: RegExp;
     allowEmpty?: boolean;
 }>;
+
+export type { Lead };

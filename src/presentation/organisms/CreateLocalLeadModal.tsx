@@ -1,19 +1,17 @@
-
 import React from "react";
 
-import type { LeadStatus } from "@/features/leads/domain";
-import { useCreateLocalLeadController } from "@/presentation/hooks/useCreateLocalLeadController";
-import type { CreateLocalLeadModalProps } from "@/types";
-import type { ContactMode } from "@/types/enums";
-import { FormMode } from "@/types/enums";
-import ContactModeSelector, {
-  type NewContactForm,
-  type NewContactChangeHandler,
-} from "../molecules/ContactModeSelector";
-import LeadFormFields, {
+import type { LeadStatus } from "@/leads";
+import { useCreateLocalLeadController } from "@/presentation";
+import {
+  BaseFormModal,
+  ContactModeSelector,
+  LeadFormFields,
   type LeadFormFieldsProps,
-} from "../molecules/LeadFormFields";
-import BaseFormModal from "./BaseFormModal";
+  type NewContactChangeHandler,
+  type NewContactForm,
+} from "@/presentation";
+import type { CreateLocalLeadModalProps } from "@/types";
+import { ContactMode, FormMode } from "@/types";
 
 function toNumberOrUndefined(v: unknown): number | undefined {
   if (v === null || v === undefined || v === "") return undefined;
@@ -59,8 +57,8 @@ export default function CreateLocalLeadModal({
   };
 
   const handleNewContactChange: NewContactChangeHandler = (key, value) => {
-    const v = value ?? ""; 
-    handleChange(key as keyof typeof form, v);
+    const v = (value ?? "") as string;
+    handleChange(String(key), v);
   };
 
   
@@ -84,11 +82,11 @@ export default function CreateLocalLeadModal({
     
     if (field === "projectTypeId" || field === "contactId") {
       const vString = value == null ? "" : String(value);
-      handleChange(field as keyof typeof form, vString);
+      handleChange(String(field), vString);
       return;
     }
     const normalized = (value ?? "") as string;
-    handleChange(field as keyof typeof form, normalized);
+    handleChange(String(field), normalized);
   };
 
   const handleModalSubmit = async (e: React.FormEvent) => {

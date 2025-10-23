@@ -1,4 +1,4 @@
-import type { Contact } from "@/features/contact/domain/models/Contact";
+import type { Contact } from "@/contact";
 
 export interface ContactsVM {
   contacts: Contact[];

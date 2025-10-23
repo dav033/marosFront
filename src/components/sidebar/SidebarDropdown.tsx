@@ -1,10 +1,6 @@
 import { Icon } from "@iconify/react";
 import classNames from "classnames";
-import React, {
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useLayoutEffect, useRef, useState } from "react";
 
 import type { SidebarDropdownProps } from "@/types";
 
@@ -20,23 +16,27 @@ export default function SidebarDropdown({
   const [inlineHeight, setInlineHeight] = useState(defaultOpen ? "auto" : "0px"); 
   const containerRef = useRef<HTMLDivElement>(null);
 
-    const readHeight = () => containerRef.current?.scrollHeight ?? 0;
+  const readHeight = useCallback(() => containerRef.current?.scrollHeight ?? 0, []);
 
-    const open = () => {
+  const open = useCallback(() => {
     const fullHeight = readHeight();
     setInlineHeight(`${fullHeight}px`);
-  };
+  }, [readHeight]);
 
-    const close = () => {
+  const close = useCallback(() => {
     const fullHeight = readHeight();
     setInlineHeight(`${fullHeight}px`);
-    requestAnimationFrame(() => setInlineHeight("0px"));
-  };
+    // Guard for SSR: use globalThis.requestAnimationFrame if available
+    const raf = globalThis && typeof globalThis.requestAnimationFrame === "function"
+      ? globalThis.requestAnimationFrame.bind(globalThis)
+      : (cb: FrameRequestCallback) => cb(0);
+    raf(() => setInlineHeight("0px"));
+  }, [readHeight]);
 
-    useLayoutEffect(() => {
+  useLayoutEffect(() => {
     if (isOpen) open();
     else close();
-  }, [isOpen]); 
+  }, [isOpen, open, close]);
 
     const handleTransitionEnd = (e: React.TransitionEvent<HTMLDivElement>) => {
     if (e.propertyName !== "height") return;

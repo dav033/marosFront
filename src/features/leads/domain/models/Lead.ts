@@ -1,10 +1,7 @@
-import type { Contact } from "@/features/contact/domain/models/Contact";
-
-import type { LeadStatus, LeadType } from "../../enums";
-import type { ProjectType } from "./ProjectType";
+import type { Contact } from "@/contact";
+import type { LeadStatus, LeadType, ProjectType } from "@/leads";
 
 export interface Lead {
-  type(type: any): unknown;
   id: number;
   leadNumber: string;
   name: string;

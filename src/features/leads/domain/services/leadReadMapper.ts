@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
+import type { Lead } from "@/leads";
+import { BusinessRuleError } from "@/shared";
 
-import type { Lead } from "@/features/leads/domain/models/Lead";
-import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
-import { LeadStatus } from "@/types";
+// eslint-disable-next-line no-restricted-imports
+import { LeadStatus, LeadType } from "../../enums";
 
 /** Flags y constantes de lectura */
 const STRICT_READ_VALIDATION = false;
@@ -45,7 +46,7 @@ export type ApiLeadDTO = Readonly<{
   /** compatibilidad */
   type?: number | string | null;
 
-  leadType: number; // enum en el dominio
+  leadType: number | string; // enum en el dominio
 }>;
 
 function normalizeText(s: unknown): string {
@@ -81,6 +82,24 @@ function resolveProjectTypeId(dto: ApiLeadDTO): number {
 }
 function effectiveStatus(s: LeadStatus | null | undefined): LeadStatus {
   return s ?? LeadStatus.UNDETERMINED;
+}
+
+function resolveLeadType(input: unknown): LeadType {
+  if (typeof input === "string") {
+    const v = input.trim().toUpperCase();
+    if ((Object.values(LeadType) as string[]).includes(v)) {
+      return v as LeadType;
+    }
+  }
+  if (typeof input === "number") {
+    switch (input) {
+      case 1: return LeadType.CONSTRUCTION;
+      case 2: return LeadType.PLUMBING;
+      case 3: return LeadType.ROOFING;
+      default: return LeadType.CONSTRUCTION;
+    }
+  }
+  return LeadType.CONSTRUCTION;
 }
 
 /**
@@ -133,7 +152,7 @@ export function mapLeadFromDTO(dto: ApiLeadDTO): Lead {
       name: normalizeText(dto.projectType?.name) || "Unclassified",
       color: normalizeText(dto.projectType?.color) || "#999999",
     },
-    leadType: dto.leadType,
+    leadType: resolveLeadType(dto.leadType),
   };
 
   if (STRICT_READ_VALIDATION) {
@@ -161,7 +180,10 @@ export function mapLeadsFromDTO(list: readonly ApiLeadDTO[] | null | undefined):
       acc[it.reason] = (acc[it.reason] ?? 0) + 1;
       return acc;
     }, {});
-    console.warn("[leads] read: dropped=", dropped.length, "by_reason=", grouped);
+    const c = (globalThis as any)?.console;
+    if (c && typeof c.warn === "function") {
+      c.warn("[leads] read: dropped=", dropped.length, "by_reason=", grouped);
+    }
   }
 
   return out;

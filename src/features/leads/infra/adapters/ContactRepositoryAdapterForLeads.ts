@@ -1,5 +1,5 @@
-import { ContactHttpRepository } from "@/features/contact/infra";
-import type { CreateContactRequestDTO } from "@/features/contact/domain/services/mapContactDTO";
+import type { CreateContactRequestDTO } from "@/contact";
+import { ContactHttpRepository } from "@/contact";
 
 export class ContactRepositoryAdapterForLeads {
   private http = new ContactHttpRepository();

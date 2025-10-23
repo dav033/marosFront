@@ -1,11 +1,11 @@
-import { LeadStatus } from "@/features/leads/enums";
-import type { SelectOption } from "@/presentation/atoms/Select"; 
+import type { SelectOption } from "@/presentation"; 
+import { LeadStatus } from "@/types";
 
 type ContactLite = { id: number; name: string; companyName?: string; phone?: string | undefined; email?: string | undefined };
 type ProjectTypeLite = { id: number; name: string; color?: string };
 
 export function getLeadStatusOptions(): ReadonlyArray<SelectOption> {
-  const labels: Record<LeadStatus, string> = {
+  const labels: Partial<Record<LeadStatus, string>> = {
     [LeadStatus.NEW]: "New",
     [LeadStatus.UNDETERMINED]: "Undetermined",
     [LeadStatus.TO_DO]: "To do",

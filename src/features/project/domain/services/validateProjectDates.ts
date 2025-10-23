@@ -1,5 +1,5 @@
-import type { ISODate } from "@/features/project/types";
-import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
+import type { ISODate } from "@/project";
+import { BusinessRuleError } from "@/shared";
 
 export function validateDateWithinRange(
   date: string,

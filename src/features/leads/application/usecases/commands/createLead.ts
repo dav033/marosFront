@@ -1,19 +1,17 @@
-
-import type { LeadsAppContext } from "../../context";
-
 import type {
+  ContactId,
   Lead,
   LeadPolicies,
-  ProjectTypeId,
-  ContactId,
+  LeadsAppContext,
   LeadType,
-} from "@/features/leads/domain";
+  NewContact,
+  ProjectTypeId,
+} from "@/leads";
 import {
   buildLeadDraftForExistingContact,
   buildLeadDraftForNewContact,
-} from "@/features/leads/domain";
-import { ensureLeadNumberAvailable } from "@/features/leads/domain/services/leadNumberPolicy";
-import type { NewContact } from "@/features/leads/types";
+  ensureLeadNumberAvailable,
+} from "@/leads";
 
 export type CreateLeadInput =
   | Readonly<{

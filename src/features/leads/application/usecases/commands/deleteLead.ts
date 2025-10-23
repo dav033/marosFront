@@ -1,7 +1,4 @@
-import type { LeadId } from "@/features/leads/domain";
-
-import type { LeadsAppContext } from "../../context";
-import { getLeadById } from "../queries/getLeadById";
+import type { LeadId, LeadsAppContext } from "@/leads";
 
 export async function deleteLead(
   ctx: LeadsAppContext,

@@ -1,11 +1,6 @@
+import type { LeadDraft, LeadDraftWithExistingContact, LeadDraftWithNewContact, LeadPolicies } from "@/leads";
+import { BusinessRuleError } from "@/shared";
 
-import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
-import type {
-  LeadDraft,
-  LeadDraftWithExistingContact,
-  LeadDraftWithNewContact,
-  LeadPolicies,
-} from "../../types";
 import { ensureNewContactMinimums } from "./leadContactLinkPolicy";
 
 function normalizeText(s: unknown): string {
@@ -35,15 +30,7 @@ export function ensureLeadDraftIntegrity(
     throw new BusinessRuleError(
       "FORMAT_ERROR",
       "startDate must be in YYYY-MM-DD format",
-  { details: { field: "startDate", value: (draft as unknown as Record<string, unknown>)["startDate"] } }
-    );
-  }
-  const projectTypeIdVal = (draft as unknown as Record<string, unknown>)["projectTypeId"];
-  if (typeof projectTypeIdVal !== "number" || !Number.isFinite(projectTypeIdVal) || projectTypeIdVal <= 0) {
-    throw new BusinessRuleError(
-      "INTEGRITY_VIOLATION",
-      "projectTypeId must be a positive number",
-      { details: { field: "projectTypeId", value: projectTypeIdVal } }
+      { details: { field: "startDate", value: (draft as unknown as Record<string, unknown>)["startDate"] } }
     );
   }
   if ((draft as LeadDraftWithNewContact).contact) {

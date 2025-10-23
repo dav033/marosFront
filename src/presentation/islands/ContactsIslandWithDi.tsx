@@ -1,8 +1,8 @@
 import React from "react";
-import { DiProvider } from "@/di/DiProvider";
-import ContactsIsland from "@/presentation/organisms/ContactsIsland";
-import QueryProvider from "@/components/common/QueryProvider";
-import TopLoader from "@/components/common/TopLoader";
+
+import { QueryProvider, TopLoader } from "@/components";
+import { DiProvider } from "@/di";
+import { ContactsIsland } from "@/presentation";
 
 export default function ContactsIslandWithDi() {
   return (

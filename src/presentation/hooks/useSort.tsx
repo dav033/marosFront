@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 
-import type { Column, SortDirection } from "@/types/components/table";
+import type { Column, SortDirection } from "@/types";
 
 export default function useSort<T>(data: T[], columns: Column<T>[]) {
   const [sortColumn, setSortColumn] = useState<string | undefined>();

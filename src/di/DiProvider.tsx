@@ -1,21 +1,16 @@
 import React, { createContext, useContext, useMemo } from "react";
 
-import type { ContactsAppContext } from "@/features/contact/application";
-import { makeContactsAppContext } from "@/features/contact/application/context";
+import type { ContactsAppContext } from "@/contact";
+import { makeContactsAppContext } from "@/contact";
+import { ContactHttpRepository } from "@/contact";
+import type { LeadsAppContext } from "@/leads";
+import { makeLeadsAppContext, SystemClock } from "@/leads";
 import {
-  ContactHttpRepository,
-  ContactUniquenessHttpService,
-} from "@/features/contact/infra";
-
-import type { LeadsAppContext } from "@/features/leads/application";
-import { makeLeadsAppContext } from "@/features/leads/application";
-import { SystemClock } from "@/features/leads/domain";
-import {
+  ContactRepositoryAdapterForLeads,
   LeadHttpRepository,
   LeadNumberAvailabilityHttpService,
-} from "@/features/leads/infra";
-import { ProjectTypeHttpRepository } from "@/features/leads/infra/http/ProjectTypeHttpRepository";
-import { ContactRepositoryAdapterForLeads } from "@/features/leads/infra/adapters/ContactRepositoryAdapterForLeads";
+  ProjectTypeHttpRepository,
+} from "@/leads";
 
 const ContactsCtx = createContext<ContactsAppContext | null>(null);
 const LeadsCtx = createContext<LeadsAppContext | null>(null);

@@ -1,6 +1,5 @@
-import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
-
-import type { Project } from "../models/Project";
+import type { Project } from "@/project";
+import { BusinessRuleError } from "@/shared";
 
 export function ensureProjectIntegrity(project: Project): void {
   const { startDate, endDate, payments } = project;

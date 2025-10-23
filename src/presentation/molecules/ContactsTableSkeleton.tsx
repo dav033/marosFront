@@ -1,5 +1,6 @@
 import React from "react";
-import type { ContactsTableSkeletonProps } from "../../types/components/contacts";
+
+import type { ContactsTableSkeletonProps } from "@/types";
 
 export function ContactsTableSkeleton({
   rows = 15,

@@ -1,7 +1,5 @@
-import type { Project } from "@/features/project/domain/models/Project";
-import type { ProjectId } from "@/features/project/types";
-
-import type { ProjectsAppContext } from "../../context";
+import type { Project, ProjectId } from "@/project";
+import type { ProjectsAppContext } from "@/project";
 
 export async function getProjectById(
   ctx: ProjectsAppContext,

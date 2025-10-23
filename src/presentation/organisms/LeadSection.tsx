@@ -1,8 +1,10 @@
-import React from "react";
 import type { ReactNode } from "react";
-import type { Lead } from "../../features/leads/domain/models/Lead";
-import type { Column } from "../../types/components/table";
-import { useLeadContextMenu } from "../../hooks/useLeadContextMenu";
+import React from "react";
+
+import { useLeadContextMenu } from "@/hooks";
+import type { Lead } from "@/leads";
+import type { Column } from "@/types";
+
 import DataTable from "./DataTable";
 
 export type LeadSectionProps = {

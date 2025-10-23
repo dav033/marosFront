@@ -1,5 +1,4 @@
-
-import type { Contact } from "../models/Contact";
+import type { Contact } from "@/contact";
 
 function norm(s: unknown): string {
   return String(s ?? "").trim();

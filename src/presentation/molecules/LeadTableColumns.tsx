@@ -1,10 +1,10 @@
+/* eslint-env browser */
 import React from "react";
 
-import type { Lead } from "@/features/leads/domain/models/Lead";
-import ProjectTypeBadge from "@/presentation/molecules/ProjectTypeBadge";
-import StatusBadge from "@/presentation/molecules/StatusBadge";
-import type { Column } from "@/types/components/table";
-import { formatDate } from "@/utils/dateHelpers";
+import type { Lead } from "@/leads";
+import { ProjectTypeBadge, StatusBadge } from "@/presentation";
+import type { Column } from "@/types";
+import { formatDate } from "@/utils";
 
 export const leadTableColumns: Column<Lead>[] = [
   {
@@ -58,7 +58,6 @@ export const leadTableColumns: Column<Lead>[] = [
         UNDETERMINED: "Undetermined",
       };
       const backendStatus = String(value);
-      console.log(lead)
       const displayStatus = statusMapping[backendStatus] || backendStatus;
       return (
         <div className="flex justify-center">

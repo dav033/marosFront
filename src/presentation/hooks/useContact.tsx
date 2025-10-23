@@ -1,10 +1,9 @@
-import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
 
-import { useContactsApp } from "@/di/DiProvider";
-import { listContacts } from "@/features/contact/application";
-import type { ContactsAppContext } from "@/features/contact/application";
-import type { Contact } from "@/features/contact/domain/models/Contact";
+import type { ContactsAppContext } from "@/contact";
+import type { Contact } from "@/contact";
+import { listContacts } from "@/contact";
+import { useContactsApp } from "@/di";
 
 export type UseContactsResult = {
   contacts: Contact[];

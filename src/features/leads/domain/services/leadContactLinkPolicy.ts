@@ -1,7 +1,5 @@
-
-import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
-
-import type { ContactId, NewContact } from "../../types";
+import type { ContactId, NewContact } from "@/leads";
+import { BusinessRuleError } from "@/shared";
 
 function normalizeText(s: string): string {
   return String(s ?? "")

@@ -1,12 +1,7 @@
-import type { LeadType } from "@/features/leads/domain";
-import {
-  summarizeLeadsByType as summarizeLeadsByTypeDomain, 
-} from "@/features/leads/domain";
-import type { LeadStatusSummary } from "@/features/leads/domain/services/leadStatusSummary";
+import type { LeadsAppContext,LeadStatusSummary, LeadType } from "@/leads";
+import { summarizeLeadsByType as summarizeLeadsByTypeDomain } from "@/leads";
 
-import type { LeadsAppContext } from "../../context";
-
-export async function summarizeLeadsByType(
+export async function summarizeLeadsByTypeQuery(
   ctx: LeadsAppContext,
   type: LeadType
 ): Promise<LeadStatusSummary> {

@@ -1,6 +1,6 @@
 import React from "react";
 
-import Button from "@/presentation/atoms/Button";
+import { Button } from "@/presentation";
 
 export type FormActionsProps = {
   onCancel: () => void;

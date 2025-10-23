@@ -1,12 +1,8 @@
-import type { Project } from "@/features/project/domain/models/Project";
-import type { ProjectRepositoryPort } from "@/features/project/domain/ports/ProjectRepositoryPort";
-import type { ProjectId, ProjectDraft, ProjectPatch, LeadId } from "@/features/project/types";
+import type { LeadId, Project, ProjectDraft, ProjectId, ProjectPatch, ProjectRepositoryPort, ProjectStatus } from "@/project";
+import type { HttpClientLike } from "@/shared";
+import { makeResource,optimizedApiClient } from "@/shared";
 
-import type { HttpClientLike } from "@/shared/infra/http/types";
-import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
-import { makeResource } from "@/shared/infra/rest/makeResource";
 import { projectEndpoints } from "./endpoints";
-import type { ProjectStatus } from "../../enums";
 
 export class HttpProjectRepository implements ProjectRepositoryPort {
   private readonly api: HttpClientLike;
@@ -29,19 +25,19 @@ export class HttpProjectRepository implements ProjectRepositoryPort {
       this.api
     );
   }
-  findByStatus(status: ProjectStatus): Promise<Project[]> {
+  findByStatus(_status: ProjectStatus): Promise<Project[]> {
     throw new Error("Method not implemented.");
   }
   findWithLeads(): Promise<Project[]> {
     throw new Error("Method not implemented.");
   }
-  saveNew(draft: ProjectDraft): Promise<Project> {
+  saveNew(_draft: ProjectDraft): Promise<Project> {
     throw new Error("Method not implemented.");
   }
-  findByName(projectName: string): Promise<Project | null> {
+  findByName(_projectName: string): Promise<Project | null> {
     throw new Error("Method not implemented.");
   }
-  leadExists(leadId: LeadId): Promise<boolean> {
+  leadExists(_leadId: LeadId): Promise<boolean> {
     throw new Error("Method not implemented.");
   }
 

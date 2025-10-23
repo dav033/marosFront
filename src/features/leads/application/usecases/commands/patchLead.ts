@@ -1,9 +1,5 @@
-import { diffToPatch } from '@/features/leads/domain/services/diffToPatch';
-import type { LeadsAppContext } from '../../context';
-import { getLeadById } from '../queries/getLeadById';
-import type { Lead } from '@/features/leads/domain/models/Lead';
-import { applyLeadPatch } from '@/features/leads/domain/services/applyLeadPatch';
-import type { LeadPatch, LeadPatchPolicies } from '@/features/leads/types';
+import type { Lead, LeadPatch, LeadPatchPolicies, LeadsAppContext } from "@/leads";
+import { applyLeadPatch, diffToPatch, getLeadById } from "@/leads";
 
 /**
  * Aplica el patch en dominio y persiste.
@@ -26,9 +22,7 @@ export async function patchLead(
 
   const normalizedPatch = diffToPatch(current, updated);
 
-  // Ejecuta el PUT; ignoramos si el servidor no envía body (204).
-  await ctx.repos.lead.update(Number(id), normalizedPatch);
+    await ctx.repos.lead.update(Number(id), normalizedPatch);
 
-  // La UI se actualiza con el objeto de dominio "updated".
-  return updated;
+    return updated;
 }

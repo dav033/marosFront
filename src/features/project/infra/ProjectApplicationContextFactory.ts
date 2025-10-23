@@ -1,4 +1,4 @@
-import { HttpProjectRepository } from "./http/HttpProjectRepository";
+import { HttpProjectRepository } from "./http";
 
 export type ProjectAppContext = ReturnType<
   typeof ProjectApplicationContextFactory.createHttpContext

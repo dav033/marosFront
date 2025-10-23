@@ -1,8 +1,7 @@
 
 import type React from "react";
 import { type ReactNode } from "react";
-import type { Lead } from "../index";
-import type { LeadType, LeadStatus } from "../enums";
+import type { Lead, LeadStatus, LeadType } from "@/leads";
 
 export interface LeadsState {
   leads: Lead[];

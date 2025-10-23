@@ -1,9 +1,5 @@
-import type {
-  Clock,
-  LeadNumberAvailabilityPort,
-  LeadRepositoryPort,
-} from "@/features/leads/domain";
-import type { ProjectTypeRepositoryPort } from "@/features/leads/domain/ports/ProjectTypeRepositoryPort";
+import type { Clock, LeadNumberAvailabilityPort, LeadRepositoryPort } from "@/leads";
+import type { ProjectTypeRepositoryPort } from "@/leads";
 
 export type LeadsAppContext = Readonly<{
   clock: Clock;

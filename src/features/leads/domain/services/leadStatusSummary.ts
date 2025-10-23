@@ -1,11 +1,5 @@
-
-import type { LeadType } from "../../enums";
+import type { Lead, LeadType } from "@/leads";
 import { LeadStatus } from "../../enums";
-import type { Lead } from "../models/Lead";
-
-function toEffectiveStatus(s: LeadStatus | null | undefined): LeadStatus {
-  return s ?? LeadStatus.UNDETERMINED;
-}
 
 export type StatusCounts = Readonly<Record<LeadStatus, number>>;
 type MutableStatusCounts = Record<LeadStatus, number>;
@@ -13,9 +7,13 @@ type MutableStatusCounts = Record<LeadStatus, number>;
 export type LeadStatusSummary = Readonly<{
   total: number;
   counts: StatusCounts;
-    active: number;
-    completionRate: number;
+  active: number;
+  completionRate: number;
 }>;
+
+function toEffectiveStatus(s: LeadStatus | null | undefined): LeadStatus {
+  return s ?? LeadStatus.UNDETERMINED;
+}
 
 function zeroCounts(): MutableStatusCounts {
   return {
@@ -26,12 +24,11 @@ function zeroCounts(): MutableStatusCounts {
     [LeadStatus.DONE]: 0,
     [LeadStatus.LOST]: 0,
     [LeadStatus.NOT_EXECUTED]: 0,
-  };
+  } as MutableStatusCounts;
 }
 
-
 export function summarizeLeads(leads: readonly Lead[]): LeadStatusSummary {
-  const counts = zeroCounts(); 
+  const counts = zeroCounts();
   const src = Array.isArray(leads) ? leads : [];
 
   for (const lead of src) {
@@ -57,7 +54,7 @@ export function summarizeLeads(leads: readonly Lead[]): LeadStatusSummary {
     ] as const
   ).reduce((acc, k) => acc + counts[k], 0);
 
-  const completionRate = total > 0 ? counts[LeadStatus.DONE] / total : 0;
+  const completionRate = total > 0 ? (counts[LeadStatus.DONE] ?? 0) / total : 0;
   return { total, counts: counts as StatusCounts, active, completionRate };
 }
 

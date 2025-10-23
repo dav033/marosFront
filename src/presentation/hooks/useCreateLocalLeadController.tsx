@@ -1,24 +1,11 @@
-import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 
-import {
-  createLead,
-  makeLeadsAppContext,
-  validateLeadNumberAvailability,
-} from "@/features/leads/application";
-import type {
-  Lead,
-  LeadType,
-  ProjectTypeId,
-  ContactId,
-} from "@/features/leads/domain";
-import { SystemClock } from "@/features/leads/domain";
-import { LeadNumberAvailabilityHttpService } from "@/features/leads/infra/http/LeadNumberAvailabilityHttpService";
-import { LeadHttpRepository } from "@/features/leads/infra/http/LeadHttpRepository";
-import { useLeadForm } from "@/hooks/useLeadForm";
+import { useLeadForm } from "@/hooks";
+import type { ContactId, Lead, LeadType, ProjectTypeId } from "@/leads";
+import { ContactRepositoryAdapterForLeads, createLead, LeadHttpRepository, LeadNumberAvailabilityHttpService, makeLeadsAppContext, SystemClock, validateLeadNumberAvailability } from "@/leads";
 import type { LeadFormData } from "@/types";
-import { ContactMode } from "@/types/enums";
-import { ContactRepositoryAdapterForLeads } from "@/features/leads/infra/adapters/ContactRepositoryAdapterForLeads";
+import { ContactMode } from "@/types";
 
 type ControllerOptions = {
   leadType: LeadType;

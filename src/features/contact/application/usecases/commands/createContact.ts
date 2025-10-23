@@ -1,10 +1,6 @@
-import type { ContactsAppContext } from "@/features/contact/application";
-import type { Contact } from "@/features/contact/domain/models/Contact";
-import type { ContactDraft } from "@/features/contact/domain/services/buildContactDraft";
-import {
-  buildCreateContactDTO,
-  type CreateContactRequestDTO,
-} from "@/features/contact/domain/services/mapContactDTO";
+import type { ContactsAppContext } from "@/contact";
+import type { Contact, ContactDraft } from "@/contact";
+import { buildCreateContactDTO, type CreateContactRequestDTO } from "@/contact";
 
 export async function createContact(
   ctx: ContactsAppContext,

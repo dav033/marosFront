@@ -1,18 +1,15 @@
 
 import type React from "react";
-
-import type { Contact } from "@/features/contact/domain/models/Contact";
-import type { Lead } from "@/features/leads/domain/models/Lead";
-import type { LeadType } from "@/features/leads/enums";
-
+import type { Contact } from "@/contact";
+import type { Lead, LeadType } from "@/leads";
+import type { FormMode, ContactMode } from "..";
 import type { LeadFormData } from "./form";
 export interface ProjectType {
   id: number;
   name: string;
 }
 
-export type FormMode = "create" | "edit";
-export type ContactMode = "existing" | "new";
+// Use runtime enums from ../enums for mode types
 
 export interface InstantLeadsListProps {
   leadType: LeadType;

@@ -1,6 +1,9 @@
-import type { LeadStatus } from "../../features/leads/domain";
-import { ContactMode, FormMode } from "../../types";
-import { Icon, Input } from "../atoms";
+import React from "react";
+
+import type { LeadStatus } from "@/leads";
+import { Icon, Input } from "@/presentation";
+import { ContactMode, FormMode } from "@/types";
+
 import ContactSelect from "./ContactSelect";
 import LeadStatusSelect from "./LeadStatusSelect";
 import ProjectTypeSelect from "./ProjectTypeSelect";

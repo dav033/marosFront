@@ -1,10 +1,9 @@
 import React from "react";
-import type { LeadsAppContext } from "@/features/leads/application";
-import type { Lead } from "@/features/leads/domain/models/Lead";
-import type { LeadType } from "@/features/leads/enums";
-import { buildLeadSections, type LeadSection } from "@/features/leads/domain/services/leadSections";
-import { getErrorMessage } from "@/utils/errors";
-import { deleteLead as deleteLeadUseCase, listLeadsByType } from "@/features/leads/application";
+
+import type { LeadsAppContext } from "@/leads";
+import type { Lead, LeadSection,LeadType } from "@/leads";
+import { buildLeadSections, deleteLead as deleteLeadUseCase, listLeadsByType } from "@/leads";
+import { getErrorMessage } from "@/utils";
 
 export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType) {
   const [leads, setLeads] = React.useState<Lead[]>([]);
@@ -84,7 +83,7 @@ export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType) {
           setSections(buildLeadSections(next));
           return next;
         });
-      } catch (_e: unknown) {
+      } catch {
         // opcional: manejar error
       }
     },

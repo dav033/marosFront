@@ -1,7 +1,7 @@
 import React from "react";
 
-import Select from "@/presentation/atoms/Select";
-import { formatContactOptions } from "@/presentation/utils/leadsOptions";
+import { Select } from "@/presentation";
+import { formatContactOptions } from "@/presentation";
 
 export type ContactLite = {
   id: number;

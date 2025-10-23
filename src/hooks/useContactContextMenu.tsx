@@ -1,14 +1,13 @@
-import type { ContactsAppContext } from "@/features/contact/application";
-import { deleteContact as ucDeleteContact } from "@/features/contact/application";
-import type { Contact } from "@/features/contact/domain/models/Contact";
-import { ContactHttpRepository } from "@/features/contact/infra";
-import { useContextMenu } from "@/presentation/molecules/ContextMenu";
+/* eslint-env browser */
+import type { ContactsAppContext } from "@/contact";
+import type { Contact } from "@/contact";
+import { ContactHttpRepository, deleteContact as ucDeleteContact } from "@/contact";
+import { useContextMenu } from "@/presentation";
 import type { ContextMenuOption, UseContactContextMenuProps } from "@/types";
-import { getErrorMessage } from "@/utils/errors";
+import { getErrorMessage } from "@/utils";
 function makeContactsAppContext(): ContactsAppContext {
   return {
     repos: { contact: new ContactHttpRepository() },
-    ports: {}, 
   };
 }
 
@@ -19,9 +18,10 @@ export const useContactContextMenu = ({
   const { contextMenu, showContextMenu, hideContextMenu } = useContextMenu();
 
   const handleDeleteContact = async (contact: Contact) => {
-    const confirmed = window.confirm(
-      `Are you sure you want to delete contact ${contact.name}?\n\nThis action cannot be undone.`
-    );
+    const confirmed = typeof window !== "undefined" &&
+      globalThis.window?.confirm?.(
+        `Are you sure you want to delete contact ${contact.name}?\n\nThis action cannot be undone.`
+      );
     if (!confirmed) return;
 
     try {
@@ -29,9 +29,8 @@ export const useContactContextMenu = ({
       await ucDeleteContact(ctx, contact.id);
       onDelete?.(contact.id);
     } catch (error: unknown) {
-       
-      console.error("Error deleting contact:", getErrorMessage(error));
-      alert("Unexpected error deleting contact.");
+      globalThis.console?.error?.("Error deleting contact:", getErrorMessage(error));
+      globalThis.alert?.("Unexpected error deleting contact.");
     }
   };
 

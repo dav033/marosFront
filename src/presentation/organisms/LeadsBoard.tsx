@@ -1,17 +1,20 @@
 import React, { Suspense, useMemo } from "react";
 
-import CreateLocalLeadModal from "./CreateLocalLeadModal";
-import EditLeadModal from "./EditLeadModal";
-import LeadSection from "./LeadSection";
-import { useLeadsApp } from "../../di/DiProvider";
-import type { LeadType } from "../../types";
-import { useLeadsVM } from "../hooks/useLeadsVM";
-import CreateLeadModal from "../molecules/CreateLeadModal";
-import { EmptyState } from "../molecules/EmptyState";
-import { ErrorBanner } from "../molecules/ErrorBanner";
-import { LeadHeader } from "../molecules/LeadHeader";
-import { LeadsToolbar } from "../molecules/LeadsToolbar";
-import { leadTableColumns } from "../molecules/LeadTableColumns";
+import { useLeadsApp } from "@/di";
+import { useLeadsVM } from "@/presentation";
+import {
+  CreateLeadModal,
+  CreateLocalLeadModal,
+  EditLeadModal,
+  EmptyState,
+  ErrorBanner,
+  LeadHeader,
+  LeadSection,
+  LeadsToolbar,
+  leadTableColumns,
+} from "@/presentation";
+import type { LeadType } from "@/types";
+
 import SkeletonRenderer from "./SkeletonRenderer";
 
 export type LeadsBoardProps = {

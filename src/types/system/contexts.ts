@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
-import type { Contact } from "@/features/contact/domain/models/Contact";
-import type { Lead } from "@/features/leads/domain";
+import type { Contact } from "@/contact";
+import type { Lead } from "@/leads";
 
 export interface ContactsContextType {
   contacts: Contact[];

@@ -1,4 +1,4 @@
-import type { LeadType } from "@/types/enums";
+import type { LeadType } from "@/types";
 
 export const leadsKeys = {
   all: ['leads'] as const,

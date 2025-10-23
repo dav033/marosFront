@@ -1,7 +1,5 @@
-
-import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
-
-import type { LeadNumberRules } from "../../types";
+import type { LeadNumberRules } from "@/leads";
+import { BusinessRuleError } from "@/shared";
 
 export const DEFAULT_LEAD_NUMBER_RULES: LeadNumberRules = {
   trim: true,

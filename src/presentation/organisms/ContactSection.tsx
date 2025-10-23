@@ -1,8 +1,9 @@
 import React from "react";
 
-import type { Contact } from "@/features/contact/domain/models/Contact";
-import { useContactContextMenu } from "@/hooks/useContactContextMenu";
+import type { Contact } from "@/contact";
+import { useContactContextMenu } from "@/hooks";
 import type { Column } from "@/types";
+
 import DataTable from "./DataTable.tsx";
 
 export type ContactSectionProps = {

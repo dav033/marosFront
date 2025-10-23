@@ -1,6 +1,6 @@
 import React from "react";
 
-import type { ModalBodyProps } from "@/types/components/modal";
+import type { ModalBodyProps } from "@/types";
 
 export default function ModalBody({ children }: ModalBodyProps) {
   return (

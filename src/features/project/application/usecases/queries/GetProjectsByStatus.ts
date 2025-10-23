@@ -1,7 +1,5 @@
-import type { Project } from "@/features/project/domain/models/Project";
-import type { ProjectStatus } from "@/features/project/enums";
-
-import type { ProjectsAppContext } from "../../context";
+import type { Project, ProjectStatus } from "@/project";
+import type { ProjectsAppContext } from "@/project";
 
 export async function getProjectsByStatus(
   ctx: ProjectsAppContext,

@@ -1,6 +1,6 @@
-import type { Contact } from "@/features/contact/domain/models/Contact";
-import type { Lead } from "@/features/leads/domain/models/Lead";
-import type { Project } from "@/features/project/domain/models/Project";
+import type { Contact } from "@/contact";
+import type { Lead } from "@/leads";
+import type { Project } from "@/project";
 
 export type ActivityStatus =
   | "COMPLETED"

@@ -1,6 +1,6 @@
 import React from "react";
 
-import type { ProjectWithLeadView } from "@/features/project/types";
+import type { ProjectWithLeadView } from "@/project";
 
 type Props = {
   projects: ProjectWithLeadView[];

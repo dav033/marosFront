@@ -1,10 +1,9 @@
 // src/features/leads/application/hooks/useUpdateLead.ts
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useLeadsApp } from '@/di/DiProvider';
-import type { Lead } from '@/features/leads/domain/models/Lead';
-import { leadsKeys } from '@/features/leads/application/keys/leadsKeys';
-import type { LeadPatch } from '@/features/leads/domain';
-import { patchLead } from '@/features/leads/application/usecases/commands/patchLead';
+
+import { useLeadsApp } from '@/di';
+import type { Lead, LeadPatch } from '@/leads';
+import { leadsKeys, patchLead } from '@/leads';
 
 export function useUpdateLead() {
   const ctx = useLeadsApp();

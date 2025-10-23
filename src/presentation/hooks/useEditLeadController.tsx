@@ -1,14 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { useLeadsApp } from '@/di/DiProvider';
+import { useLeadsApp } from '@/di';
 // Eliminado: import { patchLead } from '@/features/leads/application';
-import type { Lead } from '@/features/leads/domain';
-import type { LeadPatch } from '@/features/leads/types';
-import { LeadStatus, LeadType } from '@/features/leads/enums';
-import type { LeadFormData } from '@/types/components/form';
+import type { Lead } from '@/leads';
+import { LeadStatus, LeadType } from '@/leads';
+import type { LeadFormData } from '@/types';
 
-/** Utilidad para quitar readonly a las propiedades de un tipo */
-type Mutable<T> = { -readonly [P in keyof T]: T[P] };
 
 type UseEditLeadControllerOptions = {
   lead: Lead | null;
@@ -93,7 +90,7 @@ export function useEditLeadController({
 
     try {
       // Construimos el patch sobre una vista MUTABLE para no chocar con readonly
-      const patch: Mutable<LeadPatch> = {} as Mutable<LeadPatch>;
+  const patch: Record<string, unknown> = {};
 
       const newName =
         form.leadName || form.name || (l['name'] as string | undefined) || '';
@@ -132,7 +129,7 @@ export function useEditLeadController({
       }
 
       // ✅ Única request (PUT). Sin GET adicional.
-      const saved = await app.repos.lead.update(lead.id, patch as LeadPatch);
+  const saved = await app.repos.lead.update(lead.id, patch as any);
 
       onSaved?.(saved);
     } catch (e: unknown) {

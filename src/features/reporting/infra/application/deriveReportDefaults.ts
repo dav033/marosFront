@@ -1,4 +1,4 @@
-import type { Project } from "@/features/project/domain/models/Project";
+import type { Project } from "@/project";
 
 export function deriveFinalDefaults(project: Project) {
   const lead = project.lead;

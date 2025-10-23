@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 
-import Button from "@/presentation/atoms/Button";
+import { Button } from "@/presentation";
 import type { SearchFieldOption } from "@/types";
 
 import { SearchBoxWithDropdown } from "./SearchBoxWithDropdown";

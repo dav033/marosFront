@@ -1,8 +1,8 @@
 import React from "react";
 
-import type { GenericSwitchProps } from "@/presentation/atoms/GenericSwitch";
-import GenericSwitch from "@/presentation/atoms/GenericSwitch";
-import { ContactMode } from "@/types/enums";
+import type { GenericSwitchProps } from "@/presentation";
+import { GenericSwitch } from "@/presentation";
+import { ContactMode } from "@/types";
 
 export type ContactModeSwitchProps = {
   mode: ContactMode;

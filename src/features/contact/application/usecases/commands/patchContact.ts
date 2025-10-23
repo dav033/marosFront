@@ -1,10 +1,6 @@
-import type { ContactsAppContext } from "@/features/contact/application";
-import type { Contact } from "@/features/contact/domain/models/Contact";
-import type { ContactPatch } from "@/features/contact/domain/services/applyContactPatch";
-import {
-  buildUpdateContactDTO,
-  type UpdateContactRequestDTO,
-} from "@/features/contact/domain/services/mapContactDTO";
+import type { ContactsAppContext } from "@/contact";
+import type { Contact, ContactPatch } from "@/contact";
+import { buildUpdateContactDTO, type UpdateContactRequestDTO } from "@/contact";
 
 export async function patchContact(
   ctx: ContactsAppContext,

@@ -1,4 +1,4 @@
-import { buildCrudEndpoints } from "@/shared/infra/rest/buildCrudEndpoints";
+import { buildCrudEndpoints } from "@/shared";
 
 const BASE = "/contacts";
 

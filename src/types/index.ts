@@ -1,8 +1,12 @@
-import type { Contact } from "@/features/contact/domain/models/Contact";
+import type { Contact } from "@/contact";
+
+export * from "./components";
+export * from "./domain";
 export * from "./enums";
-export * from "./contexts";
-export type { Contact } from "@/features/contact/domain/models/Contact";
-export type { Lead } from "@/features/leads/domain/models/Lead";
+export * from "./hooks";
+export * from "./system";
+export type { Contact } from "@/contact";
+
 export interface UseInstantContactsResult {
   contacts: Contact[];
   isLoading: boolean;
@@ -11,127 +15,6 @@ export interface UseInstantContactsResult {
   fromCache: boolean;
   refetch: () => Promise<void>;
 }
-
-export type {
-  ContactValidationResponse,
-  CreateContactRequest,
-  CreateLeadByExistingContactData,
-  CreateLeadByNewContactData,
-  CreateLeadRequest,
-  UpdateLeadData,
-} from "./domain/requests";
-export type {
-  ApiListResponse,
-  ApiResponse,
-  ContactResponse,
-  ContactsResponse,
-  LeadNumberResponse,
-  LeadResponse,
-  LeadsResponse,
-  ProjectTypeResponse,
-  ProjectTypesResponse,
-} from "./domain/responses";
-
-export type {
-  ContactsContextType,
-  ContactsProviderProps,
-  LeadsContextType,
-  LeadsProviderProps,
-  LoadingContextValue,
-  LoadingProviderProps,
-  Notification,
-  NotificationContextValue,
-  NotificationProviderProps,
-} from "./system/contexts";
-
-export type {
-  SidebarContextType,
-  SidebarDropdownProps,
-  SidebarItemProps,
-  SidebarProviderProps,
-  SidebarWrapperProps,
-  TriggerProps,
-} from "./system/sidebar";
-export type {
-  ContactContextMenuOptions,
-  ContextMenuOption,
-  ContextMenuPosition,
-  ContextMenuState,
-  LeadContextMenuOptions,
-  UseContactContextMenuProps,
-  UseContextMenuResult,
-  UseLeadContextMenuProps,
-} from "./hooks/context-menu";
-
-export type { UseCreateLeadResult } from "./hooks/leads";
-
-export type {
-  ContactSearchConfig,
-  LeadSearchConfig,
-  SearchActions,
-  SearchConfig,
-  SearchFieldOption,
-  SearchState,
-  UseSearchResult,
-} from "./hooks/search";
-export type {
-  BadgeVariant,
-  ProjectTypeBadgeProps,
-  StatusBadgeProps,
-} from "./components/badges";
-export type { SearchBoxWithDropdownProps } from "./components/common";
-export type {
-  ContactFormComponentProps,
-  ContactSectionProps,
-  ContactsTableProps,
-  ContactsTableSkeletonProps,
-  CreateContactModalProps,
-  EditContactModalProps,
-} from "./components/contacts";
-export type {
-  ContactFormData,
-  ContactFormProps,
-  FormFieldProps,
-  FormProps,
-  LeadFormData,
-  LeadFormProps,
-  UseLeadFormOptions,
-} from "./components/form";
-export type {
-  BaseLeadModalProps,
-  ContactModeSelectorProps,
-  CreateLocalLeadModalProps,
-  EditLeadModalProps,
-  InstantLeadsListProps,
-  LeadFormFieldsProps,
-  SelectorFields,
-} from "./components/leads";
-export type {
-  AlertModalProps,
-  ConfirmModalProps,
-  FormModalProps,
-  ModalProps,
-} from "./components/modal";
-export type {
-  Column,
-  LeadsTableProps,
-  SortConfig,
-  SortDirection,
-  TableProps,
-  TableSkeletonProps,
-} from "./components/table";
-export type {
-  BadgeProps,
-  BaseButtonProps,
-  CardContentProps,
-  CardFooterProps,
-  CardHeaderProps,
-  CardProps,
-  GenericButtonProps,
-  IconButtonProps,
-  LoadingOverlayProps,
-  LoadingSpinnerProps,
-} from "./components/ui";
 
 export interface UseCreateLeadOptions {
   leadType: "new-contact" | "existing-contact";

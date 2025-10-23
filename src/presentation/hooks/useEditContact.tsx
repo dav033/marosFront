@@ -1,10 +1,8 @@
-import { useCallback,useState } from "react";
+import { useCallback, useState } from "react";
 
-import type { ContactsAppContext } from "@/features/contact/application/context";
-import { patchContact } from "@/features/contact/application/usecases/commands/patchContact";
-import type { Contact } from "@/features/contact/domain/models/Contact";
-import { ContactHttpRepository } from "@/features/contact/infra/http/ContactHttpRepository";
-import type { ContactFormData } from "@/types/components/form";
+import type { Contact,ContactsAppContext } from "@/contact";
+import { ContactHttpRepository,patchContact } from "@/contact";
+import type { ContactFormData } from "@/types";
 
 type EditContactForm = ContactFormData;
 
@@ -50,7 +48,7 @@ export function useEditContact(initial?: Contact | null) {
         address: form.address || undefined,
       };
 
-  await patchContact(ctx, initial.id, patch);
+    await patchContact(ctx, initial.id, patch);
       return true;
     } catch (e) {
       const msg =

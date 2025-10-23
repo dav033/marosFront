@@ -1,6 +1,6 @@
 import React from "react";
 
-import type { ModalFooterProps } from "@/types/components/modal";
+import type { ModalFooterProps } from "@/types";
 
 export default function ModalFooter({ children }: ModalFooterProps) {
   return (

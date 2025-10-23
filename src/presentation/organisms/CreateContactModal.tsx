@@ -1,8 +1,6 @@
 import React from "react";
 
-import { useCreateContactController } from "@/presentation/hooks/useCreateContactController";
-import ContactForm from "@/presentation/molecules/ContactForm";
-import BaseFormModal from "@/presentation/organisms/BaseFormModal";
+import { BaseFormModal, ContactForm, useCreateContactController } from "@/presentation";
 import type { ContactFormData } from "@/types";
 
 export type CreateContactModalProps = {

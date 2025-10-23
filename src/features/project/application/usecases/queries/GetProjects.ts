@@ -1,6 +1,5 @@
-import type { Project } from "@/features/project/domain/models/Project";
-
-import type { ProjectsAppContext } from "../../context";
+import type { Project } from "@/project";
+import type { ProjectsAppContext } from "@/project";
 
 export async function getProjects(ctx: ProjectsAppContext): Promise<Project[]> {
   return ctx.repos.project.findAll();

@@ -1,3 +1,4 @@
+/* eslint-env browser */
 import { Icon } from "@iconify/react";
 import React, { useEffect,useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -40,18 +41,20 @@ export default function Select({
   const containerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    if (typeof window === "undefined") return;
     const onClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
       if (containerRef.current?.contains(target) || dropdownRef.current?.contains(target)) return;
       setIsOpen(false);
     };
-    window.addEventListener("mousedown", onClickOutside);
-    return () => window.removeEventListener("mousedown", onClickOutside);
+    globalThis.window?.addEventListener("mousedown", onClickOutside);
+    return () => globalThis.window?.removeEventListener("mousedown", onClickOutside);
   }, []);
   useEffect(() => {
     if (isOpen && containerRef.current) {
       const rect = containerRef.current.getBoundingClientRect();
-      setPosition({ top: rect.bottom + window.scrollY, left: rect.left + window.scrollX, width: rect.width });
+      const w = typeof window !== "undefined" ? globalThis.window : undefined;
+      setPosition({ top: rect.bottom + (w?.scrollY ?? 0), left: rect.left + (w?.scrollX ?? 0), width: rect.width });
     }
   }, [isOpen]);
 
@@ -149,7 +152,7 @@ export default function Select({
               aria-hidden
             />
           </button>
-          {isOpen && createPortal(dropdown, document.body)}
+          {(isOpen && globalThis.document) ? createPortal(dropdown, globalThis.document.body) : null}
         </>
       )}
     </div>

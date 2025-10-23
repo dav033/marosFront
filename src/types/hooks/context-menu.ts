@@ -1,7 +1,7 @@
 
-import type { ReactNode } from "react";
+import type { MouseEvent, ReactNode } from "react";
 
-import type { Lead } from "@/features/leads/domain";
+import type { Lead } from "@/leads";
 
 export interface ContextMenuPosition {
   x: number;
@@ -29,7 +29,7 @@ export interface UseContextMenuResult {
   isVisible: boolean;
   position: ContextMenuPosition;
   options: ContextMenuOption[];
-  show: (event: React.MouseEvent, options: ContextMenuOption[]) => void;
+  show: (event: MouseEvent, options: ContextMenuOption[]) => void;
   hide: () => void;
 }
 export interface ContactContextMenuOptions {

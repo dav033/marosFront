@@ -1,9 +1,5 @@
-import type {
-  CreateContactRequestDTO,
-  UpdateContactRequestDTO,
-} from "@/features/contact/domain/services/mapContactDTO";
-
-import type { Contact } from "../models/Contact";
+import type { Contact } from "@/contact";
+import type { CreateContactRequestDTO, UpdateContactRequestDTO } from "@/contact";
 
 export interface ContactRepositoryPort {
   create(payload: CreateContactRequestDTO): Promise<Contact>;

@@ -1,17 +1,12 @@
 import React from "react";
 
-import type { Lead } from "@/features/leads/domain";
-import type { LeadType } from "@/features/leads/enums";
-import ContactModeSelector, {
-  type NewContactChangeHandler,
-  type NewContactForm,
-} from "@/presentation/molecules/ContactModeSelector";
-import type { LeadFormData } from "@/types/components/form";
-import {FormMode } from "@/types/enums";
+import type { Lead, LeadType } from "@/leads";
+import { ContactModeSelector } from "@/presentation";
+import { BaseFormModal, LeadFormFields, type LeadFormFieldsProps, useCreateLeadVM } from "@/presentation";
+import type { LeadFormData } from "@/types";
+import { FormMode } from "@/types";
 
-import { useCreateLeadVM } from "../hooks/useCreateLeadVM";
-import LeadFormFields, { type LeadFormFieldsProps } from "./LeadFormFields";
-import BaseFormModal from "../organisms/BaseFormModal";
+import type { NewContactChangeHandler, NewContactForm } from "./ContactModeSelector";
 
 export type CreateLeadModalProps = {
   isOpen: boolean;

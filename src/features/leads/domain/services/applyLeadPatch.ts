@@ -1,14 +1,9 @@
 
-import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
+import type { ApplyLeadPatchResult, Clock, ISODate, Lead,LeadPatch, LeadPatchPolicies } from "@/leads";
+import { BusinessRuleError } from "@/shared";
+
+// eslint-disable-next-line no-restricted-imports
 import { LeadStatus } from "../../enums";
-import type {
-  ApplyLeadPatchResult,
-  Clock,
-  ISODate,
-  LeadPatch,
-  LeadPatchPolicies,
-} from "../../types";
-import type { Lead } from "../models/Lead";
 import { ensureLeadIntegrity } from "./ensureLeadIntegrity";
 import { makeLeadNumber } from "./leadNumberPolicy";
 import { applyStatus, DEFAULT_TRANSITIONS } from "./leadStatusPolicy";
@@ -43,7 +38,7 @@ function toEffectiveStatus(s: LeadStatus | null | undefined): LeadStatus {
 }
 function resolveTransitions(
   overrides?: Partial<Record<LeadStatus, LeadStatus[]>>
-): Readonly<Record<LeadStatus, readonly LeadStatus[]>> {
+): Readonly<Partial<Record<LeadStatus, readonly LeadStatus[]>>> {
   const ro = (arr?: LeadStatus[]) => (arr as readonly LeadStatus[]) || undefined;
   return {
     [LeadStatus.NEW]: ro(overrides?.[LeadStatus.NEW]) ?? DEFAULT_TRANSITIONS[LeadStatus.NEW],

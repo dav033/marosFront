@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Input } from "../atoms"; 
+import { Input } from "@/presentation"; 
 
 export interface RestorationVisitFormValues {
   projectNumber: string;

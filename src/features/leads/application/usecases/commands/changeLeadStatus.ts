@@ -1,8 +1,5 @@
-import type { Lead,LeadStatus } from "@/features/leads/domain";
-import { applyStatus, DEFAULT_TRANSITIONS } from "@/features/leads/domain";
-
-import type { LeadsAppContext } from "../../context";
-import { getLeadById } from "../queries/getLeadById";
+import type { Lead, LeadId, LeadsAppContext,LeadStatus } from "@/leads";
+import { applyStatus, DEFAULT_TRANSITIONS, getLeadById } from "@/leads";
 
 export type ChangeLeadStatusOptions = Readonly<{
   transitions?: Readonly<Record<LeadStatus, readonly LeadStatus[]>>;
@@ -13,7 +10,7 @@ export type ChangeLeadStatusOptions = Readonly<{
  */
 export async function changeLeadStatus(
   ctx: LeadsAppContext,
-  id: number,
+  id: LeadId,
   to: LeadStatus,
   options: ChangeLeadStatusOptions = {}
 ): Promise<Lead> {

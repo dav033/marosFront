@@ -1,8 +1,7 @@
 import React, { memo } from "react";
 
-import SortIcon from "@/presentation/atoms/table/SortIcon";
-import Th from "@/presentation/atoms/table/Th";
-import type { Column, TableHeaderProps } from "@/types/components/table";
+import { SortIcon, Th } from "@/presentation";
+import type { Column, TableHeaderProps } from "@/types";
 
 function TableHeaderInner<T extends object>({
   columns,

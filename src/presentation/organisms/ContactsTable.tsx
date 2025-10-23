@@ -3,18 +3,15 @@ import React, { lazy, Suspense, useCallback, useMemo, useState } from "react";
 import {
   contactsSearchConfig,
   contactsSearchPlaceholder,
-} from "@/components/contacts/contactsSearchConfig";
-import type { Contact } from "@/features/contact/domain/models/Contact";
-import { contactTableColumns } from "@/presentation/molecules/ContactTableColumns";
-import ContactSection from "@/presentation/organisms/ContactSection";
+} from "@/components";
+import type { Contact } from "@/contact";
+import { Button, ContactSection, contactTableColumns, SearchBoxWithDropdown } from "@/presentation";
+import { useContactsApplication } from "@/presentation";
+import { useSearch } from "@/shared";
 import type { ContactFormData } from "@/types";
+import { getErrorMessage } from "@/utils";
 
-import { Button } from "../atoms/index.ts";
-import { SearchBoxWithDropdown } from "../molecules/SearchBoxWithDropdown.tsx";
 import CreateContactModal from "./CreateContactModal";
-import { useContactsApplication } from "@/presentation/hooks/useContactsApplication";
-import { getErrorMessage } from "@/utils/errors";
-import { useSearch } from "@/shared/search/useSearch.tsx";
 
 const EditContactModal = lazy(() => import("./EditContactModal.tsx"));
 

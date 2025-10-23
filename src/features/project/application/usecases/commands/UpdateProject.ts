@@ -1,8 +1,6 @@
-import type { Project } from "@/features/project/domain/models/Project";
-import { ensureProjectIntegrity } from "@/features/project/domain/services/ensureProjectIntegrity";
-import type { ProjectId, ProjectPatch } from "@/features/project/types";
-
-import type { ProjectsAppContext } from "../../context";
+import type { Project, ProjectId, ProjectPatch } from "@/project";
+import type { ProjectsAppContext } from "@/project";
+import { ensureProjectIntegrity } from "@/project";
 
 export async function updateProject(
   ctx: ProjectsAppContext,

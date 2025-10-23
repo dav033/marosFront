@@ -1,6 +1,4 @@
-import type { Lead } from "@/features/leads/domain/models/Lead";
-import type { LeadType } from "@/features/leads/enums";
-import type { LeadsAppContext } from "../../context";
+import type { Lead, LeadsAppContext,LeadType } from "@/leads";
 
 /**
  * Versión simplificada: refuerza el contrato del Port y llama exclusivamente a `findByType`.

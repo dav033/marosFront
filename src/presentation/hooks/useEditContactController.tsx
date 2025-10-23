@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-import type { Contact } from "@/features/contact/domain/models/Contact";
+import type { Contact } from "@/contact";
 import type { ContactFormData } from "@/types";
 
 export type UseEditContactControllerParams = {

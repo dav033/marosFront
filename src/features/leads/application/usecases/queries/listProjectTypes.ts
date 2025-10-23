@@ -1,6 +1,4 @@
-import type { ProjectType } from "@/features/leads/domain/models/ProjectType";
-
-import type { LeadsAppContext } from "../../context";
+import type { LeadsAppContext, ProjectType } from "@/leads";
 
 export async function listProjectTypes(ctx: LeadsAppContext): Promise<ProjectType[]> {
   const repo = ctx?.repos?.projectType;

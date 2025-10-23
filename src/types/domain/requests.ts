@@ -1,6 +1,5 @@
 
-import type { ProjectType } from "@/features/leads/domain/models/ProjectType";
-import type { LeadStatus, LeadType } from "@/features/leads/enums";
+import type { LeadStatus, LeadType,ProjectType } from "@/leads";
 
 export interface CreateContactRequest {
   companyName: string;

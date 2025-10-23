@@ -1,11 +1,4 @@
-
-import type { LeadStatus,LeadType } from "../../enums";
-import type {
-  ISODate,
-  LeadDraft,
-  LeadDraftWithExistingContact,
-  LeadDraftWithNewContact,
-} from "../../types";
+import type { ISODate, LeadDraft, LeadDraftWithExistingContact, LeadDraftWithNewContact,LeadStatus, LeadType } from "@/leads";
 
 
 export type CreateContactDTO = Readonly<{

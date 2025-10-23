@@ -1,6 +1,6 @@
 import React from "react";
 
-import SkeletonBlock from "@/presentation/atoms/SkeletonBlock";
+import { SkeletonBlock } from "@/presentation";
 
 export type SectionHeaderSkeletonProps = {
     leftHeight?: number;

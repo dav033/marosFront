@@ -1,6 +1,7 @@
 // src/shared/infra/http/OptimizedApiClient.ts
 import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
-import type { HttpClientLike, RequestOptions } from '@/shared/infra/http/types';
+
+import type { HttpClientLike, RequestOptions } from '@/shared';
 
 const { VITE_API_BASE_URL } = import.meta.env;
 const BASE_URL = VITE_API_BASE_URL || 'http://localhost:8080';

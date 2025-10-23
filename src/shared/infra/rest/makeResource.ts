@@ -1,5 +1,5 @@
-import type { HttpClientLike } from '@/shared/infra/http/types';
-import { optimizedApiClient } from '@/shared/infra/http/OptimizedApiClient';
+import type { HttpClientLike } from "@/shared";
+import { optimizedApiClient } from "@/shared";
 
 export type ResourceEndpoints<ID = number | string> = Readonly<{
   /** Base path, e.g. "/contacts" (used when list() is not provided). */

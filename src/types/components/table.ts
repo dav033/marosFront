@@ -1,9 +1,8 @@
 
 import type { ReactElement, ReactNode } from "react";
 
-import type { Lead } from "@/features/leads/domain/models/Lead";
-
-import type { ContextMenuOption } from "../hooks";
+import type { Lead } from "@/leads";
+import type { ContextMenuOption } from "@/types";
 
 export interface TableSkeletonProps {
   rows?: number;

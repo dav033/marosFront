@@ -1,15 +1,8 @@
-import type { Contact } from "@/features/contact/domain/models/Contact";
-import type {
-  ContactUniquenessCheck,
-  ContactUniquenessPort,
-} from "@/features/contact/domain/ports/ContactUniquenessPort";
-import {
-  type ApiContactDTO,
-  mapContactsFromDTO,
-} from "@/features/contact/domain/services/contactReadMapper";
-import { listPotentialDuplicates } from "@/features/contact/domain/services/contactUniquenessPolicy";
-import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
-import type { HttpClientLike } from "@/shared/infra/http/types";
+import type { Contact } from "@/contact";
+import type { ContactUniquenessCheck, ContactUniquenessPort } from "@/contact";
+import { type ApiContactDTO, mapContactsFromDTO } from "@/contact";
+import { listPotentialDuplicates } from "@/contact";
+import { type HttpClientLike,optimizedApiClient } from "@/shared";
 
 import { contactEndpoints as endpoints } from "./endpoints";
 
@@ -34,7 +27,8 @@ export class ContactUniquenessHttpService implements ContactUniquenessPort {
   }
 
   async findDuplicates(candidate: ContactUniquenessCheck): Promise<Contact[]> {
-    const { data } = await this.api.get<ApiContactDTO[]>(endpoints.list());
+    const listUrl = endpoints.list?.() ?? endpoints.base;
+    const { data } = await this.api.get<ApiContactDTO[]>(listUrl);
     const all = mapContactsFromDTO(data ?? []);
     return listPotentialDuplicates(candidate as unknown as Contact, all);
   }

@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
-import type { ContactFormData } from "@/types/components/form";
-import { getErrorMessage } from "@/utils/errors";
+
+import type { ContactFormData } from "@/types";
+import { getErrorMessage } from "@/utils";
 
 const EMPTY: ContactFormData = {
   companyName: "",

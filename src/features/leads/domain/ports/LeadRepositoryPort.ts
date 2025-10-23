@@ -1,7 +1,4 @@
-
-import type { LeadType } from "../../enums";
-import type { LeadDraft, LeadId, LeadPatch } from "../../types";
-import type { Lead } from "../models/Lead";
+import type { Lead, LeadDraft, LeadId, LeadPatch,LeadType } from "@/leads";
 
 export interface LeadRepositoryPort {
     findById(id: LeadId): Promise<Lead | null>;

@@ -1,6 +1,7 @@
 import React from "react";
-import Badge from "@/presentation/atoms/Badge";
-import type { ProjectTypeBadgeProps } from "@/types/components/badges";
+
+import { Badge } from "@/presentation";
+import type { ProjectTypeBadgeProps } from "@/types";
 
 function normalizeHex(c?: string, fallback = "#BDBDBD"): string {
   if (!c) return fallback;

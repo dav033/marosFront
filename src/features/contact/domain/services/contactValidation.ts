@@ -1,5 +1,4 @@
-
-import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
+import { BusinessRuleError } from "@/shared";
 
 
 export type ContactValidationPolicies = Readonly<{
@@ -63,7 +62,7 @@ export function countPhoneDigits(p?: string): number {
 }
 
 export function isISODateOrDateTime(s: string): boolean {
-  return /^\d{4}-\d{2}-\d{2}([T ]\d{2}:\d{2}(:\d{2}(\.\d{1,3})?)?(Z|[+\-]\d{2}:\d{2})?)?$/.test(
+  return /^\d{4}-\d{2}-\d{2}([T ]\d{2}:\d{2}(:\d{2}(\.\d{1,3})?)?(Z|[+-]\d{2}:\d{2})?)?$/.test(
     s
   );
 }

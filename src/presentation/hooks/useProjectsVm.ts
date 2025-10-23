@@ -7,13 +7,16 @@ import {
   getProjects,
   getProjectsByStatus,
   getProjectsWithLeads,
+  type Project,
+  ProjectApplicationContextFactory,
+  type ProjectDraft,
+  type ProjectId,
+  type ProjectPatch,
+  type ProjectStatus,
+  type ProjectWithLeadView,
   updateProject,
-} from "@/features/project/application";
-import type { Project } from "@/features/project/domain/models/Project";
-import type { ProjectStatus } from "@/features/project/enums";
-import { ProjectApplicationContextFactory } from "@/features/project/infra/ProjectApplicationContextFactory";
-import type { ProjectDraft, ProjectId, ProjectPatch, ProjectWithLeadView } from "@/features/project/types";
-import { getErrorMessage } from "@/utils/errors";
+} from "@/project";
+import { getErrorMessage } from "@/utils";
 
 type State = {
   data: Project[];

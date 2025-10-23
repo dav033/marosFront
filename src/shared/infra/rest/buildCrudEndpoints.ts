@@ -1,4 +1,4 @@
-import type { ResourceEndpoints } from "@/shared/infra/rest/makeResource";
+import type { ResourceEndpoints } from "@/shared";
 
 /** Builder simple para endpoints CRUD coherentes. */
 export function buildCrudEndpoints<ID extends string | number>(

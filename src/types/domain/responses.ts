@@ -1,8 +1,6 @@
 
-import type { Contact } from "@/features/contact/domain/models/Contact";
-import type { Lead } from "@/features/leads/domain/models/Lead";
-
-import type { ProjectType } from "../components/leads";
+import type { Contact } from "@/contact";
+import type { Lead, ProjectType } from "@/leads";
 export interface ApiResponse<T> {
   data: T;
   success: boolean;

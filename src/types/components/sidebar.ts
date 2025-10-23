@@ -13,7 +13,7 @@ export interface TriggerProps {
 export interface SidebarDropdownProps {
   trigger: TriggerProps;
   width?: string;
-  children: React.ReactNode;
+  children: ReactNode;
   duration?: number;
   indentLevel?: number;
   defaultOpen?: boolean;

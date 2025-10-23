@@ -1,6 +1,6 @@
 import React, { useId } from "react";
 
-import Modal from "@/presentation/organisms/Modal";
+import { Modal } from "@/presentation";
 
 import { ModalBody, ModalFooter, ModalHeader } from ".";
 

@@ -1,6 +1,5 @@
-import type { Contact } from "@/features/contact/domain/models/Contact";
-
-import type { ContactsAppContext } from "../../context";
+import type { Contact } from "@/contact";
+import type { ContactsAppContext } from "@/contact";
 
 export async function listContacts(ctx: ContactsAppContext): Promise<Contact[]> {
   return ctx.repos.contact.findAll();

@@ -1,8 +1,8 @@
 import React, { memo } from "react";
 
-import { useContextMenu } from "@/presentation/hooks/useContextMenu";
-import type { TableRowProps } from "@/types/components/table";
-import ContextMenu from "../ContextMenu";
+import { useContextMenu } from "@/presentation";
+import { ContextMenu } from "@/presentation";
+import type { TableRowProps } from "@/types";
 
 function TableRowInner<T>({
   row,

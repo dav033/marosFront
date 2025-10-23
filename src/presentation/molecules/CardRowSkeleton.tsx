@@ -1,6 +1,6 @@
 import React from "react";
 
-import SkeletonBlock from "@/presentation/atoms/SkeletonBlock";
+import { SkeletonBlock } from "@/presentation";
 
 export type LineItem = { w: string; h?: number };
 

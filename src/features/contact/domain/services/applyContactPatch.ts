@@ -1,7 +1,6 @@
+import type { Contact } from "@/contact";
+import { BusinessRuleError } from "@/shared";
 
-import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
-
-import type { Contact } from "../models/Contact";
 import type { ContactDraftPolicies } from "./ensureContactDraftIntegrity";
 
 
@@ -70,7 +69,7 @@ function countDigits(s?: string): number {
 }
 
 function isISODateOrDateTime(s: string): boolean {
-  return /^\d{4}-\d{2}-\d{2}([T ]\d{2}:\d{2}(:\d{2}(\.\d{1,3})?)?(Z|[+\-]\d{2}:\d{2})?)?$/.test(
+  return /^\d{4}-\d{2}-\d{2}([T ]\d{2}:\d{2}(:\d{2}(\.\d{1,3})?)?(Z|[+-]\d{2}:\d{2})?)?$/.test(
     s
   );
 }

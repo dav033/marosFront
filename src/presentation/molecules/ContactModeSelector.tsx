@@ -1,8 +1,7 @@
 import React from "react";
 
-import { Icon,Input } from "@/presentation/atoms";
-import ContactModeSwitch from "@/presentation/molecules/ContactModeSwitch";
-import { ContactMode } from "@/types/enums";
+import { ContactModeSwitch, Icon, Input } from "@/presentation";
+import { ContactMode } from "@/types";
 export type NewContactForm = {
   customerName: string;
   contactName: string;

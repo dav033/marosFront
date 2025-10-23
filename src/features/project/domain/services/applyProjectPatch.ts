@@ -1,7 +1,6 @@
-import type { ApplyProjectPatchResult,ProjectPatch } from "@/features/project/types";
-import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
-
-import type { Project } from "../models/Project";
+import type { ApplyProjectPatchResult, ProjectPatch } from "@/project";
+import type { Project } from "@/project";
+import { BusinessRuleError } from "@/shared";
 
 export function applyProjectPatch(project: Project, patch: ProjectPatch): ApplyProjectPatchResult {
   let hasChanges = false;

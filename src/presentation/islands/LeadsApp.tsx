@@ -1,18 +1,17 @@
 import React from 'react';
-import { DiProvider, useContactsApp, useLeadsApp } from '@/di/DiProvider';
-import { LeadType } from '@/features/leads/enums';
-import QueryProvider from '@/components/common/QueryProvider';
-import TopLoader from '@/components/common/TopLoader';
-import { LoadingProvider } from '../context/loading/LoadingContext';
-import LeadsBoard from '../organisms/LeadsBoard';
+
+import { QueryProvider, TopLoader } from '@/components';
+import { DiProvider, useContactsApp, useLeadsApp } from '@/di';
+import { LeadsBoard,LoadingProvider } from '@/presentation';
+import { LeadType } from '@/types';
 
 type Props = {
   leadType: LeadType;
 };
 
 function LeadsInner({ leadType }: { leadType: LeadType }) {
-  const leadsCtx = useLeadsApp();
-  const contactsCtx = useContactsApp();
+  const _leadsCtx = useLeadsApp();
+  const _contactsCtx = useContactsApp();
 
   return (
     <LoadingProvider>

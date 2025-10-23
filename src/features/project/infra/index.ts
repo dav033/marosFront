@@ -1,2 +1,2 @@
-export { HttpProjectRepository } from "./http/HttpProjectRepository";
+export { HttpProjectRepository } from "./http";
 export { ProjectApplicationContextFactory } from "./ProjectApplicationContextFactory";

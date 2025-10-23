@@ -1,8 +1,8 @@
-import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
-import type { LeadStatus as LeadStatusType } from "../../enums";
+import { BusinessRuleError } from "@/shared";
+import type { LeadStatus as LeadStatusType } from "@/leads";
 import { LeadStatus } from "../../enums";
-import type { LeadNumberRules } from "../../types";
-import type { Lead } from "../models/Lead";
+import type { LeadNumberRules } from "@/leads";
+import type { Lead } from "@/leads";
 import {
   normalizeLeadNumber,
   validateLeadNumberFormat,

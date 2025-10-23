@@ -1,4 +1,4 @@
-import type { Lead } from "../models/Lead";
+import type { Lead } from "@/leads";
 import { LeadStatus } from "../../enums";
 import { DEFAULT_STATUS_ORDER, partitionByStatus } from "./leadsQueries";
 

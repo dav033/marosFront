@@ -1,4 +1,4 @@
-import type { Project } from "./domain/models/Project";
+import type { Project } from "./domain";
 import type { InvoiceStatus,ProjectStatus } from "./enums";
 
 export type ProjectId = number;

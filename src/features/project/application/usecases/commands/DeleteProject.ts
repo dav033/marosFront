@@ -1,6 +1,5 @@
-import type { ProjectId } from "@/features/project/types";
-
-import type { ProjectsAppContext } from "../../context";
+import type { ProjectId } from "@/project";
+import type { ProjectsAppContext } from "@/project";
 
 export async function deleteProject(
   ctx: ProjectsAppContext,

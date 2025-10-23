@@ -1,13 +1,7 @@
-import type { Contact } from "@/features/contact/domain/models/Contact";
-import {
-  type CreateContactRequestDTO,
-  type UpdateContactRequestDTO,
-} from "@/features/contact/domain/services/mapContactDTO";
-import type { ContactRepositoryPort } from "@/features/contact/domain/ports/ContactRepositoryPort";
-
-import { makeCrudRepo } from "@/shared/infra/rest/makeCrudRepo";
-import type { HttpClientLike } from "@/shared/infra/http/types";
-import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
+import type { Contact } from "@/contact";
+import type { ContactRepositoryPort } from "@/contact";
+import { type CreateContactRequestDTO, type UpdateContactRequestDTO } from "@/contact";
+import { type HttpClientLike,makeCrudRepo, optimizedApiClient } from "@/shared";
 
 import { contactEndpoints } from "./endpoints";
 

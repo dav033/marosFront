@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Icon,Input } from "@/presentation/atoms";
+import { Icon, Input } from "@/presentation";
 import type { ContactFormData } from "@/types";
 
 export type ContactFormProps = {

@@ -1,19 +1,20 @@
-import { useContactsApp } from "@/di/DiProvider";
+import type {
+  Contact,
+  ContactDraft,
+  ContactPatch,
+  ContactUniquenessCheck,
+} from "@/contact";
 import {
   createContact,
   deleteContact,
   getContactById,
   listContacts,
+  mergeContactIntoCollection,
   patchContact,
   validateContactUniqueness,
-} from "@/features/contact/application";
-import type { ContactUniquenessCheck } from "@/features/contact/domain/ports/ContactUniquenessPort";
-import type { ContactPatch } from "@/features/contact/domain/services/applyContactPatch";
-import type { ContactDraft } from "@/features/contact/domain/services/buildContactDraft";
-import type { Contact } from "@/features/contact/domain/models/Contact";
-
-import { queryClient } from "@/lib/query/client";
-import { mergeContactIntoCollection } from "@/features/contact/domain/services/contactMergePolicy";
+} from "@/contact";
+import { useContactsApp } from "@/di";
+import { queryClient } from "@/lib";
 
 export function useContactsApplication() {
   const ctx = useContactsApp();

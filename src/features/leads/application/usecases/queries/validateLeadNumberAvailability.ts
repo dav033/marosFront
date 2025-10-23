@@ -1,6 +1,5 @@
-import { ensureLeadNumberAvailable } from "@/features/leads/domain/services/leadNumberPolicy";
-
-import type { LeadsAppContext } from "../../context";
+import type { LeadsAppContext } from "@/leads";
+import { ensureLeadNumberAvailable } from "@/leads";
 
 export async function validateLeadNumberAvailability(
   ctx: LeadsAppContext,

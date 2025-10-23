@@ -1,8 +1,6 @@
 import React, { useId } from "react";
 
-import FormModalFrame from "@/presentation/molecules/FormModalFrame";
-import ModalActions from "@/presentation/molecules/ModalActions";
-import ModalErrorBanner from "@/presentation/molecules/ModalErrorBanner";
+import { FormModalFrame, ModalActions, ModalErrorBanner } from "@/presentation";
 
 export type BaseFormModalProps = {
   isOpen: boolean;

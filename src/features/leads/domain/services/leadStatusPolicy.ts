@@ -1,12 +1,10 @@
-
-import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
-
+import type { Clock, DomainEvent, Lead } from "@/leads";
+// eslint-disable-next-line no-restricted-imports, import/no-internal-modules
 import { LeadStatus } from "../../enums";
-import type { Clock, DomainEvent } from "../../types";
-import type { Lead } from "../models/Lead";
+import { BusinessRuleError } from "@/shared";
 
 export const DEFAULT_TRANSITIONS: Readonly<
-  Record<LeadStatus, readonly LeadStatus[]>
+  Partial<Record<LeadStatus, readonly LeadStatus[]>>
 > = {
   [LeadStatus.NEW]:           [LeadStatus.TO_DO, LeadStatus.IN_PROGRESS, LeadStatus.LOST, LeadStatus.UNDETERMINED],
   [LeadStatus.UNDETERMINED]:  [LeadStatus.NEW, LeadStatus.TO_DO, LeadStatus.IN_PROGRESS, LeadStatus.LOST],
@@ -20,7 +18,7 @@ export const DEFAULT_TRANSITIONS: Readonly<
 export function canTransition(
   from: LeadStatus,
   to: LeadStatus,
-  transitions: Readonly<Record<LeadStatus, readonly LeadStatus[]>> = DEFAULT_TRANSITIONS
+  transitions: Readonly<Partial<Record<LeadStatus, readonly LeadStatus[]>>> = DEFAULT_TRANSITIONS
 ): boolean {
   return from === to || (transitions[from] ?? []).includes(to);
 }
@@ -28,7 +26,7 @@ export function canTransition(
 export function ensureTransition(
   from: LeadStatus,
   to: LeadStatus,
-  transitions: Readonly<Record<LeadStatus, readonly LeadStatus[]>> = DEFAULT_TRANSITIONS
+  transitions: Readonly<Partial<Record<LeadStatus, readonly LeadStatus[]>>> = DEFAULT_TRANSITIONS
 ): void {
   if (!canTransition(from, to, transitions)) {
     throw new BusinessRuleError(
@@ -43,7 +41,7 @@ export function applyStatus(
   clock: Clock,
   lead: Lead,
   to: LeadStatus,
-  transitions: Readonly<Record<LeadStatus, readonly LeadStatus[]>> = DEFAULT_TRANSITIONS
+  transitions: Readonly<Partial<Record<LeadStatus, readonly LeadStatus[]>>> = DEFAULT_TRANSITIONS
 ): { lead: Lead; events: DomainEvent[] } {
   const from: LeadStatus = lead.status;
   if (to === from) return { lead, events: [] };

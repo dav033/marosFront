@@ -1,11 +1,9 @@
 
 import type { ReactNode } from "react";
 
-import type { Contact } from "@/features/contact/domain/models/Contact";
-import type { ProjectType } from "@/features/leads/domain/models/ProjectType";
-import type { LeadStatus, LeadType } from "@/features/leads/enums";
-
-import type { FormMode } from "../enums";
+import type { Contact } from "@/contact";
+import type { LeadStatus, LeadType,ProjectType } from "@/leads";
+import type { FormMode } from "@/types";
 
 export interface FormFieldProps {
   label: string;

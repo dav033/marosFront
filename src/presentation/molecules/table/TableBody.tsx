@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 
-import SeparatorRow from "@/presentation/atoms/table/SeparatorRow";
-import type { TableBodyProps } from "@/types/components/table";
+import { SeparatorRow } from "@/presentation";
+import type { TableBodyProps } from "@/types";
 
 import TableRow from "./TableRow";
 

@@ -1,7 +1,7 @@
 
 import type React from "react";
-import type { SearchFieldOption } from "../hooks";
-import type { ContextMenuOption } from "../index";
+
+import type { ContextMenuOption,SearchFieldOption } from "..";
 
 export interface SearchBoxWithDropdownProps {
   searchTerm: string;

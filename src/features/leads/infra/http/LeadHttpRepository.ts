@@ -1,28 +1,13 @@
-import type { Lead } from "@/features/leads/domain/models/Lead";
-import type { LeadRepositoryPort } from "@/features/leads/domain/ports/LeadRepositoryPort";
-import type { LeadType } from "@/features/leads/enums";
-
-import {
-  type ApiLeadDTO,
-  mapLeadFromDTO,
-  mapLeadsFromDTO,
-} from "@/features/leads/domain/services/leadReadMapper";
-
-import {
-  type UpdateLeadPayload,
-  mapLeadPatchToUpdatePayload,
-} from "@/features/leads/domain/services/leadUpdateMapper";
-
-import {
-  type CreateLeadPayload,
-  mapLeadDraftToCreatePayload,
-} from "@/features/leads/domain/services/leadCreateMapper";
-
-import type { LeadDraft, LeadId, LeadPatch } from "@/features/leads/types";
-
-import type { HttpClientLike } from "@/shared/infra/http/types";
-import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
-import { makeResource } from "@/shared/infra/rest/makeResource";
+import type { Lead } from "@/leads";
+import type { LeadRepositoryPort } from "@/leads";
+import type { LeadType } from "@/leads";
+import type { LeadDraft, LeadId, LeadPatch } from "@/leads";
+import { type ApiLeadDTO, mapLeadFromDTO, mapLeadsFromDTO } from "@/leads";
+import { mapLeadPatchToUpdatePayload,type UpdateLeadPayload } from "@/leads";
+import { type CreateLeadPayload, mapLeadDraftToCreatePayload } from "@/leads";
+import type { HttpClientLike } from "@/shared";
+import { optimizedApiClient } from "@/shared";
+import { makeResource } from "@/shared";
 
 import { endpoints as leadEndpoints } from "./endpoints";
 
@@ -93,9 +78,7 @@ export class LeadHttpRepository implements LeadRepositoryPort {
     if (data) {
       return mapLeadFromDTO(data);
     }
-    // Sin body: no forzamos GET; devolvemos un stub para cumplir la firma.
-    // El caso de uso (patchLead / changeLeadStatus) devolverá el 'updated'.
-    return { id } as unknown as Lead;
+            return { id } as unknown as Lead;
   }
 
   delete(id: LeadId): Promise<void> {

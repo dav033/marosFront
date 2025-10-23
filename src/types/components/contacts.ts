@@ -1,6 +1,7 @@
 
-import type { Contact } from "@/features/contact/domain/models/Contact";
-import type { Column } from "../components/table";
+import type { Contact } from "@/contact";
+
+import type { Column } from ".";
 import type { ContactFormData } from "./form";
 
 export interface ContactsTableProps {

@@ -1,4 +1,4 @@
-import { getErrorMessage } from "@/utils/errors";
+import { getErrorMessage } from "@/utils";
 
 export function formatDate(
   dateValue: string | Date | null | undefined,
@@ -22,7 +22,7 @@ export function formatDate(
       return "—";
     }
   } catch (error: unknown) {
-      console.warn("Invalid date format:", getErrorMessage(error));
+      globalThis.console?.warn("Invalid date format:", getErrorMessage(error));
     return "—";
   }
 
@@ -111,7 +111,7 @@ export function formatDateTime(
       return "—";
     }
   } catch (error: unknown) {
-      console.warn("Invalid datetime format:", getErrorMessage(error));
+      globalThis.console?.warn("Invalid datetime format:", getErrorMessage(error));
     return "—";
   }
 

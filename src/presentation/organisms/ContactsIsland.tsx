@@ -1,8 +1,10 @@
 import React from "react";
-import type { Contact } from "@/features/contact/domain/models/Contact";
+
+import type { Contact } from "@/contact";
+import { SkeletonRenderer } from "@/presentation";
+import { useContacts } from "@/presentation";
+
 import ContactsTable from "./ContactsTable";
-import SkeletonRenderer from "@/presentation/organisms/SkeletonRenderer";
-import { useContacts } from "../hooks/useContact";
 
 export default function ContactsIsland() {
   type ContactLite = {

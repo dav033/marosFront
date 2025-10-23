@@ -1,7 +1,7 @@
-import { createLead, type LeadsAppContext } from '@/features/leads/application';
-import type { Lead, LeadType, ProjectType } from '@/features/leads/domain';
-import type { SelectOption } from '@/presentation/atoms/Select';
-import { optimizedApiClient } from '@/shared/infra/http/OptimizedApiClient';
+import type { Lead, LeadType, ProjectType } from '@/leads';
+import { createLead, type LeadsAppContext } from '@/leads';
+import { optimizedApiClient } from '@/shared';
+import type { Option } from '@/types';
 import type {
   Contact,
   CreateLeadByExistingContactData,
@@ -99,7 +99,7 @@ export const getStatusOptions = (): StatusOption[] => [
   { value: 'LOST', label: 'Lost' },
 ];
 
-export const formatContactOptions = (contacts: Contact[]): SelectOption[] =>
+export const formatContactOptions = (contacts: Contact[]): Option[] =>
   contacts.map((c) => ({
     value: String(c.id),
     label: c.companyName ? `${c.name} (${c.companyName})` : c.name || 'No name',
@@ -107,7 +107,7 @@ export const formatContactOptions = (contacts: Contact[]): SelectOption[] =>
 
 export const formatProjectTypeOptions = (
   projectTypes: ProjectType[],
-): SelectOption[] =>
+): Option[] =>
   projectTypes.map((pt) => ({ value: String(pt.id), label: pt.name }));
 
 export const createLeadWithNewContact = async (

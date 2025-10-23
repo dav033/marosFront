@@ -1,6 +1,4 @@
-
-import type { ISODate, LeadPatch } from '../../types';
-import type { Lead } from '../models/Lead';
+import type { ISODate, Lead, LeadPatch } from "@/leads";
 
 /**
  * Devuelve un LeadPatch con solo los campos que cambiaron.
@@ -23,7 +21,7 @@ export function diffToPatch(current: Lead, updated: Lead): LeadPatch {
       ? { contactId: updated.contact.id }
       : {}),
     ...((updated.leadNumber ?? '') !== (current.leadNumber ?? '')
-      ? { leadNumber: updated.leadNumber ?? '' }
+      ? { leadNumber: updated.leadNumber ? Number(updated.leadNumber) : null }
       : {}),
   };
 }

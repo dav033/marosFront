@@ -1,7 +1,8 @@
+import type { LeadType } from "@/leads";
+import type { Lead } from "@/leads";
 
-import type { LeadType } from "../../enums";
+// eslint-disable-next-line no-restricted-imports
 import { LeadStatus } from "../../enums";
-import type { Lead } from "../models/Lead";
 
 function effectiveStatus(s: LeadStatus | null | undefined): LeadStatus {
   return s ?? LeadStatus.UNDETERMINED;
@@ -30,8 +31,8 @@ export function filterByStatus(
 
 export function partitionByStatus(
   leads: readonly Lead[]
-): Record<LeadStatus, Lead[]> {
-  const buckets: Record<LeadStatus, Lead[]> = {
+): Partial<Record<LeadStatus, Lead[]>> {
+  const buckets: Partial<Record<LeadStatus, Lead[]>> = {
     [LeadStatus.NEW]: [],
     [LeadStatus.UNDETERMINED]: [],
     [LeadStatus.TO_DO]: [],
@@ -41,7 +42,8 @@ export function partitionByStatus(
     [LeadStatus.NOT_EXECUTED]: [],
   };
   for (const l of leads ?? []) {
-    buckets[effectiveStatus(l.status)].push(l);
+    const key = effectiveStatus(l.status);
+    (buckets[key] ||= []).push(l);
   }
   return buckets;
 }

@@ -1,10 +1,8 @@
 
 import React from "react";
 
-import type { Contact } from "@/features/contact/domain/models/Contact";
-import { useEditContactController } from "@/presentation/hooks/useEditContactController";
-import ContactForm from "@/presentation/molecules/ContactForm";
-import BaseFormModal from "@/presentation/organisms/BaseFormModal";
+import type { Contact } from "@/contact";
+import { BaseFormModal, ContactForm, useEditContactController } from "@/presentation";
 
 export type EditContactModalProps = {
   isOpen: boolean;

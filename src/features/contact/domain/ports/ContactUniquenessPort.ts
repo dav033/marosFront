@@ -1,5 +1,4 @@
-
-import type { Contact } from "../models/Contact";
+import type { Contact } from "@/contact";
 
 export type ContactUniquenessCheck = Readonly<{
   name?: string | undefined;

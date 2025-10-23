@@ -1,6 +1,7 @@
-import type { ContactPatch } from "../services/applyContactPatch";
-import type { ContactDraft } from "../services/buildContactDraft";
-import { normalizeEmptyToUndefined, pickDefined } from "@/shared/mappers/dto";
+import { normalizeEmptyToUndefined, pickDefined } from "@/shared";
+
+import type { ContactPatch } from "./applyContactPatch";
+import type { ContactDraft } from "./buildContactDraft";
 
 export interface CreateContactRequestDTO {
   name: string;

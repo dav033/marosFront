@@ -1,5 +1,5 @@
-import React from "react";
 import { useIsFetching } from "@tanstack/react-query";
+import React from "react";
 
 type LoadingState = {
   isLoading: boolean;

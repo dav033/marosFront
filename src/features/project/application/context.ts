@@ -1,4 +1,4 @@
-import type { ProjectRepositoryPort } from "@/features/project/domain/ports/ProjectRepositoryPort";
+import type { ProjectRepositoryPort } from "@/project";
 
 export function makeProjectsAppContext(deps: ProjectsAppContext): ProjectsAppContext {
   return deps;

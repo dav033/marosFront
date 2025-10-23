@@ -1,4 +1,4 @@
-import type { LeadFormData } from "../components/form";
+import type { LeadFormData } from "..";
 
 export interface UseCreateLeadOptions {
   leadType: "new-contact" | "existing-contact";

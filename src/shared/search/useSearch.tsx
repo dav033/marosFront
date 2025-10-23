@@ -1,3 +1,5 @@
+/* eslint-env browser */
+/* global window */
 import { useEffect, useMemo, useState } from "react";
 
 export type SearchField<T> = {
@@ -52,8 +54,8 @@ function getFieldValue<T>(row: T, field: SearchField<T>): string {
 function useDebouncedValue<T>(value: T, delay = 200) {
   const [debounced, setDebounced] = useState(value);
   useEffect(() => {
-    const id = setTimeout(() => setDebounced(value), delay);
-    return () => clearTimeout(id);
+    const id = window.setTimeout(() => setDebounced(value), delay);
+    return () => window.clearTimeout(id);
   }, [value, delay]);
   return debounced;
 }

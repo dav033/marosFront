@@ -1,15 +1,6 @@
-import { BusinessRuleError } from "@/shared/domain/BusinessRuleError";
-import type { LeadStatus, LeadType } from "../../enums";
-import type {
-  Clock,
-  ContactId,
-  ISODate,
-  LeadDraftWithExistingContact,
-  LeadDraftWithNewContact,
-  LeadPolicies,
-  NewContact,
-  ProjectTypeId,
-} from "../../types";
+import type { Clock, ContactId, ISODate, LeadDraftWithExistingContact, LeadDraftWithNewContact, LeadPolicies, LeadStatus, LeadType, NewContact, ProjectTypeId } from "@/leads";
+import { BusinessRuleError } from "@/shared";
+
 import { ensureLeadDraftIntegrity } from "./ensureLeadDraftIntegrity";
 import {
   ensureNewContactMinimums,

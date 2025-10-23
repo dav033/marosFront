@@ -1,7 +1,3 @@
-export * from "./usecases/commands/CreateProject";
-export * from "./usecases/commands/DeleteProject";
-export * from "./usecases/commands/UpdateProject";
-export * from "./usecases/queries/GetProjectById";
-export * from "./usecases/queries/GetProjects";
-export * from "./usecases/queries/GetProjectsByStatus";
-export * from "./usecases/queries/GetProjectsWithLeads";
+export type { ProjectsAppContext } from "./context";
+export { makeProjectsAppContext } from "./context";
+export * from "./usecases";

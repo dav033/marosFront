@@ -1,13 +1,16 @@
 import * as React from "react";
 
-import type { LeadsAppContext } from "@/features/leads/application";
-import { listProjectTypes } from "@/features/leads/application/usecases/queries/listProjectTypes";
-import type { ProjectType } from "@/features/leads/domain/models/ProjectType";
-import type { ProjectTypesVM } from "@/features/projectType/vm/types";
-import { getErrorMessage } from "@/utils/errors";
+import type { LeadsAppContext, ProjectType } from "@/leads";
+import { listProjectTypes } from "@/leads";
+import { getErrorMessage } from "@/utils";
 
 
-export function useProjectTypesVM(ctx: LeadsAppContext): ProjectTypesVM {
+export function useProjectTypesVM(ctx: LeadsAppContext): {
+  projectTypes: ProjectType[];
+  isLoading: boolean;
+  error: string | null;
+  refetch: () => Promise<void>;
+} {
   const [projectTypes, setProjectTypes] = React.useState<ProjectType[]>([]);
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<string | null>(null);

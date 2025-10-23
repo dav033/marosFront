@@ -1,4 +1,4 @@
-import { buildCrudEndpoints } from "@/shared/infra/rest/buildCrudEndpoints";
+import { buildCrudEndpoints } from "@/shared";
 
 /** Export existente: se conserva tal cual para compatibilidad. */
 export const PROJECTS_API = {

@@ -1,6 +1,5 @@
-import type { Lead } from "@/features/leads/domain/models/Lead";
-
-import type { InvoiceStatus, ProjectStatus } from "../../enums";
+import type { Lead } from "@/leads";
+import type { InvoiceStatus, ProjectStatus } from "@/project";
 
 export interface Project {
   location: string;

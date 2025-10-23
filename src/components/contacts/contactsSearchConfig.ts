@@ -1,5 +1,5 @@
-import type { Contact } from "@/features/contact/domain/models/Contact";
-import type { SearchConfig } from "@/shared/search/useSearch";
+import type { Contact } from "@/contact";
+import type { SearchConfig } from "@/shared";
 
 export const contactsSearchPlaceholder = "Search contacts…";
 
@@ -16,5 +16,5 @@ export const contactsSearchConfig: SearchConfig<Contact> = {
     { key: "id", label: "ID" },
   ],
   defaultField: "name",
-  normalize: (s) => s.toLowerCase().trim(),
+  normalize: (s: string) => s.toLowerCase().trim(),
 };

@@ -1,8 +1,8 @@
+/* eslint-env browser */
 import * as React from "react";
 import { createPortal } from "react-dom";
-import Icon from "@/presentation/atoms/Icon";
 
-export { useContextMenu } from "@/presentation/hooks/useContextMenu";
+import { Icon } from "@/presentation";
 
 export type ContextMenuOption = Readonly<{
   id: string | number;
@@ -49,12 +49,14 @@ const ContextMenuComponent: React.FC<ContextMenuProps> = ({
       if (ev.key === "Escape") onClose();
     };
 
+    /* eslint-disable no-undef */
     document.addEventListener("mousedown", handleDown);
     window.addEventListener("keydown", handleEsc);
     return () => {
       document.removeEventListener("mousedown", handleDown);
       window.removeEventListener("keydown", handleEsc);
     };
+    /* eslint-enable no-undef */
   }, [isVisible, onClose]);
 
   if (!isVisible) return null;
@@ -118,6 +120,7 @@ const ContextMenuComponent: React.FC<ContextMenuProps> = ({
     </div>
   );
 
+  /* eslint-disable-next-line no-undef */
   return typeof document !== "undefined" ? createPortal(menu, document.body) : null;
 };
 

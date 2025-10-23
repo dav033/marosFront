@@ -1,4 +1,4 @@
-import type { Contact } from "@/features/contact/domain/models/Contact";
+import type { Contact } from "@/contact";
 import type { Column } from "@/types";
 export const contactColumnWidths: Record<
   | "companyName"

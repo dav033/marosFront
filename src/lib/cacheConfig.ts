@@ -1,3 +1,4 @@
+/* eslint-env browser */
 export type CacheResourceKey = string;
 
 export interface CacheResourceConfig {
@@ -28,7 +29,7 @@ const STORAGE_KEY = "app.cache.config";
 function readPersisted(): CacheConfigShape | null {
   if (typeof window === "undefined") return null;
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+    const raw = globalThis.window?.localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Partial<CacheConfigShape>;
     if (typeof parsed?.enabled === "boolean" && parsed.resources) {
@@ -55,8 +56,10 @@ function readPersisted(): CacheConfigShape | null {
 function persist(config: CacheConfigShape) {
   if (typeof window === "undefined") return;
   try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-  } catch {}
+    globalThis.window?.localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+  } catch {
+    // noop: ignore persistence failures (e.g., SSR or private mode)
+  }
 }
 
 let state: CacheConfigShape = readPersisted() || DEFAULT_CONFIG;

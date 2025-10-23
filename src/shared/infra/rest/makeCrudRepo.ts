@@ -1,6 +1,6 @@
-import type { HttpClientLike } from "@/shared/infra/http/types";
-import { optimizedApiClient } from "@/shared/infra/http/OptimizedApiClient";
-import { makeResource, type Resource, type ResourceEndpoints, type ResourceMappers } from "@/shared/infra/rest/makeResource";
+import type { HttpClientLike } from "@/shared";
+import { optimizedApiClient } from "@/shared";
+import { makeResource, type Resource, type ResourceEndpoints, type ResourceMappers } from "@/shared";
 
 /**
  * Capa muy fina sobre makeResource para crear un repo CRUD en 1 línea.

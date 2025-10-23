@@ -6,11 +6,6 @@ export enum LeadStatus {
   DONE = "DONE",
   LOST = "LOST",
   NOT_EXECUTED = "NOT_EXECUTED",
-  New = "New",
-  Contacted = "Contacted",
-  Qualified = "Qualified",
-  Won = "Won",
-  Lost = "Lost",
 }
 
 export enum LeadType {

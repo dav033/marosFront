@@ -1,6 +1,7 @@
 import { useState } from "react";
-import type { LeadFormData } from "@/types/components/form";
-import { LeadStatus, LeadType } from "@/features/leads/enums";
+
+import { LeadStatus, LeadType } from "@/leads";
+import type { LeadFormData } from "@/types";
 
 export interface UseLeadFormOptions {
   initialData?: Partial<LeadFormData>;

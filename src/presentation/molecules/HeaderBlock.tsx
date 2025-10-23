@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import type { Project } from "@/features/project/domain/models/Project";
+import type { Project } from "@/project";
 
 type HeaderBlockProps = {
   project?: Project;

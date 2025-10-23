@@ -1,7 +1,4 @@
-import type { ProjectStatus } from "@/features/project/enums";
-import type { LeadId,ProjectDraft, ProjectId, ProjectPatch } from "@/features/project/types";
-
-import type { Project } from "../models/Project";
+import type { LeadId, Project,ProjectDraft, ProjectId, ProjectPatch, ProjectStatus } from "@/project";
 
 export interface ProjectRepositoryPort {
   findById(id: ProjectId): Promise<Project | null>;

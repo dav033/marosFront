@@ -1,4 +1,4 @@
-import type { ProjectType } from "../models/ProjectType";
+import type { ProjectType } from "@/leads";
 
 export interface ProjectTypeRepositoryPort {
   findAll(): Promise<ProjectType[]>;

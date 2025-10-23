@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 export interface SidebarContextType {
   isOpen: boolean;
   toggle: () => void;
@@ -6,18 +7,18 @@ export interface SidebarContextType {
 }
 
 export interface SidebarProviderProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export interface SidebarWrapperProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export interface SidebarItemProps {
-  href: string;
-  icon: string;
-  label: string;
-  isActive?: boolean;
+  title: string;
+  to: string;
+  icon?: string;
+  currentPath: string;
 }
 
 export interface TriggerProps {
@@ -29,7 +30,7 @@ export interface TriggerProps {
 export interface SidebarDropdownProps {
   trigger: TriggerProps;
   width?: string;
-  children: React.ReactNode;
+  children: ReactNode;
   duration?: number;
   indentLevel?: number;
   defaultOpen?: boolean;

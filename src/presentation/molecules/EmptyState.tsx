@@ -1,6 +1,6 @@
 import React from "react";
 
-import Button from "../atoms/Button";
+import { Button } from "@/presentation";
 
 export const EmptyState: React.FC<{
   title: string;

@@ -1,6 +1,7 @@
 import React from "react";
 
-import { useSidebarNavigation } from "../../hooks/useSidebarNavigation.tsx";
+import { useSidebarNavigation } from "@/hooks";
+
 import SidebarDropdown from "./SidebarDropdown.tsx";
 import SidebarItem from "./SidebarItem.tsx";
 const SIDEBAR_CONFIG = {

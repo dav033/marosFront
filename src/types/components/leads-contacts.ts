@@ -1,11 +1,9 @@
 
-import type { Contact } from "@/features/contact/domain/models/Contact";
-import type { Lead } from "@/features/leads/domain/models/Lead";
-import type { ProjectType } from "@/features/leads/domain/models/ProjectType";
-import type { LeadType } from "@/features/leads/enums";
-import type { Column } from "@/types/components/table";
+import type { Contact } from "@/contact";
+import type { Lead, LeadType,ProjectType } from "@/leads";
 
-import type { ContactMode,FormMode } from "../enums";
+import type { ContactMode, FormMode } from "..";
+import type { Column } from ".";
 import type { LeadFormData } from "./form";
 
 export interface LeadFormFieldsProps {
