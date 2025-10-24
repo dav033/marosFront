@@ -34,13 +34,13 @@ export function useContactsApplication() {
   };
 
   return {
-    // Lecturas
+    
     list: () => listContacts(ctx),
     getById: (id: number) => getContactById(ctx, id),
     findAll: () => listContacts(ctx),
     findById: (id: number) => getContactById(ctx, id),
 
-    // Altas / modificaciones con sincronización de caché
+    
     create: async (draft: ContactDraft) => {
       const created = await createContact(ctx, draft);
       if (created) upsertCache(created as Contact);
@@ -57,7 +57,7 @@ export function useContactsApplication() {
       return updated;
     },
 
-    // Borrado con sincronización de caché
+    
     delete: async (id: number) => {
       await deleteContact(ctx, id);
       removeFromCache(id);
@@ -67,7 +67,7 @@ export function useContactsApplication() {
       removeFromCache(id);
     },
 
-    // Validaciones
+    
     validateUniqueness: (candidate: ContactUniquenessCheck) =>
       validateContactUniqueness(ctx, candidate),
   };

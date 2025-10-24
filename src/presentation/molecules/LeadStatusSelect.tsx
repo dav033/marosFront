@@ -2,7 +2,7 @@ import React from "react";
 
 import { Select } from "@/presentation";
 import { getLeadStatusOptions } from "@/presentation";
-import type { LeadStatus } from "@/types";
+import type { LeadStatus } from "@/leads";
 
 export type LeadStatusSelectProps = {
   value: LeadStatus | "";

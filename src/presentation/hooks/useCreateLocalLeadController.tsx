@@ -22,13 +22,13 @@ export function useCreateLocalLeadController({
   );
   const [error, setError] = useState<string | null>(null);
 
-  const { form, handleChange } = useLeadForm({ leadType });
+  const { form, handleChange } = useLeadForm({ initialData: { leadType } });
   const queryClient = useQueryClient();
 
   const ctx = makeLeadsAppContext({
     clock: SystemClock,
     repos: {
-      lead: new LeadHttpRepository(undefined, { skipClickUpSync: true }),
+      lead: new LeadHttpRepository(),
       contact: new ContactRepositoryAdapterForLeads(),
     },
     services: {
@@ -84,7 +84,7 @@ export function useCreateLocalLeadController({
         policies: {},
       })) as unknown as Lead;
 
-      // Actualizar cache React Query
+      
       queryClient.setQueryData<Lead[] | undefined>(
         ["leads", "byType", leadType],
         (prev) => {

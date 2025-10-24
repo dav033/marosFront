@@ -1,4 +1,3 @@
-/* eslint-env browser */
 export type CacheResourceKey = string;
 
 export interface CacheResourceConfig {
@@ -58,7 +57,7 @@ function persist(config: CacheConfigShape) {
   try {
     globalThis.window?.localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
   } catch {
-    // noop: ignore persistence failures (e.g., SSR or private mode)
+    // ignore persistence errors
   }
 }
 

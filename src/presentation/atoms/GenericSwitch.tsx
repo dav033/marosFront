@@ -72,7 +72,6 @@ export const GenericSwitch: React.FC<GenericSwitchProps> = ({
           {rightLabel}
         </span>
 
-        {/* Toggle (resaltado) */}
         <div
           className={`
             absolute top-1/2 transform -translate-y-1/2

@@ -1,4 +1,3 @@
-// src/shared/infra/http/OptimizedApiClient.ts
 import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
 
 import type { HttpClientLike, RequestOptions } from '@/shared';
@@ -12,7 +11,6 @@ export class OptimizedApiClient implements HttpClientLike {
   constructor(baseURL: string = BASE_URL) {
     this.axiosInstance = axios.create({
       baseURL,
-      // ⚠️ No fijes Content-Type global para no forzar preflight en GET
       withCredentials: false,
     });
   }
@@ -21,19 +19,18 @@ export class OptimizedApiClient implements HttpClientLike {
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
     url: string,
     body?: unknown,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<{ data: T; status: number }> {
     const cfg: AxiosRequestConfig = { url, method };
 
     if (options?.headers) cfg.headers = options.headers;
     if (options?.params) cfg.params = options.params;
-    if (options?.withCredentials !== undefined) cfg.withCredentials = options.withCredentials;
+    if (options?.withCredentials !== undefined)
+      cfg.withCredentials = options.withCredentials;
     if (options?.signal) cfg.signal = options.signal;
 
     if (body !== undefined) {
       cfg.data = body;
-      // Solo cuando hay body, añade Content-Type si no vino ya
-      // cfg.headers = { ...(cfg.headers ?? {}), 'Content-Type': 'application/json' };
     }
 
     const res = await this.axiosInstance.request<T>(cfg);
@@ -54,5 +51,4 @@ export class OptimizedApiClient implements HttpClientLike {
   }
 }
 
-// ✅ Exporta la instancia singleton que esperan tus repos
 export const optimizedApiClient = new OptimizedApiClient(BASE_URL);

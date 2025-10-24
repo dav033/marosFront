@@ -1,22 +1,27 @@
-import { Icon } from "@iconify/react";
-import classNames from "classnames";
-import React, { useCallback, useLayoutEffect, useRef, useState } from "react";
+import { Icon } from '@iconify/react';
+import classNames from 'classnames';
+import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
-import type { SidebarDropdownProps } from "@/types";
+import type { SidebarDropdownProps } from '@/types';
 
 export default function SidebarDropdown({
   trigger,
-  width = "w-full",
+  width = 'w-full',
   children,
   duration = 300,
   indentLevel = 0,
   defaultOpen = false,
 }: SidebarDropdownProps) {
-    const [isOpen, setIsOpen] = useState(defaultOpen);
-  const [inlineHeight, setInlineHeight] = useState(defaultOpen ? "auto" : "0px"); 
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+  const [inlineHeight, setInlineHeight] = useState(
+    defaultOpen ? 'auto' : '0px',
+  );
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const readHeight = useCallback(() => containerRef.current?.scrollHeight ?? 0, []);
+  const readHeight = useCallback(
+    () => containerRef.current?.scrollHeight ?? 0,
+    [],
+  );
 
   const open = useCallback(() => {
     const fullHeight = readHeight();
@@ -26,11 +31,12 @@ export default function SidebarDropdown({
   const close = useCallback(() => {
     const fullHeight = readHeight();
     setInlineHeight(`${fullHeight}px`);
-    // Guard for SSR: use globalThis.requestAnimationFrame if available
-    const raf = globalThis && typeof globalThis.requestAnimationFrame === "function"
-      ? globalThis.requestAnimationFrame.bind(globalThis)
-      : (cb: FrameRequestCallback) => cb(0);
-    raf(() => setInlineHeight("0px"));
+
+    const raf =
+      globalThis && typeof globalThis.requestAnimationFrame === 'function'
+        ? globalThis.requestAnimationFrame.bind(globalThis)
+        : (cb: FrameRequestCallback) => cb(0);
+    raf(() => setInlineHeight('0px'));
   }, [readHeight]);
 
   useLayoutEffect(() => {
@@ -38,27 +44,26 @@ export default function SidebarDropdown({
     else close();
   }, [isOpen, open, close]);
 
-    const handleTransitionEnd = (e: React.TransitionEvent<HTMLDivElement>) => {
-    if (e.propertyName !== "height") return;
-    if (isOpen) setInlineHeight("auto"); 
+  const handleTransitionEnd = (e: React.TransitionEvent<HTMLDivElement>) => {
+    if (e.propertyName !== 'height') return;
+    if (isOpen) setInlineHeight('auto');
   };
 
-    const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     setIsOpen((prev) => !prev);
   };
 
-    const paddingLeft = indentLevel ? `${indentLevel}px` : "16px";
+  const paddingLeft = indentLevel ? `${indentLevel}px` : '16px';
 
-    return (
-    <div className={classNames("relative", width)}>
-      {/* ----- disparador ----- */}
+  return (
+    <div className={classNames('relative', width)}>
       <button
         onClick={handleToggle}
         aria-expanded={isOpen}
         className={classNames(
-          "flex items-center cursor-pointer justify-between gap-2 text-gray-300 hover:text-white transition-colors duration-200",
-          trigger.className
+          'flex cursor-pointer items-center justify-between gap-2 text-gray-300 transition-colors duration-200 hover:text-white',
+          trigger.className,
         )}
         style={{ paddingLeft }}
       >
@@ -70,17 +75,16 @@ export default function SidebarDropdown({
         <Icon
           icon="material-symbols:arrow-drop-down"
           className={classNames(
-            "h-4 w-4 flex-shrink-0 transition-transform duration-200",
-            { "rotate-180": isOpen }
+            'h-4 w-4 flex-shrink-0 transition-transform duration-200',
+            { 'rotate-180': isOpen },
           )}
         />
       </button>
 
-      {/* ----- contenedor animado ----- */}
       <div
         ref={containerRef}
         onTransitionEnd={handleTransitionEnd}
-        className={classNames("overflow-hidden", width)}
+        className={classNames('overflow-hidden', width)}
         style={{
           height: inlineHeight,
           transition: `height ${duration}ms ease-out`,

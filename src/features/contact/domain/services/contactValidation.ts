@@ -1,21 +1,5 @@
-import { BusinessRuleError } from "@/shared";
+import { BusinessRuleError, countDigits, isISODateOrDateTime, isValidEmail, normalizeText } from "@/shared";
 
-
-export type ContactValidationPolicies = Readonly<{
-  maxNameLength?: number;        
-  maxCompanyLength?: number;     
-  minPhoneDigits?: number;       
-  requireAtLeastOneReach?: boolean; 
-  validateLastContactISO?: boolean; 
-}>;
-
-export const DEFAULT_POLICIES: Required<ContactValidationPolicies> = {
-  maxNameLength: 140,
-  maxCompanyLength: 140,
-  minPhoneDigits: 7,
-  requireAtLeastOneReach: false,
-  validateLastContactISO: false,
-};
 
 export type ContactField =
   | "companyName"
@@ -27,67 +11,53 @@ export type ContactField =
   | "address"
   | "lastContact";
 
-export type ValidationCode =
-  | "REQUIRED"
-  | "TOO_LONG"
-  | "FORMAT"
-  | "MIN_DIGITS"
-  | "NOT_ISO"
-  | "AT_LEAST_ONE"; 
-
 export type ValidationIssue = Readonly<{
   field: ContactField | "global";
-  code: ValidationCode;
+  code: string;
   message: string;
   details?: Record<string, unknown>;
 }>;
 
+export type ContactValidationPolicies = Readonly<{
+  maxNameLength?: number;
+  maxCompanyLength?: number;
+  minPhoneDigits?: number;
+  requireAtLeastOneReach?: boolean;
+  validateLastContactISO?: boolean;
+}>;
 
-export function normText(s: unknown): string {
-  return String(s ?? "").replace(/\s+/g, " ").trim();
-}
-
-export function normLower(s: unknown): string {
-  return normText(s).toLowerCase();
-}
-
-export function isValidEmail(email?: string): boolean {
-  if (!email) return true; 
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-export function countPhoneDigits(p?: string): number {
-  if (!p) return 0;
-  return String(p).replace(/\D+/g, "").length;
-}
-
-export function isISODateOrDateTime(s: string): boolean {
-  return /^\d{4}-\d{2}-\d{2}([T ]\d{2}:\d{2}(:\d{2}(\.\d{1,3})?)?(Z|[+-]\d{2}:\d{2})?)?$/.test(
-    s
-  );
-}
-
+const DEFAULTS: Required<Omit<ContactValidationPolicies, "requireAtLeastOneReach">> & {
+  requireAtLeastOneReach: boolean;
+} = {
+  maxNameLength: 140,
+  maxCompanyLength: 140,
+  minPhoneDigits: 7,
+  validateLastContactISO: false,
+  requireAtLeastOneReach: false,
+};
 
 export function collectContactValidationIssues(
   input: Partial<Record<ContactField, unknown>>,
   policies: ContactValidationPolicies = {}
 ): ValidationIssue[] {
-  const cfg = { ...DEFAULT_POLICIES, ...policies };
+  const cfg = { ...DEFAULTS, ...policies };
+
+  const companyName = normalizeText(input.companyName);
+  const name = normalizeText(input.name);
+  const email = normalizeText(input.email) || undefined;
+  const phone = normalizeText(input.phone) || undefined;
+  const lastContact = normalizeText(input.lastContact) || undefined;
+
   const issues: ValidationIssue[] = [];
 
-  const companyName = normText(input.companyName as string);
-  const name = normText(input.name as string);
-  const email = normText(input.email as string);
-  const phone = normText(input.phone as string);
-  const lastContact = normText(input.lastContact as string);
-  if ("companyName" in input && !companyName) {
+  if (!companyName) {
     issues.push({
       field: "companyName",
       code: "REQUIRED",
       message: "Company name must not be empty",
     });
   }
-  if ("name" in input && !name) {
+  if (!name) {
     issues.push({
       field: "name",
       code: "REQUIRED",
@@ -110,6 +80,7 @@ export function collectContactValidationIssues(
       details: { length: name.length },
     });
   }
+
   if (cfg.requireAtLeastOneReach) {
     const hasEmail = !!email;
     const hasPhone = !!phone;
@@ -122,6 +93,7 @@ export function collectContactValidationIssues(
       });
     }
   }
+
   if (email && !isValidEmail(email)) {
     issues.push({
       field: "email",
@@ -130,7 +102,7 @@ export function collectContactValidationIssues(
       details: { value: email },
     });
   }
-  if (phone && countPhoneDigits(phone) < cfg.minPhoneDigits) {
+  if (phone && countDigits(phone) < cfg.minPhoneDigits) {
     issues.push({
       field: "phone",
       code: "MIN_DIGITS",
@@ -150,9 +122,7 @@ export function collectContactValidationIssues(
   return issues;
 }
 
-export function assertNoValidationIssues(
-  issues: readonly ValidationIssue[]
-): void {
+export function assertNoValidationIssues(issues: readonly ValidationIssue[]): void {
   if (!issues || issues.length === 0) return;
   throw new BusinessRuleError("VALIDATION_ERROR", "Contact validation failed", {
     details: { issues },

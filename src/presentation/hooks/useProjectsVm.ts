@@ -1,20 +1,21 @@
 import * as React from "react";
 
 import {
+  HttpProjectRepository,
   createProject,
   deleteProject,
   getProjectById,
   getProjects,
   getProjectsByStatus,
   getProjectsWithLeads,
+  makeProjectsAppContext,
+  updateProject,
   type Project,
-  ProjectApplicationContextFactory,
   type ProjectDraft,
   type ProjectId,
   type ProjectPatch,
   type ProjectStatus,
   type ProjectWithLeadView,
-  updateProject,
 } from "@/project";
 import { getErrorMessage } from "@/utils";
 
@@ -24,7 +25,11 @@ type State = {
   error: string | null;
 };
 
-const ctx = ProjectApplicationContextFactory.createHttpContext();
+const ctx = makeProjectsAppContext({
+  repos: {
+    project: new HttpProjectRepository(),
+  },
+});
 
 export function useProjectsVm(initialStatus?: ProjectStatus) {
   const [state, setState] = React.useState<State>({ data: [], loading: false, error: null });

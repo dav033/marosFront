@@ -1,10 +1,7 @@
-import React from "react";
-
-import type { Contact } from "@/contact";
-import { useContactContextMenu } from "@/hooks";
-import type { Column } from "@/types";
-
-import DataTable from "./DataTable.tsx";
+import type { Contact } from '@/contact';
+import { useContactContextMenu } from '@/hooks';
+import { DataTable } from '@/shared';
+import type { Column } from '@/types';
 
 export type ContactSectionProps = {
   title: string;
@@ -22,8 +19,12 @@ export default function ContactSection({
   onDeleteContact,
 }: ContactSectionProps) {
   const contactMenuOpts: Parameters<typeof useContactContextMenu>[0] = {};
-  if (onEditContact) contactMenuOpts.onEdit = (contact: unknown) => onEditContact(contact as Contact);
-  if (onDeleteContact) contactMenuOpts.onDelete = (contact: unknown) => onDeleteContact((contact as Contact).id);
+  if (onEditContact)
+    contactMenuOpts.onEdit = (contact: unknown) =>
+      onEditContact(contact as Contact);
+  if (onDeleteContact)
+    contactMenuOpts.onDelete = (contact: unknown) =>
+      onDeleteContact((contact as Contact).id);
 
   const { getContactContextOptions } = useContactContextMenu(contactMenuOpts);
 
@@ -33,7 +34,7 @@ export default function ContactSection({
         {title} ({data.length})
       </h2>
 
-  <DataTable<Contact>
+      <DataTable<Contact>
         columns={columns}
         data={data}
         contextMenuOptions={getContactContextOptions}

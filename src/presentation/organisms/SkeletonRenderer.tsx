@@ -6,15 +6,10 @@ import { useLoading } from "@/presentation";
 type SkeletonKind = "contactsTable" | "genericTable" | "leadsTable" | "list" | "form" | string;
 
 type Props = {
-  /** Fuerza la visibilidad del skeleton. Si no se pasa, usa el estado global (React Query). */
   loading?: boolean;
-  /** Tipo de skeleton a mostrar (por defecto: tabla genérica). */
   type?: SkeletonKind;
-  /** Número de filas a renderizar en el skeleton (si aplica). */
   rows?: number;
-  /** Muestra secciones en tablas (si aplica). */
   showSections?: boolean;
-  /** Renderiza el skeleton como overlay bloqueante. */
   overlay?: boolean;
 };
 

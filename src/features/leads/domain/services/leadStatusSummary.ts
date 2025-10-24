@@ -1,5 +1,4 @@
-import type { Lead, LeadType } from "@/leads";
-import { LeadStatus } from "../../enums";
+import type { Lead, LeadStatus,LeadType } from "@/leads";
 
 export type StatusCounts = Readonly<Record<LeadStatus, number>>;
 type MutableStatusCounts = Record<LeadStatus, number>;
@@ -12,18 +11,18 @@ export type LeadStatusSummary = Readonly<{
 }>;
 
 function toEffectiveStatus(s: LeadStatus | null | undefined): LeadStatus {
-  return s ?? LeadStatus.UNDETERMINED;
+  return (s ?? "UNDETERMINED") as LeadStatus;
 }
 
 function zeroCounts(): MutableStatusCounts {
   return {
-    [LeadStatus.NEW]: 0,
-    [LeadStatus.UNDETERMINED]: 0,
-    [LeadStatus.TO_DO]: 0,
-    [LeadStatus.IN_PROGRESS]: 0,
-    [LeadStatus.DONE]: 0,
-    [LeadStatus.LOST]: 0,
-    [LeadStatus.NOT_EXECUTED]: 0,
+    NEW: 0,
+    UNDETERMINED: 0,
+    TO_DO: 0,
+    IN_PROGRESS: 0,
+    DONE: 0,
+    LOST: 0,
+    NOT_EXECUTED: 0,
   } as MutableStatusCounts;
 }
 
@@ -37,24 +36,18 @@ export function summarizeLeads(leads: readonly Lead[]): LeadStatusSummary {
   }
 
   const total =
-    counts[LeadStatus.NEW] +
-    counts[LeadStatus.UNDETERMINED] +
-    counts[LeadStatus.TO_DO] +
-    counts[LeadStatus.IN_PROGRESS] +
-    counts[LeadStatus.DONE] +
-    counts[LeadStatus.LOST] +
-    counts[LeadStatus.NOT_EXECUTED];
+    counts.NEW +
+    counts.UNDETERMINED +
+    counts.TO_DO +
+    counts.IN_PROGRESS +
+    counts.DONE +
+    counts.LOST +
+    counts.NOT_EXECUTED;
 
-  const active = (
-    [
-      LeadStatus.NEW,
-      LeadStatus.UNDETERMINED,
-      LeadStatus.TO_DO,
-      LeadStatus.IN_PROGRESS,
-    ] as const
-  ).reduce((acc, k) => acc + counts[k], 0);
+  const active = (['NEW','UNDETERMINED','TO_DO','IN_PROGRESS'] as const)
+    .reduce((acc, k) => acc + counts[k], 0);
 
-  const completionRate = total > 0 ? (counts[LeadStatus.DONE] ?? 0) / total : 0;
+  const completionRate = total > 0 ? (counts.DONE ?? 0) / total : 0;
   return { total, counts: counts as StatusCounts, active, completionRate };
 }
 

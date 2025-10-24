@@ -1,19 +1,21 @@
-import React, { lazy, Suspense, useCallback, useMemo, useState } from "react";
+import React, { lazy, Suspense, useCallback, useMemo, useState } from 'react';
 
+import { contactsSearchConfig, contactsSearchPlaceholder } from '@/components';
+import type { Contact } from '@/contact';
 import {
-  contactsSearchConfig,
-  contactsSearchPlaceholder,
-} from "@/components";
-import type { Contact } from "@/contact";
-import { Button, ContactSection, contactTableColumns, SearchBoxWithDropdown } from "@/presentation";
-import { useContactsApplication } from "@/presentation";
-import { useSearch } from "@/shared";
-import type { ContactFormData } from "@/types";
-import { getErrorMessage } from "@/utils";
+  Button,
+  ContactSection,
+  contactTableColumns,
+  SearchBoxWithDropdown,
+} from '@/presentation';
+import { useContactsApplication } from '@/presentation';
+import { useSearch } from '@/shared';
+import type { ContactFormData } from '@/types';
+import { getErrorMessage } from '@/utils';
 
-import CreateContactModal from "./CreateContactModal";
+import CreateContactModal from './CreateContactModal';
 
-const EditContactModal = lazy(() => import("./EditContactModal.tsx"));
+const EditContactModal = lazy(() => import('./EditContactModal.tsx'));
 
 export type ContactsTableProps = {
   contacts: Contact[];
@@ -30,7 +32,7 @@ export default function ContactsTable({
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
   const create = React.useCallback(
     (draft: ContactFormData) => app.create(draft),
-    [app]
+    [app],
   );
   const [isCreating, setIsCreating] = useState(false);
   const [createError, setCreateError] = useState<string | undefined>(undefined);
@@ -57,7 +59,7 @@ export default function ContactsTable({
       setIsCreateOpen(false);
       if (shouldRefetch) await onRefetch();
     },
-    [onRefetch]
+    [onRefetch],
   );
 
   const handleEditClose = useCallback(
@@ -66,7 +68,7 @@ export default function ContactsTable({
       setEditingContact(null);
       if (shouldRefetch) await onRefetch();
     },
-    [onRefetch]
+    [onRefetch],
   );
 
   const handleEditOpen = useCallback((contact: Contact) => {
@@ -78,7 +80,7 @@ export default function ContactsTable({
     async (_contactId: number) => {
       await onRefetch();
     },
-    [onRefetch]
+    [onRefetch],
   );
   const handleCreateSubmit = useCallback(
     async (_values: ContactFormData) => {
@@ -91,18 +93,18 @@ export default function ContactsTable({
       } catch (err: unknown) {
         const msg =
           getErrorMessage(err) ||
-          (err && typeof err === "object" && "message" in err
+          (err && typeof err === 'object' && 'message' in err
             ? String(
                 (err as { message?: unknown }).message ??
-                  "Failed to create contact"
+                  'Failed to create contact',
               )
-            : String(err ?? "Failed to create contact"));
+            : String(err ?? 'Failed to create contact'));
         setCreateError(msg);
       } finally {
         setIsCreating(false);
       }
     },
-    [onRefetch, create]
+    [onRefetch, create],
   );
   const handleContactUpdated = useCallback(
     async (_updated: Contact) => {
@@ -110,33 +112,35 @@ export default function ContactsTable({
       setIsEditOpen(false);
       setEditingContact(null);
     },
-    [onRefetch]
+    [onRefetch],
   );
 
   return (
     <div
-      className="w-full max-w-full mx-auto p-6"
+      className="mx-auto w-full max-w-full p-6"
       style={{
-        backgroundColor: "var(--color-dark)",
-        color: "var(--color-light)",
+        backgroundColor: 'var(--color-dark)',
+        color: 'var(--color-light)',
       }}
     >
-      {/* Header */}
-      <div className="flex justify-between items-center mb-6 gap-4">
+      <div className="mb-6 flex items-center justify-between gap-4">
         <Button
           onClick={() => setIsCreateOpen(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+          className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
         >
           Create Contact
         </Button>
 
-        <div className="flex-1 max-w-md">
+        <div className="max-w-md flex-1">
           <SearchBoxWithDropdown
             searchTerm={searchTerm}
             onSearchChange={handleSearchChange}
             selectedField={selectedField}
             onFieldChange={handleFieldChange}
-            searchFields={searchFields.map(({ value, label }) => ({ key: value, label }))}
+            searchFields={searchFields.map(({ value, label }) => ({
+              key: value,
+              label,
+            }))}
             onClearSearch={clearSearch}
             {...(contactsSearchPlaceholder
               ? { placeholder: contactsSearchPlaceholder }
@@ -147,7 +151,6 @@ export default function ContactsTable({
         </div>
       </div>
 
-      {/* Modales */}
       {isCreateOpen && (
         <Suspense fallback={null}>
           <CreateContactModal
@@ -171,12 +174,11 @@ export default function ContactsTable({
         </Suspense>
       )}
 
-      {/* Tabla */}
       <ContactSection
         title={
           hasActiveSearch
             ? `Search Results (${filteredData.length})`
-            : "All Contacts"
+            : 'All Contacts'
         }
         data={filteredData}
         columns={memoColumns}

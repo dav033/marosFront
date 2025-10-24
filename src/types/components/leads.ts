@@ -1,15 +1,8 @@
-
-import type React from "react";
-import type { Contact } from "@/contact";
-import type { Lead, LeadType } from "@/leads";
-import type { FormMode, ContactMode } from "..";
-import type { LeadFormData } from "./form";
-export interface ProjectType {
-  id: number;
-  name: string;
-}
-
-// Use runtime enums from ../enums for mode types
+import type React from 'react';
+import type { Contact } from '@/contact';
+import type { Lead, LeadType, ProjectType } from '@/leads';
+import type { FormMode, ContactMode } from '..';
+import type { LeadFormData } from './form';
 
 export interface InstantLeadsListProps {
   leadType: LeadType;
@@ -26,7 +19,7 @@ export interface LeadFormFieldsProps {
   isLoading?: boolean;
 }
 
-export type SelectorFields = "customerName" | "contactName" | "phone" | "email";
+export type SelectorFields = 'customerName' | 'contactName' | 'phone' | 'email';
 
 export interface ContactModeSelectorProps {
   contactMode: ContactMode;
@@ -66,8 +59,7 @@ export interface BaseLeadModalProps {
   loadingText?: string;
   cancelText?: string;
   isSubmitDisabled?: boolean;
-  size?: "sm" | "md" | "lg" | "xl";
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
-    formId?: string;
+  formId?: string;
 }
-

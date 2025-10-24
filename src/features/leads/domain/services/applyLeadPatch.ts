@@ -1,16 +1,22 @@
+import type {
+  ApplyLeadPatchResult,
+  Clock,
+  ISODate,
+  Lead,
+  LeadPatch,
+  LeadPatchPolicies,
+  LeadStatus,
+} from '@/leads';
+import { BusinessRuleError } from '@/shared';
 
-import type { ApplyLeadPatchResult, Clock, ISODate, Lead,LeadPatch, LeadPatchPolicies } from "@/leads";
-import { BusinessRuleError } from "@/shared";
+import { ensureLeadIntegrity } from './ensureLeadIntegrity';
+import { makeLeadNumber } from './leadNumberPolicy';
+import { applyStatus, DEFAULT_TRANSITIONS } from './leadStatusPolicy';
 
-// eslint-disable-next-line no-restricted-imports
-import { LeadStatus } from "../../enums";
-import { ensureLeadIntegrity } from "./ensureLeadIntegrity";
-import { makeLeadNumber } from "./leadNumberPolicy";
-import { applyStatus, DEFAULT_TRANSITIONS } from "./leadStatusPolicy";
-
-/** Utilidades locales (compatibles con tu implementación actual) */
 function normalizeText(s: string): string {
-  return String(s ?? "").replace(/\s+/g, " ").trim();
+  return String(s ?? '')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 function isIsoLocalDate(s: string): boolean {
   return /^\d{4}-\d{2}-\d{2}$/.test(s);
@@ -19,49 +25,52 @@ function validateLeadName(raw: string): string {
   const v = normalizeText(raw);
   if (!v) {
     throw new BusinessRuleError(
-      "VALIDATION_ERROR",
-      "Lead name must not be empty",
-      { details: { field: "name" } }
+      'VALIDATION_ERROR',
+      'Lead name must not be empty',
+      { details: { field: 'name' } },
     );
   }
   if (v.length > 140) {
-    throw new BusinessRuleError(
-      "FORMAT_ERROR",
-      "Lead name max length is 140",
-      { details: { field: "name", length: v.length } }
-    );
+    throw new BusinessRuleError('FORMAT_ERROR', 'Lead name max length is 140', {
+      details: { field: 'name', length: v.length },
+    });
   }
   return v;
 }
 function toEffectiveStatus(s: LeadStatus | null | undefined): LeadStatus {
-  return s ?? LeadStatus.UNDETERMINED;
+  return (s ?? 'UNDETERMINED') as LeadStatus;
 }
 function resolveTransitions(
-  overrides?: Partial<Record<LeadStatus, LeadStatus[]>>
+  overrides?: Partial<Record<LeadStatus, LeadStatus[]>>,
 ): Readonly<Partial<Record<LeadStatus, readonly LeadStatus[]>>> {
-  const ro = (arr?: LeadStatus[]) => (arr as readonly LeadStatus[]) || undefined;
+  const ro = (arr?: LeadStatus[]) =>
+    (arr as readonly LeadStatus[]) || undefined;
   return {
-    [LeadStatus.NEW]: ro(overrides?.[LeadStatus.NEW]) ?? DEFAULT_TRANSITIONS[LeadStatus.NEW],
-    [LeadStatus.UNDETERMINED]: ro(overrides?.[LeadStatus.UNDETERMINED]) ?? DEFAULT_TRANSITIONS[LeadStatus.UNDETERMINED],
-    [LeadStatus.TO_DO]: ro(overrides?.[LeadStatus.TO_DO]) ?? DEFAULT_TRANSITIONS[LeadStatus.TO_DO],
-    [LeadStatus.IN_PROGRESS]: ro(overrides?.[LeadStatus.IN_PROGRESS]) ?? DEFAULT_TRANSITIONS[LeadStatus.IN_PROGRESS],
-    [LeadStatus.DONE]: ro(overrides?.[LeadStatus.DONE]) ?? DEFAULT_TRANSITIONS[LeadStatus.DONE],
-    [LeadStatus.LOST]: ro(overrides?.[LeadStatus.LOST]) ?? DEFAULT_TRANSITIONS[LeadStatus.LOST],
-    [LeadStatus.NOT_EXECUTED]: ro(overrides?.[LeadStatus.NOT_EXECUTED]) ?? DEFAULT_TRANSITIONS[LeadStatus.NOT_EXECUTED],
+    NEW: ro(overrides?.NEW) ?? DEFAULT_TRANSITIONS.NEW,
+    UNDETERMINED:
+      ro(overrides?.UNDETERMINED) ?? DEFAULT_TRANSITIONS.UNDETERMINED,
+    TO_DO: ro(overrides?.TO_DO) ?? DEFAULT_TRANSITIONS.TO_DO,
+    IN_PROGRESS: ro(overrides?.IN_PROGRESS) ?? DEFAULT_TRANSITIONS.IN_PROGRESS,
+    DONE: ro(overrides?.DONE) ?? DEFAULT_TRANSITIONS.DONE,
+    LOST: ro(overrides?.LOST) ?? DEFAULT_TRANSITIONS.LOST,
+    NOT_EXECUTED:
+      ro(overrides?.NOT_EXECUTED) ?? DEFAULT_TRANSITIONS.NOT_EXECUTED,
   } as const;
 }
 
-/** Contexto de los manejadores */
 type PatchHandlerCtx = Readonly<{
   clock: Clock;
   current: Lead;
   policies: LeadPatchPolicies;
-  events: ApplyLeadPatchResult["events"];
+  events: ApplyLeadPatchResult['events'];
 }>;
 
-/** Manejadores por campo: eliminan ifs repetidos y centralizan reglas */
 const PATCH_HANDLERS: {
-  [K in keyof LeadPatch]?: (value: LeadPatch[K], ctx: PatchHandlerCtx, acc: Lead) => Lead
+  [K in keyof LeadPatch]?: (
+    value: LeadPatch[K],
+    ctx: PatchHandlerCtx,
+    acc: Lead,
+  ) => Lead;
 } = {
   name: (v, _ctx, acc) => ({ ...acc, name: validateLeadName(String(v)) }),
 
@@ -75,16 +84,16 @@ const PATCH_HANDLERS: {
       ? { pattern: ctx.policies.leadNumberPattern }
       : undefined;
     const normalized = makeLeadNumber(v as string | null | undefined, rules);
-    return { ...acc, leadNumber: normalized ?? "" };
+    return { ...acc, leadNumber: normalized ?? '' };
   },
 
   startDate: (v, _ctx, acc) => {
     const d = normalizeText(String(v));
     if (d && !isIsoLocalDate(d)) {
       throw new BusinessRuleError(
-        "FORMAT_ERROR",
-        "startDate must be in YYYY-MM-DD format",
-        { details: { field: "startDate", value: v } }
+        'FORMAT_ERROR',
+        'startDate must be in YYYY-MM-DD format',
+        { details: { field: 'startDate', value: v } },
       );
     }
     return { ...acc, startDate: d as ISODate };
@@ -103,28 +112,29 @@ const PATCH_HANDLERS: {
   status: (s, ctx, acc) => {
     const to = toEffectiveStatus(s as LeadStatus | null | undefined);
     const transitions = resolveTransitions(ctx.policies.allowedTransitions);
-    const { lead: withStatus, events } = applyStatus(ctx.clock, acc, to, transitions);
+    const { lead: withStatus, events } = applyStatus(
+      ctx.clock,
+      acc,
+      to,
+      transitions,
+    );
     if (events.length) ctx.events.push(...events);
     return withStatus;
   },
 };
 
-/**
- * Aplica un LeadPatch al Lead actual usando manejadores declarativos.
- * Conserva firma y eventos del dominio.
- */
 export function applyLeadPatch(
   clock: Clock,
   current: Lead,
   patch: LeadPatch,
-  policies: LeadPatchPolicies = {}
+  policies: LeadPatchPolicies = {},
 ): ApplyLeadPatchResult {
   let updated: Lead = { ...current };
-  const events: ApplyLeadPatchResult["events"] = [];
+  const events: ApplyLeadPatchResult['events'] = [];
 
   const ctx: PatchHandlerCtx = { clock, current, policies, events };
 
-    (Object.keys(patch) as (keyof LeadPatch)[])
+  (Object.keys(patch) as (keyof LeadPatch)[])
     .filter((k) => (patch as Record<string, unknown>)[k] !== undefined)
     .forEach((k) => {
       const handler = PATCH_HANDLERS[k];

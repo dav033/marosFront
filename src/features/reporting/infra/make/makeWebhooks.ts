@@ -1,8 +1,9 @@
-import { optimizedApiClient } from "@/shared";
+import { api,optimizedApiClient } from "@/shared";
+
 export const MAKE_HOOKS = {
-  uploadImage: "/api/make/upload-image",
-  restorationVisit: "/api/make/restoration-visit",
-  finalRestoration: "/api/make/final-restoration",
+  uploadImage: api.path("make", "upload-image"),
+  restorationVisit: api.path("make", "restoration-visit"),
+  finalRestoration: api.path("make", "final-restoration"),
 } as const;
 
 export async function uploadImageToMake(

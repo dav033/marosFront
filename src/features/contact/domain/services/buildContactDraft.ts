@@ -1,4 +1,6 @@
-import { BusinessRuleError } from "@/shared";
+import { BusinessRuleError } from '@/shared';
+
+import { normalizeEmail, normalizePhone, normalizeText } from '@/shared';
 
 export type ContactDraft = Readonly<{
   companyName: string;
@@ -8,75 +10,53 @@ export type ContactDraft = Readonly<{
   occupation?: string | undefined;
   product?: string | undefined;
   address?: string | undefined;
-    lastContact?: string | undefined;
+  lastContact?: string | undefined;
 }>;
 
-function normText(s: unknown): string {
-  return String(s ?? "")
-    .replace(/\s+/g, " ")
-    .trim();
-}
+type ContactInput = {
+  companyName?: unknown;
+  name?: unknown;
+  phone?: unknown;
+  email?: unknown;
+  occupation?: unknown;
+  product?: unknown;
+  address?: unknown;
+  lastContact?: unknown;
+};
 
-function normPhone(p?: string): string | undefined {
-  if (!p) return undefined;
-  const trimmed = String(p).trim();
-  if (trimmed.startsWith("+")) {
-    const rest = trimmed.slice(1).replace(/\D+/g, "");
-    return rest ? `+${rest}` : undefined;
-  }
-  const digits = trimmed.replace(/\D+/g, "");
-  return digits || undefined;
-}
+export function buildContactDraft(input: unknown): ContactDraft {
+  const src = (input ?? {}) as ContactInput;
 
-function normEmail(e?: string): string | undefined {
-  if (!e) return undefined;
-  const v = String(e).trim().toLowerCase();
-  return v || undefined;
-}
-
-
-export function buildContactDraft(input: {
-  companyName: string;
-  name: string;
-  phone?: string | undefined;
-  email?: string | undefined;
-  occupation?: string | undefined;
-  product?: string | undefined;
-  address?: string | undefined;
-  lastContact?: string | undefined;
-}): ContactDraft {
-  const companyName = normText(input.companyName);
-  const name = normText(input.name);
+  const companyName = normalizeText(src.companyName);
+  const name = normalizeText(src.name);
 
   if (!companyName) {
     throw new BusinessRuleError(
-      "VALIDATION_ERROR",
-      "Company name must not be empty",
+      'VALIDATION_ERROR',
+      'Company name must not be empty',
       {
-        details: { field: "companyName" },
-      }
+        details: { field: 'companyName' },
+      },
     );
   }
   if (!name) {
     throw new BusinessRuleError(
-      "VALIDATION_ERROR",
-      "Contact name must not be empty",
+      'VALIDATION_ERROR',
+      'Contact name must not be empty',
       {
-        details: { field: "name" },
-      }
+        details: { field: 'name' },
+      },
     );
   }
 
-  const draft: ContactDraft = {
+  return {
     companyName,
     name,
-    phone: normPhone(input.phone),
-    email: normEmail(input.email),
-    occupation: normText(input.occupation),
-    product: normText(input.product),
-    address: normText(input.address),
-    lastContact: normText(input.lastContact) || undefined,
+    phone: normalizePhone(src.phone as string | undefined),
+    email: normalizeEmail(src.email as string | undefined),
+    occupation: normalizeText(src.occupation) || undefined,
+    product: normalizeText(src.product) || undefined,
+    address: normalizeText(src.address) || undefined,
+    lastContact: normalizeText(src.lastContact) || undefined,
   };
-
-  return draft;
 }

@@ -47,18 +47,14 @@ export default [
       "simple-import-sort/imports": "warn",
       "simple-import-sort/exports": "warn",
 
-            "no-unused-vars": "off",
+    "no-unused-vars": "off",
+  // Rely on TypeScript for undefined variables in TS/TSX; allows using browser globals without file-level env comments
+  "no-undef": "off",
       "@typescript-eslint/no-unused-vars": [
         "warn",
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_", ignoreRestSiblings: true },
       ],
 
-      /**
-       * POLÍTICA DE IMPORTS
-       * 1) Bloquear imports profundos desde otras carpetas (relativos)
-       *    Permitido: './X' (misma carpeta) y '../feature' (index de otra carpeta)
-       *    Prohibido: '../feature/sub', '../../a/b', etc.
-       */
       "no-restricted-imports": [
         "error",
         {
@@ -77,14 +73,6 @@ export default [
         },
       ],
 
-      /**
-       * 2) Para paquetes/alias, permitir únicamente su raíz o su index.
-       *    - `@/feature`  ✅
-       *    - `@/feature/index` ✅ (si desea ser explícito)
-       *    - `@/feature/sub`   ❌
-       *
-       * Nota: esta regla afecta principalmente a paquetes/alias.
-       */
       "import/no-internal-modules": [
         "error",
         {

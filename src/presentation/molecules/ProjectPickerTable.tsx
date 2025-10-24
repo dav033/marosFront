@@ -1,6 +1,8 @@
 import React from "react";
 
 import type { ProjectWithLeadView } from "@/project";
+import type { Column } from "@/types";
+import { DataTable } from "@/shared";
 
 type Props = {
   projects: ProjectWithLeadView[];
@@ -9,57 +11,61 @@ type Props = {
 };
 
 export default function ProjectPickerTable({ projects, selectedId, onSelect }: Props) {
+  const columns = React.useMemo<Column<ProjectWithLeadView>[]>(() => {
+    return [
+      {
+        id: "select",
+        key: "id" as keyof ProjectWithLeadView,
+        label: "",
+        width: "40px",
+        cellRenderer: (_value, item) => (
+          <input
+            type="radio"
+            name="projectPicker"
+            aria-label={`select project ${item.id}`}
+            checked={selectedId === item.id}
+            onChange={() => onSelect(item.id)}
+          />
+        ),
+      },
+      {
+        key: "leadNumber" as keyof ProjectWithLeadView,
+        label: "Lead #",
+        width: "120px",
+        type: "string",
+        accessor: (p) => p.leadNumber ?? "",
+      },
+      {
+        key: "projectName" as keyof ProjectWithLeadView,
+        label: "Project name",
+        accessor: (p) => p.projectName ?? "",
+      },
+      {
+        key: "location" as keyof ProjectWithLeadView,
+        label: "Location",
+        accessor: (p) => p.location ?? p.leadName ?? "",
+      },
+      {
+        key: "contactName" as keyof ProjectWithLeadView,
+        label: "Contact name",
+        accessor: (p) => p.contactName ?? "",
+      },
+      {
+        key: "customerName" as keyof ProjectWithLeadView,
+        label: "Client name",
+        accessor: (p) => p.customerName ?? "",
+      },
+    ];
+  }, [onSelect, selectedId]);
+
   return (
-    <div className="overflow-x-auto rounded-2xl shadow-md bg-theme-dark text-theme-light border border-theme-gray-subtle">
-      <table className="w-full table-fixed custom-table text-theme-light">
-        <thead className="bg-theme-gray-darker">
-          <tr className="border-b border-theme-gray-subtle">
-            <th className="px-3 py-3 w-10" />
-            <th className="px-3 py-3 text-left text-sm font-medium uppercase tracking-wider">Lead #</th>
-            <th className="px-3 py-3 text-left text-sm font-medium uppercase tracking-wider">Project name</th>
-            <th className="px-3 py-3 text-left text-sm font-medium uppercase tracking-wider">Location</th>
-            <th className="px-3 py-3 text-left text-sm font-medium uppercase tracking-wider">Contact name</th>
-            <th className="px-3 py-3 text-left text-sm font-medium uppercase tracking-wider">Client name</th>
-          </tr>
-        </thead>
-        <tbody className="bg-theme-dark">
-          {projects.map((p) => {
-            const isSelected = selectedId === p.id;
-            return (
-              <tr
-                key={p.id}
-                className={[
-                  "cursor-pointer hover:bg-theme-primary/10",
-                  isSelected ? "bg-theme-primary/15 outline outline-1 outline-theme-primary" : "bg-theme-dark",
-                ].join(" ")}
-                onClick={() => onSelect(p.id)}
-              >
-                <td className="px-3 py-3 align-middle">
-                  <input
-                    type="radio"
-                    name="projectPicker"
-                    aria-label={`select project ${p.id}`}
-                    checked={isSelected}
-                    onChange={() => onSelect(p.id)}
-                  />
-                </td>
-                <td className="px-3 py-3 align-middle">{p.leadNumber ?? ""}</td>
-                <td className="px-3 py-3 align-middle">{p.projectName}</td>
-                <td className="px-3 py-3 align-middle">{p.location ?? p.leadName ?? ""}</td>
-                <td className="px-3 py-3 align-middle">{p.contactName ?? ""}</td>
-                <td className="px-3 py-3 align-middle">{p.customerName ?? ""}</td>
-              </tr>
-            );
-          })}
-          {projects.length === 0 && (
-            <tr>
-              <td colSpan={6} className="px-3 py-6 text-center text-sm text-theme-light border-t border-theme-gray-subtle">
-                No projects found.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+    <div className="rounded-2xl border border-theme-gray-subtle">
+      <DataTable<ProjectWithLeadView>
+        columns={columns}
+        data={projects}
+        showRowSeparators
+        className="rounded-2xl"
+      />
     </div>
   );
 }

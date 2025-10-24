@@ -1,17 +1,17 @@
-import type { Lead } from "@/leads";
-import { LeadStatus } from "../../enums";
+import type { Lead, LeadStatus } from "@/leads";
+
 import { DEFAULT_STATUS_ORDER, partitionByStatus } from "./leadsQueries";
 
 export type AuxStatus = "UNDETERMINED" | "NOT_EXECUTED";
 export type SectionKey = LeadStatus | AuxStatus;
 
 export const STATUS_LABELS: Record<SectionKey, string> = {
-  [LeadStatus.NEW]: "New",
+  NEW: "New",
   UNDETERMINED: "Undetermined",
-  [LeadStatus.TO_DO]: "To do",
-  [LeadStatus.IN_PROGRESS]: "In progress",
-  [LeadStatus.DONE]: "Done",
-  [LeadStatus.LOST]: "Lost",
+  TO_DO: "To do",
+  IN_PROGRESS: "In progress",
+  DONE: "Done",
+  LOST: "Lost",
   NOT_EXECUTED: "Not executed",
 } as const;
 
@@ -36,11 +36,8 @@ export function buildLeadSections(data: readonly Lead[]): LeadSection[] {
   for (const status of DEFAULT_STATUS_ORDER) {
     const list = buckets[status] ?? [];
     if (list.length) {
-      sections.push({
-        title: STATUS_LABELS[status],
-        status,
-        data: list,
-      });
+      const title = STATUS_LABELS[status as SectionKey] ?? String(status);
+      sections.push({ title, status, data: list });
     }
   }
 

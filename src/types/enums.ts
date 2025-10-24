@@ -1,10 +1,11 @@
-export enum FormMode {
-  CREATE = "CREATE",
-  EDIT = "EDIT",
-}
+export const ContactMode = {
+  NEW_CONTACT: 'NEW_CONTACT',
+  EXISTING_CONTACT: 'EXISTING_CONTACT',
+} as const;
+export type ContactModeType = (typeof ContactMode)[keyof typeof ContactMode];
 
-export enum ContactMode {
-  NEW_CONTACT = "left",
-  EXISTING_CONTACT = "right",
-}
-export { LeadStatus, LeadType } from "@/leads";
+export const FormMode = {
+  CREATE: 'CREATE',
+  EDIT: 'EDIT',
+} as const;
+export type FormModeType = (typeof FormMode)[keyof typeof FormMode];

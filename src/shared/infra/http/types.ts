@@ -29,9 +29,6 @@ export type RequestOptions = {
   signal?: AbortSignal;
 };
 
-/**
- * Contrato mínimo que cumplen nuestros clientes HTTP (e.g. optimizedApiClient).
- */
 export interface HttpClientLike {
   get<T = unknown>(
     url: string,

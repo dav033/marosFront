@@ -1,6 +1,7 @@
 import React, { memo } from "react";
 
-import { SortIcon, Th } from "@/presentation";
+import SortIcon from "./SortIcon";
+import Th from "./Th";
 import type { Column, TableHeaderProps } from "@/types";
 
 function TableHeaderInner<T extends object>({
@@ -34,7 +35,6 @@ function TableHeaderInner<T extends object>({
             <Th
               key={key}
               {...(width ? { width } : {})}
-              // Evitamos props no estándar en el DOM; usamos data-*
               data-sort-direction={active ? sortDirection : undefined}
               data-active={active || undefined}
               role="button"
@@ -43,7 +43,9 @@ function TableHeaderInner<T extends object>({
               onKeyDown={(e) => onHeaderKeyDown(e, col)}
             >
               <div className="flex items-center justify-between">
-                <span className="whitespace-normal break-words">{col.header ?? col.label}</span>
+                <span className="whitespace-normal break-words">
+                  {col.header ?? col.label}
+                </span>
                 {active && sortDirection && <SortIcon dir={sortDirection} />}
               </div>
             </Th>

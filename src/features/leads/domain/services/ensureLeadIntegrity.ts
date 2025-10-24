@@ -1,16 +1,19 @@
-import { BusinessRuleError } from "@/shared";
-import type { LeadStatus as LeadStatusType } from "@/leads";
-import { LeadStatus } from "../../enums";
-import type { LeadNumberRules } from "@/leads";
-import type { Lead } from "@/leads";
+import type {
+  Lead,
+  LeadNumberRules,
+  LeadStatus as LeadStatusType,
+} from '@/leads';
+import { BusinessRuleError } from '@/shared';
+
 import {
   normalizeLeadNumber,
   validateLeadNumberFormat,
-} from "./leadNumberPolicy";
+} from './leadNumberPolicy';
+import { DEFAULT_STATUS_ORDER } from './leadsQueries';
 
 function normalizeText(s: unknown): string {
-  return String(s ?? "")
-    .replace(/\s+/g, " ")
+  return String(s ?? '')
+    .replace(/\s+/g, ' ')
     .trim();
 }
 
@@ -24,85 +27,86 @@ export type LeadIntegrityPolicies = Readonly<{
 
 export function ensureLeadIntegrity(
   lead: Lead,
-  policies: LeadIntegrityPolicies = {}
+  policies: LeadIntegrityPolicies = {},
 ): void {
   if (
-    typeof lead.id !== "number" ||
+    typeof lead.id !== 'number' ||
     !Number.isFinite(lead.id) ||
     lead.id <= 0
   ) {
     throw new BusinessRuleError(
-      "INTEGRITY_VIOLATION",
-      "Lead.id must be a positive number",
+      'INTEGRITY_VIOLATION',
+      'Lead.id must be a positive number',
       {
-        details: { field: "id", value: lead.id },
-      }
+        details: { field: 'id', value: lead.id },
+      },
     );
   }
   const name = normalizeText(lead.name);
   if (!name) {
     throw new BusinessRuleError(
-      "VALIDATION_ERROR",
-      "Lead name must not be empty",
+      'VALIDATION_ERROR',
+      'Lead name must not be empty',
       {
-        details: { field: "name" },
-      }
+        details: { field: 'name' },
+      },
     );
   }
   if (name.length > 140) {
-    throw new BusinessRuleError("FORMAT_ERROR", "Lead name max length is 140", {
-      details: { field: "name", length: name.length },
+    throw new BusinessRuleError('FORMAT_ERROR', 'Lead name max length is 140', {
+      details: { field: 'name', length: name.length },
     });
   }
   const sd = normalizeText(lead.startDate);
   if (!sd || !isIsoLocalDate(sd)) {
     throw new BusinessRuleError(
-      "FORMAT_ERROR",
-      "startDate must be in YYYY-MM-DD format",
+      'FORMAT_ERROR',
+      'startDate must be in YYYY-MM-DD format',
       {
-        details: { field: "startDate", value: lead.startDate },
-      }
+        details: { field: 'startDate', value: lead.startDate },
+      },
     );
   }
   if (
     !lead.projectType ||
-    typeof lead.projectType.id !== "number" ||
+    typeof lead.projectType.id !== 'number' ||
     !Number.isFinite(lead.projectType.id) ||
     lead.projectType.id <= 0
   ) {
     throw new BusinessRuleError(
-      "INTEGRITY_VIOLATION",
-      "projectType.id must be a positive number",
+      'INTEGRITY_VIOLATION',
+      'projectType.id must be a positive number',
       {
-        details: { field: "projectType.id", value: lead.projectType?.id },
-      }
+        details: { field: 'projectType.id', value: lead.projectType?.id },
+      },
     );
   }
   if (
     !lead.contact ||
-    typeof lead.contact.id !== "number" ||
+    typeof lead.contact.id !== 'number' ||
     !Number.isFinite(lead.contact.id) ||
     lead.contact.id <= 0
   ) {
     throw new BusinessRuleError(
-      "INTEGRITY_VIOLATION",
-      "contact.id must be a positive number",
+      'INTEGRITY_VIOLATION',
+      'contact.id must be a positive number',
       {
-        details: { field: "contact.id", value: lead.contact?.id },
-      }
+        details: { field: 'contact.id', value: lead.contact?.id },
+      },
     );
   }
   const s = lead.status as LeadStatusType | null | undefined;
-  const effectiveStatus = (s ?? LeadStatus.UNDETERMINED) as LeadStatusType;
-  if (!(effectiveStatus in LeadStatus)) {
-    throw new BusinessRuleError("FORMAT_ERROR", "Invalid lead status", {
-      details: { field: "status", value: lead.status },
+  const effectiveStatus = (s ??
+    ('UNDETERMINED' as LeadStatusType)) as LeadStatusType;
+  if (!DEFAULT_STATUS_ORDER.includes(effectiveStatus)) {
+    throw new BusinessRuleError('FORMAT_ERROR', 'Invalid lead status', {
+      details: { field: 'status', value: lead.status },
     });
   }
-  if (typeof lead.leadNumber === "string") {
+  if (typeof lead.leadNumber === 'string') {
     const normalized = normalizeLeadNumber(
       lead.leadNumber,
-      policies.leadNumberRules
+      policies.leadNumberRules,
     );
     if (policies.leadNumberRules) {
       validateLeadNumberFormat(normalized, policies.leadNumberRules);
@@ -112,7 +116,7 @@ export function ensureLeadIntegrity(
 
 export function isLeadIntegrityOK(
   lead: Lead,
-  policies: LeadIntegrityPolicies = {}
+  policies: LeadIntegrityPolicies = {},
 ): boolean {
   try {
     ensureLeadIntegrity(lead, policies);

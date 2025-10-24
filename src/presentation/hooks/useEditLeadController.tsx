@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useLeadsApp } from '@/di';
-// Eliminado: import { patchLead } from '@/features/leads/application';
+
 import type { Lead } from '@/leads';
 import { LeadStatus, LeadType } from '@/leads';
 import type { LeadFormData } from '@/types';
@@ -69,7 +69,7 @@ export function useEditLeadController({
             status: value === '' ? null : (value as LeadStatus),
           };
         }
-        // Evitar mutar 'next' directamente (seguro si LeadFormData tuviera readonly)
+        
         const base = { ...prev, [field]: String(value ?? '') } as LeadFormData;
         if (field === 'leadName' && !base.name) {
           return { ...base, name: String(value ?? '') };
@@ -85,50 +85,49 @@ export function useEditLeadController({
     setIsLoading(true);
     setError(null);
 
-    // Estado actual del lead como diccionario para comparar
+    
     const l = lead as unknown as Record<string, unknown>;
 
     try {
-      // Construimos el patch sobre una vista MUTABLE para no chocar con readonly
+      
   const patch: Record<string, unknown> = {};
 
       const newName =
         form.leadName || form.name || (l['name'] as string | undefined) || '';
 
-      if (newName !== l['name']) patch.name = newName;
+      if (newName !== l['name']) patch['name'] = newName;
       if ((form.location ?? '') !== (l['location'] ?? ''))
-        patch.location = form.location ?? '';
-      if (form.status !== l['status'])
-        patch.status = form.status as LeadStatus | null;
+        patch['location'] = form.location ?? '';
+      if (form.status !== l['status']) patch['status'] = form.status as LeadStatus | null;
       if ((form.startDate ?? '') !== (l['startDate'] ?? ''))
-        patch.startDate = form.startDate ?? '';
+        patch['startDate'] = form.startDate ?? '';
 
       const currentProjectTypeId = (
         l['projectType'] as Record<string, unknown> | undefined
       )?.['id'] as number | undefined;
       if (form.projectTypeId && form.projectTypeId !== currentProjectTypeId) {
-        patch.projectTypeId = form.projectTypeId;
+        patch['projectTypeId'] = form.projectTypeId;
       }
 
       const currentContactId = (
         l['contact'] as Record<string, unknown> | undefined
       )?.['id'] as number | undefined;
       if (form.contactId && form.contactId !== currentContactId) {
-        patch.contactId = form.contactId;
+        patch['contactId'] = form.contactId;
       }
 
       if ((form.leadNumber ?? '') !== (l['leadNumber'] ?? '')) {
-        patch.leadNumber = form.leadNumber ?? '';
+        patch['leadNumber'] = form.leadNumber ?? '';
       }
 
-      // Si no hay cambios, no hacemos request
+      
       if (Object.keys(patch).length === 0) {
         onSaved?.(lead);
         setIsLoading(false);
         return;
       }
 
-      // ✅ Única request (PUT). Sin GET adicional.
+      
   const saved = await app.repos.lead.update(lead.id, patch as any);
 
       onSaved?.(saved);

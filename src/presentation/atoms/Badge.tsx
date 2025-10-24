@@ -79,11 +79,11 @@ function makeColorClasses(variant: BadgeVariant, color: BadgeColor) {
 }
 
 const base = [
-  // Layout
+  
   'inline-flex items-center justify-center gap-1',
-  // Consistencia visual y alineación
+  
   'font-medium select-none align-middle',
-  // Una sola línea, con elipsis si no cabe
+  
   'max-w-full truncate',
 ].join(' ');
 

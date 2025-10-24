@@ -45,7 +45,6 @@ export interface ModalHeaderProps {
   title: string;
   onClose: () => void;
   id?: string;
-  /** Contenido opcional a la derecha del header (botones, acciones, etc.) */
   rightSlot?: ReactNode;
 }
 

@@ -1,6 +1,5 @@
-import { useState } from 'react';
-
 import type { Lead } from '@/leads';
+import { useState } from 'react';
 
 export function useLeadsUiState() {
   const [isCreateOpen, setCreateOpen] = useState(false);
@@ -9,10 +8,8 @@ export function useLeadsUiState() {
   const [editingLead, setEditingLead] = useState<Lead | null>(null);
 
   return {
-    // state
-    isCreateOpen, isCreateLocalOpen, isEditOpen, editingLead,
-    // actions
-    openCreate: () => setCreateOpen(true),
+        isCreateOpen, isCreateLocalOpen, isEditOpen, editingLead,
+        openCreate: () => setCreateOpen(true),
     closeCreate: () => setCreateOpen(false),
     openCreateLocal: () => setCreateLocalOpen(true),
     closeCreateLocal: () => setCreateLocalOpen(false),

@@ -37,7 +37,6 @@ export default function PdfButton({
         className
       )}
     >
-      {/* Ícono inline simple (representa impresión/descarga) */}
       <svg
         aria-hidden="true"
         viewBox="0 0 24 24"

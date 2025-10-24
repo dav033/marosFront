@@ -1,1 +1,2 @@
-export { DiProvider, useContactsApp, useLeadsApp } from "./DiProvider";
+// src/di/index.ts
+export { DiProvider, useContactsApp, useLeadsApp, useProjectsApp } from "./DiProvider";

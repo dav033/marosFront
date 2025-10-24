@@ -4,8 +4,7 @@ import React from "react";
 import { useLeadContextMenu } from "@/hooks";
 import type { Lead } from "@/leads";
 import type { Column } from "@/types";
-
-import DataTable from "./DataTable";
+import { DataTable } from "@/shared";
 
 export type LeadSectionProps = {
   title: string;
@@ -15,6 +14,7 @@ export type LeadSectionProps = {
   onDeleteLead?: (lead: Lead) => void;
   className?: string;
 };
+
 function toCMOption(option: unknown): any {
   const o = (option as Record<string, unknown>) ?? {};
   return {
@@ -25,9 +25,7 @@ function toCMOption(option: unknown): any {
     disabled: Boolean(o["disabled"]),
     danger: Boolean(o["danger"]),
     action:
-      typeof o["action"] === "function"
-        ? (o["action"] as () => void)
-        : () => {},
+      typeof o["action"] === "function" ? (o["action"] as () => void) : () => {},
   };
 }
 
@@ -56,9 +54,7 @@ export default function LeadSection({
       <DataTable<Lead>
         columns={columns}
         data={data}
-        contextMenuOptions={(row: Lead) =>
-          getLeadContextOptions(row).map(toCMOption)
-        }
+        contextMenuOptions={(row: Lead) => getLeadContextOptions(row).map(toCMOption)}
         showRowSeparators
       />
     </section>

@@ -1,19 +1,18 @@
-import type { Clock, DomainEvent, Lead } from "@/leads";
-// eslint-disable-next-line no-restricted-imports, import/no-internal-modules
-import { LeadStatus } from "../../enums";
+import type { Clock, DomainEvent, Lead, LeadStatus } from "@/leads";
 import { BusinessRuleError } from "@/shared";
+
 
 export const DEFAULT_TRANSITIONS: Readonly<
   Partial<Record<LeadStatus, readonly LeadStatus[]>>
-> = {
-  [LeadStatus.NEW]:           [LeadStatus.TO_DO, LeadStatus.IN_PROGRESS, LeadStatus.LOST, LeadStatus.UNDETERMINED],
-  [LeadStatus.UNDETERMINED]:  [LeadStatus.NEW, LeadStatus.TO_DO, LeadStatus.IN_PROGRESS, LeadStatus.LOST],
-  [LeadStatus.TO_DO]:         [LeadStatus.IN_PROGRESS, LeadStatus.DONE, LeadStatus.LOST, LeadStatus.NOT_EXECUTED],
-  [LeadStatus.IN_PROGRESS]:   [LeadStatus.DONE, LeadStatus.LOST, LeadStatus.NOT_EXECUTED],
-  [LeadStatus.DONE]:          [LeadStatus.IN_PROGRESS],                 
-  [LeadStatus.LOST]:          [LeadStatus.TO_DO, LeadStatus.IN_PROGRESS], 
-  [LeadStatus.NOT_EXECUTED]:  [LeadStatus.TO_DO],                       
-};
+> = ({
+  NEW: ["TO_DO", "IN_PROGRESS", "LOST", "UNDETERMINED"],
+  UNDETERMINED: ["NEW", "TO_DO", "IN_PROGRESS", "LOST"],
+  TO_DO: ["IN_PROGRESS", "DONE", "LOST", "NOT_EXECUTED"],
+  IN_PROGRESS: ["DONE", "LOST", "NOT_EXECUTED"],
+  DONE: ["IN_PROGRESS"],
+  LOST: ["TO_DO", "IN_PROGRESS"],
+  NOT_EXECUTED: ["TO_DO"],
+} as unknown) as Readonly<Partial<Record<LeadStatus, readonly LeadStatus[]>>>;
 
 export function canTransition(
   from: LeadStatus,

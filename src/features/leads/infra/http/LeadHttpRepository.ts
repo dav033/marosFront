@@ -1,15 +1,17 @@
-import type { Lead } from "@/leads";
-import type { LeadRepositoryPort } from "@/leads";
-import type { LeadType } from "@/leads";
-import type { LeadDraft, LeadId, LeadPatch } from "@/leads";
-import { type ApiLeadDTO, mapLeadFromDTO, mapLeadsFromDTO } from "@/leads";
-import { mapLeadPatchToUpdatePayload,type UpdateLeadPayload } from "@/leads";
-import { type CreateLeadPayload, mapLeadDraftToCreatePayload } from "@/leads";
-import type { HttpClientLike } from "@/shared";
-import { optimizedApiClient } from "@/shared";
-import { makeResource } from "@/shared";
+import type { Lead } from '@/leads';
+import type { LeadRepositoryPort } from '@/leads';
+import type { LeadType } from '@/leads';
+import type { LeadDraft, LeadId, LeadPatch } from '@/leads';
 
-import { endpoints as leadEndpoints } from "./endpoints";
+import { type ApiLeadDTO, mapLeadFromDTO, mapLeadsFromDTO } from '@/leads';
+import { mapLeadPatchToUpdatePayload, type UpdateLeadPayload } from '@/leads';
+import { type CreateLeadPayload, mapLeadDraftToCreatePayload } from '@/leads';
+
+import type { HttpClientLike } from '@/shared';
+import { optimizedApiClient } from '@/shared';
+import { makeResource } from '@/shared';
+
+import { endpoints as leadEndpoints } from './endpoints';
 
 export class LeadHttpRepository implements LeadRepositoryPort {
   private readonly api: HttpClientLike;
@@ -20,13 +22,20 @@ export class LeadHttpRepository implements LeadRepositoryPort {
   constructor(api: HttpClientLike = optimizedApiClient) {
     this.api = api;
 
-    this.resource = makeResource<ApiLeadDTO, Lead, unknown, UpdateLeadPayload, LeadId>(
+    this.resource = makeResource<
+      ApiLeadDTO,
+      Lead,
+      unknown,
+      UpdateLeadPayload,
+      LeadId
+    >(
       leadEndpoints,
       {
         fromApi: mapLeadFromDTO,
         fromApiList: mapLeadsFromDTO,
       },
-      this.api
+      this.api,
+      { updatePolicy: 'require-body' },
     );
   }
 
@@ -36,7 +45,7 @@ export class LeadHttpRepository implements LeadRepositoryPort {
 
   async findByType(type: LeadType): Promise<Lead[]> {
     const { data } = await this.api.get<ApiLeadDTO[]>(
-      leadEndpoints.listByType(String(type))
+      leadEndpoints.listByType(String(type)),
     );
     const list = Array.isArray(data) ? data : [];
     return mapLeadsFromDTO(list);
@@ -45,40 +54,32 @@ export class LeadHttpRepository implements LeadRepositoryPort {
   async saveNew(draft: LeadDraft): Promise<Lead> {
     const payload: CreateLeadPayload = mapLeadDraftToCreatePayload(draft);
 
-    if ("contact" in (payload as Record<string, unknown>)) {
+    if ('contact' in (payload as Record<string, unknown>)) {
       const { data } = await this.api.post<ApiLeadDTO>(
         leadEndpoints.createWithNewContact(),
-        payload
+        payload,
       );
-      if (!data) throw new Error("Empty response creating Lead with new contact");
+      if (!data)
+        throw new Error('Empty response creating Lead with new contact');
       return mapLeadFromDTO(data);
     }
 
     const { data } = await this.api.post<ApiLeadDTO>(
       leadEndpoints.createWithExistingContact(),
-      payload
+      payload,
     );
-    if (!data) throw new Error("Empty response creating Lead with existing contact");
+    if (!data)
+      throw new Error('Empty response creating Lead with existing contact');
     return mapLeadFromDTO(data);
   }
 
-  /**
-   * PUT sin GET de recarga:
-   * - Si el servidor devuelve body => se mapea y retorna.
-   * - Si responde 204/empty => NO se hace GET; se resuelve igualmente.
-   *   (Los casos de uso devuelven el objeto 'updated' de dominio.)
-   */
   async update(id: LeadId, patch: LeadPatch): Promise<Lead> {
     const dto: UpdateLeadPayload = mapLeadPatchToUpdatePayload(patch);
-    const { data /*, status */ } = await this.api.put<ApiLeadDTO | null>(
-      leadEndpoints.update(id),
-      dto
-    );
-
-    if (data) {
-      return mapLeadFromDTO(data);
+    const updated = await this.resource.update(id, dto);
+    if (!updated) {
+      throw new Error('Expected response body on Lead update');
     }
-            return { id } as unknown as Lead;
+    return updated;
   }
 
   delete(id: LeadId): Promise<void> {

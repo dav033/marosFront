@@ -1,10 +1,10 @@
-import React from "react";
+import React from 'react';
 
-import type { Contact } from "@/contact";
-import type { Lead, LeadStatus,ProjectType } from "@/leads";
-import { useEditLeadController } from "@/presentation";
-import { BaseFormModal, LeadFormFields } from "@/presentation";
-import { FormMode } from "@/types";
+import type { Contact } from '@/contact';
+import type { Lead, LeadStatus, ProjectType } from '@/leads';
+import { useEditLeadController } from '@/presentation';
+import { BaseFormModal, LeadFormFields } from '@/presentation';
+import { FormMode } from '@/types';
 
 type Props = {
   isOpen: boolean;
@@ -33,15 +33,15 @@ const EditLeadModal: React.FC<Props> = ({
     });
 
   const formForFields = {
-    leadNumber: form.leadNumber ?? "",
-    leadName: form.leadName ?? form.name ?? "",
+    leadNumber: form.leadNumber ?? '',
+    leadName: form.leadName ?? form.name ?? '',
     ...(form.projectTypeId !== undefined
       ? { projectTypeId: form.projectTypeId }
       : {}),
     ...(form.contactId !== undefined ? { contactId: form.contactId } : {}),
-    location: form.location ?? "",
-    status: form.status ? ((form.status as unknown) as "" | LeadStatus) : "",
-    startDate: form.startDate ?? "",
+    location: form.location ?? '',
+    status: form.status ? (form.status as unknown as '' | LeadStatus) : '',
+    startDate: form.startDate ?? '',
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -49,7 +49,7 @@ const EditLeadModal: React.FC<Props> = ({
     try {
       await submit();
     } catch {
-      /* ignore */
+      // ignore
     }
   };
 
@@ -57,16 +57,16 @@ const EditLeadModal: React.FC<Props> = ({
     <BaseFormModal
       isOpen={isOpen}
       onClose={() => onClose()}
-      title={`Editar Lead${lead?.leadNumber ? ` #${lead.leadNumber}` : ""}`}
+      title={`Editar Lead${lead?.leadNumber ? ` #${lead.leadNumber}` : ''}`}
       onSubmit={handleSubmit}
       submitText="Guardar cambios"
       isLoading={isLoading}
       loadingText="Guardando..."
-   >
+    >
       <LeadFormFields
         form={formForFields}
         onChange={(field: string, value: any) => {
-          const asString = value == null ? "" : String(value);
+          const asString = value == null ? '' : String(value);
           handleChange(field as keyof typeof form, asString);
           if (error) setError(null);
         }}

@@ -1,13 +1,13 @@
-import { BusinessRuleError } from "@/shared";
+import { BusinessRuleError, countDigits, isISODateOrDateTime, isValidEmail } from "@/shared";
 
 import type { ContactDraft } from "./buildContactDraft";
 
 export type ContactDraftPolicies = Readonly<{
-  maxNameLength?: number; 
-  maxCompanyLength?: number; 
-  requireAtLeastOneReach?: boolean; 
-  phoneMinDigits?: number; 
-  validateLastContactISO?: boolean; 
+  maxNameLength?: number;
+  maxCompanyLength?: number;
+  requireAtLeastOneReach?: boolean;
+  phoneMinDigits?: number;
+  validateLastContactISO?: boolean;
 }>;
 
 const DEFAULTS: Required<ContactDraftPolicies> = {
@@ -18,47 +18,21 @@ const DEFAULTS: Required<ContactDraftPolicies> = {
   validateLastContactISO: false,
 };
 
-
-function isValidEmail(email?: string): boolean {
-  if (!email) return true; 
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-function countDigits(s?: string): number {
-  if (!s) return 0;
-  const digits = s.replace(/\D+/g, "");
-  return digits.length;
-}
-
-function isISODateOrDateTime(s: string): boolean {
-  return /^\d{4}-\d{2}-\d{2}([T ]\d{2}:\d{2}(:\d{2}(\.\d{1,3})?)?(Z|[+-]\d{2}:\d{2})?)?$/.test(
-    s
-  );
-}
-
-
 export function ensureContactDraftIntegrity(
   draft: ContactDraft,
   policies: ContactDraftPolicies = {}
 ): void {
   const cfg = { ...DEFAULTS, ...policies };
+
   if (!draft.companyName) {
-    throw new BusinessRuleError(
-      "VALIDATION_ERROR",
-      "Company name must not be empty",
-      {
-        details: { field: "companyName" },
-      }
-    );
+    throw new BusinessRuleError("VALIDATION_ERROR", "Company name must not be empty", {
+      details: { field: "companyName" },
+    });
   }
   if (!draft.name) {
-    throw new BusinessRuleError(
-      "VALIDATION_ERROR",
-      "Contact name must not be empty",
-      {
-        details: { field: "name" },
-      }
-    );
+    throw new BusinessRuleError("VALIDATION_ERROR", "Contact name must not be empty", {
+      details: { field: "name" },
+    });
   }
   if (draft.name.length > cfg.maxNameLength) {
     throw new BusinessRuleError(
@@ -74,6 +48,7 @@ export function ensureContactDraftIntegrity(
       { details: { field: "companyName", length: draft.companyName.length } }
     );
   }
+
   if (cfg.requireAtLeastOneReach && !draft.email && !draft.phone) {
     throw new BusinessRuleError(
       "VALIDATION_ERROR",
@@ -93,17 +68,11 @@ export function ensureContactDraftIntegrity(
       { details: { field: "phone", value: draft.phone } }
     );
   }
-  if (
-    cfg.validateLastContactISO &&
-    draft.lastContact &&
-    !isISODateOrDateTime(draft.lastContact)
-  ) {
+  if (cfg.validateLastContactISO && draft.lastContact && !isISODateOrDateTime(draft.lastContact)) {
     throw new BusinessRuleError(
       "FORMAT_ERROR",
       "lastContact must be ISO-8601 date/datetime",
-      {
-        details: { field: "lastContact", value: draft.lastContact },
-      }
+      { details: { field: "lastContact", value: draft.lastContact } }
     );
   }
 }

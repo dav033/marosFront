@@ -15,13 +15,9 @@ export type UseContactsResult = {
 };
 
 export type UseContactsOptions = Readonly<{
-  /** @deprecated: React Query gestiona el caché; esta opción ya no se utiliza. */
   cache?: boolean;
-  /** Tiempo que los datos se consideran frescos (ms). Por defecto 5 minutos. */
   staleTime?: number;
-  /** Contexto de la aplicación de contactos (opcional; por defecto se usa el DI). */
   ctx?: ContactsAppContext;
-  /** Controla si se refetch al enfocar la ventana (por defecto: true). */
   refetchOnWindowFocus?: boolean;
 }>;
 

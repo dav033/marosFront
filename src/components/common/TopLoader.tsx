@@ -1,36 +1,33 @@
-import { useIsFetching } from "@tanstack/react-query";
-import React from "react";
+import { useIsFetching } from '@tanstack/react-query';
+import React from 'react';
 
-/**
- * Barra de progreso superior que aparece cuando hay requests en curso.
- * No requiere configuración: basta con renderizarla una vez en la app.
- */
 export default function TopLoader() {
-  const fetching = useIsFetching();   const visible = fetching > 0;
+  const fetching = useIsFetching();
+  const visible = fetching > 0;
 
   return (
     <div
       aria-hidden
       style={{
-        position: "fixed",
+        position: 'fixed',
         top: 0,
         left: 0,
         height: visible ? 3 : 0,
-        width: "100%",
+        width: '100%',
         zIndex: 9999,
-        overflow: "hidden",
-        transition: "height 150ms ease",
+        overflow: 'hidden',
+        transition: 'height 150ms ease',
         background:
-          "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.15) 20%, rgba(0,0,0,0.15) 80%, rgba(255,255,255,0) 100%)",
+          'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.15) 20%, rgba(0,0,0,0.15) 80%, rgba(255,255,255,0) 100%)',
       }}
     >
       {visible && (
         <div
           style={{
-            height: "100%",
-            width: "30%",
-            animation: "toploader 1.2s linear infinite",
-            background: "currentColor",
+            height: '100%',
+            width: '30%',
+            animation: 'toploader 1.2s linear infinite',
+            background: 'currentColor',
           }}
           className="bg-theme-primary"
         />

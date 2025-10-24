@@ -1,10 +1,11 @@
-import type { Lead, LeadPatch, LeadPatchPolicies, LeadsAppContext } from "@/leads";
-import { applyLeadPatch, diffToPatch, getLeadById } from "@/leads";
+import type {
+  Lead,
+  LeadPatch,
+  LeadPatchPolicies,
+  LeadsAppContext,
+} from '@/leads';
+import { applyLeadPatch, diffToPatch, getLeadById } from '@/leads';
 
-/**
- * Aplica el patch en dominio y persiste.
- * Si el PUT devuelve 204/empty, NO se recarga el recurso; devolvemos el "updated".
- */
 export async function patchLead(
   ctx: LeadsAppContext,
   id: number,
@@ -13,7 +14,7 @@ export async function patchLead(
 ): Promise<Lead> {
   const current = await getLeadById(ctx, Number(id));
 
-  const { lead: updated /*, events*/ } = applyLeadPatch(
+  const { lead: updated } = applyLeadPatch(
     ctx.clock,
     current,
     patch,
@@ -22,7 +23,7 @@ export async function patchLead(
 
   const normalizedPatch = diffToPatch(current, updated);
 
-    await ctx.repos.lead.update(Number(id), normalizedPatch);
+  await ctx.repos.lead.update(Number(id), normalizedPatch);
 
-    return updated;
+  return updated;
 }

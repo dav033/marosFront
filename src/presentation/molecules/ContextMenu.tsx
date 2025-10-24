@@ -1,33 +1,18 @@
-/* eslint-env browser */
+// eslint-env browser
 import * as React from "react";
 import { createPortal } from "react-dom";
-
 import { Icon } from "@/presentation";
-
-export type ContextMenuOption = Readonly<{
-  id: string | number;
-  label?: string;
-  /** Acepta ReactNode o string "material-symbols:..." */
-  icon?: React.ReactNode | string;
-  shortcut?: string;
-  action?: () => void;
-  disabled?: boolean;
-  danger?: boolean;
-  separator?: boolean;
-}>;
+import type { ContextMenuOption } from "@/presentation"; 
 
 export type ContextMenuProps = Readonly<{
   options: ContextMenuOption[];
   isVisible: boolean;
   position: Readonly<{ x: number; y: number }>;
-  /** requerido por TableRow */
-  onClose: () => void;
+  onClose: () => void; 
 }>;
 
 function getVariantClasses(danger?: boolean) {
-  return danger
-    ? "text-red-400 hover:bg-red-500/10"
-    : "hover:bg-theme-primary/10";
+  return danger ? "text-red-400 hover:bg-red-500/10" : "hover:bg-theme-primary/10";
 }
 
 const ContextMenuComponent: React.FC<ContextMenuProps> = ({
@@ -49,23 +34,19 @@ const ContextMenuComponent: React.FC<ContextMenuProps> = ({
       if (ev.key === "Escape") onClose();
     };
 
-    /* eslint-disable no-undef */
     document.addEventListener("mousedown", handleDown);
     window.addEventListener("keydown", handleEsc);
     return () => {
       document.removeEventListener("mousedown", handleDown);
       window.removeEventListener("keydown", handleEsc);
     };
-    /* eslint-enable no-undef */
   }, [isVisible, onClose]);
 
   if (!isVisible) return null;
 
   const renderIcon = (icon?: React.ReactNode | string) => {
     if (!icon) return null;
-    if (typeof icon === "string") {
-      return <Icon name={icon} className="mr-2" size={16} />;
-    }
+    if (typeof icon === "string") return <Icon name={icon} className="mr-2" size={16} />;
     return <span className="mr-2">{icon}</span>;
   };
 
@@ -100,18 +81,12 @@ const ContextMenuComponent: React.FC<ContextMenuProps> = ({
                   "w-full inline-flex items-center justify-start gap-2",
                   "px-3 py-2 text-sm text-left rounded",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-primary",
-                  opt.disabled
-                    ? "opacity-50 cursor-not-allowed"
-                    : getVariantClasses(opt.danger),
+                  opt.disabled ? "opacity-50 cursor-not-allowed" : getVariantClasses(opt.danger),
                 ].join(" ")}
               >
                 {renderIcon(opt.icon)}
                 <span className="truncate">{opt.label}</span>
-                {opt.shortcut && (
-                  <span className="ml-auto text-xs text-gray-400">
-                    {opt.shortcut}
-                  </span>
-                )}
+                {opt.shortcut && <span className="ml-auto text-xs text-gray-400">{opt.shortcut}</span>}
               </button>
             </li>
           ),
@@ -120,7 +95,6 @@ const ContextMenuComponent: React.FC<ContextMenuProps> = ({
     </div>
   );
 
-  /* eslint-disable-next-line no-undef */
   return typeof document !== "undefined" ? createPortal(menu, document.body) : null;
 };
 

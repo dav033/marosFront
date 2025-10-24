@@ -1,7 +1,6 @@
 import React, { memo } from "react";
 
-import { useContextMenu } from "@/presentation";
-import { ContextMenu } from "@/presentation";
+import { useContextMenu, ContextMenu } from "@/presentation";
 import type { TableRowProps } from "@/types";
 
 function TableRowInner<T>({
@@ -22,7 +21,7 @@ function TableRowInner<T>({
         onContextMenu={
           contextMenuOptions
             ? (e) => {
-                                const opts = contextMenuOptions(row);
+                const opts = contextMenuOptions(row);
                 showContextMenu(e, opts);
               }
             : undefined

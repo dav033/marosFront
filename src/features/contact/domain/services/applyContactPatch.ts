@@ -1,8 +1,8 @@
 import type { Contact } from "@/contact";
-import { BusinessRuleError } from "@/shared";
+import { BusinessRuleError, countDigits, isISODateOrDateTime, isValidEmail, normalizeEmail, normalizePhone, normalizeText } from "@/shared";
+
 
 import type { ContactDraftPolicies } from "./ensureContactDraftIntegrity";
-
 
 export type ContactPatch = Readonly<{
   companyName?: string;
@@ -12,7 +12,7 @@ export type ContactPatch = Readonly<{
   occupation?: string | undefined;
   product?: string | undefined;
   address?: string | undefined;
-    lastContact?: string | undefined;
+  lastContact?: string | undefined;
 }>;
 
 export type ApplyContactPatchResult = Readonly<{
@@ -33,65 +33,21 @@ const DEFAULTS: Required<ContactDraftPolicies> = {
   validateLastContactISO: false,
 };
 
-
-function normText(s: unknown): string {
-  return String(s ?? "")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function normEmail(e?: string): string | undefined {
-  if (!e) return undefined;
-  const v = String(e).trim().toLowerCase();
-  return v || undefined;
-}
-
-function normPhone(p?: string): string | undefined {
-  if (!p) return undefined;
-  const trimmed = String(p).trim();
-  if (!trimmed) return undefined;
-  if (trimmed.startsWith("+")) {
-    const rest = trimmed.slice(1).replace(/\D+/g, "");
-    return rest ? `+${rest}` : undefined;
-  }
-  const digits = trimmed.replace(/\D+/g, "");
-  return digits || undefined;
-}
-
-function isValidEmail(email?: string): boolean {
-  if (!email) return true;
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-function countDigits(s?: string): number {
-  if (!s) return 0;
-  return s.replace(/\D+/g, "").length;
-}
-
-function isISODateOrDateTime(s: string): boolean {
-  return /^\d{4}-\d{2}-\d{2}([T ]\d{2}:\d{2}(:\d{2}(\.\d{1,3})?)?(Z|[+-]\d{2}:\d{2})?)?$/.test(
-    s
-  );
-}
-
-
 export function applyContactPatch(
   current: Contact,
   patch: ContactPatch,
   policies: ContactDraftPolicies = {}
 ): ApplyContactPatchResult {
   const cfg = { ...DEFAULTS, ...policies };
-
   let updated: Contact = { ...current };
   const changed: string[] = [];
+
   if (patch.companyName !== undefined) {
-    const v = normText(patch.companyName);
+    const v = normalizeText(patch.companyName);
     if (!v) {
-      throw new BusinessRuleError(
-        "VALIDATION_ERROR",
-        "Company name must not be empty",
-        { details: { field: "companyName" } }
-      );
+      throw new BusinessRuleError("VALIDATION_ERROR", "Company name must not be empty", {
+        details: { field: "companyName" },
+      });
     }
     if (v.length > cfg.maxCompanyLength) {
       throw new BusinessRuleError(
@@ -100,19 +56,19 @@ export function applyContactPatch(
         { details: { field: "companyName", length: v.length } }
       );
     }
-    if (v !== normText(updated.companyName)) {
+    const prev = normalizeText(updated.companyName);
+    if (v !== prev) {
       updated = { ...updated, companyName: v };
       changed.push("companyName");
     }
   }
+
   if (patch.name !== undefined) {
-    const v = normText(patch.name);
+    const v = normalizeText(patch.name);
     if (!v) {
-      throw new BusinessRuleError(
-        "VALIDATION_ERROR",
-        "Contact name must not be empty",
-        { details: { field: "name" } }
-      );
+      throw new BusinessRuleError("VALIDATION_ERROR", "Contact name must not be empty", {
+        details: { field: "name" },
+      });
     }
     if (v.length > cfg.maxNameLength) {
       throw new BusinessRuleError(
@@ -121,26 +77,29 @@ export function applyContactPatch(
         { details: { field: "name", length: v.length } }
       );
     }
-    if (v !== normText(updated.name)) {
+    const prev = normalizeText(updated.name);
+    if (v !== prev) {
       updated = { ...updated, name: v };
       changed.push("name");
     }
   }
+
   if (patch.email !== undefined) {
-    const v = normEmail(patch.email);
+    const v = normalizeEmail(patch.email);
     if (v && !isValidEmail(v)) {
       throw new BusinessRuleError("FORMAT_ERROR", "Invalid email format", {
         details: { field: "email", value: patch.email },
       });
     }
-    const prev = normEmail(updated.email);
+    const prev = normalizeEmail(updated.email);
     if (v !== prev) {
       updated = { ...updated, email: v };
       changed.push("email");
     }
   }
+
   if (patch.phone !== undefined) {
-    const v = normPhone(patch.phone);
+    const v = normalizePhone(patch.phone);
     if (v && countDigits(v) < cfg.phoneMinDigits) {
       throw new BusinessRuleError(
         "FORMAT_ERROR",
@@ -148,48 +107,51 @@ export function applyContactPatch(
         { details: { field: "phone", value: patch.phone } }
       );
     }
-    const prev = normPhone(updated.phone);
+    const prev = normalizePhone(updated.phone);
     if (v !== prev) {
       updated = { ...updated, phone: v };
       changed.push("phone");
     }
   }
+
   if (patch.occupation !== undefined) {
-    const v = normText(patch.occupation);
-    if (v !== normText(updated.occupation)) {
-      updated = { ...updated, occupation: v || undefined };
+    const v = normalizeText(patch.occupation) || undefined;
+    if (v !== (updated.occupation || undefined)) {
+      updated = { ...updated, occupation: v };
       changed.push("occupation");
     }
   }
+
   if (patch.product !== undefined) {
-    const v = normText(patch.product);
-    if (v !== normText(updated.product)) {
-      updated = { ...updated, product: v || undefined };
+    const v = normalizeText(patch.product) || undefined;
+    if (v !== (updated.product || undefined)) {
+      updated = { ...updated, product: v };
       changed.push("product");
     }
   }
+
   if (patch.address !== undefined) {
-    const v = normText(patch.address);
-    if (v !== normText(updated.address)) {
-      updated = { ...updated, address: v || undefined };
+    const v = normalizeText(patch.address) || undefined;
+    if (v !== (updated.address || undefined)) {
+      updated = { ...updated, address: v };
       changed.push("address");
     }
   }
+
   if (patch.lastContact !== undefined) {
-    const v = normText(patch.lastContact) || undefined;
-    if (v && cfg.validateLastContactISO && !isISODateOrDateTime(v)) {
-      throw new BusinessRuleError(
-        "FORMAT_ERROR",
-        "lastContact must be ISO-8601 date/datetime",
-        { details: { field: "lastContact", value: patch.lastContact } }
-      );
+    const v = normalizeText(patch.lastContact) || undefined;
+    if (cfg.validateLastContactISO && v && !isISODateOrDateTime(v)) {
+      throw new BusinessRuleError("FORMAT_ERROR", "lastContact must be ISO-8601 date/datetime", {
+        details: { field: "lastContact", value: patch.lastContact },
+      });
     }
-    const prev = normText(updated.lastContact) || undefined;
+    const prev = normalizeText(updated.lastContact) || undefined;
     if (v !== prev) {
       updated = { ...updated, lastContact: v };
       changed.push("lastContact");
     }
   }
+
   if (cfg.requireAtLeastOneReach) {
     const hasEmail = !!updated.email;
     const hasPhone = !!updated.phone;

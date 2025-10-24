@@ -57,7 +57,7 @@ export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType) {
     setEditingLead(null);
   }, []);
 
-  // ✅ NUEVO: al crear, también recomputamos sections
+  
   const onLeadCreated = React.useCallback((created: Lead) => {
     setLeads((prev) => {
       const next = [created, ...prev];
@@ -84,7 +84,7 @@ export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType) {
           return next;
         });
       } catch {
-        // opcional: manejar error
+        
       }
     },
     [ctx]
@@ -102,14 +102,14 @@ export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType) {
       editingLead,
     },
     refetch: load,
-    setLeads,         // lo dejo por compatibilidad
+    setLeads,         
     openCreate,
     closeCreate,
     openCreateLocal,
     closeCreateLocal,
     openEdit,
     closeEdit,
-    onLeadCreated,    // ✅ exportar
+    onLeadCreated,    
     onLeadUpdated,
     onLeadDeleted,
   };

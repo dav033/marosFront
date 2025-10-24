@@ -13,7 +13,6 @@ export function ContactsTableSkeleton({
         color: "var(--color-light)",
       }}
     >
-      {/* Header skeleton */}
       <div className="flex justify-between items-center mb-6 gap-4">
         <div
           className="h-10 rounded-lg w-40"
@@ -24,13 +23,11 @@ export function ContactsTableSkeleton({
           style={{ backgroundColor: "var(--color-gray)" }}
         />
       </div>
-
-      {/* Table container */}
+      
       <div
         className="rounded-lg overflow-hidden"
         style={{ backgroundColor: "var(--color-gray-alt)" }}
       >
-        {/* Table header */}
         <div
           className="px-6 py-4 border-b"
           style={{
@@ -48,8 +45,7 @@ export function ContactsTableSkeleton({
             ))}
           </div>
         </div>
-
-        {/* Table rows */}
+        
         {Array.from({ length: rows }).map((_, index) => (
           <div
             key={index}
@@ -61,7 +57,6 @@ export function ContactsTableSkeleton({
             }}
           >
             <div className="grid grid-cols-7 gap-4 items-center">
-              {/* Company - varying widths for realism */}
               <div
                 className="h-4 rounded"
                 style={{
@@ -70,8 +65,7 @@ export function ContactsTableSkeleton({
                     index % 3 === 0 ? "85%" : index % 3 === 1 ? "70%" : "95%",
                 }}
               />
-
-              {/* Contact Name - varying widths */}
+              
               <div
                 className="h-4 rounded"
                 style={{
@@ -87,7 +81,6 @@ export function ContactsTableSkeleton({
                 }}
               />
 
-              {/* Occupation - some empty (—) */}
               <div
                 className="h-4 rounded"
                 style={{
@@ -96,8 +89,7 @@ export function ContactsTableSkeleton({
                     index % 3 === 0 ? "60%" : index % 3 === 1 ? "0%" : "70%",
                 }}
               />
-
-              {/* Product - some empty (—) */}
+              
               <div
                 className="h-4 rounded"
                 style={{
@@ -113,13 +105,11 @@ export function ContactsTableSkeleton({
                 }}
               />
 
-              {/* Phone - always present */}
               <div
                 className="h-4 rounded w-full"
                 style={{ backgroundColor: "var(--color-gray)" }}
               />
-
-              {/* Email - varying presence */}
+              
               <div
                 className="h-4 rounded"
                 style={{
@@ -137,7 +127,6 @@ export function ContactsTableSkeleton({
                 }}
               />
 
-              {/* Address/Last Contact - varying presence */}
               <div
                 className="h-4 rounded"
                 style={{
@@ -161,7 +150,6 @@ export function ContactsTableSkeleton({
         ))}
       </div>
 
-      {/* Pagination skeleton */}
       <div className="flex items-center justify-between mt-6">
         <div
           className="h-4 rounded w-48"

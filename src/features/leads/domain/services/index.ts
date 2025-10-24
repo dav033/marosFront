@@ -11,6 +11,7 @@ export {
   normalizeNewContact,
   resolveContactLink,
 } from "./leadContactLinkPolicy";
+export type { CreateLeadPayload } from "./leadCreateMapper";
 export {
   mapDraftWithExistingContactToPayload,
   mapDraftWithNewContactToPayload,
@@ -18,8 +19,8 @@ export {
 } from "./leadCreateMapper";
 export { makeLeadNumber } from "./leadNumberPolicy";
 export { ensureLeadNumberAvailable } from "./leadNumberPolicy";
-export { mapLeadFromDTO, mapLeadsFromDTO } from "./leadReadMapper";
 export type { ApiLeadDTO } from "./leadReadMapper";
+export { mapLeadFromDTO, mapLeadsFromDTO } from "./leadReadMapper";
 export {
   DEFAULT_STATUS_ORDER,
   filterByStatus,
@@ -40,4 +41,3 @@ export {
   summarizeLeadsByType,
 } from "./leadStatusSummary";
 export { mapLeadPatchToUpdatePayload, type UpdateLeadPayload } from "./leadUpdateMapper";
-export type { CreateLeadPayload } from "./leadCreateMapper";

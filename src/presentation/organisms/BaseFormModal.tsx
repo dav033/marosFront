@@ -1,12 +1,12 @@
-import React, { useId } from "react";
+import React, { useId } from 'react';
 
-import { FormModalFrame, ModalActions, ModalErrorBanner } from "@/presentation";
+import { FormModalFrame, ModalActions, ModalErrorBanner } from '@/presentation';
 
 export type BaseFormModalProps = {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-    error?: string | null;
+  error?: string | null;
   onSubmit: (e: React.FormEvent) => void | Promise<void>;
   submitText: string;
   cancelText?: string;
@@ -14,9 +14,9 @@ export type BaseFormModalProps = {
   isLoading?: boolean;
   loadingText?: string;
   isSubmitDisabled?: boolean;
-  size?: "sm" | "md" | "lg" | "xl";
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
-    formId?: string;
+  formId?: string;
 };
 
 export default function BaseFormModal({
@@ -26,13 +26,13 @@ export default function BaseFormModal({
   error = null,
   onSubmit,
   submitText,
-  cancelText = "Cancel",
+  cancelText = 'Cancel',
   children,
   isLoading = false,
-  loadingText = "Saving...",
+  loadingText = 'Saving...',
   isSubmitDisabled = false,
-  size = "md",
-  className = "",
+  size = 'md',
+  className = '',
   formId,
 }: BaseFormModalProps) {
   const autoId = useId();
@@ -49,8 +49,10 @@ export default function BaseFormModal({
       {...(descId ? { descriptionId: descId } : {})}
       body={
         <>
-          {/* Solo pasar id cuando exista descripción (exactOptionalPropertyTypes) */}
-          <ModalErrorBanner {...(descId ? { id: descId } : {})} message={error ?? null} />
+          <ModalErrorBanner
+            {...(descId ? { id: descId } : {})}
+            message={error ?? null}
+          />
           <form id={resolvedFormId} onSubmit={onSubmit} className="space-y-3">
             {children}
           </form>

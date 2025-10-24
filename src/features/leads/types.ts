@@ -1,27 +1,23 @@
+// src/features/leads/types.ts
+import type { ISODate } from "@/shared";
+
 import type { Lead } from "./domain";
 import type { LeadStatus, LeadType } from "./enums";
+
+
+export type {
+  Clock,
+  Err,
+  ISODate,
+  ISODateTime,
+  Ok,
+  Result,
+} from "@/shared";
+export { err,ok, SystemClock } from "@/shared";
 
 export type LeadId = number;
 export type ContactId = number;
 export type ProjectTypeId = number;
-export type ISODate = string; 
-export type ISODateTime = string; 
-
-export interface Clock {
-  now(): number; 
-  todayISO(): ISODate; 
-}
-
-export const SystemClock: Clock = {
-  now: () => Date.now(),
-  todayISO: () => new Date().toISOString().split("T")[0] as ISODate,
-};
-
-export type Ok<T> = { ok: true; value: T };
-export type Err<E> = { ok: false; error: E };
-export type Result<T, E> = Ok<T> | Err<E>;
-export const ok = <T>(value: T): Ok<T> => ({ ok: true, value });
-export const err = <E>(error: E): Err<E> => ({ ok: false, error });
 
 export type NewContact = Readonly<{
   companyName: string;
@@ -31,12 +27,12 @@ export type NewContact = Readonly<{
 }>;
 
 export type LeadPolicies = Readonly<{
-    leadNumberPattern?: RegExp;
-    defaultStatus?: LeadStatus | null;
+  leadNumberPattern?: RegExp;
+  defaultStatus?: LeadStatus | null;
 }>;
 
 export type LeadDraftBase = Readonly<{
-  leadNumber: string | null; 
+  leadNumber: string | null;
   name: string;
   startDate: ISODate;
   location: string;
@@ -63,7 +59,7 @@ export type LeadStatusChangedEvent = Readonly<{
     id: number;
     from: LeadStatus;
     to: LeadStatus;
-    at: number; 
+    at: number; // epoch ms
   };
 }>;
 
@@ -72,7 +68,7 @@ export type DomainEvent = LeadStatusChangedEvent;
 export type LeadPatch = Readonly<{
   name?: string;
   location?: string;
-  status?: LeadStatus | null; 
+  status?: LeadStatus | null;
   contactId?: number;
   projectTypeId?: number;
   startDate?: ISODate;
@@ -80,8 +76,8 @@ export type LeadPatch = Readonly<{
 }>;
 
 export type LeadPatchPolicies = Readonly<{
-    leadNumberPattern?: RegExp;
-    allowedTransitions?: Partial<Record<LeadStatus, LeadStatus[]>>;
+  leadNumberPattern?: RegExp;
+  allowedTransitions?: Partial<Record<LeadStatus, LeadStatus[]>>;
 }>;
 
 export type ApplyLeadPatchResult = Readonly<{
@@ -90,13 +86,13 @@ export type ApplyLeadPatchResult = Readonly<{
 }>;
 
 export type LeadNumberRules = Readonly<{
-    trim?: boolean;
-    collapseWhitespace?: boolean;
-    uppercase?: boolean;
-    minLength?: number;
-    maxLength?: number;
-    pattern?: RegExp;
-    allowEmpty?: boolean;
+  trim?: boolean;
+  collapseWhitespace?: boolean;
+  uppercase?: boolean;
+  minLength?: number;
+  maxLength?: number;
+  pattern?: RegExp;
+  allowEmpty?: boolean;
 }>;
 
 export type { Lead };

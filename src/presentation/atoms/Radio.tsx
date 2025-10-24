@@ -64,7 +64,6 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
         htmlFor={inputId}
         className={`inline-flex items-start ${gapBySize[size]} ${textBySize[size]} text-theme-light select-none ${className ?? ""}`}
       >
-        {/* Input accesible real */}
         <input
           id={inputId}
           ref={ref}
@@ -99,7 +98,6 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
           />
         </span>
 
-        {/* Etiqueta y mensajes auxiliares */}
         <span className="flex flex-col">
           {label && <span className="leading-5">{label}</span>}
           {hint && !error && (
@@ -127,12 +125,4 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
 Radio.displayName = "Radio";
 
 export default Radio;
-
-/*
-Uso básico:
-  const [value, setValue] = useState("a");
-  <div role="radiogroup" aria-label="Ejemplo">
-    <Radio name="ej" value="a" checked={value === "a"} onChange={() => setValue("a")} label="Opción A" />
-    <Radio name="ej" value="b" checked={value === "b"} onChange={() => setValue("b")} label="Opción B" />
-  </div>
-*/
+ 

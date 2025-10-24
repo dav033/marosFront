@@ -21,17 +21,13 @@ export { default as ModalBody } from "./ModalBody";
 export { default as ModalErrorBanner } from "./ModalErrorBanner";
 export { default as ModalFooter } from "./ModalFooter";
 export { default as ModalHeader } from "./ModalHeader";
+export { default as ProjectPickerTable } from "./ProjectPickerTable";
 export { default as ProjectTypeBadge } from "./ProjectTypeBadge";
 export { default as ProjectTypeSelect } from "./ProjectTypeSelect";
+export type { RestorationVisitFormValues } from "./RestorationVisitForm";
+export { default as RestorationVisitForm } from "./RestorationVisitForm";
 export { SearchBoxWithDropdown } from "./SearchBoxWithDropdown";
 export { default as SectionHeaderSkeleton } from "./SectionHeaderSkeleton";
 export { default as StatusBadge } from "./StatusBadge";
 export { default as TableSkeleton } from "./TableSkeleton";
 export { default as TableToolbar } from "./TableToolbar";
-
-// table submodule (re-export via its own index to avoid deep paths)
-export { TableBody, TableHeader, TableRow } from "./table";
-// Additional molecules used by organisms; expose via index to avoid deep imports
-export { default as ProjectPickerTable } from "./ProjectPickerTable";
-export type { RestorationVisitFormValues } from "./RestorationVisitForm";
-export { default as RestorationVisitForm } from "./RestorationVisitForm";

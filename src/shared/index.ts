@@ -3,3 +3,5 @@ export * from "./infra/http";
 export * from "./infra/rest";
 export * from "./mappers";
 export * from "./search";
+export * from "./ui/table";
+export * from "./validation";

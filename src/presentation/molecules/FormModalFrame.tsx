@@ -1,8 +1,8 @@
-import React, { useId } from "react";
+import React, { useId } from 'react';
 
-import { Modal } from "@/presentation";
+import { Modal } from '@/presentation';
 
-import { ModalBody, ModalFooter, ModalHeader } from ".";
+import { ModalBody, ModalFooter, ModalHeader } from '.';
 
 type FormModalFrameProps = {
   isOpen: boolean;
@@ -10,18 +10,18 @@ type FormModalFrameProps = {
   title: string;
   titleId?: string;
   descriptionId?: string;
-  size?: "sm" | "md" | "lg" | "xl";
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
   headerRightSlot?: React.ReactNode;
   body: React.ReactNode;
   footer: React.ReactNode;
 };
 
-const SIZE_MAP: Record<NonNullable<FormModalFrameProps["size"]>, string> = {
-  sm: "w-[360px]",
-  md: "w-[480px]",
-  lg: "w-[640px]",
-  xl: "w-[800px]",
+const SIZE_MAP: Record<NonNullable<FormModalFrameProps['size']>, string> = {
+  sm: 'w-[360px]',
+  md: 'w-[480px]',
+  lg: 'w-[640px]',
+  xl: 'w-[800px]',
 };
 
 export default function FormModalFrame({
@@ -30,8 +30,8 @@ export default function FormModalFrame({
   title,
   titleId,
   descriptionId,
-  size = "md",
-  className = "",
+  size = 'md',
+  className = '',
   headerRightSlot,
   body,
   footer,
@@ -44,15 +44,14 @@ export default function FormModalFrame({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className={`bg-theme-gray-darker ${SIZE_MAP[size]} max-h-[90vh] h-auto ${className}`}
+      className={`bg-theme-gray-darker ${SIZE_MAP[size]} h-auto max-h-[90vh] ${className}`}
     >
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby={modalTitleId}
-        {...(modalDescId ? { "aria-describedby": modalDescId } : {})}
+        {...(modalDescId ? { 'aria-describedby': modalDescId } : {})}
       >
-        {/* Header a ancho completo: el slot derecho vive dentro del propio header */}
         <ModalHeader
           id={modalTitleId}
           title={title}

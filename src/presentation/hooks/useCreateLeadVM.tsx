@@ -144,7 +144,7 @@ export function useCreateLeadVM({
         policies: {},
       })) as unknown as Lead;
 
-      // ⬇️ Si el lead trae contacto (nuevo), lo subimos al caché de contactos
+      
       if (created?.contact) {
         queryClient.setQueryData<Contact[]>(['contacts', 'list'], (prev) => {
           const curr = Array.isArray(prev) ? prev : [];
@@ -156,7 +156,7 @@ export function useCreateLeadVM({
       reset();
       onClose?.();
 
-      // ➊ Actualizar inmediatamente la lista cacheada de leads por tipo
+      
       queryClient.setQueryData<Lead[] | undefined>(
         ['leads', 'byType', leadType],
         (prev) => {
@@ -167,7 +167,7 @@ export function useCreateLeadVM({
           return [created, ...withoutDup];
         },
       );
-      // ➋ Invalidación de seguridad para otros listados/resúmenes de leads
+      
       queryClient.invalidateQueries({ queryKey: ['leads'] });
 
       onCreated?.(created);

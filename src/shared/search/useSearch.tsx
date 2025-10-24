@@ -1,23 +1,21 @@
-/* eslint-env browser */
-/* global window */
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from 'react';
 
 export type SearchField<T> = {
   key: keyof T | string;
   label: string;
-    accessor?: (row: T) => string | number | null | undefined;
-    searchable?: boolean; 
+  accessor?: (row: T) => string | number | null | undefined;
+  searchable?: boolean;
 };
 
 export type SearchConfig<T> = {
   fields: Array<SearchField<T>>;
-    defaultField?: keyof T | string;
-    placeholder?: string;
-    debounceMs?: number; 
-    normalize?: (s: string) => string;
+  defaultField?: keyof T | string;
+  placeholder?: string;
+  debounceMs?: number;
+  normalize?: (s: string) => string;
 };
 
-export type AnyField<T> = "*" | (keyof T | string);
+export type AnyField<T> = '*' | (keyof T | string);
 
 export type UseSearchState<T> = {
   searchTerm: string;
@@ -26,29 +24,28 @@ export type UseSearchState<T> = {
   selectedField: AnyField<T>;
   setSelectedField: (f: AnyField<T>) => void;
 
-    filteredData: T[];
-    searchFields: Array<{ value: AnyField<T>; label: string }>;
+  filteredData: T[];
+  searchFields: Array<{ value: AnyField<T>; label: string }>;
 
   hasActiveSearch: boolean;
   clearSearch: () => void;
 };
 
-
 function defaultNormalize(s: string) {
-  return (s ?? "")
+  return (s ?? '')
     .toString()
     .trim()
     .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
 }
 
 function getFieldValue<T>(row: T, field: SearchField<T>): string {
   const raw =
-    typeof field.accessor === "function"
+    typeof field.accessor === 'function'
       ? field.accessor(row)
       : (row as any)[field.key as any];
-  return raw == null ? "" : String(raw);
+  return raw == null ? '' : String(raw);
 }
 
 function useDebouncedValue<T>(value: T, delay = 200) {
@@ -60,11 +57,13 @@ function useDebouncedValue<T>(value: T, delay = 200) {
   return debounced;
 }
 
-
-export function useSearch<T>(items: T[], config: SearchConfig<T>): UseSearchState<T> {
-  const [searchTerm, setSearchTerm] = useState("");
+export function useSearch<T>(
+  items: T[],
+  config: SearchConfig<T>,
+): UseSearchState<T> {
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectedField, setSelectedField] = useState<AnyField<T>>(
-    (config.defaultField as AnyField<T>) ?? "*"
+    (config.defaultField as AnyField<T>) ?? '*',
   );
 
   const normalize = config.normalize ?? defaultNormalize;
@@ -72,16 +71,18 @@ export function useSearch<T>(items: T[], config: SearchConfig<T>): UseSearchStat
 
   const visibleFields = useMemo(
     () => config.fields.filter((f) => f.searchable !== false),
-    [config.fields]
+    [config.fields],
   );
 
   const searchFields = useMemo(
-    () =>
-      [
-        { value: "*" as AnyField<T>, label: "All fields" },
-        ...visibleFields.map((f) => ({ value: f.key as AnyField<T>, label: f.label }))
-      ],
-    [visibleFields]
+    () => [
+      { value: '*' as AnyField<T>, label: 'All fields' },
+      ...visibleFields.map((f) => ({
+        value: f.key as AnyField<T>,
+        label: f.label,
+      })),
+    ],
+    [visibleFields],
   );
 
   const hasActiveSearch = debounced.trim().length > 0;
@@ -91,20 +92,27 @@ export function useSearch<T>(items: T[], config: SearchConfig<T>): UseSearchStat
     const q = normalize(debounced);
 
     const fieldsToCheck: SearchField<T>[] =
-      selectedField === "*"
+      selectedField === '*'
         ? visibleFields
         : visibleFields.filter((f) => String(f.key) === String(selectedField));
 
     if (fieldsToCheck.length === 0) return items;
 
     return items.filter((row) =>
-      fieldsToCheck.some((f) => normalize(getFieldValue(row, f)).includes(q))
+      fieldsToCheck.some((f) => normalize(getFieldValue(row, f)).includes(q)),
     );
-  }, [items, hasActiveSearch, debounced, selectedField, visibleFields, normalize]);
+  }, [
+    items,
+    hasActiveSearch,
+    debounced,
+    selectedField,
+    visibleFields,
+    normalize,
+  ]);
 
   const clearSearch = () => {
-    setSearchTerm("");
-    setSelectedField((config.defaultField as AnyField<T>) ?? "*");
+    setSearchTerm('');
+    setSelectedField((config.defaultField as AnyField<T>) ?? '*');
   };
 
   return {

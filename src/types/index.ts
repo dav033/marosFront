@@ -6,6 +6,8 @@ export * from "./enums";
 export * from "./hooks";
 export * from "./system";
 export type { Contact } from "@/contact";
+// Re-export LeadType to satisfy imports expecting it from /src/types
+export { LeadType } from "@/leads";
 
 export interface UseInstantContactsResult {
   contacts: Contact[];

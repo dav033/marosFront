@@ -30,4 +30,3 @@ export {
 	type ApiContactDTO,
 } from "./contactReadMapper";
 
-// Re-export other service-level modules here as needed to keep a single barrel.

@@ -1,12 +1,13 @@
-import { buildCrudEndpoints } from "@/shared";
+import { api, buildCrudEndpoints } from '@/shared';
 
-export const BASE = '/leads';
+const BASE = api.resource('leads');
 
-/** CRUD + endpoints específicos de Leads (rutas reales del proyecto). */
 export const endpoints = {
-  ...buildCrudEndpoints<number>(BASE),   listByType: (type: string) => `${BASE}/type?type=${encodeURIComponent(type)}`,
+  ...buildCrudEndpoints<number>(BASE),
+  listByType: (type: string) => `${BASE}/type?type=${encodeURIComponent(type)}`,
+  // Backend expects /leads/validate/lead-number?leadNumber=XYZ
   validateLeadNumber: (leadNumber: string) =>
-    `${BASE}/validate?leadNumber=${encodeURIComponent(leadNumber)}`,
+    `${BASE}/validate/lead-number?leadNumber=${encodeURIComponent(leadNumber)}`,
   createWithNewContact: () => `${BASE}/new-contact`,
   createWithExistingContact: () => `${BASE}/existing-contact`,
 } as const;

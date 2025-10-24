@@ -1,25 +1,13 @@
-import type { Project } from "./domain";
-import type { InvoiceStatus,ProjectStatus } from "./enums";
+import type { ISODate } from '@/shared';
+
+import type { Project } from './domain';
+import type { InvoiceStatus, ProjectStatus } from './enums';
+
+export type { Clock, Err, ISODate, ISODateTime, Ok, Result } from '@/shared';
+export { err, ok, SystemClock } from '@/shared';
 
 export type ProjectId = number;
 export type LeadId = number;
-export type ISODate = string;      
-export type ISODateTime = string;  
-
-export interface Clock {
-  now(): number;
-  todayISO(): ISODate;
-}
-export const SystemClock: Clock = {
-  now: () => Date.now(),
-  todayISO: () => new Date().toISOString().split("T")[0] as ISODate,
-};
-
-export type Ok<T> = { ok: true; value: T };
-export type Err<E> = { ok: false; error: E };
-export type Result<T, E> = Ok<T> | Err<E>;
-export const ok = <T>(value: T): Ok<T> => ({ ok: true, value });
-export const err = <E>(error: E): Err<E> => ({ ok: false, error });
 
 export interface ProjectPolicies {
   requireLead?: boolean;
@@ -70,8 +58,8 @@ export interface ProjectWithLeadView {
   projectStatus?: string;
   invoiceStatus?: string;
   quickbooks?: boolean;
-  startDate?: string; 
-  endDate?: string;
+  startDate?: string; // ISODate
+  endDate?: string; // ISODate
 
   leadId?: number;
   leadName?: string;
@@ -83,4 +71,3 @@ export interface ProjectWithLeadView {
   email?: string;
   phone?: string;
 }
-

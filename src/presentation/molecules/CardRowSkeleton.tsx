@@ -40,21 +40,18 @@ export default function CardRowSkeleton({
   return (
     <div className={`${pulse ? "animate-pulse" : ""} ${className}`}>
       <div className={containerClassName}>
-        {/* Línea 1 */}
         <div className="flex space-x-4">
           {line1.map(({ w, h = 16 }, i) => (
             <SkeletonBlock key={`l1-${i}`} h={h} className={w} />
           ))}
         </div>
 
-        {/* Línea 2 */}
         <div className="flex space-x-4">
           {line2.map(({ w, h = 12 }, i) => (
             <SkeletonBlock key={`l2-${i}`} h={h} className={w} />
           ))}
         </div>
 
-        {/* Acciones derecha */}
         {actions > 0 && (
           <div className="flex justify-end space-x-2 mt-3">
             {Array.from({ length: actions }).map((_, i) => (

@@ -1,6 +1,5 @@
 import type { Contact } from "@/contact";
-import { BusinessRuleError } from "@/shared";
-
+import { BusinessRuleError, normalizeText } from "@/shared";
 import { ensureContactIntegrity } from "./ensureContactIntegrity";
 
 export type ApiContactDTO = Readonly<{
@@ -12,37 +11,29 @@ export type ApiContactDTO = Readonly<{
   phone?: string | null;
   email?: string | null;
   address?: string | null;
-    lastContact?: string | null;
+  lastContact?: string | null;
 }>;
 
-function norm(s: unknown): string {
-  return String(s ?? "")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
 export function mapContactFromDTO(dto: ApiContactDTO): Contact {
-  if (!dto)
-    throw new BusinessRuleError("NOT_FOUND", "Contact payload is empty");
+  if (!dto) throw new BusinessRuleError("NOT_FOUND", "Contact payload is empty");
 
   const contact: Contact = {
     id: dto.id,
-    companyName: norm(dto.companyName),
-    name: norm(dto.name),
-    occupation: norm(dto.occupation) || undefined,
-    product: norm(dto.product) || undefined,
-    phone: norm(dto.phone) || undefined,
-    email: norm(dto.email) || undefined,
-    address: norm(dto.address) || undefined,
-    lastContact: norm(dto.lastContact) || undefined,
+    companyName: normalizeText(dto.companyName),
+    name: normalizeText(dto.name),
+    occupation: normalizeText(dto.occupation) || undefined,
+    product: normalizeText(dto.product) || undefined,
+    phone: normalizeText(dto.phone) || undefined,
+    email: normalizeText(dto.email) || undefined,
+    address: normalizeText(dto.address) || undefined,
+    lastContact: normalizeText(dto.lastContact) || undefined,
   };
+
   ensureContactIntegrity(contact);
   return contact;
 }
 
-export function mapContactsFromDTO(
-  list?: readonly ApiContactDTO[] | null
-): Contact[] {
+export function mapContactsFromDTO(list?: readonly ApiContactDTO[] | null): Contact[] {
   const src = Array.isArray(list) ? list : [];
   return src.map(mapContactFromDTO);
 }

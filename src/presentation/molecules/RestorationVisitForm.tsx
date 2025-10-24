@@ -30,7 +30,6 @@ type Props = {
 export default function RestorationVisitForm({ values: _values, bind }: Props) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {/* Columna izquierda */}
       <div>
         <div className="mb-2">
           <Input {...bind("projectNumber")} label="Project Number" />
@@ -49,7 +48,6 @@ export default function RestorationVisitForm({ values: _values, bind }: Props) {
         </div>
       </div>
 
-      {/* Columna derecha */}
       <div>
         <div className="mb-2">
           <Input {...bind("email")} label="Email" />
@@ -58,11 +56,9 @@ export default function RestorationVisitForm({ values: _values, bind }: Props) {
           <Input {...bind("phone")} label="Phone" />
         </div>
         <div className="mb-2">
-          {/* Si su <Input> soporta type, puede usar type="date" */}
           <Input {...bind("startDate")} label="Start Date" />
         </div>
         <div className="mb-2">
-          {/* Si su diseño usa Textarea, cámbielo aquí por su <Textarea> atom */}
           <Input {...bind("overview")} label="Overview" />
         </div>
       </div>

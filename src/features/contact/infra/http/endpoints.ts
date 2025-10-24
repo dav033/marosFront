@@ -1,17 +1,9 @@
-import { buildCrudEndpoints } from "@/shared";
+import { api,buildCrudEndpoints } from '@/shared';
 
-const BASE = "/contacts";
+const BASE = api.resource('contacts');
 
-/**
- * Mantiene EXACTAMENTE las mismas rutas que tenías:
- * - list():   /contacts/all
- * - create(): /contacts
- * - getById/update/remove: /contacts/:id
- * - uniquenessCheck(): /contacts/validate
- */
 export const contactEndpoints = {
-  ...buildCrudEndpoints<number>(BASE, {
-    listPath: "/all",
-      }),
+  ...buildCrudEndpoints<number>(BASE, { listPath: '/all' }),
   uniquenessCheck: () => `${BASE}/validate`,
+  search: (q: string) => `${BASE}/search?q=${encodeURIComponent(q)}`,
 } as const;
