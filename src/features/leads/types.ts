@@ -4,7 +4,6 @@ import type { ISODate } from "@/shared";
 import type { Lead } from "./domain";
 import type { LeadStatus, LeadType } from "./enums";
 
-
 export type {
   Clock,
   Err,
@@ -13,7 +12,7 @@ export type {
   Ok,
   Result,
 } from "@/shared";
-export { err,ok, SystemClock } from "@/shared";
+export { err, ok, SystemClock } from "@/shared";
 
 export type LeadId = number;
 export type ContactId = number;
@@ -72,7 +71,7 @@ export type LeadPatch = Readonly<{
   contactId?: number;
   projectTypeId?: number;
   startDate?: ISODate;
-  leadNumber?: number | null;
+  leadNumber?: string | null; // ← unificado a string | null
 }>;
 
 export type LeadPatchPolicies = Readonly<{

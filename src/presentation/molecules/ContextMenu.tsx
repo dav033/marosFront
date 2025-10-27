@@ -1,8 +1,9 @@
 // eslint-env browser
 import * as React from "react";
 import { createPortal } from "react-dom";
-import { Icon } from "@/presentation";
+
 import type { ContextMenuOption } from "@/presentation"; 
+import { Icon } from "@/presentation";
 
 export type ContextMenuProps = Readonly<{
   options: ContextMenuOption[];

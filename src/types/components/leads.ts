@@ -1,7 +1,9 @@
 import type React from 'react';
+
 import type { Contact } from '@/contact';
 import type { Lead, LeadType, ProjectType } from '@/leads';
-import type { FormMode, ContactMode } from '..';
+
+import type { ContactMode,FormMode } from '..';
 import type { LeadFormData } from './form';
 
 export interface InstantLeadsListProps {

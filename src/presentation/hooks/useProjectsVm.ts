@@ -1,21 +1,20 @@
 import * as React from "react";
 
+import { useProjectsApp } from "@/di";
 import {
-  HttpProjectRepository,
   createProject,
   deleteProject,
   getProjectById,
   getProjects,
   getProjectsByStatus,
   getProjectsWithLeads,
-  makeProjectsAppContext,
-  updateProject,
   type Project,
   type ProjectDraft,
   type ProjectId,
   type ProjectPatch,
   type ProjectStatus,
   type ProjectWithLeadView,
+  updateProject,
 } from "@/project";
 import { getErrorMessage } from "@/utils";
 
@@ -25,13 +24,8 @@ type State = {
   error: string | null;
 };
 
-const ctx = makeProjectsAppContext({
-  repos: {
-    project: new HttpProjectRepository(),
-  },
-});
-
 export function useProjectsVm(initialStatus?: ProjectStatus) {
+  const ctx = useProjectsApp();
   const [state, setState] = React.useState<State>({ data: [], loading: false, error: null });
 
   const loadAll = React.useCallback(async () => {
@@ -45,7 +39,7 @@ export function useProjectsVm(initialStatus?: ProjectStatus) {
       setState(s => ({ ...s, loading: false, error: msg }));
       throw e;
     }
-  }, []);
+  }, [ctx]);
 
   const loadByStatus = React.useCallback(async (status: ProjectStatus) => {
   setState(s => ({ ...s, loading: true, error: null }));
@@ -58,7 +52,7 @@ export function useProjectsVm(initialStatus?: ProjectStatus) {
       setState(s => ({ ...s, loading: false, error: msg }));
       throw e;
     }
-  }, []);
+  }, [ctx]);
 
    const loadWithLeads = React.useCallback(async () => {
   setState((s) => ({ ...s, loading: true, error: null }));
@@ -75,7 +69,7 @@ export function useProjectsVm(initialStatus?: ProjectStatus) {
       }));
       throw e;
     }
-  }, []);
+  }, [ctx]);
 
   const create = React.useCallback(async (draft: ProjectDraft) => {
   setState(s => ({ ...s, loading: true, error: null }));
@@ -88,7 +82,7 @@ export function useProjectsVm(initialStatus?: ProjectStatus) {
       setState(s => ({ ...s, loading: false, error: msg }));
       throw e;
     }
-  }, []);
+  }, [ctx]);
 
   const update = React.useCallback(async (id: ProjectId, patch: ProjectPatch) => {
   setState(s => ({ ...s, loading: true, error: null }));
@@ -105,7 +99,7 @@ export function useProjectsVm(initialStatus?: ProjectStatus) {
       setState(s => ({ ...s, loading: false, error: msg }));
       throw e;
     }
-  }, []);
+  }, [ctx]);
 
   const remove = React.useCallback(async (id: ProjectId) => {
   setState(s => ({ ...s, loading: true, error: null }));
@@ -117,7 +111,7 @@ export function useProjectsVm(initialStatus?: ProjectStatus) {
       setState(s => ({ ...s, loading: false, error: msg }));
       throw e;
     }
-  }, []);
+  }, [ctx]);
 
 
    

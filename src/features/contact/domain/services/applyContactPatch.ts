@@ -1,7 +1,6 @@
 import type { Contact } from "@/contact";
 import { BusinessRuleError, countDigits, isISODateOrDateTime, isValidEmail, normalizeEmail, normalizePhone, normalizeText } from "@/shared";
 
-
 import type { ContactDraftPolicies } from "./ensureContactDraftIntegrity";
 
 export type ContactPatch = Readonly<{

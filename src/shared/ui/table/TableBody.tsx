@@ -1,8 +1,9 @@
 import React, { memo } from "react";
 
-import SeparatorRow from "./SeparatorRow";
 import type { TableBodyProps } from "@/types";
+
 import { TableRow } from ".";
+import SeparatorRow from "./SeparatorRow";
 
 function TableBodyInner<T>({
   columns,

@@ -2,11 +2,9 @@ import type { Lead } from '@/leads';
 import type { LeadRepositoryPort } from '@/leads';
 import type { LeadType } from '@/leads';
 import type { LeadDraft, LeadId, LeadPatch } from '@/leads';
-
 import { type ApiLeadDTO, mapLeadFromDTO, mapLeadsFromDTO } from '@/leads';
 import { mapLeadPatchToUpdatePayload, type UpdateLeadPayload } from '@/leads';
 import { type CreateLeadPayload, mapLeadDraftToCreatePayload } from '@/leads';
-
 import type { HttpClientLike } from '@/shared';
 import { optimizedApiClient } from '@/shared';
 import { makeResource } from '@/shared';

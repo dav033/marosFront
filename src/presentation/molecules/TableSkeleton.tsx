@@ -1,6 +1,6 @@
 import React from "react";
-import { DEFAULT_STATUS_ORDER } from "@/leads";
-import { STATUS_LABELS } from "@/features/leads/domain/services/leadSections";
+
+import { DEFAULT_STATUS_ORDER, STATUS_LABELS } from "@/leads";
 
 import CardRowSkeleton from "./CardRowSkeleton";
 import SectionHeaderSkeleton from "./SectionHeaderSkeleton";

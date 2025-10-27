@@ -1,5 +1,4 @@
 import { BusinessRuleError } from '@/shared';
-
 import { normalizeEmail, normalizePhone, normalizeText } from '@/shared';
 
 export type ContactDraft = Readonly<{

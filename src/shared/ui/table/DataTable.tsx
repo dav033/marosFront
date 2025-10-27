@@ -1,8 +1,10 @@
 import React from "react"
-import TableRoot from "./TableRoot";
-import type { TableProps } from "@/types";
+
 import { useSort } from "@/presentation";
+import type { TableProps } from "@/types";
+
 import { TableBody, TableHeader } from ".";
+import TableRoot from "./TableRoot";
 
 export default function DataTable<T extends object>({
   columns,

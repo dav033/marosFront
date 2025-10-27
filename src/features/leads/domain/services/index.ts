@@ -21,6 +21,8 @@ export { makeLeadNumber } from "./leadNumberPolicy";
 export { ensureLeadNumberAvailable } from "./leadNumberPolicy";
 export type { ApiLeadDTO } from "./leadReadMapper";
 export { mapLeadFromDTO, mapLeadsFromDTO } from "./leadReadMapper";
+export type { AuxStatus,LeadSection, SectionKey } from "./leadSections";
+export { buildLeadSections, STATUS_LABELS } from "./leadSections";
 export {
   DEFAULT_STATUS_ORDER,
   filterByStatus,

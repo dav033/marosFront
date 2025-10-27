@@ -1,12 +1,14 @@
 import { useCallback, useState } from "react";
 
-import type { Contact,ContactsAppContext } from "@/contact";
-import { ContactHttpRepository,patchContact } from "@/contact";
+import type { Contact } from "@/contact";
+import { patchContact } from "@/contact";
+import { useContactsApp } from "@/di";
 import type { ContactFormData } from "@/types";
 
 type EditContactForm = ContactFormData;
 
 export function useEditContact(initial?: Contact | null) {
+  const ctx = useContactsApp();
   const [form, setForm] = useState<EditContactForm>(() => ({
     companyName: initial?.companyName ?? "",
     name: initial?.name ?? "",
@@ -33,11 +35,6 @@ export function useEditContact(initial?: Contact | null) {
     setFormError(null);
 
     try {
-      const ctx: ContactsAppContext = {
-        repos: {
-          contact: new ContactHttpRepository(),
-        },
-      };
       const patch = {
         companyName: form.companyName,
         name: form.name,
@@ -58,7 +55,7 @@ export function useEditContact(initial?: Contact | null) {
     } finally {
       setIsLoading(false);
     }
-  }, [form, initial]);
+  }, [form, initial, ctx]);
 
   return { form, setField, isLoading, formError, submit };
 }

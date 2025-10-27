@@ -1,32 +1,28 @@
-export { buildCreateContactDTO, buildUpdateContactDTO } from "./mapContactDTO";
-export type { CreateContactRequestDTO, UpdateContactRequestDTO } from "./mapContactDTO";
-
-export { applyContactPatch } from "./applyContactPatch";
 export type { ApplyContactPatchResult, ContactPatch } from "./applyContactPatch";
-export { buildContactDraft } from "./buildContactDraft";
+export { applyContactPatch } from "./applyContactPatch";
 export type { ContactDraft } from "./buildContactDraft";
-
+export { buildContactDraft } from "./buildContactDraft";
 export {
 	mergeApiUpdateFallback,
 	mergeContact,
 	mergeContactIntoCollection,
 } from "./contactMergePolicy";
-
+export {
+	type ApiContactDTO,
+	mapContactFromDTO,
+	mapContactsFromDTO,
+} from "./contactReadMapper";
 export {
 	assertUniqueContact,
 	buildIdentityIndex,
-	findDuplicateGroups,
-	isDuplicateContact,
-	listPotentialDuplicates,
 	type ContactLike,
 	type DuplicateGroup,
 	type DuplicateMatch,
+	findDuplicateGroups,
+	isDuplicateContact,
+	listPotentialDuplicates,
 	type UniquenessOptions,
 } from "./contactUniquenessPolicy";
-
-export {
-	mapContactFromDTO,
-	mapContactsFromDTO,
-	type ApiContactDTO,
-} from "./contactReadMapper";
+export type { CreateContactRequestDTO, UpdateContactRequestDTO } from "./mapContactDTO";
+export { buildCreateContactDTO, buildUpdateContactDTO } from "./mapContactDTO";
 

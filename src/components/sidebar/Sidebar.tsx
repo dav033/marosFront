@@ -2,8 +2,8 @@ import React from 'react';
 
 import { useSidebarNavigation } from '@/hooks';
 
-import SidebarDropdown from './SidebarDropdown.tsx';
-import SidebarItem from './SidebarItem.tsx';
+import SidebarDropdown from './SidebarDropdown';
+import SidebarItem from './SidebarItem';
 const SIDEBAR_CONFIG = {
   leads: {
     trigger: {

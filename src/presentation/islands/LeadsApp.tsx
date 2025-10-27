@@ -2,20 +2,28 @@ import React from 'react';
 
 import { QueryProvider, TopLoader } from '@/components';
 import { DiProvider, useContactsApp, useLeadsApp } from '@/di';
-import { LeadsBoard,LoadingProvider } from '@/presentation';
+import { LeadsBoard, LoadingProvider, useContacts,useProjectTypesVM } from '@/presentation';
 import { LeadType } from '@/types';
 
-type Props = {
-  leadType: LeadType;
-};
+type Props = { leadType: LeadType };
 
 function LeadsInner({ leadType }: { leadType: LeadType }) {
-  const _leadsCtx = useLeadsApp();
-  const _contactsCtx = useContactsApp();
+  const leadsCtx = useLeadsApp();
+  useContactsApp(); // asegura el provider de contactos (si ya existía, no afecta)
 
+  // 1) Cargar datos necesarios para los selects
+  const { projectTypes } = useProjectTypesVM(leadsCtx);
+  const { contacts } = useContacts();
+
+  // 2) Pasarlos al board
   return (
     <LoadingProvider>
-      <LeadsBoard leadType={leadType} title='e' />
+      <LeadsBoard
+        leadType={leadType}
+        title="Leads"
+        projectTypes={projectTypes}
+        contacts={contacts}
+      />
       <div id="modal-root" />
     </LoadingProvider>
   );

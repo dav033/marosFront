@@ -1,5 +1,5 @@
 import type { Contact } from "@/contact";
-import { normalizeText, normalizeLower } from "@/shared";
+import { normalizeLower,normalizeText } from "@/shared";
 
 export function groupByCompany(src?: readonly Contact[] | null): Record<string, Contact[]> {
   const list = Array.isArray(src) ? src : [];

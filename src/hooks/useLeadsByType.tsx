@@ -1,8 +1,9 @@
-import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
+import * as React from "react";
+
 import { useLeadsApp } from "@/di";
-import { listLeadsByType, buildLeadSections } from "@/leads";
 import type { Lead, LeadType } from "@/leads";
+import { buildLeadSections, leadsKeys,listLeadsByType } from "@/leads";
 
 type UiSection = Readonly<{
   name: string;
@@ -13,7 +14,7 @@ export function useLeadsByType(type: LeadType) {
   const ctx = useLeadsApp();
 
   const q = useQuery<Lead[], Error>({
-    queryKey: ["leads", "byType", type],
+    queryKey: leadsKeys.byType(type),
     queryFn: () => listLeadsByType(ctx, type),
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: true,

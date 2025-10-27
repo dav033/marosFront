@@ -1,14 +1,18 @@
-import React from "react";
+import React from 'react';
 
-import type { LeadsAppContext } from "@/leads";
-import type { Lead, LeadSection,LeadType } from "@/leads";
-import { buildLeadSections, deleteLead as deleteLeadUseCase, listLeadsByType } from "@/leads";
-import { getErrorMessage } from "@/utils";
+import type { LeadsAppContext } from '@/leads';
+import type { Lead, LeadSection, LeadType } from '@/leads';
+import {
+  buildLeadSections,
+  deleteLead as deleteLeadUseCase,
+  listLeadsByType,
+} from '@/leads';
+import { getErrorMessage } from '@/utils';
 
 export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType) {
   const [leads, setLeads] = React.useState<Lead[]>([]);
   const [sections, setSections] = React.useState<LeadSection[]>([
-    { title: "All", data: [] },
+    { title: 'All', data: [] },
   ]);
   const [error, setError] = React.useState<string | null>(null);
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
@@ -21,7 +25,7 @@ export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType) {
       setSections(buildLeadSections(items));
       setError(null);
     } catch (e: unknown) {
-      const msg = getErrorMessage(e) || "Failed to load leads";
+      const msg = getErrorMessage(e) || 'Failed to load leads';
       setError(msg);
     } finally {
       setIsLoading(false);
@@ -46,8 +50,14 @@ export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType) {
 
   const openCreate = React.useCallback(() => setIsCreateOpen(true), []);
   const closeCreate = React.useCallback(() => setIsCreateOpen(false), []);
-  const openCreateLocal = React.useCallback(() => setIsCreateLocalOpen(true), []);
-  const closeCreateLocal = React.useCallback(() => setIsCreateLocalOpen(false), []);
+  const openCreateLocal = React.useCallback(
+    () => setIsCreateLocalOpen(true),
+    [],
+  );
+  const closeCreateLocal = React.useCallback(
+    () => setIsCreateLocalOpen(false),
+    [],
+  );
   const openEdit = React.useCallback((lead: Lead) => {
     setEditingLead(lead);
     setIsEditOpen(true);
@@ -57,7 +67,6 @@ export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType) {
     setEditingLead(null);
   }, []);
 
-  
   const onLeadCreated = React.useCallback((created: Lead) => {
     setLeads((prev) => {
       const next = [created, ...prev];
@@ -75,7 +84,7 @@ export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType) {
   }, []);
 
   const onLeadDeleted = React.useCallback(
-    async (leadId: Lead["id"]) => {
+    async (leadId: Lead['id']) => {
       try {
         await deleteLeadUseCase(ctx as any as LeadsAppContext, leadId as any);
         setLeads((prev) => {
@@ -84,10 +93,10 @@ export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType) {
           return next;
         });
       } catch {
-        
+        // ignore
       }
     },
-    [ctx]
+    [ctx],
   );
 
   return {
@@ -102,14 +111,14 @@ export function useLeadsVM(ctx: LeadsAppContext, leadType: LeadType) {
       editingLead,
     },
     refetch: load,
-    setLeads,         
+    setLeads,
     openCreate,
     closeCreate,
     openCreateLocal,
     closeCreateLocal,
     openEdit,
     closeEdit,
-    onLeadCreated,    
+    onLeadCreated,
     onLeadUpdated,
     onLeadDeleted,
   };

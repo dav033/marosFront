@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useLeadsApp } from '@/di';
-
 import type { Lead } from '@/leads';
 import { LeadStatus, LeadType } from '@/leads';
 import type { LeadFormData } from '@/types';

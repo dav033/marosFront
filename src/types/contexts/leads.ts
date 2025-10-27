@@ -1,6 +1,7 @@
 
 import type React from "react";
 import { type ReactNode } from "react";
+
 import type { Lead, LeadStatus, LeadType } from "@/leads";
 
 export interface LeadsState {

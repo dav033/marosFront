@@ -1,4 +1,4 @@
-import type { LeadType, LeadStatus, Lead } from "@/leads";
+import type { Lead,LeadStatus, LeadType } from "@/leads";
 
 function effectiveStatus(s: LeadStatus | null | undefined): LeadStatus {
   return (s ?? "UNDETERMINED") as LeadStatus;

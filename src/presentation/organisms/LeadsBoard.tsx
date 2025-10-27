@@ -1,7 +1,7 @@
-import React, { Suspense, useMemo } from "react";
+import React, { Suspense, useMemo } from 'react';
 
-import { useLeadsApp } from "@/di";
-import { useLeadsVM } from "@/presentation";
+import { useLeadsApp } from '@/di';
+import { useLeadsVM } from '@/presentation';
 import {
   CreateLeadModal,
   CreateLocalLeadModal,
@@ -12,10 +12,10 @@ import {
   LeadSection,
   LeadsToolbar,
   leadTableColumns,
-} from "@/presentation";
-import type { LeadType } from "@/types";
+} from '@/presentation';
+import type { LeadType } from '@/types';
 
-import SkeletonRenderer from "./SkeletonRenderer";
+import SkeletonRenderer from './SkeletonRenderer';
 
 export type LeadsBoardProps = {
   leadType: LeadType;
@@ -34,7 +34,7 @@ export type LeadsBoardProps = {
 export default function LeadsBoard({
   leadType,
   title,
-  createButtonText = "Create lead",
+  createButtonText = 'Create lead',
   projectTypes = [],
   contacts = [],
 }: LeadsBoardProps) {
@@ -59,7 +59,12 @@ export default function LeadsBoard({
             />
           }
         />
-        <SkeletonRenderer type="leadsTable" rows={12} showSections loading={vm.isLoading} />
+        <SkeletonRenderer
+          type="leadsTable"
+          rows={12}
+          showSections
+          loading={vm.isLoading}
+        />
       </div>
     );
   }
@@ -87,9 +92,7 @@ export default function LeadsBoard({
             projectTypes={projectTypes}
             contacts={contacts}
             leadType={leadType}
-            onLeadCreated={(created) =>
-              vm.setLeads((prev: any) => [created, ...prev])
-            }
+            onLeadCreated={vm.onLeadCreated}
           />
         )}
 
@@ -100,9 +103,7 @@ export default function LeadsBoard({
             projectTypes={projectTypes}
             contacts={contacts}
             leadType={leadType}
-            onLeadCreated={(created: any) =>
-              vm.setLeads((prev: any) => [created, ...prev])
-            }
+            onLeadCreated={vm.onLeadCreated}
           />
         )}
 
@@ -130,14 +131,14 @@ export default function LeadsBoard({
             status?: string;
           }) => (
             <LeadSection
-              key={`${secTitle}-${status ?? "none"}`}
+              key={`${secTitle}-${status ?? 'none'}`}
               title={secTitle}
               data={data}
               columns={columns}
               onEditLead={vm.openEdit}
               onDeleteLead={async (lead) => await vm.onLeadDeleted(lead.id)}
             />
-          )
+          ),
         )}
       </div>
 

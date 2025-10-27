@@ -1,5 +1,6 @@
-import type { LeadStatus } from '..';
 import type { ProjectType } from '@/leads';
+
+import type { LeadStatus } from '..';
 
 export interface StatusBadgeProps {
   status: LeadStatus | string | null | undefined;

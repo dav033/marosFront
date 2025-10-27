@@ -1,8 +1,8 @@
 import React from "react";
 
 import type { ProjectWithLeadView } from "@/project";
-import type { Column } from "@/types";
 import { DataTable } from "@/shared";
+import type { Column } from "@/types";
 
 type Props = {
   projects: ProjectWithLeadView[];

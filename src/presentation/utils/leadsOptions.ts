@@ -1,7 +1,6 @@
-import type { SelectOption } from '@/presentation';
 import type { LeadStatus } from '@/leads';
-import { DEFAULT_STATUS_ORDER } from '@/leads';
-import { STATUS_LABELS } from '@/features/leads/domain/services/leadSections';
+import { DEFAULT_STATUS_ORDER, STATUS_LABELS } from '@/leads';
+import type { SelectOption } from '@/presentation';
 
 type ContactLite = {
   id: number;

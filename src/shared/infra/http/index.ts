@@ -1,2 +1,3 @@
+// src/shared/infra/http/index.ts
 export { OptimizedApiClient, optimizedApiClient } from "./OptimizedApiClient";
-export type { CachedRequestConfig,CacheStrategy, HttpClientLike, RequestOptions } from "./types";
+export type { HttpClientLike, RequestOptions } from "./types";

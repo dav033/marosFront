@@ -1,8 +1,9 @@
 import React, { memo } from "react";
 
+import type { Column, TableHeaderProps } from "@/types";
+
 import SortIcon from "./SortIcon";
 import Th from "./Th";
-import type { Column, TableHeaderProps } from "@/types";
 
 function TableHeaderInner<T extends object>({
   columns,

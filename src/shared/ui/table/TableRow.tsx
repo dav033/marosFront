@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 
-import { useContextMenu, ContextMenu } from "@/presentation";
+import { ContextMenu,useContextMenu } from "@/presentation";
 import type { TableRowProps } from "@/types";
 
 function TableRowInner<T>({

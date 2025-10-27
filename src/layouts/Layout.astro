@@ -5,12 +5,10 @@ import { ViewTransitions } from 'astro:transitions';
 
 export interface Props {
   title?: string;
-  enableCache?: boolean;
 }
 
 const { 
-  title = "Maros Construction", 
-  enableCache = true,
+  title = "Maros Construction",
 } = Astro.props;
 ---
 
@@ -24,13 +22,7 @@ const {
     <ViewTransitions />
     <title>{title}</title>
   </head>
-  <body
-    class="relative flex flex-row h-screen bg-theme-dark text-theme-light"
-  >
-
-
-  
-
+  <body class="relative flex flex-row h-screen bg-theme-dark text-theme-light">
     <Sidebar client:only="react" transition:persist />
     <main class="w-full ml-80 p-4"><slot /></main>
   </body>

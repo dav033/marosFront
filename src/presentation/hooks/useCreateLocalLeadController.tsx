@@ -1,9 +1,11 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
+import { contactsKeys } from "@/contact";
+import { useLeadsApp } from "@/di";
 import { useLeadForm } from "@/hooks";
-import type { ContactId, Lead, LeadType, ProjectTypeId } from "@/leads";
-import { ContactRepositoryAdapterForLeads, createLead, LeadHttpRepository, LeadNumberAvailabilityHttpService, makeLeadsAppContext, SystemClock, validateLeadNumberAvailability } from "@/leads";
+import type { ContactId,Lead, LeadType, ProjectTypeId } from "@/leads";
+import { createLead, leadsKeys,validateLeadNumberAvailability } from "@/leads";
 import type { LeadFormData } from "@/types";
 import { ContactMode } from "@/types";
 
@@ -17,24 +19,12 @@ export function useCreateLocalLeadController({
   onCreated,
 }: ControllerOptions) {
   const [isLoading, setIsLoading] = useState(false);
-  const [contactMode, setContactMode] = useState<ContactMode>(
-    ContactMode.NEW_CONTACT
-  );
+  const [contactMode, setContactMode] = useState<ContactMode>(ContactMode.NEW_CONTACT);
   const [error, setError] = useState<string | null>(null);
+  const ctx = useLeadsApp();
 
   const { form, handleChange } = useLeadForm({ initialData: { leadType } });
   const queryClient = useQueryClient();
-
-  const ctx = makeLeadsAppContext({
-    clock: SystemClock,
-    repos: {
-      lead: new LeadHttpRepository(),
-      contact: new ContactRepositoryAdapterForLeads(),
-    },
-    services: {
-      leadNumberAvailability: new LeadNumberAvailabilityHttpService(),
-    },
-  });
 
   const handleContactModeChange = (mode: ContactMode) => {
     if (error) setError(null);
@@ -61,65 +51,51 @@ export function useCreateLocalLeadController({
 
       const input =
         contactMode === ContactMode.EXISTING_CONTACT
-          ? ({
-              ...common,
-              contactId: Number(formData.contactId) as ContactId,
-            } as const)
+          ? ({ ...common, contactId: Number(formData.contactId) as ContactId })
           : ({
               ...common,
               contact: {
-                companyName:
-                  formData.companyName || formData.customerName || "",
-                name: formData.contactName || formData.customerName || "",
-                occupation: formData.occupation || "",
-                product: formData.product || "",
-                phone: formData.phone || "",
-                email: formData.email || "",
-                address: formData.address || "",
+                companyName: (formData.companyName ?? formData.customerName ?? "").trim(),
+                name: (formData.contactName ?? "").trim(),
+                phone: (formData.phone ?? "").trim(),
+                email: (formData.email ?? "").trim(),
+                address: (formData.address ?? "").trim(),
+                occupation: (formData.occupation ?? "").trim(),
+                product: (formData.product ?? "").trim(),
               },
-            } as const);
+            });
 
       const created = (await createLead(ctx, input, {
-        checkNumberAvailability: true,
+        checkNumberAvailability: false,
         policies: {},
       })) as unknown as Lead;
 
-      
-      queryClient.setQueryData<Lead[] | undefined>(
-        ["leads", "byType", leadType],
-        (prev) => {
-          const list = Array.isArray(prev) ? prev : [];
-          const id = (created as any)?.id;
-          const withoutDup = id != null ? list.filter((l: any) => l?.id !== id) : list;
-          return [created, ...withoutDup];
-        }
-      );
-      queryClient.invalidateQueries({ queryKey: ["leads"] });
+      // Invalidación dirigida: TanStack Query refetcha automáticamente
+      queryClient.invalidateQueries({ queryKey: contactsKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: leadsKeys.all });
 
       onCreated?.(created);
-      return created;
-    } catch (e: any) {
-      setError(e?.message ?? "Unexpected error");
-      throw e;
+      return true;
+    } catch (e: unknown) {
+      const msg =
+        e && typeof e === 'object' && 'message' in e
+          ? String((e as { message?: unknown }).message ?? 'Unexpected error')
+          : String(e);
+      setError(msg);
+      return false;
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleSafeChange = (field: string, value: string) => {
-    if (error) setError(null);
-    handleChange(field as keyof LeadFormData, value);
-  };
-
   return {
-    contactMode,
-    setContactMode,
-    handleContactModeChange,
     form,
+    handleChange,
+    contactMode,
+    setContactMode: handleContactModeChange,
     isLoading,
     error,
-    handleChange: handleSafeChange,
+    setError,
     submit: handleSubmit,
-    clearError: () => setError(null),
   };
 }

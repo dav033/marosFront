@@ -1,3 +1,4 @@
+// src/features/leads/domain/services/diffToPatch.ts
 import type { ISODate, Lead, LeadPatch } from '@/leads';
 
 export function diffToPatch(current: Lead, updated: Lead): LeadPatch {
@@ -16,8 +17,9 @@ export function diffToPatch(current: Lead, updated: Lead): LeadPatch {
     ...(updated.contact.id !== current.contact.id
       ? { contactId: updated.contact.id }
       : {}),
+    // Unificación a string | null (sin Number(...))
     ...((updated.leadNumber ?? '') !== (current.leadNumber ?? '')
-      ? { leadNumber: updated.leadNumber ? Number(updated.leadNumber) : null }
+      ? { leadNumber: updated.leadNumber ?? null }
       : {}),
   };
 }

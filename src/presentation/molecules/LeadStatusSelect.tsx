@@ -1,8 +1,8 @@
 import React from "react";
 
+import type { LeadStatus } from "@/leads";
 import { Select } from "@/presentation";
 import { getLeadStatusOptions } from "@/presentation";
-import type { LeadStatus } from "@/leads";
 
 export type LeadStatusSelectProps = {
   value: LeadStatus | "";

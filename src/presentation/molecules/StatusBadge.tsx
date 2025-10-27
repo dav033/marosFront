@@ -1,7 +1,8 @@
 
 import React from "react";
+
 import type { LeadStatus } from "@/leads";
-import { STATUS_LABELS } from "@/features/leads/domain/services/leadSections";
+import { STATUS_LABELS } from "@/leads";
 
 type Size = "sm" | "md";
 

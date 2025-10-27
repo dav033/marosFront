@@ -1,12 +1,11 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo, useState } from 'react';
 
-import type { Contact } from '@/contact';
-import { mergeContactIntoCollection } from '@/contact';
+import { contactsKeys } from '@/contact';
 import { useLeadsApp } from '@/di';
 import type { Lead, LeadType } from '@/leads';
-import { createLead, validateLeadNumberAvailability } from '@/leads';
-import type { LeadFormData } from '@/types';
+import { createLead, leadsKeys,validateLeadNumberAvailability } from '@/leads';
+import type { ContactModeType,LeadFormData } from '@/types';
 import { ContactMode } from '@/types';
 
 export type UseCreateLeadVMOptions = Readonly<{
@@ -47,9 +46,12 @@ export function useCreateLeadVM({
     ...EMPTY_FORM,
     leadType,
   }));
-  const [contactMode, setContactMode] = useState<ContactMode>(
+
+  // ✅ Tipo correcto: ContactModeType (el valor para inicializar es ContactMode.NEW_CONTACT)
+  const [contactMode, setContactMode] = useState<ContactModeType>(
     ContactMode.NEW_CONTACT,
   );
+
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -73,7 +75,8 @@ export function useCreateLeadVM({
     [],
   );
 
-  const changeContactMode = useCallback((mode: ContactMode) => {
+  // ✅ Firma con ContactModeType
+  const changeContactMode = useCallback((mode: ContactModeType) => {
     setContactMode(mode);
     setError(null);
     setForm((prev) => {
@@ -144,31 +147,9 @@ export function useCreateLeadVM({
         policies: {},
       })) as unknown as Lead;
 
-      
-      if (created?.contact) {
-        queryClient.setQueryData<Contact[]>(['contacts', 'list'], (prev) => {
-          const curr = Array.isArray(prev) ? prev : [];
-          return mergeContactIntoCollection(curr, created.contact as Contact);
-        });
-      }
-
-      onCreated?.(created);
-      reset();
-      onClose?.();
-
-      
-      queryClient.setQueryData<Lead[] | undefined>(
-        ['leads', 'byType', leadType],
-        (prev) => {
-          const list = Array.isArray(prev) ? prev : [];
-          const id = (created as any)?.id;
-          const withoutDup =
-            id != null ? list.filter((l: any) => l?.id !== id) : list;
-          return [created, ...withoutDup];
-        },
-      );
-      
-      queryClient.invalidateQueries({ queryKey: ['leads'] });
+      // Invalidación dirigida: TanStack Query refetcha automáticamente
+      queryClient.invalidateQueries({ queryKey: contactsKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: leadsKeys.all });
 
       onCreated?.(created);
       reset();

@@ -1,9 +1,9 @@
 import type { Contact } from '@/contact';
 import {
-  normalizeText,
-  normalizeLower,
   normalizeEmail,
+  normalizeLower,
   normalizePhone,
+  normalizeText,
 } from '@/shared';
 
 export type DuplicateCheckOptions = Readonly<{

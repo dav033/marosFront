@@ -12,11 +12,7 @@ export { default as Overlay } from './Overlay';
 export { default as PdfButton } from './PdfButton';
 export { default as Radio } from './Radio';
 export { default as SectionTitle } from './SectionTitle';
+export type { SelectOption } from './Select';
 export { default as Select } from './Select';
 export { default as SkeletonBlock } from './SkeletonBlock';
 export { default as TextBadge } from './TextBadge';
-
-
-
-
-export type { SelectOption } from './Select';

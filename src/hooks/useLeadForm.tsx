@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import { LeadStatus, LeadType } from "@/leads";
-import type { LeadFormData } from "@/types";
+import { LeadStatus, LeadType } from '@/leads';
+import type { LeadFormData } from '@/types';
 
 export interface UseLeadFormOptions {
   initialData?: Partial<LeadFormData>;
@@ -10,32 +10,35 @@ export interface UseLeadFormOptions {
 export function useLeadForm(options: UseLeadFormOptions) {
   const { initialData } = options;
 
-    const base: LeadFormData = {
-    name: "",
-    startDate: "",
+  const base: LeadFormData = {
+    name: '',
+    startDate: '',
     status: LeadStatus.NEW,
     leadType: LeadType.CONSTRUCTION,
 
-        leadNumber: "",
-    leadName: "",
-    location: "",
+    leadNumber: '',
+    leadName: '',
+    location: '',
     projectTypeId: undefined,
     contactId: undefined,
-    companyName: "",
-    customerName: "",
-    contactName: "",
-    occupation: "",
-    product: "",
-    phone: "",
-    email: "",
-    address: "",
+    companyName: '',
+    customerName: '',
+    contactName: '',
+    occupation: '',
+    product: '',
+    phone: '',
+    email: '',
+    address: '',
 
     ...(initialData ?? {}),
   };
 
   const [form, setForm] = useState<LeadFormData>(base);
 
-  const handleChange = <K extends keyof LeadFormData>(field: K, value: LeadFormData[K]) => {
+  const handleChange = <K extends keyof LeadFormData>(
+    field: K,
+    value: LeadFormData[K],
+  ) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
