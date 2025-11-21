@@ -1,8 +1,11 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import RestorationVisit from "../../presentation/organisms/RestorationVisit.tsx";
+import { DiProvider } from "../../di/DiProvider";
 ---
 
 <Layout title="Restoration Visit Report" description="Restoration Visit Report">
-  <RestorationVisit project={Astro.props.project} client:load />
+  <DiProvider client:load>
+    <RestorationVisit project={Astro.props.project} client:load />
+  </DiProvider>
 </Layout>
