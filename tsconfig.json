@@ -1,63 +1,53 @@
 {
-  "extends": "astro/tsconfigs/strict",
+  "extends": null,
   "include": [
-    ".astro/types.d.ts",
-    "src/**/*",
-    "**/*"
+    "next-env.d.ts",
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "**/*.ts",
+    "**/*.tsx"
   ],
   "exclude": [
-    "dist"
+    "node_modules",
+    ".next",
+    "dist",
+    "build"
   ],
   "compilerOptions": {
-    "jsx": "react-jsx",
-    "jsxImportSource": "react",
+    /* Resolución / imports */
     "baseUrl": ".",
-  "ignoreDeprecations": "6.0",
     "paths": {
-      "@/*": [
-        "src/*"
-      ],
-      "@components/*": [
-        "src/components/*"
-      ],
-      "@layouts/*": [
-        "src/layouts/*"
-      ],
-      "@pages/*": [
-        "src/pages/*"
-      ],
-      "@styles/*": [
-        "src/styles/*"
-      ],
-      "@types/*": [
-        "src/types/*"
-      ],
-      "@services/*": [
-        "src/services/*"
-      ],
-      "@hooks/*": [
-        "src/hooks/*"
-      ],
-      "@contexts/*": [
-        "src/contexts/*"
-      ],
-      "@utils/*": [
-        "src/utils/*"
-      ]
+      "@/*": ["src/*"],
+
+      /* === Compatibilidad con tu árbol actual === */
+      "@components/*": ["src/components/*", "src/shared/ui/*"],
+      "@layouts/*": ["src/layouts/*", "app/(dashboard)/*"],
+      "@pages/*": ["src/pages/*"],            // Solo mientras migras a /app
+      "@styles/*": ["src/styles/*"],
+      "@types/*": ["src/types/*"],
+      "@services/*": ["src/services/*", "src/shared/infra/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@contexts/*": ["src/contexts/*"],
+      "@utils/*": ["src/utils/*"]
     },
-    "plugins": [
-      {
-        "name": "@astrojs/ts-plugin"
-      }
-    ],
-    "types": [
-      "astro/client"
-    ],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "preserve",
+
+    /* Sugerencias de calidad */
+    "strict": true,
     "verbatimModuleSyntax": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
     "noPropertyAccessFromIndexSignature": true,
     "useUnknownInCatchVariables": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "allowJs": false,
+    "noEmit": true
   }
 }
