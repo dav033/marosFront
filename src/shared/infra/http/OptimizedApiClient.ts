@@ -2,7 +2,9 @@ import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
 
 import type { HttpClientLike, RequestOptions } from '@/shared';
 
-const BASE_URL = (import.meta as any).env.PUBLIC_API_BASE_URL_DEV || 'http://localhost:8080';
+
+const { VITE_API_BASE_URL } = import.meta.env;
+const BASE_URL = VITE_API_BASE_URL || 'http://localhost:8080';
 
 export class OptimizedApiClient implements HttpClientLike {
   private readonly axiosInstance: AxiosInstance;
